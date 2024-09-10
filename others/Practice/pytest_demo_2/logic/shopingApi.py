@@ -1,8 +1,8 @@
 import pytest
 import allure
-from others.pytest_demo_2.api_keyword.api_key import ApiKey
-from others.pytest_demo_2.data_driver.yaml_driver import load_yaml
-from others.pytest_demo_2.params.allParams import URL
+from others.Practice.pytest_demo_2.api_keyword.api_key import ApiKey
+from others.Practice.pytest_demo_2.data_driver.yaml_driver import load_yaml
+from others.Practice.pytest_demo_2.params.allParams import URL
 
 # data = {
 #             'email': "2695418206@qq.com",

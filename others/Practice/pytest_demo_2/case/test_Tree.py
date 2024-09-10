@@ -4,8 +4,8 @@ import time
 import allure
 import pytest
 
-from others.pytest_demo_2.data_driver.yaml_driver import load_yaml
-from others.pytest_demo_2.logic.shopingApi import ApiCase
+from others.Practice.pytest_demo_2.data_driver.yaml_driver import load_yaml
+from others.Practice.pytest_demo_2.logic.shopingApi import ApiCase
 
 
 @allure.epic("shopXo电商平台接口-接口测试")

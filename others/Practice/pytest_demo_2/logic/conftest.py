@@ -3,8 +3,8 @@ from random import random
 import allure
 import pytest
 
-from others.pytest_demo_2.api_keyword.api_key import ApiKey
-from others.pytest_demo_2.params.allParams import URL
+from others.Practice.pytest_demo_2.api_keyword.api_key import ApiKey
+from others.Practice.pytest_demo_2.params.allParams import URL
 
 
 def pytest_collection_modifyitems(items):

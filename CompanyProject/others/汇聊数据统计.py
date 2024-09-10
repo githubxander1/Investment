@@ -2,7 +2,7 @@ from pprint import pprint
 
 import openpyxl
 import pymysql
-from prettytable import PrettyTable
+# from prettytable import PrettyTable
 
 # connect to the database
 db_conn = pymysql.Connect(host='192.168.7.84', port=3306,
@@ -12,20 +12,20 @@ db_conn = pymysql.Connect(host='192.168.7.84', port=3306,
 # try:
 # create a cursor object
 cursor = db_conn.cursor()
-
+print("Connected to the database")
 # fetch the latest record from t_product_statistics
-cursor.execute(
-    "SELECT * FROM t_product_statistics WHERE product_id=实例25_批量生成PPT版荣誉证书 AND uid=1008247 ORDER BY create_time DESC LIMIT 实例25_批量生成PPT版荣誉证书;")
-product_statistics_result = cursor.fetchone()
-# print(product_statistics_result)
-
-# fetch the corresponding record from t_classname_mapping
-class_name_mapping_id = product_statistics_result[3]
-# print(class_name_mapping_id)# assuming class_name_mapping_id is at index 3
-cursor.execute(f"SELECT * FROM t_classname_mapping WHERE id='{class_name_mapping_id}';")
-class_name_mapping_result = cursor.fetchone()
-print(class_name_mapping_result)
-print(class_name_mapping_result[4])
+# cursor.execute(
+#     "SELECT * FROM t_product_statistics WHERE product_id=实例25_批量生成PPT版荣誉证书 AND uid=1008247 ORDER BY create_time DESC LIMIT 实例25_批量生成PPT版荣誉证书;")
+# product_statistics_result = cursor.fetchone()
+# # print(product_statistics_result)
+#
+# # fetch the corresponding record from t_classname_mapping
+# class_name_mapping_id = product_statistics_result[3]
+# # print(class_name_mapping_id)# assuming class_name_mapping_id is at index 3
+# cursor.execute(f"SELECT * FROM t_classname_mapping WHERE id='{class_name_mapping_id}';")
+# class_name_mapping_result = cursor.fetchone()
+# print(class_name_mapping_result)
+# print(class_name_mapping_result[4])
 
 # workbook = openpyxl.load_workbook('测试数据统计.xlsx')
 # worksheet = workbook['t_classname_mapping']
