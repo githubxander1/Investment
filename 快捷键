@@ -12,4 +12,6 @@ Ctrl + Shift + Alt + J 可以实现相同名称同时修改
 
 Shift+Alt+Ctrl 要选择多段文本
 
+代码格式化的快捷键是Ctrl + Alt + L
+
 edge驱动更新：https://developer.microsoft.com/zh-cn/microsoft-edge/tools/webdriver/
