@@ -39,7 +39,7 @@ def calculate_work_duration(start_time, end_time, date):
         duration -= (lunch_end - lunch_start)
 
     # 减去晚餐时间
-    if start < dinner_end and end > dinner_start:
+    if start < dinner_start and end > dinner_end:
         duration -= (dinner_end - dinner_start)
 
     # 如果跨天工作，还需要减去第二天的正常工作时间
@@ -86,15 +86,15 @@ for i in range(len(df)):
     meal_subsidy, traffic_subsidy = calculate_subsidy(work_duration)
 
     results.append({
-        '姓名': name,
-        '考勤组': df['考勤组'][i],
-        '部门': df['部门'][i],
-        '职位': df['职位'][i],
+        # '姓名': name,
+        # '考勤组': df['考勤组'][i],
+        # '部门': df['部门'][i],
+        # '职位': df['职位'][i],
         '日期': date,
-        '班次': df['班次'][i],
+        # '班次': df['班次'][i],
         '上班1打卡时间': df['上班1打卡时间'][i],
         '下班1打卡时间': df['下班1打卡时间'][i],
-        '下班1打卡结果': df['下班1打卡结果'][i],
+        # '下班1打卡结果': df['下班1打卡结果'][i],
         '工作时长': round(work_duration, 1),
         '加班时长': overtime_duration,
         '餐补次数': traffic_subsidy,
@@ -118,4 +118,4 @@ df_results = pd.DataFrame(results)
 
 # 输出表格
 print(df_results)
-df_results.to_excel('output111.xlsx', index=False)
+df_results.to_excel('考勤表_结果.xlsx', index=False)
