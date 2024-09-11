@@ -1,7 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html> <!--声明这是一个 HTML5 文档-->
+<html lang="cn">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8",name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta>标签对优化网站的SEO和用户体验非常有帮助,用于提供文档元数据。元数据并不显示在页面上，而是为浏览器或搜索引擎等提供有关页面内容和结构的信息,它告诉移动设备浏览器如何调整页面的大小和缩放-->
+
     <title>文件上传与管理</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
@@ -10,15 +12,18 @@
     <h1>上传文件</h1>
     <div class="upload-forms">
         <form id="file-form" class="upload-form">
+<!--            id="file-form"：给文件上传表单分配一个 ID，便于 JavaScript 操作。-->
+            <!--class="upload-form"：给表单分配一个类名，便于 CSS 样式控制-->
             <input type="file" name="file">
             <input type="submit" value="上传文件" class="upload-button">
         </form>
         <form id="text-form" class="upload-form">
             <textarea name="text" rows="4" cols="50" placeholder="输入文本内容"></textarea>
+<!--            给文本输入分配一个名称，便于后端接收数据-->
             <input type="submit" value="上传文本" class="upload-button">
         </form>
     </div>
-    <div id="upload-result" class="upload-result"></div>
+    <div id="upload-result" class="upload-result"></div><!--    分配一个 ID，便于 JavaScript 操作。-->
     <div class="files-list" id="files-list">
         <ul id="file-list">
         </ul>

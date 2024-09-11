@@ -66,7 +66,7 @@ def add_to_startup():
 
 # 主程序入口
 if __name__ == '__main__':
-    # add_to_startup()
+    add_to_startup()
     icon = create_icon()
     threading.Thread(target=run_icon, args=(icon,)).start()
     threading.Thread(target=run_timer, args=(icon,)).start()

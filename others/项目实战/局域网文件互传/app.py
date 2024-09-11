@@ -13,31 +13,33 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
 # 处理默认路由
-@app.route('/')
+@app.route('/')#定义默认路由。
 def index():
-    return render_template('index.html')
+    return render_template('index.html')#使用 render_template 渲染 index.html 页面
 
 # 处理上传文件
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
-    file = request.files.get('file')
+    file = request.files.get('file')#使用 request.files.get('file') 获取上传的文件。
     if file:
-        filename = secure_filename(file.filename)
+        filename = secure_filename(file.filename)#使用 secure_filename 确保文件名安全
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         return jsonify({'success': True, 'filename': filename})
     else:
         return jsonify({'success': False, 'message': 'No file part'})
 
+# 处理上传文本
 @app.route('/upload_text', methods=['POST'])
 def upload_text():
-    text = request.form.get('text')
+    text = request.form.get('text')#获取上传的文本
+    # text = request.form['text']#获取上传的文本
     if text:
-        filename = "uploaded_text_{}.txt".format(len(os.listdir(app.config['UPLOAD_FOLDER'])) + 1)
+        filename = "uploaded_text_{}.txt".format(len(os.listdir(app.config['UPLOAD_FOLDER'])) + 1)#使用当前上传文件夹中的文件数量生成唯一的文件名
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         with open(file_path, 'w') as f:
             f.write(text)
-        return jsonify({'success': True, 'filename': filename})
+        return jsonify({'success': True,'content': text})
     else:
         return jsonify({'success': False, 'message': 'No text provided'})
 
@@ -47,17 +49,22 @@ def get_files():
     files = []
     for filename in os.listdir(app.config['UPLOAD_FOLDER']):
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        files.append({
+        file_info = {  #将文件名、大小和上传时间添加到文件列表中
             'name': filename,
             'size': os.path.getsize(file_path),
+            'type': 'text/plain' if filename.endswith('.txt') else 'other',
             'upload_time': datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
-        })
+        }
+        if file_info['type'] == 'text/plain':
+            with open(file_path, 'r') as f:
+                file_info['content'] = f.read()
+        files.append(file_info)
     return jsonify(files)
 
 # 展示已上传文件
-@app.route('/uploads/<filename>')
+@app.route('/uploads/<filename>')#定义动态路由
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)#发送指定文件
 
 # 删除文件
 @app.route('/delete/<filename>', methods=['DELETE'])
@@ -73,6 +80,9 @@ def delete_file(filename):
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
+    #os.path.join(app.root_path, 'static'): 构建了静态文件目录的绝对路径。
+    # app.root_path指向Flask应用的根目录，与之拼接上'static'就得到了存放静态资源（如CSS、JavaScript、图片等）的目录。
+    # 'favicon.ico': 指定要发送的文件名，即favicon图标文件。
+    # mimetype='image/vnd.microsoft.icon': 设置响应的内容类型为ICO图像的MIME类型，确保浏览器能正确识别并处理这个响应。
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

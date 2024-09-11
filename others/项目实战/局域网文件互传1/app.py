@@ -37,7 +37,7 @@ def upload_text():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         with open(file_path, 'w') as f:
             f.write(text)
-        return jsonify({'success': True, 'filename': filename})
+        return jsonify({'success': True, 'filename': filename,'content': text})
     else:
         return jsonify({'success': False, 'message': 'No text provided'})
 
