@@ -72,6 +72,9 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.remove("show");
         setTimeout(() => {
+        toast.classList.add("show");
+        }, 50);
+        setTimeout(() => {
             toast.remove();
         }, 300); // 等待 fadeout 动画完成
     }, 3000); // 显示 3 秒
