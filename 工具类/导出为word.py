@@ -28,8 +28,8 @@ def write_to_word(doc, items):
             doc.add_paragraph(item[1])
 
 if __name__ == "__main__":
-    # directory = r'D:\1test\PycharmProject\others\项目实战\局域网文件互传'
-    directory = r'D:\1test\PycharmProject_gitee\others\项目实战\flashing_icon'
+    directory = r'D:\1test\PycharmProject\others\项目实战\局域网文件互传'
+    # directory = r'D:\1test\PycharmProject_gitee\others\项目实战\flashing_icon'
     items = read_files_in_dir(directory)
 
     doc = Document()  # 创建Word文档

@@ -11,7 +11,12 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 # 确保上传文件夹存在
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
-
+def human_readable_size(size):
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size < 1024:
+            return f"{size:.2f} {unit}"
+        size /= 1024
+    return f"{size:.2f} PB"
 # 处理默认路由
 @app.route('/')#定义默认路由。
 def index():
@@ -47,11 +52,12 @@ def upload_text():
 @app.route('/get_files')
 def get_files():
     files = []
-    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
+    for filename in sorted(os.listdir(app.config['UPLOAD_FOLDER']), reverse=True):#按文件名降序排序
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file_info = {  #将文件名、大小和上传时间添加到文件列表中
             'name': filename,
             'size': os.path.getsize(file_path),
+            # 'size': human_readable_size(os.path.getsize(file_path)),  # 显示更友好的文件大小
             'type': 'text/plain' if filename.endswith('.txt') else 'other',
             'upload_time': datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
         }
@@ -86,3 +92,6 @@ def favicon():
     # mimetype='image/vnd.microsoft.icon': 设置响应的内容类型为ICO图像的MIME类型，确保浏览器能正确识别并处理这个响应。
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+    # 辅助函数：将文件大小转换为更友好的格式

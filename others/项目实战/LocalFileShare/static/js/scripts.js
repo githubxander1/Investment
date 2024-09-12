@@ -45,6 +45,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+//function showToast(message) {
+//        toast = document.createElement("div");
+//        toast.className = "toast";
+//        toast.innerHTML = message;
+//        document.body.appendChild(toast);
+//        setTimeout(function(){
+//            toast.className = toast.className + " show";
+//        }, 50);
+//
+//        setTimeout(function(){
+//            toast.remove();
+//        }, 3000);
+//    }
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.bottom = "30px";
+    document.body.appendChild(toast);
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+            toast.remove();
+        }, 300); // 等待 fadeout 动画完成
+    }, 3000); // 显示 3 秒
+}
+
+function formatSize(size) {
+    if (size < 1024) return size + ' bytes';
+    else if (size < 1024 * 1024) return (size / 1024).toFixed(2) + ' KB';
+    else if (size < 1024 * 1024 * 1024) return (size / 1024 / 1024).toFixed(2) + ' MB';
+    else return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+}
+
+
 //更新文件列表
 function updateFileList() {
     fetch('/get_files')
@@ -63,25 +103,35 @@ function updateFileList() {
                 link.textContent = file.name;//设置链接的文本内容
 
                 const sizeText = document.createElement('span');//创建大小文本
-                sizeText.textContent = ` - 大小: ${file.size} bytes`;
+                sizeText.textContent = ` - 大小: ${formatSize(file.size)} `;
+//                sizeText.textContent = ` - 大小: ${file.size}`;
 
                 const timeText = document.createElement('span');//创建上传时间文本。
-                timeText.textContent = ` - 上传时间: ${file.upload_time}`;
+                timeText.textContent = ` - 时间: ${file.upload_time}`;
 
                 const deleteButton = document.createElement('button');//创建删除按钮
-                deleteButton.textContent = '删除';
+//                deleteButton.textContent = '删除';
+                deleteButton.className = 'icon-button';
+                deleteButton.innerHTML = '<i class="fas fa-trash"></i>'; // Font Awesome 删除图标
+                deleteButton.title = '删除'; // 鼠标悬浮提示
                 deleteButton.onclick = function() { deleteFile(file.name); };//绑定删除按钮的点击事件
 
+                //复制按钮
                 const copyButton = document.createElement('button');
-                copyButton.textContent = '复制';
+//                copyButton.textContent = '复制';
+                copyButton.className = 'icon-button';
+                copyButton.innerHTML = '<i class="fas fa-copy"></i>'; // Font Awesome 复制图标
+                copyButton.title = '复制'; // 鼠标悬浮提示
                 copyButton.onclick = function() {
                     navigator.clipboard.writeText(file.content)//复制文件内容到剪贴板
                            .then(() => { //成功复制后弹出提示框显示“已复制文本内容”。
-                               alert('已复制文本内容');
+//                               alert('已复制文本内容');
+                               showToast('已复制文本内容');
                            })
                            .catch(error => { //如果复制失败，则显示“复制失败，请重试”
                                console.error('复制失败:', error);
-                               alert('复制失败，请重试');
+//                               alert('复制失败，请重试');
+                               showToast('复制失败，请重试');
                            });
                };
 
@@ -113,6 +163,8 @@ function updateFileList() {
                 noFiles.style.display = 'block';
             }//如果没有文件，则显示提示信息
         });
+
+
 }
 
 function deleteFile(filename) {
@@ -120,12 +172,19 @@ function deleteFile(filename) {
         fetch(`/delete/${encodeURIComponent(filename)}`, { method: 'DELETE' })//发起 DELETE 请求，删除指定文件
         .then(response => {
             if (response.ok) {
-                alert('删除成功');
+//                alert('删除成功');
+                showToast('删除成功');
                 updateFileList();
             } else {
-                alert('删除失败');
+//                alert('删除失败');
+                showToast('删除失败');
             }
         })
         .catch(error => console.error('Error:', error));//处理错误
     }
 }
+
+
+
+updateFileList(); // Initial load of files
+    setInterval(updateFileList, 2000); // Update file list every 2 seconds
