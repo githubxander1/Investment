@@ -1,0 +1,8 @@
+
+
+
+npm下载慢：
+/blog.csdn.net/qq_44741577/article/details/136813007
+
+打印日志：
+cnpm run serve >> output.log 2>&1

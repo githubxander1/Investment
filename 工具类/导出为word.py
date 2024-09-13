@@ -1,5 +1,5 @@
 import os
-from docx import Document  # 正确的导入方式
+from docx import Document
 
 def read_files_in_dir(directory):
     """ 递归读取目录下所有文件的内容 """
@@ -14,6 +14,8 @@ def read_files_in_dir(directory):
             try:
                 with open(filepath, 'r', encoding='utf-8') as file:
                     content = file.read()
+                    # 过滤掉非法字符
+                    content = ''.join([c for c in content if 0x20 <= ord(c) <= 0xFF or ord(c) in (9, 10, 13)])
                     result.append((f"{sub_indent}{'-' * (level+1)} {f}:", content))
             except Exception as e:
                 result.append((f"{sub_indent}{'-' * (level+1)} {f}: [无法读取文件]", ""))
@@ -28,8 +30,7 @@ def write_to_word(doc, items):
             doc.add_paragraph(item[1])
 
 if __name__ == "__main__":
-    directory = r'D:\1test\PycharmProject\others\项目实战\局域网文件互传'
-    # directory = r'D:\1test\PycharmProject_gitee\others\项目实战\flashing_icon'
+    directory = r'D:\1test\PycharmProject_gitee\others\项目实战\schedule'
     items = read_files_in_dir(directory)
 
     doc = Document()  # 创建Word文档

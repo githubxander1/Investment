@@ -55,7 +55,7 @@ class CalendarApp(App):
             days_offset = 7
 
         # 添加空白格子直到第一个星期一
-        for _ in range(days_offset):
+        for _ in range(days_offset - 1):
             self.main_screen.ids.calendar_grid.add_widget(Button(
                 text='',
                 background_color=(0.8, 0.8, 0.8, 1),
@@ -133,34 +133,29 @@ class EditScreen(Screen):
         self.ids.event_description.text = description
 
     def save_event(self):
-        # 假设这里有一个函数将事件保存到数据库或其他地方
-        # 这里只是一个简单的例子
         title = self.ids.event_title.text
         description = self.ids.event_description.text
-        if title and description:
-            # 更新主界面显示的新事件
+        if title or description:
             main_screen = self.manager.get_screen('main')
             events_list = main_screen.events_dict.setdefault(main_screen.current_date, [])
-            if self.current_title:
-                # 查找并更新现有的事件
-                for i, event in enumerate(events_list):
-                    if event['title'] == self.current_title:
-                        events_list[i] = {'title': title, 'description': description}
-                        break
-            else:
-                # 添加新的事件
+            event_updated = False
+            for i, event in enumerate(events_list):
+                if event['title'] == self.current_title:
+                    events_list[i] = {'title': title, 'description': description}
+                    event_updated = True
+                    break
+            if not event_updated:
                 events_list.append({'title': title, 'description': description})
             main_screen.update_events(datetime.strptime(main_screen.current_date, '%Y-%m-%d'))
             self.manager.current = 'main'
 
     def delete_event(self):
-        # 删除当前日程
         main_screen = self.manager.get_screen('main')
         events_list = main_screen.events_dict.get(main_screen.current_date, [])
         if self.current_title:
             events_list[:] = [event for event in events_list if event['title'] != self.current_title]
             main_screen.update_events(datetime.strptime(main_screen.current_date, '%Y-%m-%d'))
-            self.manager.current = 'main'
+        self.manager.current = 'main'
 
 
 class StatScreen(Screen):
