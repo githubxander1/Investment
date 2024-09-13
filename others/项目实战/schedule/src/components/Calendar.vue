@@ -11,7 +11,7 @@
     </div>
     <!-- 显示周数 -->
     <div class="weeks">
-      <div v-for="week in weeks" :key="week">
+      <div v-for="week in computedWeeks" :key="week">
         {{ week }}
       </div>
     </div>
@@ -29,16 +29,14 @@
     <button @click="goToAddSchedule">Add Schedule</button>
 
     <!-- 为日程添加分类和优先级字段，并在日程列表中展示这些信息。 -->
-    <div class="schedule-details" v-if="selectedDate">
+    <div class="schedule-details" v-show="selectedDate">
       <h3>Schedule for {{ selectedDate.toLocaleDateString() }}</h3>
       <ul>
         <li v-for="schedule in selectedSchedules" :key="schedule.id">
           {{ schedule.title }} - {{ schedule.category }} - {{ schedule.priority }}
         </li>
       </ul>
-    </div>
-    <!-- 编辑已有日程的功能 -->
-    <div class="schedule-details" v-if="selectedDate">
+      <!-- 编辑已有日程的功能 -->
       <ul>
         <li v-for="schedule in selectedSchedules" :key="schedule.id">
           {{ schedule.title }} - {{ schedule.date }}
@@ -52,7 +50,6 @@
 <script>
 import { mapState } from 'vuex';
 
-
 export default {
   data() {
     return {
@@ -63,10 +60,6 @@ export default {
   },
   computed: {
     ...mapState(['schedules']), // 从 Vuex store 获取 schedules 数据
-    // selectedSchedules() {
-      // return this.schedules.filter(schedule =>
-       //  schedule.date.toDateString() === this.selectedDate.toDateString()
-      ); // 根据日期过滤出当前选中日期的日程
     currentYear() { // 计算当前年份
       return this.currentDate.getFullYear();
     },
@@ -88,15 +81,21 @@ export default {
       }
       return dates;
     },
-    computedWeeks() { // 计算周数  // 修改属性名以避免冲突
+    computedWeeks() { // 计算周数
       const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1).getDay();
       const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0).getDate();
       const weeks = Math.ceil((lastDay + firstDay - 1) / 7);
       const weekArray = Array.from({ length: weeks }, (_, index) => `Week ${index + 1}`);
       return weekArray;
+    },
+    selectedSchedules() {
+      if (!this.selectedDate) return [];
+      return this.schedules.filter(schedule =>
+        schedule.date.toDateString() === this.selectedDate.toDateString()
+      );
     }
   },
-  methods: { //方法逻辑
+  methods: {
     prevMonth() { // 切换到上一个月
       this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
     },
@@ -113,17 +112,17 @@ export default {
       return this.schedules.some(schedule => schedule.date.toDateString() === date.date.toDateString());
     },
     selectDate(date) { // 处理日期选择逻辑，例如跳转到日程详情页面
-      this.selectedDate = date.date;// 可以在这里添加具体的逻辑
+      this.selectedDate = date.date;
     },
     goToAddSchedule() { // 跳转到添加日程页面
       this.$router.push('/add-schedule');
     },
-    switchToYearView() { //从当前视图（假设是月视图）切换到年视图的逻辑
+    switchToYearView() { // 从当前视图（假设是月视图）切换到年视图的逻辑
       const newDate = new Date(this.currentDate.getFullYear(), 0, 1); // 设置为当前年份的第一天
       this.currentDate = newDate;
       this.$router.push({ name: 'yearView', params: { year: newDate.getFullYear() } });
     },
-    editSchedule(schedule) {
+    editSchedule(schedule) { // 编辑日程
       this.$router.push({ name: 'edit', params: { scheduleId: schedule.id } });
     }
   }
@@ -131,10 +130,10 @@ export default {
 </script>
 
 <style>
-.calendar .today { // 今天的日期背景颜色
+.calendar .today { /* 今天的日期背景颜色 */
   background-color: yellow;
 }
-.calendar .hasSchedule { // 有日程安排的日期字体颜色
+.calendar .hasSchedule { /* 有日程安排的日期字体颜色 */
   color: red;
 }
 </style>

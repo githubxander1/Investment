@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapState } = require('vuex');
+import { mapState } from 'vuex'; // 使用 import 语法
 
 export default {
   data() {
