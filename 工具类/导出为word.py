@@ -47,10 +47,12 @@ def write_to_word(doc, items):
             doc.add_paragraph(item[1])
 
 if __name__ == "__main__":
-    directory = r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule'
-    exclude_list = [
-        r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule\node_modules'
-    ]
+    # directory = r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule'
+    directory = r'D:\1document\1test\PycharmProject_gitee\others\Projects\rili'
+    exclude_list = None
+    # [
+    #     r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule\node_modules'
+    # ]
 
     # 读取文件夹中的所有文件，并排除指定的文件夹及其子文件夹中的所有文件
     items = read_files_in_dir(directory, exclude_list)

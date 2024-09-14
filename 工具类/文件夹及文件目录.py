@@ -36,9 +36,10 @@ def should_exclude(path, exclude_list):
 # 使用示例
 if __name__ == "__main__":
     # 指定要列出的目录路径
-    directory_path = r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule'
-    exclude_list = [
-        r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule\node_modules'
-    ]
+    directory_path = r'D:\1document\1test\PycharmProject_gitee\others\Projects\rili'
+    # directory_path = r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule'
+    # exclude_list = [
+    #     r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule\node_modules'
+    # ]
 
-    list_files(directory_path, exclude_list)
+    list_files(directory_path)

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+    <h1>搜索</h1>
+    <form method="post" action="/search">
+        <div class="form-group">
+            <label for="keyword">关键词</label>
+            <input type="text" class="form-control" id="keyword" name="keyword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">搜索</button>
+    </form>
+    <h2>搜索结果</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>日期</th>
+                <th>时间</th>
+                <th>内容</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+            <tr>
+                <td>{{ schedule.title }}</td>
+                <td>{{ schedule.date }}</td>
+                <td>{{ schedule.time }}</td>
+                <td>{{ schedule.content }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
