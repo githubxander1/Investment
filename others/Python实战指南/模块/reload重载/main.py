@@ -1,4 +1,4 @@
-from others.项目实战 import flashing_icon
+from others.Projects import flashing_icon
 
 while True:
     c= input('请输入1：')

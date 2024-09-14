@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule App</title>
+  <link rel="stylesheet" href="/src/assets/styles.css">
+</head>
+<body>
+  <div id="app">日历</div>
+<!--  addSchedule-->
+  <div class="add-schedule">
+    <h3>Add Schedule</h3>
+    <form @submit.prevent="saveSchedule">
+      <input v-model="schedule.title" placeholder="Title" required>
+      <textarea v-model="schedule.content" placeholder="Content"></textarea>
+      <select v-model="schedule.time">
+        <!-- 时间选项 -->
+      </select>
+      <button type="submit">Save</button>
+      <button type="button" @click="deleteSchedule" v-if="schedule.id">Delete</button>
+    </form>
+  </div>
+
+<!--  calendar-->
+  <div class="calendar">
+    <!-- 日历头部 -->
+    <div class="header">
+      <!-- 上一个月按钮 -->
+      <button @click="prevMonth">Prev</button>
+      <!-- 当前显示的月份和年份 -->
+      <span>{{ currentMonth }} {{ currentYear }}</span>
+      <!-- 下一个月按钮 -->
+      <button @click="nextMonth">Next</button>
+    </div>
+    <!-- 显示周数 -->
+    <div class="weeks">
+      <div v-for="week in computedWeeks" :key="week">
+        {{ week }}
+      </div>
+    </div>
+    <!-- 显示一周中的每一天 -->
+    <div class="days">
+      <div v-for="day in daysOfWeek" :key="day">{{ day }}</div>
+    </div>
+    <!-- 显示具体日期 -->
+    <div class="dates">
+      <div v-for="date in dates" :key="date.date" :class="{ today: isToday(date), hasSchedule: hasSchedule(date) }" @click="selectDate(date)">
+        {{ date.day }}
+      </div>
+    </div>
+    <!-- 添加日程按钮 -->
+    <button @click="goToAddSchedule">Add Schedule</button>
+
+    <!-- 为日程添加分类和优先级字段，并在日程列表中展示这些信息。 -->
+    <div class="schedule-details" v-show="selectedDate">
+      <h3>Schedule for {{ selectedDate.toLocaleDateString() }}</h3>
+      <ul>
+        <li v-for="schedule in selectedSchedules" :key="schedule.id">
+          {{ schedule.title }} - {{ schedule.category }} - {{ schedule.priority }}
+        </li>
+      </ul>
+      <!-- 编辑已有日程的功能 -->
+      <ul>
+        <li v-for="schedule in selectedSchedules" :key="schedule.id">
+          {{ schedule.title }} - {{ schedule.date }}
+          <button @click="editSchedule(schedule)">Edit</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+<!--  search-->
+  <div class="search">
+    <input v-model="searchQuery" placeholder="Search schedules...">
+    <ul>
+      <li v-for="schedule in filteredSchedules" :key="schedule.id">
+        {{ schedule.title }} - {{ schedule.date }}
+      </li>
+    </ul>
+  </div>
+
+<!--  tabbar-->
+  <div class="tab-bar">
+    <button @click="selectTab('calendar')">日历</button>
+    <button @click="selectTab('statistics')">统计</button>
+    <button @click="selectTab('search')">搜索</button>
+  </div>
+
+<!--  yearview-->
+  <div class="year-view">
+    <div class="header">
+      <button @click="prevYear">Prev Year</button>
+      <span>{{ currentYear }}</span>
+      <button @click="nextYear">Next Year</button>
+    </div>
+    <div class="months">
+      <div v-for="month in months" :key="month" @click="goToMonth(month)">
+        {{ month }}
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

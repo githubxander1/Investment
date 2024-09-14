@@ -2,6 +2,8 @@
   <div class="calendar">
     <!-- 日历头部 -->
     <div class="header">
+      <!-- 年视图按钮 -->
+      <button @click="switchToYearView">Year View</button>
       <!-- 上一个月按钮 -->
       <button @click="prevMonth">Prev</button>
       <!-- 当前显示的月份和年份 -->

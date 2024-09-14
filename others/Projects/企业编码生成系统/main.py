@@ -4,8 +4,8 @@ import random
 
 from time import sleep
 
-from others.项目实战.企业编码生成系统 import qrcode
-from others.项目实战.企业编码生成系统.pollcode import inputbox, wfile, openfile
+from others.Projects.企业编码生成系统 import qrcode
+from others.Projects.企业编码生成系统.pollcode import inputbox, wfile, openfile
 
 root=tkinter.Tk()
 

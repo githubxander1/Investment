@@ -20,7 +20,7 @@ def human_readable_size(size):
 # 处理默认路由
 @app.route('/')#定义默认路由。
 def index():
-    return render_template('index.html')#使用 render_template 渲染 index.html 页面
+    return render_template('index1.html')#使用 render_template 渲染 index.html 页面
 
 # 处理上传文件
 @app.route('/upload_file', methods=['POST'])

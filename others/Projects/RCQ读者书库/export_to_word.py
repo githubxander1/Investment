@@ -27,7 +27,7 @@ def export_to_word(folder_path, output_doc_path):
 
 
 # 指定文件夹路径和输出Word文档的路径
-folder_path = r'/others/项目实战/status_bar_notification'  # 替换为你的文件夹路径
+folder_path = r'/others/Projects/status_bar_notification'  # 替换为你的文件夹路径
 output_doc_path = 'test1/output.docx'  # 你希望保存的Word文档路径
 
 # 调用函数

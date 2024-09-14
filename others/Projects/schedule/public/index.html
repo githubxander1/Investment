@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule App</title>
+  <link rel="stylesheet" href="/src/assets/styles.css">
+</head>
+<body>
+  <div id="app">日历</div>
+
+<!--  <div class="calendar">-->
+<!--    &lt;!&ndash; 日历头部 &ndash;&gt;-->
+<!--    <div class="header">-->
+<!--      &lt;!&ndash; 上一个月按钮 &ndash;&gt;-->
+<!--      <button @click="prevMonth">Prev</button>-->
+<!--      &lt;!&ndash; 当前显示的月份和年份 &ndash;&gt;-->
+<!--      <span>{{ currentMonth }} {{ currentYear }}</span>-->
+<!--      &lt;!&ndash; 下一个月按钮 &ndash;&gt;-->
+<!--      <button @click="nextMonth">Next</button>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; 显示周数 &ndash;&gt;-->
+<!--    <div class="weeks">-->
+<!--      <div v-for="week in computedWeeks" :key="week">-->
+<!--        {{ week }}-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; 显示一周中的每一天 &ndash;&gt;-->
+<!--    <div class="days">-->
+<!--      <div v-for="day in daysOfWeek" :key="day">{{ day }}</div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; 显示具体日期 &ndash;&gt;-->
+<!--    <div class="dates">-->
+<!--      <div v-for="date in dates" :key="date.date" :class="{ today: isToday(date), hasSchedule: hasSchedule(date) }" @click="selectDate(date)">-->
+<!--        {{ date.day }}-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; 添加日程按钮 &ndash;&gt;-->
+<!--    <button @click="goToAddSchedule">Add Schedule</button>-->
+
+<!--    &lt;!&ndash; 为日程添加分类和优先级字段，并在日程列表中展示这些信息。 &ndash;&gt;-->
+<!--    <div class="schedule-details" v-show="selectedDate">-->
+<!--      <h3>Schedule for {{ selectedDate.toLocaleDateString() }}</h3>-->
+<!--      <ul>-->
+<!--        <li v-for="schedule in selectedSchedules" :key="schedule.id">-->
+<!--          {{ schedule.title }} - {{ schedule.category }} - {{ schedule.priority }}-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--      &lt;!&ndash; 编辑已有日程的功能 &ndash;&gt;-->
+<!--      <ul>-->
+<!--        <li v-for="schedule in selectedSchedules" :key="schedule.id">-->
+<!--          {{ schedule.title }} - {{ schedule.date }}-->
+<!--          <button @click="editSchedule(schedule)">Edit</button>-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </div>-->
+<!--  </div>-->
+
+
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

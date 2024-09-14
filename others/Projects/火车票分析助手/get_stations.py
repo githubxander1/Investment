@@ -6,7 +6,7 @@ import sys
 import requests
 from PyQt5.QtWidgets import QApplication
 
-from others.项目实战.火车票分析助手.window import MainWindow
+from others.Projects.火车票分析助手.window import MainWindow
 
 
 def write(stations,filename):

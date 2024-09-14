@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app">根app
     <TabBar />
     <router-view />
   </div>

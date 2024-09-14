@@ -1,0 +1,54 @@
+
+public 目录：这个目录通常用于存放不需要通过 Webpack 处理的静态资源，如 HTML 模板、CSS 样式表、JavaScript 文件和图片等。这些文件会被 Vite 或 Webpack 等构建工具直接复制到构建输出目录中，不会被进一步处理。
+src 目录：这个目录包含 Vue 应用的源代码，如 Vue 组件、路由配置、状态管理、工具函数等。这些文件在开发过程中被编辑，但在构建后不会被包含在静态文件中，而是会被编译成 JavaScript 代码。
+
+npm下载慢：
+/blog.csdn.net/qq_44741577/article/details/136813007
+
+// 查看当前下载地址
+npm config get registry
+// 设置淘宝镜像的地址
+npm config set registry https://registry.npmmirror.com/
+// 查看当前的下载地址
+npm config get registry
+
+
+打印日志：
+cnpm run serve >> output.log 2>&1
+
+
+Vue CLI 是一个全局命令行工具，用于创建和管理 Vue 项目，而 Vite 是一个现代前端构建工具，用于开发和构建前端应用。
+
+安装 Vite：
+
+bash
+npm install vite --save-dev
+安装 Vite Vue 插件：
+
+bash
+npm install @vitejs/plugin-vue --save-dev
+
+在命令行中，你可以使用 npm list 命令来查看项目中安装的包。例如：
+
+bash
+npm list vite
+npm list @vitejs/plugin-vue
+
+如果你的项目使用 Vue，确保还安装了 Vite 的 Vue 插件：
+npm install @vitejs/plugin-vue --save-dev
+
+使用Vue CLI 3.x与Vue CLI 4.x的区别：Vue CLI 4.x 使用不同的本地服务命令。如果你的项目是基于Vue CLI 4.x创建的，尝试使用以下命令启动开发服务器：
+
+bash
+npm run dev
+或者，如果你的项目配置了Vite作为构建工具，使用：
+
+bash
+npm run vite
+
+错误信息提示 'vue-cli-service' 不是内部或外部命令，也不是可运行的程序或批处理文件。 这意味着 vue-cli-service 命令在你的项目环境中不可用。这通常发生在以下几种情况：
+
+Vue CLI未安装：确保你已经全局安装了Vue CLI。你可以通过运行以下命令来安装Vue CLI：
+
+bash
+npm install -g @vue/cli
