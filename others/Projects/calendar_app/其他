@@ -2,4 +2,7 @@ https://www.douban.com/group/topic/305909975/?_i=6145609vvhKz9T,6152990vvhKz9T
 https://httishere.github.io/widverse-site/#/libs
 https://www.douban.com/group/topic/216260977/?_i=6153073vvhKz9T
 
+在首页要展示日历表格，默认选中当天，如果当天有日程，点击某日进入edit页面
+要实现在主页点击某日期，点击添加日程，进入编辑页，保存后重进，以及在统计页的按标签或者按日期统计方式下（如果某日期或标签统计到多个，则再进行细分，进入分页后，点击已保存的日程），还是进入编辑页，
+
 统计：标签

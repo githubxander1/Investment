@@ -1,9 +1,15 @@
-#:kivy 2.1.0
+#:kivy 2.3.0
 
 <MainScreen>:
     current_date: ''
     events_dict: {}
     current_events: []
+    FloatLayout:
+        Button:
+            text: 'Statistics'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.05}
+            on_release: app.show_statistics()
+
     BoxLayout:
         orientation: 'vertical'
         ScrollView:
@@ -33,11 +39,19 @@
                 on_release: root.add_event()
                 size_hint_y: None
                 height: dp(40)
+            Button:
+                text: 'Statistics'
+                on_release: app.show_statistics()
+                size_hint_y: None
+                height: dp(40)
 
 <EditScreen>:
     current_date: ''
     current_title: ''
     current_description: ''
+    current_tag: ''
+    current_events: []
+
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
@@ -59,6 +73,10 @@
             id: event_description
             hint_text: 'Event Description'
             multiline: True
+        TextInput:
+            id: event_tag
+            hint_text: 'Event Tag'
+            multiline: False
         BoxLayout:
             size_hint_y: None
             height: dp(48)
@@ -72,7 +90,58 @@
                 on_release: root.delete_event()
                 size_hint_x: None
                 width: dp(100)
+        GridLayout:
+            id: events_layout
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+            padding: dp(10)
+            spacing: dp(5)
 
 <StatScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(10)
+        spacing: dp(10)
+        Label:
+            text: 'Statistics'
+            font_size: '24sp'
+            size_hint_y: None
+            height: self.texture_size[1]
+        ScrollView:
+            GridLayout:
+                id: stats_layout
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(10)
+                padding: dp(10)
+        Button:
+            text: 'Back'
+            size_hint_y: None
+            height: dp(50)
+            on_release: app.sm.current = 'main'
     Label:
+        id: stat_label
         text: 'Statistics Screen'
+        size_hint_y: None
+        height: dp(40)
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: dp(40)
+        Button:
+            text: 'Show by Date'
+            on_release: root.show_by_date()
+            size_hint_x: None
+            width: dp(100)
+        Button:
+            text: 'Show by Tag'
+            on_release: root.show_by_tag()
+            size_hint_x: None
+            width: dp(100)
+    Label:
+        id: result_label
+        text: ''
+        size_hint_y: None
+        height: dp(40)

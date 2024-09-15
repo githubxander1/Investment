@@ -1,0 +1,41 @@
+# kv/mainscreen.kv
+<MainScreen>:
+    BoxLayout:
+        id: calendar_grid
+        orientation: 'vertical'
+        GridLayout:
+            id: grid
+            cols: 7
+            size_hint_y: None
+            height: self.minimum_height
+            Button:
+                text: ''
+                background_normal: ''
+                background_down: ''
+                size_hint: (None, None)
+                size: dp(50), dp(50)
+                color: (1, 1, 1, 1)
+
+# kv/editscreen.kv
+<EditScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            id: date_input
+            hint_text: 'Date'
+        TextInput:
+            id: event_input
+            hint_text: 'Event'
+        TextInput:
+            id: location_input
+            hint_text: 'Location'
+        TextInput:
+            id: notes_input
+            hint_text: 'Notes'
+
+# kv/statscreen.kv
+<StatScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Statistics'

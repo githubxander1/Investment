@@ -1,0 +1,132 @@
+#:kivy 2.1.0
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            id: date_label
+            text: root.current_date
+            font_size: sp(20)
+            color: 0, 0, 0, 1  # 黑色字体
+        GridLayout:
+            id: calendar_grid
+            cols: 7
+            rows: 6
+            spacing: dp(5)
+            padding: dp(5)
+            Button:
+                text: '按钮1'
+                background_color: 1, 1, 1, 1  # 白色背景
+                color: 0, 0, 0, 1  # 黑色字体
+            Button:
+                text: '按钮2'
+                background_color: 1, 1, 1, 1  # 白色背景
+                color: 0, 0, 0, 1  # 黑色字体
+            Button:
+                text: '按钮3'
+                background_color: 1, 1, 1, 1  # 白色背景
+                color: 0, 0, 0, 1  # 黑色字体
+            # 添加更多的按钮以填充整个网格
+            # 可以根据需要动态生成这些按钮
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Button:
+                text: 'Add Event'
+                on_press: root.add_event()
+            Button:
+                text: 'Statistics'
+                on_press: root.show_statistics()
+            Button:
+                text: 'Search'
+                on_press: app.root.current = 'search'
+
+<MonthView>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Month View'
+        GridLayout:
+            cols: 7
+            id: calendar_grid
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Button:
+                text: 'Back'
+                on_press: app.root.current = 'main'
+
+<YearView>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Year View'
+        GridLayout:
+            cols: 7
+            id: calendar_grid
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Button:
+                text: 'Back'
+                on_press: app.root.current = 'main'
+
+<EditScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Button:
+                text: 'Back'
+                on_press: app.root.current = 'main'
+        TextInput:
+            id: date_input
+            hint_text: 'Date'
+        TextInput:
+            id: title_input
+            hint_text: 'Title'
+        TextInput:
+            id: content_input
+            hint_text: 'Content'
+            multiline: True
+        TextInput:
+            id: tags_input
+            hint_text: 'Tags'
+        BoxLayout:
+            Button:
+                text: 'Save Event'
+                on_release: root.save_event()
+            Button:
+                text: 'Update Event'
+                on_release: root.update_event()
+            Button:
+                text: 'Delete Event'
+                on_release: root.delete_event()
+        ScrollView:
+            id: scroll_view
+            do_scroll_x: False
+            do_scroll_y: True
+            GridLayout:
+                id: events_layout
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(5)
+                padding: dp(5)
+
+<DayView>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Button:
+                text: 'Back'
+                on_press: app.root.current = 'main'
+        Label:
+            text: 'Selected Date: ' + root.selected_date
+        ScrollView:
+            GridLayout:
+                cols: 1
+                id: events
