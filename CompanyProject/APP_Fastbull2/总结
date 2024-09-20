@@ -1,0 +1,6 @@
+adb错误“‘adb‘ 不是内部或外部命令，也不是可运行的程序或批处理文件
+
+如用CMD启动安卓指令，出现c:\users\administrator>，
+在运行指令的文件夹中粘贴
+adb.exe、AdbWinApi.dll、AdbWinUsbApi.dll三个文件，
+复制到C:\users\administrator文件夹中即可解决此问题

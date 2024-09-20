@@ -76,8 +76,8 @@ class Base1:
 
 
 
-# base=Base1()
-# base.login_phone()
-# # screenshot_path = "./screenshot1.png"  # 截图保存的路径
-# # d.screenshot(screenshot_path)# base.login_phone()
-# base.startApp()
+base=Base1()
+base.login_phone()
+# screenshot_path = "./screenshot1.png"  # 截图保存的路径
+# d.screenshot(screenshot_path)# base.login_phone()
+base.startApp()

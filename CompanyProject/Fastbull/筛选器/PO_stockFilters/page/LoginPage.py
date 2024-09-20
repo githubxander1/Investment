@@ -1,4 +1,4 @@
-# LoginPage.py
+# login_page.py
 from playwright.sync_api import Page, TimeoutError
 from CompanyProject.Fastbull.筛选器.PO_stockFilters.page.BasePage import BasePage
 from CompanyProject.Fastbull.筛选器.PO_stockFilters.config import LOGIN_URL
