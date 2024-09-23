@@ -31,11 +31,18 @@ class RegisterPhoneSection(BasePage):
     def enter_password(self, password):
         self.password_input.set_text(password)
 
-    def register(self):
+    def click_register(self):
         self.register_button.click()
 
     def enter_verification_code(self, code):
         self.verification_code_input.set_text(code)
 
-    def verify(self):
+    def click_verify(self):
         self.verify_button.click()
+
+    @property
+    def register_by_phone_and_email(self):
+        return self.d.xpath('//*[@resource-id="com.bv.fastbull:id/ll_btn"]/android.widget.RelativeLayout[1]')
+
+    def click_register_by_phone_and_email(self):
+        self.register_by_phone_and_email.click()

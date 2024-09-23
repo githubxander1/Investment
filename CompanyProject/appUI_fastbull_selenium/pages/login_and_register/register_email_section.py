@@ -15,7 +15,9 @@ class RegisterEmailSection(BasePage):
 
     @property
     def register_button(self):
-        return self.d(resourceId="com.bv.fastbull:id/tv_register")
+        # return self.d(resourceId="com.bv.fastbull:id/tv_register")
+        return self.d(resourceId="com.bv.fastbull:id/tv_login")
+
 
     @property
     def verification_code_input(self):
@@ -31,11 +33,18 @@ class RegisterEmailSection(BasePage):
     def enter_password(self, password):
         self.password_input.set_text(password)
 
-    def register(self):
+    def click_register_button(self):
         self.register_button.click()
 
     def enter_verification_code(self, code):
         self.verification_code_input.set_text(code)
 
-    def verify(self):
+    def click_verify(self):
         self.verify_button.click()
+
+    @property
+    def by_email_register(self):
+        return self.d(text="邮箱")
+
+    def click_by_email_register(self):
+        self.by_email_register.click()

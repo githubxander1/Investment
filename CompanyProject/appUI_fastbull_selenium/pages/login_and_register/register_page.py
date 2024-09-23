@@ -1,6 +1,6 @@
 from CompanyProject.appUI_fastbull_selenium.pages.base_page import BasePage
 
-class LoginPage(BasePage):
+class RegisterPage(BasePage):
     def __init__(self, device_name='127.0.0.1:21503'):
         super().__init__(device_name)
         self.d = self.d  # 确保d对象在类内部可用
@@ -91,6 +91,13 @@ class LoginPage(BasePage):
         self.click_account_security()
         self.click_logout_button()
         self.confirm_logout_button.click()
+
+    @property
+    def register_by_phone_and_email(self):
+        return self.d.xpath('//*[@resource-id="com.bv.fastbull:id/ll_btn"]/android.widget.RelativeLayout[1]')
+
+    def click_register_by_phone_and_email(self):
+        self.register_by_phone_and_email.click()
 
 # if __name__ == '__main__':
 #     login_page = LoginPage()

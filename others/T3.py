@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from datetime import datetime
 import json
-import tkinter.font as tkfont  # 导入 tkinter.font
 
 # 存储历史记录
 history_data = []
@@ -15,8 +14,12 @@ def load_history_data():
             if not content:  # 如果文件为空
                 return []
             loaded_data = json.loads(content)
-            # 直接返回加载的数据，不在此处转换为 BooleanVar
-            return loaded_data
+            # 将布尔值转换为 BooleanVar 对象
+            history_data = [(time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference,
+                            tk.BooleanVar(value=value), note) for
+                           time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, value, note
+                           in loaded_data]
+            return history_data
     except FileNotFoundError:
         # 如果文件不存在，则创建一个空的 JSON 文件
         with open('history1.json', 'w', encoding='utf-8') as f:
@@ -30,12 +33,11 @@ def load_history_data():
         messagebox.showerror("错误", f"加载历史记录失败: {e}")
         return []
 
+
 def save_data(data):
     """保存历史数据"""
     with open('history1.json', 'w') as file:
-        # 将 BooleanVar 转换回布尔值
-        serialized_data = [(time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, var.get(), note, shares) for time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, var, note, shares in data]
-        json.dump(serialized_data, file, indent=4)
+        json.dump(data, file, indent=4)
 
 def calculate_profit_loss():
     try:
@@ -52,14 +54,14 @@ def calculate_profit_loss():
             price_difference = round(sell_price - base_price, 3)
 
             label_result.config(text=f"模式：正T\n卖出价：{sell_price:.2f}\n差价：{price_difference:.3f}")
-            history_data.append((datetime.now().strftime("%H:%M:%S"), len(history_data) + 1, stock_name, mode, base_price, sell_price, price_difference, False, "", shares))
+            history_data.append((datetime.now().strftime("%H:%M:%S"), len(history_data) + 1, stock_name, mode, base_price, sell_price, price_difference, shares, False, ""))
             update_history_table()
         elif mode == '倒T':
             buy_price = base_price * (1 - price_change_percentage / 100)
             price_difference = round(base_price - buy_price, 3)
 
             label_result.config(text=f"模式：倒T\n买入价：{buy_price:.2f}\n差价：{price_difference:.3f}")
-            history_data.append((datetime.now().strftime("%H:%M:%S"), len(history_data) + 1, stock_name, mode, base_price, buy_price, price_difference, False, "", shares))
+            history_data.append((datetime.now().strftime("%H:%M:%S"), len(history_data) + 1, stock_name, mode, base_price, buy_price, price_difference, shares, False, ""))
             update_history_table()
         else:
             raise ValueError("未知模式")
@@ -74,51 +76,38 @@ def update_history_table():
 
     # 移除所有额外组件
     for widget in root.grid_slaves():
-        if int(widget.grid_info()['row']) >= 1 and int(widget.grid_info()['column']) == 8:
-            widget.destroy()
+        if widget.grid_info()['column'] == 11:
+            widget.grid_forget()
 
     # 添加历史记录到表格
     for i, data in enumerate(history_data):
-        time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, value, note, shares = data
-        selected_var = tk.BooleanVar(value=value)  # 在这里转换为 BooleanVar
-        item_id = treeview.insert('', 'end', values=(row_num, time_str, stock_name, mode, base_price, calculated_price, price_difference, shares, note), tags=('strikethrough' if value else ()))
+        time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, shares, selected, note = data
+        item_id = treeview.insert('', 'end', values=(row_num, time_str, stock_name, mode, base_price, calculated_price, price_difference, shares))
 
         # 创建容器
         frame = tk.Frame(root)
         frame.grid(row=i + 1, column=8, sticky='w')  # 将额外组件放在第8列
 
         # 添加单选框
-        cb = ttk.Checkbutton(frame, variable=selected_var, onvalue=True, offvalue=False, command=lambda idx=i: toggle_strikethrough(idx))
-        cb.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        cb = ttk.Checkbutton(frame, variable=tk.BooleanVar(value=selected), onvalue=True, offvalue=False)
+        cb.pack(side=tk.LEFT)
 
         # 添加备注输入框
         entry = tk.Text(frame, height=1, width=20)
-        entry.insert(tk.END, note or "")
+        entry.insert(tk.END, note)
         entry.bind("<FocusOut>", lambda event, idx=i: on_text_focus_out(event, idx))
-        entry.grid(row=0, column=1, padx=5, pady=5, sticky='w')
+        entry.pack(side=tk.LEFT)
 
         # 添加删除按钮
         delete_button = tk.Button(frame, text="删除", command=lambda idx=i: delete_row(idx))
-        delete_button.grid(row=0, column=2, padx=5, pady=5, sticky='w')
-
-        # 更新 history_data 中的 BooleanVar
-        history_data[i] = (time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, selected_var, note, shares)
-
-    # 调整列宽以适应内容
-    default_font = tkfont.nametofont("TkDefaultFont")  # 获取默认字体
-    for col in treeview["columns"]:
-        treeview.column(col, width=default_font.measure(col.title()) + 10)
-    for item in treeview.get_children():
-        for ix, val in enumerate(treeview.item(item)['values']):
-            col_w = default_font.measure(val) + 10
-            if treeview.column(treeview["columns"][ix], width=None) < col_w:
-                treeview.column(treeview["columns"][ix], width=col_w)
+        delete_button.pack(side=tk.LEFT)
 
 def on_text_focus_out(event, idx):
     # 当备注输入框失去焦点时更新备注
     new_note = event.widget.get("1.0", tk.END).strip()
-    time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, var, note, shares = history_data[idx]
-    history_data[idx] = (time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, var, new_note, shares)
+    time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, shares, selected, _ = history_data[idx]
+    history_data[idx] = (time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, shares, selected, new_note)
+    update_history_table()
     save_data(history_data)
 
 def delete_row(idx):
@@ -127,19 +116,8 @@ def delete_row(idx):
     update_history_table()
     save_data(history_data)
 
-def toggle_strikethrough(idx):
-    # 切换删除线
-    time_str, row_num, stock_name, mode, base_price, calculated_price, price_difference, selected_var, note, shares = history_data[idx]
-    is_selected = selected_var.get()
-    item_id = treeview.get_children()[idx]
-    if is_selected:
-        treeview.item(item_id, tags=('strikethrough',))
-    else:
-        treeview.item(item_id, tags=())
-    save_data(history_data)
-
 # 加载历史数据
-history_data = load_history_data()  # 确保这里的历史数据被正确加载
+history_data = load_history_data()
 
 # 创建主窗口
 root = tk.Tk()
@@ -198,7 +176,7 @@ label_result = tk.Label(result_frame, text="", justify=tk.RIGHT)
 label_result.pack(expand=True)
 
 # 创建表格
-treeview = ttk.Treeview(root, columns=("序号", "时间", "品种名称", "模式", "基础价格", "计算结果", "差价", "股数", "备注"), show="headings")
+treeview = ttk.Treeview(root, columns=("序号", "时间", "品种名称", "模式", "基础价格", "计算结果", "差价", "股数"), show="headings")
 treeview.heading("序号", text="序号")
 treeview.heading("时间", text="时间")
 treeview.heading("品种名称", text="品种名称")
@@ -207,8 +185,6 @@ treeview.heading("基础价格", text="基础价格")
 treeview.heading("计算结果", text="计算结果")
 treeview.heading("差价", text="差价")
 treeview.heading("股数", text="股数")
-treeview.heading("备注", text="备注")
-treeview.tag_configure('strikethrough', font=('TkDefaultFont', 10, 'overstrike'))  # 配置删除线样式
 treeview.grid(row=1, column=0, columnspan=3, sticky="nsew")
 
 # 初始化表格
