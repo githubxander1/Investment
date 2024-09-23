@@ -1,0 +1,164 @@
+#:kivy 2.1.0
+
+<PaintWidget>:
+    canvas.before:
+        Color:
+            rgba: root.pen_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PaintApp>:
+    orientation: 'vertical'
+    FloatLayout:
+        id: main_layout
+        size_hint: 1, 1
+        PaintWidget:
+            id: paint_widget
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            size_hint: 1, 1
+
+        Button:
+            id: floating_button
+            text: '悬浮球'
+            size_hint: None, None
+            size: 50, 50
+            pos_hint: {'center_x': 0.5, 'center_y': 0.9}
+            on_press: root.toggle_menu()
+
+        FloatLayout:
+            id: menu_layout
+            size_hint: None, None
+            size: 200, 100
+            pos_hint: {'right': 1, 'top': 1}
+            Button:
+                text: '画笔'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.show_pen_options()
+            Button:
+                text: '橡皮擦'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.show_eraser_options()
+            Button:
+                text: '撤销'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.undo()
+            Button:
+                text: '保存'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.save()
+            Button:
+                text: '加载'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.load()
+
+        FloatLayout:
+            id: pen_menu_layout
+            size_hint: None, None
+            size: 200, 100
+            pos_hint: {'right': 1, 'top': 0.8}
+            Button:
+                text: '黑色'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.set_pen_color((0, 0, 0, 1))
+            Button:
+                text: '红色'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.set_pen_color((1, 0, 0, 1))
+            Button:
+                text: '细'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.set_pen_width(2)
+            Button:
+                text: '粗'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.set_pen_width(5)
+
+        FloatLayout:
+            id: eraser_menu_layout
+            size_hint: None, None
+            size: 200, 100
+            pos_hint: {'right': 1, 'top': 0.8}
+            Button:
+                text: '小'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.set_pen_color((1, 1, 1, 1)) and root.set_pen_width(2)
+            Button:
+                text: '大'
+                size_hint: None, None
+                size: 100, 50
+                on_press: root.set_pen_color((1, 1, 1, 1)) and root.set_pen_width(5)
+
+    BoxLayout:
+        id: hidden_layout
+        size_hint: None, None
+        size: 0, 0
+
+<PaintApp>:
+    menu_visible: False
+    pen_menu_visible: False
+    eraser_menu_visible: False
+
+    on_toggle_menu:
+        if root.menu_visible:
+            app.root.ids.hidden_layout.add_widget(app.root.ids.menu_layout)
+            app.root.ids.menu_layout.size = (0, 0)
+            root.menu_visible = False
+        else:
+            app.root.ids.hidden_layout.remove_widget(app.root.ids.menu_layout)
+            app.root.ids.menu_layout.size = (200, 100)
+            root.menu_visible = True
+
+    on_show_pen_options:
+        if root.pen_menu_visible:
+            app.root.ids.hidden_layout.add_widget(app.root.ids.pen_menu_layout)
+            app.root.ids.pen_menu_layout.size = (0, 0)
+            root.pen_menu_visible = False
+        else:
+            app.root.ids.hidden_layout.remove_widget(app.root.ids.pen_menu_layout)
+            app.root.ids.pen_menu_layout.size = (200, 100)
+            root.pen_menu_visible = True
+
+    on_show_eraser_options:
+        if root.eraser_menu_visible:
+            app.root.ids.hidden_layout.add_widget(app.root.ids.eraser_menu_layout)
+            app.root.ids.eraser_menu_layout.size = (0, 0)
+            root.eraser_menu_visible = False
+        else:
+            app.root.ids.hidden_layout.remove_widget(app.root.ids.eraser_menu_layout)
+            app.root.ids.eraser_menu_layout.size = (200, 100)
+            self.eraser_menu_visible = True
+
+    def toggle_menu(self):
+        self.menu_visible = not self.menu_visible
+
+    def show_pen_options(self):
+        self.pen_menu_visible = not self.pen_menu_visible
+
+    def show_eraser_options(self):
+        self.eraser_menu_visible = not self.eraser_menu_visible
+
+    def undo(self):
+        app.root.ids.paint_widget.undo()
+
+    def save(self):
+        app.root.ids.paint_widget.save('paint_data.json')
+
+    def load(self):
+        app.root.ids.paint_widget.load('paint_data.json')
+
+    def set_pen_color(self, color):
+        app.root.ids.paint_widget.set_pen_color(color)
+
+    def set_pen_width(self, width):
+        app.root.ids.paint_widget.set_pen_width(width)
