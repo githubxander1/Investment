@@ -1,0 +1,24 @@
+#:kivy 2.3
+
+# 设置全局的字体样式
+#<style>
+#    Label:
+ #       font_name: 'Arial Black'  # 黑体字体
+ #       font_size: sp(14)         # 字体大小
+#</style>
+
+# 应用全局样式
+#<Label>:
+#    <style>
+
+# 可以扩展到其他Widget
+#<Button>:
+ #   <style>
+
+# 或者整个界面
+BoxLayout:
+    orientation: 'vertical'
+    Label:
+        text: '这是一个黑体的Label'
+    Button:
+        text: '这是一个黑体的Button'
