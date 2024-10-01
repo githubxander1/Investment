@@ -4,3 +4,13 @@ adb错误“‘adb‘ 不是内部或外部命令，也不是可运行的程序�
 在运行指令的文件夹中粘贴
 adb.exe、AdbWinApi.dll、AdbWinUsbApi.dll三个文件，
 复制到C:\users\administrator文件夹中即可解决此问题
+
+1安装weditor pip install --pre weditor
+2设备安装atx-agent：Python -m uiautomator2 init
+3启动weditor Python -m weditor
+
+# 连接并启动
+d = u2.connect()
+# 打印当前链接设备信息
+print(d.info)
+
