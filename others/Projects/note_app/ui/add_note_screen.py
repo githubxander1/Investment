@@ -119,8 +119,14 @@ class AddNoteScreen(Screen):
             self.clear_inputs()
             self.show_popup("笔记删除成功！")
             self.refresh_calendar()  # 删除后刷新日历页
+            self.refresh_stats()
         else:
             self.show_popup("没有可删除的笔记。")
+
+    def refresh_stats(self):
+        # 通知 StatsScreen 刷新数据
+        stats_screen = self.app.sm.get_screen('statistics')
+        stats_screen.load_all_notes()  # 刷新统计页面
 
     def insert_into_db(self, title, content, date, reminder_time, repeat, tags):
         # 连接到 SQLite 数据库

@@ -49,7 +49,8 @@ def write_to_word(doc, items):
 if __name__ == "__main__":
     # directory = r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule'
     # directory = r'D:\1document\1test\PycharmProject_gitee\others\Projects\calendar_app\2'
-    directory = r'D:\1test\PycharmProject_gitee\others\Projects\paint_app'
+    # directory = r'D:\1test\PycharmProject_gitee\others\Projects\paint_app'
+    directory = r'D:\1document\1test\PycharmProject_gitee\others\Projects\note_app'
     exclude_list = None
     # [
     #     r'D:\1document\1test\PycharmProject_gitee\others\Projects\schedule\node_modules'

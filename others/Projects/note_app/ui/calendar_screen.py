@@ -10,6 +10,7 @@ import calendar
 from kivy.resources import resource_add_path, resource_find
 from kivy.uix.image import Image
 from kivy.graphics import Color, Rectangle  # 导入 Color 和 Rectangle
+
 # 添加字体路径
 resource_add_path(os.path.join(os.path.dirname(__file__), 'fonts'))
 # print(resource_find('simhei.ttf'))
@@ -194,7 +195,12 @@ class CalendarScreen(Screen):
         self.app.sm.current = 'add_note'
 
     def search_notes(self, instance):
-        self.app.sm.current = 'search'
+        # 跳转到搜索界面
+        self.app.sm.current = 'search_notes'
+
+    def goto_statistics(self, instance):
+        # 跳转到统计界面
+        self.app.sm.current = 'statistics'
 
     def open_note(self, note):
         # 跳转到 AddNoteScreen 并加载笔记内容
@@ -209,3 +215,15 @@ class CalendarScreen(Screen):
 
     def goto_statistics(self, instance):
         self.app.sm.current = 'statistics'  # 假设统计页面的名称是 'statistics'
+
+    def draw_background(self, instance):
+        # 绘制背景色
+        with self.canvas.before:
+            Color(1, 1, 1, 1)  # 白色背景
+            self.rect = Rectangle(size=self.size, pos=self.pos)
+        self.bind(size=self._update_rect, pos=self._update_rect)
+
+    def _update_rect(self, instance, value):
+        # 更新背景矩形
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size

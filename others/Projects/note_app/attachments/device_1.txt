@@ -1,1 +1,0 @@
-&type=Microsoft Basic Render Driver&_byte=0&_GB=0
