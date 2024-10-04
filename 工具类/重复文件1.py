@@ -1,26 +1,17 @@
 import os
-import hashlib
 import shutil
-from datetime import datetime
+from difflib import SequenceMatcher
 
-def get_file_md5(file_path):
-    """计算文件的MD5值。"""
-    hash_md5 = hashlib.md5()
-    try:
-        with open(file_path, "rb") as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                hash_md5.update(chunk)
-    except IOError as e:
-        print(f"无法读取文件 {file_path}: {e}")
-        return None
-    return hash_md5.hexdigest()
+# 计算两个字符串的相似度
+def get_similarity_ratio(s1, s2):
+    return SequenceMatcher(None, s1, s2).ratio()
 
-def move_duplicates(files_md5, destination):
-    """移动重复文件到指定目录，保留最后修改的文件。"""
+# 移动重复文件到指定目录，保留最后修改的文件
+def move_duplicates(file_groups, destination):
     if not os.path.exists(destination):
         os.makedirs(destination)
 
-    for file_list in files_md5.values():
+    for file_list in file_groups.values():
         if len(file_list) > 1:
             # 按最后修改时间排序文件列表
             file_list.sort(key=lambda x: os.path.getmtime(x), reverse=True)
@@ -42,23 +33,33 @@ def move_duplicates(files_md5, destination):
                 # 移动重复文件
                 shutil.move(file_to_move, target_path)
 
-def find_duplicates(path_to_search):
-    """查找指定目录下的重复文件。"""
-    files_md5 = {}
+# 查找指定目录下的相同或相似文件名
+def find_similar_files(path_to_search, similarity_threshold=0.8):
+    file_groups = {}
     for root, dirs, files in os.walk(path_to_search):
         for file in files:
             file_path = os.path.join(root, file)
-            file_md5 = get_file_md5(file_path)
-            if file_md5:
-                files_md5.setdefault(file_md5, []).append(file_path)
-    return files_md5
+            file_name = os.path.basename(file_path)
 
-def display_duplicates(files_md5):
-    """显示所有重复文件的信息。"""
+            # 检查文件名是否已经存在于字典中
+            found = False
+            for existing_file in file_groups.keys():
+                if get_similarity_ratio(file_name, existing_file) >= similarity_threshold:
+                    file_groups[existing_file].append(file_path)
+                    found = True
+                    break
+
+            if not found:
+                file_groups[file_name] = [file_path]
+
+    return file_groups
+
+# 显示所有重复文件的信息
+def display_duplicates(file_groups):
     repeated_files = []
     to_move_files = []
 
-    for file_list in files_md5.values():
+    for file_list in file_groups.values():
         if len(file_list) > 1:
             # 按最后修改时间排序文件列表
             file_list.sort(key=lambda x: os.path.getmtime(x), reverse=True)
@@ -88,13 +89,15 @@ if __name__ == "__main__":
         exit(1)
 
     destination = os.path.join(path_to_search, "duplicates")
-    files_md5 = find_duplicates(path_to_search)
+    similarity_threshold = float(input("请输入文件名相似度阈值（0.0 到 1.0 之间，默认为 0.8）：") or 0.8)
 
-    if files_md5:
-        display_duplicates(files_md5)
+    file_groups = find_similar_files(path_to_search, similarity_threshold)
+
+    if file_groups:
+        display_duplicates(file_groups)
 
         if input("是否继续执行并移动重复文件？(y/n): ").lower() == 'y':
-            move_duplicates(files_md5, destination)
+            move_duplicates(file_groups, destination)
             print(f"重复文件已从 {path_to_search} 移动到 {destination}")
         else:
             print("操作已取消。")
