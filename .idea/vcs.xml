@@ -5,5 +5,7 @@
     <mapping directory="$PROJECT_DIR$/MyFlask" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/calendar" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/others/cryptomator_android" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/工具类/Local-File-Organizer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/工具类/localFile" vcs="Git" />
   </component>
 </project>
