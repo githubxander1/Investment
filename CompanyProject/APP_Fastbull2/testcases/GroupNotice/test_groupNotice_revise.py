@@ -9,7 +9,7 @@ import HTMLTestRunner
 
 from CompanyProject.APP_Fastbull2.operation.ChatWindows.GroupWindow import GroupWindow
 from CompanyProject.APP_Fastbull2.base.basePage import Base1
-# from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupNotice import GroupNotice
+# from CompanyProject.APP_Fastbull2.pages.GroupSet.GroupNotice import GroupNotice
 from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupNotice.GroupNotice import GroupNotice
 from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupSet import GroupSet
 from CompanyProject.APP_Fastbull2.operation.op_Home import Home

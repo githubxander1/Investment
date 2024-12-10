@@ -3,7 +3,7 @@ import time
 from CompanyProject.APP_Fastbull2.operation.ChatWindows.GroupWindow import GroupWindow
 from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupManage.ManageGroup import ManageGroup
 from CompanyProject.APP_Fastbull2.base.basePage import Base1, d
-# from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupSet import GroupSet
+# from CompanyProject.APP_Fastbull2.pages.GroupSet.GroupSet import GroupSet
 from CompanyProject.APP_Fastbull2.operation.op_Home import Home
 
 

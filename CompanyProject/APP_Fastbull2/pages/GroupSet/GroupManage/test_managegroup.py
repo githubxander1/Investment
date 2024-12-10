@@ -11,7 +11,7 @@ from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupSet import GroupSet
 from CompanyProject.APP_Fastbull2.operation.op_Home import Home
 from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupManage.ForbidFriendAdd import ForbidFriendAdd
 from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupManage.GroupAddSet import  GroupAdd
-# from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupManage.GroupManage import GroupManage
+# from CompanyProject.APP_Fastbull2.pages.GroupSet.GroupManage.GroupManage import GroupManage
 
 # 设置日志格式
 logging.basicConfig(level=logging.INFO,
