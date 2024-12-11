@@ -27,6 +27,7 @@ def fetch_strategy_profit(strategy_id):
 
     if response.status_code == 200:
         data = response.json()
+        pprint(data)
         # 提取 latestTrade 和 positionStocks 信息
         latest_trade = data.get('result', {}).get('latestTrade', {})
         trade_stocks = latest_trade.get('tradeStocks', [])
@@ -67,15 +68,24 @@ def check_today_trades(trades_info):
     today = datetime.now().strftime('%Y-%m-%d')
     return [trade for trade in trades_info if trade['时间'].startswith(today)]
 
-def notify_trades(trades):
-    if trades:
-        message = "\n".join([
-            f"{trade['操作']} {trade['名称']} 价格: {trade['价格']} 数量: {trade['数量']} 时间: {trade['时间']}"
-            for trade in trades
-        ])
+
+def truncate_text(text, max_length=256):
+    return (text[:max_length - 3] + '...') if len(text) > max_length else text
+
+
+def notify_trades(trades, max_message_length=256, max_title_length=64):
+    if not trades:
+        return
+
+    title = "今日交易"[:max_title_length]
+
+    for trade in trades:
+        message = f"{trade['操作']} {trade['名称']} 价格: {trade['价格']} 数量: {trade['数量']} 时间: {trade['时间']}"
+        truncated_message = truncate_text(message, max_message_length)
+
         notification.notify(
-            title="今日交易通知",
-            message=message,
+            title=title,
+            message=truncated_message,
             app_name="策略监控",
             timeout=10
         )
