@@ -69,7 +69,7 @@ import akshare as ak
 # 目标地址: https://xueqiu.com/S/SH513520
 # 描述: 雪球-行情中心-个股
 # 限量: 单次获取指定 symbol 的最新行情数据
-stock_individual_spot_xq_df = ak.stock_individual_spot_xq(symbol="SPY")
+# stock_individual_spot_xq_df = ak.stock_individual_spot_xq(symbol="SPY")
 # print(stock_individual_spot_xq_df.dtypes)
 
 # 信息披露调研-巨潮资讯
@@ -116,4 +116,16 @@ stock_zh_a_spot_em'''
 名称	类型	描述
 symbol	str	symbol="北向资金"; choice of {"北向资金", "沪股通", "深股通", "南向资金", "港股通沪", "港股通深"}'''
 stock_hsgt_hist_em_df = ak.stock_hsgt_hist_em(symbol="北向资金")
-print(stock_hsgt_hist_em_df)
+# print(stock_hsgt_hist_em_df)
+
+'''三大财报-新浪'''
+# stock_financial_report_sina_df = ak.stock_financial_report_sina(stock="sh600600", symbol="资产负债表")
+# print(stock_financial_report_sina_df)
+
+
+
+# 继续执行其他代码
+'''利润表'''
+stock_profit_sheet_by_report_em_df = ak.stock_profit_sheet_by_report_em(symbol="SH600519")
+stock_profit_sheet_by_report_em_df = stock_profit_sheet_by_report_em_df.head(10)
+print(stock_profit_sheet_by_report_em_df)
