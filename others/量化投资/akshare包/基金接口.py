@@ -21,7 +21,13 @@ print(fund_etf_spot_simple)
 # print("\n股票基金持股数据:")
 # print(stock_fund_stock_holder_df)
 
-# 获取个股的基金持股数据
+# 获取个股的基金持股数据:
+# 输入参数
+# 名称	类型	描述
+# symbol	str	symbol="基金持仓"; choice of {"基金持仓", "QFII持仓", "社保持仓", "券商持仓", "保险持仓", "信托持仓"}
+# date	str	date="20200630"; 财报发布日期, xxxx-03-31, xxxx-06-30, xxxx-09-30, xxxx-12-31
+#     序号    股票代码  股票简称  持有基金家数        持股总数          持股市值 持股变化     持股变动数值  持股变动比例
+# 0    1  300750  宁德时代    1811   641583932  1.616086e+11   增仓   27379176    4.46
 stock_report_fund_hold_df = ak.stock_report_fund_hold(symbol="基金持仓", date="20200630")
 print("\n个股基金持股数据:")
 print(stock_report_fund_hold_df)
