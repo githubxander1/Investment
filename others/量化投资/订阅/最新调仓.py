@@ -27,6 +27,7 @@ def get_newest_relocate_post(id):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
+        pprint(response.json())
         return response.json()
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -54,8 +55,8 @@ def process_ids(ids):
             print(f"Failed to retrieve data for id: {id}")
 
     df = pd.DataFrame(all_data)
-    print(df)
-    df.to_excel('最新调仓.xlsx', index=False)
+    # pprint(df)
+    # df.to_excel('最新调仓.xlsx', index=False)
 
 ids = [
     14533,
