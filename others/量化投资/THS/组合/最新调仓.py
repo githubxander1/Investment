@@ -55,8 +55,8 @@ def process_ids(ids):
             print(f"Failed to retrieve data for id: {id}")
 
     df = pd.DataFrame(all_data)
-    # pprint(df)
-    # df.to_excel('最新调仓.xlsx', index=False)
+    pprint(df)
+    df.to_excel('最新调仓.xlsx', index=False)
 
 ids = [
     14533,

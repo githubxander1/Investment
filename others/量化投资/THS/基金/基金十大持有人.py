@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 
 
@@ -58,4 +60,4 @@ def get_fund_data():
 if __name__ == "__main__":
     result = get_fund_data()
     if result:
-        print(result)
+        pprint(result)

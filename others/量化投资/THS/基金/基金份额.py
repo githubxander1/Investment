@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 
 
@@ -37,9 +39,9 @@ if __name__ == "__main__":
     result = get_etf_fin_fund_share()
     if result:
         print("获取到的ETF基金份额相关信息:")
-        print(result)
+        pprint(result)
         # 这里可以根据业务需求进一步处理返回的数据，例如提取特定字段进行分析或存储等
         share_info = result.get('result', {})
-        print("基金份额相关数据:", share_info)
+        pprint("基金份额相关数据:", share_info)
     else:
         print("获取数据失败")

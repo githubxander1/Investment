@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 
 def get_adj_trend():
@@ -45,4 +47,4 @@ def get_adj_trend():
 if __name__ == "__main__":
     result = get_adj_trend()
     if result:
-        print(result)
+        pprint(result)

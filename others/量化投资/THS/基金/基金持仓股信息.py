@@ -84,7 +84,8 @@ def save_to_excel(data, trade_code, writer):
 
 if __name__ == "__main__":
     # 定义要查询的基金代码列表
-    trade_codes = ["562500", "159819", "159655", "159696"]
+    # trade_codes = ["562500", "159819", "159655", "159696"]
+    trade_codes = ["159300", "159925", "515310", "159673"]
 
     # 创建一个Excel writer对象
     with pd.ExcelWriter('基金持股信息.xlsx', engine='openpyxl') as writer:

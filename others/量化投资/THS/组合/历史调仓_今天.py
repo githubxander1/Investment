@@ -1,14 +1,26 @@
+import datetime
+from pprint import pprint
 import requests
 import pandas as pd
-from pprint import pprint
+import logging
 
-# 接口的URL
+# 设置日志记录
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def determine_market(stock_code):
+    # 根据股票代码判断市场
+    if stock_code.startswith(('60', '00')):
+        return '沪深A股'
+    elif stock_code.startswith('688'):
+        return '科创板'
+    elif stock_code.startswith('300'):
+        return '创业板'
+    elif stock_code.startswith(('4', '8')):
+        return '北交所'
+    else:
+        return '其他'
 
-# 请求头
-
-
-def get_product_info(product_id):
+def get_name_desc(product_id):
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
     headers = {
         "Host": "dq.10jqka.com.cn",
@@ -48,7 +60,7 @@ def get_product_info(product_id):
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
         return None
-# pprint(get_product_info(19483))
+
 def get_history_data(portfolioId):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
@@ -72,108 +84,60 @@ def get_history_data(portfolioId):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
+        pprint(response.json())
         return response.json()
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
         return None
 
-def process_ids(ids):
-    all_data = []
+def extract_and_filter_today_data(data, portfolioId):
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    records = []
+    for item in data['data']:
+        create_at = item['createAt']
+        date_part = create_at.split()[0]
+        if date_part == today:
+            content = item['content']
+            need_relocate_reason = item['needRelocateReason']
+            for stock in item['relocateList']:
+                code = stock['code']
+                current_ratio = stock['currentRatio']
+                final_price = stock['finalPrice']
+                name = stock['name']
+                new_ratio = stock['newRatio']
+                market = determine_market(code)
+                operation = '卖出' if new_ratio < current_ratio else '买入'
+                records.append({
+                    '策略id': portfolioId,
+                    '策略名称': get_name_desc(portfolioId).get("策略名称"),
+                    '描述': get_name_desc(portfolioId).get("策略描述"),
+                    '说明': content,
+                    '时间': create_at,
+                    '股票名称': name,
+                    '所属市场': market,
+                    '参考价': final_price,
+                    '操作': operation,
+                    '当前比例': f"{current_ratio * 100:.2f}%",
+                    '新比例': f"{new_ratio * 100:.2f}%"
+                })
+    return records
+
+def main():
+    ids = [
+        19483, 14533, 16281, 23768, 8426, 9564, 6994, 7152, 20335, 21302, 19347, 8187, 18565, 14980, 16428
+    ]
+
+    all_records = []
     for portfolio_id in ids:
-        result = get_history_data(portfolio_id)
-        if result and result['status_code'] == 0:
-            for entry in result['data']:
-                entry['portfolioId'] = portfolio_id
-                relocate_list = entry.pop('relocateList')
-                for relocate in relocate_list:
-                    relocate.update(entry)
-                    all_data.append(relocate)
-        else:
-            print(f"Failed to retrieve data for portfolioId: {portfolio_id}")
+        data = get_history_data(portfolio_id)
+        if data:
+            records = extract_and_filter_today_data(data, portfolio_id)
+            all_records.extend(records)
 
-    df = pd.DataFrame(all_data)
-    df.to_excel('全部历史调仓信息.xlsx', index_label=False)
-    # df = df[['code', 'currentRatio', 'finalPrice', 'name', 'newRatio', 'createAt', 'portfolioId']]
-    # df.sort_values(by='createAt', ascending=False, inplace=True)
-    # df.drop_duplicates(subset=['portfolioId'], keep='first', inplace=True)
-    print('历史调仓：')
-    pprint(df)
-    df.to_excel('历史调仓.xlsx', index=False)
+    df = pd.DataFrame(all_records)
+    df.sort_values(by='时间', ascending=False, inplace=True)
+    print(df)
+    df.to_excel('调仓历史_当天.xlsx', index=False)
 
-def process_ids_for_new_df(ids):
-    all_data = []
-    for portfolio_id in ids:
-        product_info = get_product_info(portfolio_id)
-        if not product_info:
-            print(f"Failed to retrieve product info for portfolioId: {portfolio_id}")
-            continue
-
-        result = get_history_data(portfolio_id)
-        if result and result['status_code'] == 0:
-            for entry in result['data']:
-                entry['portfolioId'] = portfolio_id
-                relocate_list = entry.pop('relocateList')
-                for relocate in relocate_list:
-                    relocate.update(entry)
-                    relocate.update(product_info)  # 合并产品信息
-                    all_data.append(relocate)
-        else:
-            print(f"Failed to retrieve data for portfolioId: {portfolio_id}")
-
-    # 创建 DataFrame 并翻译列名
-    df = pd.DataFrame(all_data)
-    column_mapping = {
-        '策略名称': '策略名称',
-        '策略描述': '策略描述',
-        'portfolioId': '策略ID',
-        'name': '股票名称',
-        'content': '内容',
-        'createAt': '创建时间',
-        'finalPrice': '参考成交价',
-        'currentRatio': '当前比例',
-        'newRatio': '新比例'
-    }
-    df.rename(columns=column_mapping, inplace=True)
-
-    # 将 createAt 列转换为 datetime 类型
-    df['创建时间'] = pd.to_datetime(df['创建时间'])
-
-    # 将比例转换为百分比
-    df['当前比例'] = df['当前比例'].apply(lambda x: f"{x * 100:.2f}%")
-    df['新比例'] = df['新比例'].apply(lambda x: f"{x * 100:.2f}%")
-
-    df = df[['策略ID', '策略名称', '策略描述', '股票名称', '内容', '创建时间', '参考成交价', '当前比例', '新比例']]
-    # 按策略ID和创建时间排序
-    df.sort_values(by=['策略ID', '创建时间'], ascending=[True, False], inplace=True)
-
-    # 去重，保留每个策略最新的记录
-    df.drop_duplicates(subset=['策略ID'], keep='first', inplace=True)
-
-    print('新历史调仓：')
-    pprint(df)
-    df.to_excel('新历史调仓.xlsx', index=False)
-
-
-
-
-
-ids = [
-    19483,
-    14533,
-    16281,
-    23768,
-    8426,
-    9564,
-    6994,
-    7152,
-    20335,
-    21302,
-    19347,
-    8187,
-    18565,
-    14980,
-    16428
-]
-
-process_ids(ids)
-process_ids_for_new_df(ids)
+if __name__ == "__main__":
+    main()

@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 
 def get_fund_ind_portf():
@@ -43,4 +45,4 @@ def get_fund_ind_portf():
 if __name__ == "__main__":
     result = get_fund_ind_portf()
     if result:
-        print(result)
+        pprint(result)

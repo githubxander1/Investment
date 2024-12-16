@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 
 def get_fund_top_holders():
@@ -52,4 +54,4 @@ if __name__ == "__main__":
     result = get_fund_top_holders()
     if result:
         # 如果获取到了数据（即result不为None），则可以在这里根据具体需求对数据进行进一步的处理，比如分析持有人的类型、持有份额的变化趋势等，这里暂时只是简单打印出来查看。
-        print(result)
+        pprint(result)

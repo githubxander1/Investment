@@ -38,7 +38,7 @@ def extract_important_info(data):
         return {
             '基金名称': info.get('fullname'),
             '简称': info.get('simpleName'),
-            '基金代码': info.get('trade_code'),
+            # '基金代码': info.get('trade_code'),
             '成立日期': info.get('estabDate'),
             '上市日期': info.get('listedDate'),
             '基金管理人': info.get('mgmtName'),
@@ -58,20 +58,21 @@ def extract_important_info(data):
     return {}
 
 def print_fund_info(fund_ids):
-    all_info = []
+    all_info = {}
     for fund_id in fund_ids:
         data = get_etf_base_info(fund_id)
-        pprint(data)
+        # pprint(data)
         info = extract_important_info(data)
         if info:
-            all_info.append(info)
+            all_info[info['基金名称']] = info
             print(f"基金{fund_id}的信息:")
-            print(pd.DataFrame([info]))
+            print(pd.DataFrame([info]).transpose())
             print("\n")
 
     if all_info:
-        df = pd.DataFrame(all_info)
-        df.to_excel('基金信息.xlsx', index=False)
+        df = pd.DataFrame.from_dict(all_info, orient='index')
+        df = df.T
+        df.to_excel('基金信息.xlsx', index=True)
 
 if __name__ == "__main__":
     # 定义要查询的基金代码列表
