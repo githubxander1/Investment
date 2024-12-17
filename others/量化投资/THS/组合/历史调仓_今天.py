@@ -84,7 +84,7 @@ def get_history_data(portfolioId):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
-        pprint(response.json())
+        # pprint(response.json())
         return response.json()
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -124,7 +124,7 @@ def extract_and_filter_today_data(data, portfolioId):
 
 def main():
     ids = [
-        19483, 14533, 16281, 23768, 8426, 9564, 6994, 7152, 20335, 21302, 19347, 8187, 18565, 14980, 16428
+        19483, 16281, 23768, 8426, 9564, 6994, 7152, 20335, 21302, 19347, 8187, 18565, 14980, 16428
     ]
 
     all_records = []
