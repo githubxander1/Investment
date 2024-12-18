@@ -74,5 +74,5 @@ for trade_date, stocks in trade_date_dict.items():
         operation_tradeDate = stock['tradeDate']
         ws.append([trade_date, operation_tradeDate, stock['code'], stock['stkName'], stock['operationType'], stock['tradePrice'], stock['tradeAmount'], stock['position']])
 
-wb.save("历史调仓信息.xlsx")
-print("调仓信息已成功保存到 '调仓信息.xlsx' 文件中。")
+wb.save(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\所有历史调仓信息.xlsx")
+print("调仓信息已成功保存到 '所有历史调仓信息.xlsx' 文件中。")

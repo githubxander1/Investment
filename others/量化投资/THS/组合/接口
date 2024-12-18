@@ -7,8 +7,6 @@ url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
 url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
 人气投顾
 url = "https://t.10jqka.com.cn/event/rank/popularity/v2"
-调仓数据概览 胜率
-url = "https://t.10jqka.com.cn/portfolio/relocate/v2/get_relocate_data_summary"
 行业信息
 "https://t.10jqka.com.cn/portfolio/v2/position/get_position_industry_info"
 仓位详情
@@ -19,3 +17,11 @@ url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfoli
 "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_feature_info"
 收益曲线
 "https://t.10jqka.com.cn/portfolio/base/getPortfolioIncomeInfo"
+持仓信息
+url = f"https://t.10jqka.com.cn/portfolio/relocate/user/getPortfolioHoldingData?id={portfolio_id}"
+最新调仓
+url = f"{self.base_url}/portfolio/post/v2/get_newest_relocate_post?id={portfolio_id}"
+历史调仓
+url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
+调仓数据概览 胜率
+url = "https://t.10jqka.com.cn/portfolio/relocate/v2/get_relocate_data_summary"

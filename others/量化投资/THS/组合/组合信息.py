@@ -54,20 +54,20 @@ def process_product_ids(product_ids):
     df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合信息.xlsx', index=False)
 
 product_ids = [
-    14533,
-    16281,
-    23768,
-    8426,
-    9564,
-    6994,
-    7152,
-    20335,
-    21302,
-    19347,
-    8187,
-    18565,
-    14980,
-    16428
+    14533
+    # 16281,
+    # 23768,
+    # 8426,
+    # 9564,
+    # 6994,
+    # 7152,
+    # 20335,
+    # 21302,
+    # 19347,
+    # 8187,
+    # 18565,
+    # 14980,
+    # 16428
 ]
 
 process_product_ids(product_ids)
