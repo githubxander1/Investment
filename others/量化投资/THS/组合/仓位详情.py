@@ -62,7 +62,8 @@ def process_ids(ids):
     }
 
     df = pd.DataFrame(all_holding_info).rename(columns=column_mapping)
-    df.to_excel('持仓详情.xlsx', index=False)
+    print(df)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\持仓详情.xlsx', index=False)
 
 ids = [
     19483,

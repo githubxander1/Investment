@@ -1,7 +1,7 @@
 from pprint import pprint
 
 import requests
-import openpyxl
+import pandas as pd
 
 # 基础的接口URL，后续通过改变page参数获取不同页的数据
 base_url = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/history_position?"
@@ -22,64 +22,76 @@ headers = {
 # 多个策略ID
 strategy_ids = ['155259', '155680', '138036', '138386', '155270', '118188', '137789', '138006', '136567', '138127']
 
-# 用于存储所有页按operationDate分类的持仓股票信息
-all_data_dict = {}
+def fetch_history_position_data(strategy_id, pages):
+    all_position_data = []
 
-# 循环获取每个策略ID的数据
-for strategy_id in strategy_ids:
-    # 重置每种策略的数据字典
-    all_data_dict[strategy_id] = {}
-    for page in range(10):
+    for page in range(pages):
         url = f"{base_url}strategyId={strategy_id}&page={page}&pageSize=10"
         response = requests.get(url, headers=headers)
+
+        # 判断请求是否成功（状态码为200）
         if response.status_code == 200:
-            try:
-                data = response.json()
-                trade_data_list = data["result"]["datas"]
-                pprint(trade_data_list)
-                for trade_data in trade_data_list:
-                    operation_date = trade_data["tradeDate"]  # 分类时间
-                    trade_stocks = trade_data["tradeStocks"]
-                    for stock in trade_stocks:
-                        if operation_date not in all_data_dict[strategy_id]:
-                            all_data_dict[strategy_id][operation_date] = []
-                        stock_info = {
-                            "code": stock["code"],
-                            "stkName": stock["stkName"],
-                            "positionRatio": stock["position"],
-                            "profitAndLossRatio": stock.get("profitAndLossRatio", ""),
-                            "price": stock["tradePrice"],
-                            "industry": stock.get("industry", ""),
-                            "operationDate": stock["tradeDate"]  # 操作时间
-                        }
-                        all_data_dict[strategy_id][operation_date].append(stock_info)
-            except KeyError as e:
-                print(f"解析JSON数据时出错: {e}, 响应内容: {response.text}")
-                break
+            data = response.json()
+            pprint(data)
+            position_data = data["result"]["datas"]
+            all_position_data.extend(position_data)
         else:
-            print(f"请求策略ID {strategy_id} 第{page + 1}页数据失败，状态码: {response.status_code}")
+            print(f"请求失败，状态码: {response.status_code}")
             break
 
-# 在控制台展示分类后的持仓股票信息
-print("strategyId\toperationDate\tcode\tstkName\tpositionRatio\tprofitAndLossRatio\tprice\tindustry")
-for strategy_id, date_dict in all_data_dict.items():
-    for operation_date, stocks in date_dict.items():
-        for stock in stocks:
-            pprint(f"{strategy_id}\t{operation_date}\t{stock['code']}\t{stock['stkName']}\t{stock['positionRatio']}\t{stock['profitAndLossRatio']}\t{stock['price']}\t{stock['industry']}")
+    return all_position_data
 
-# 将分类后的持仓股票信息保存到Excel文件
-wb = openpyxl.Workbook()
-ws = wb.active
-ws.title = "历史持仓信息"
+def determine_market(stock_code):
+    # 根据股票代码判断市场
+    if stock_code.startswith(('60', '00')):
+        return '沪深A股'
+    elif stock_code.startswith('688'):
+        return '科创板'
+    elif stock_code.startswith('300'):
+        return '创业板'
+    elif stock_code.startswith(('4', '8')):
+        return '北交所'
+    else:
+        return '其他'
 
-# 写入表头
-ws.append(["strategyId", "operationDate", "code", "stkName", "positionRatio", "profitAndLossRatio", "price", "industry"])
+def extract_important_info(position_data):
+    important_info = []
 
-# 写入数据
-for strategy_id, date_dict in all_data_dict.items():
-    for operation_date, stocks in date_dict.items():
-        for stock in stocks:
-            ws.append([strategy_id, operation_date, stock['code'], stock['stkName'], stock['positionRatio'], stock['profitAndLossRatio'], stock['price'], stock['industry']])
+    for position in position_data:
+        position_date = position["positionDate"]
+        for stock in position["positionStocks"]:
+            stkCode = stock['stkCode']
+            # strategy_id = strategy_id
+            important_info.append({
+                "strategyId": strategy_id,
+                "positionDate": position_date,
+                "stkCode": stock["stkCode"],
+                "stkName": stock["stkName"],
+                "industry": stock["industry"],
+                "market": determine_market(stkCode),
+                "positionRatio": f'{stock["positionRatio"] * 100:.2f}%',
+                "price": stock["price"],
+                "profitAndLossRatio": f'{stock["profitAndLossRatio"] * 100:.2f}%'
+            })
 
-wb.save("历史持仓信息.xlsx")
+    return important_info
+
+# 指定要下载的页数
+pages_to_download = 2  # 例如，下载2页数据
+
+all_important_info = []
+
+for strategy_id in strategy_ids:
+    position_data = fetch_history_position_data(strategy_id, pages_to_download)
+    important_info = extract_important_info(position_data)
+    all_important_info.extend(important_info)
+
+# 将数据转换为DataFrame
+df = pd.DataFrame(all_important_info)
+
+# 打印DataFrame
+print(df)
+
+# 将数据保存到Excel文件
+df.to_excel("历史持仓信息.xlsx", index=False)
 print("历史持仓信息已成功保存到 '历史持仓信息.xlsx' 文件中。")

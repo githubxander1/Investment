@@ -1,0 +1,21 @@
+
+跑赢沪深300：
+url = "https://t.10jqka.com.cn/portfolioedge/calculate/v1/get_portfolio_profitability"
+业绩
+url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
+主理人介绍
+url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
+人气投顾
+url = "https://t.10jqka.com.cn/event/rank/popularity/v2"
+调仓数据概览 胜率
+url = "https://t.10jqka.com.cn/portfolio/relocate/v2/get_relocate_data_summary"
+行业信息
+"https://t.10jqka.com.cn/portfolio/v2/position/get_position_industry_info"
+仓位详情
+url = "https://t.10jqka.com.cn/portfolio/base/showRelocateData"
+组合信息
+url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
+抓涨停情况
+"https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_feature_info"
+收益曲线
+"https://t.10jqka.com.cn/portfolio/base/getPortfolioIncomeInfo"

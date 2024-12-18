@@ -57,6 +57,6 @@ if response.status_code == 200:
     # 按照tradeDate分组显示在控制台（表格形式）
     print(df.groupby('tradeDate').apply(lambda x: x[['marketCode', 'operationType', 'position', 'stkCode', 'stkName', 'tradeAmount', 'tradePrice']]))
     # 保存到Excel文件
-    df.to_excel("trade_data.xlsx", index=False)
+    df.to_excel(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\trade_data.xlsx", index=False)
 else:
     print(f"请求失败，状态码: {response.status_code}")

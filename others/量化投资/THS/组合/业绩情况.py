@@ -83,7 +83,7 @@ if all_results:
     # 打印到终端
     pprint(df)
     # 保存到Excel文件
-    df.to_excel('业绩情况.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\业绩情况.xlsx', index=False)
     print("数据已成功保存到 '业绩情况.xlsx'")
 else:
     print("没有获取到任何数据")

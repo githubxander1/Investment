@@ -186,7 +186,7 @@ def process_ids_for_new_df(ids):
 
     print('新历史调仓（当天）：')
     pprint(df)
-    df.to_excel('新历史调仓.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\新历史调仓.xlsx', index=False)
 
 
 

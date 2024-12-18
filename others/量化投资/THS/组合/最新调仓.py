@@ -56,7 +56,7 @@ def process_ids(ids):
 
     df = pd.DataFrame(all_data)
     pprint(df)
-    df.to_excel('最新调仓.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\最新调仓.xlsx', index=False)
 
 ids = [
     14533,

@@ -79,7 +79,7 @@ def main():
 
     if all_results:
         df_all = pd.DataFrame(all_results)
-        df_all.to_excel("策略今天调仓.xlsx", index=False)
+        df_all.to_excel(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\策略今天调仓.xlsx", index=False)
         print(df_all)
     else:
         logging.info("没有成功获取任何数据")

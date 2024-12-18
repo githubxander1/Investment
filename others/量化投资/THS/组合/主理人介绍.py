@@ -6,7 +6,8 @@ def get_owner_principal_info(product_id):
     """
     发送GET请求获取所有者主体信息的函数
     """
-    url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_owner_principal_info"
+    url = url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
+
     params = {
         "product_id": product_id,
         "product_type": "portfolio",
@@ -71,7 +72,7 @@ if all_results:
     # 打印到终端
     pprint(df)
     # 保存到Excel文件
-    df.to_excel('主理人介绍.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\主理人介绍.xlsx', index=False)
     print("数据已成功保存到 '主理人介绍.xlsx'")
 else:
     print("没有获取到任何数据")

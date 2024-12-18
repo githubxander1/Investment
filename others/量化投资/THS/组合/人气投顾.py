@@ -20,10 +20,13 @@ try:
     response = requests.get(url, headers=headers)
     response.raise_for_status()
     data = response.json()
-
+    pprint(data)
     if data['errorCode'] == 0:
         # 提取结果部分
         results = data['result']
+
+        # 提取所有的 userId
+        user_ids = [result['userId'] for result in results]
 
         # 将结果转换为DataFrame
         df = pd.DataFrame(results)
@@ -32,8 +35,19 @@ try:
         pprint(df)
 
         # 保存到Excel文件
-        df.to_excel('人气投顾.xlsx', index=False)
+        df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\人气投顾.xlsx', index=False)
         print("数据已成功保存到 '人气投顾.xlsx'")
+
+        # 函数来判断某个 userId 是否是人气投顾
+        def is_popular_advisor(user_id):
+            return user_id in user_ids
+
+        # 示例：判断某个 userId 是否是人气投顾
+        test_user_id = 711685127  # 这里可以替换为你想要测试的 userId
+        if is_popular_advisor(test_user_id):
+            print(f"用户ID {test_user_id} 是人气投顾")
+        else:
+            print(f"用户ID {test_user_id} 不是人气投顾")
     else:
         print(f"请求错误: {data['errorMsg']}")
 except requests.RequestException as e:

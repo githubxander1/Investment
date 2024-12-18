@@ -1,11 +1,10 @@
-from pprint import pprint
-
-import pandas as pd
 import requests
+from pprint import pprint
+import pandas as pd
 import openpyxl
 
-# 接口的URL
-url = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/history_trade?strategyId=138006&page=0&pageSize=10"
+# 接口的URL模板
+url_template = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/history_trade?strategyId=138006&page={}&pageSize=10"
 
 # 请求头，按照原始请求信息设置
 headers = {
@@ -20,57 +19,60 @@ headers = {
     "X-Requested-With": "com.hexin.plat.android"
 }
 
-# 发送GET请求
-response = requests.get(url, headers=headers)
+def fetch_history_trade_data(pages):
+    all_history_data = []
 
-# 判断请求是否成功（状态码为200）
-if response.status_code == 200:
-    data = response.json()
-    # pprint(data)
-    historyData = data["result"]["datas"]
-    print('所有调仓数据：')
-    pprint(historyData)
+    for page in range(pages):
+        url = url_template.format(page)
+        response = requests.get(url, headers=headers)
 
-    tdate = historyData['tradeDate']
-    print(tdate)
-    stradeStocks = historyData['tradeStocks']
-    operation_tradeDate = stradeStocks['tradeDate']
-    print(operation_tradeDate)
-    # 用于存储按tradeDate分类的调仓信息
-    # trade_date_dict = {}
-    # for trade_data in trade_data_list:
-    #     trade_date = trade_data["tradeDate"]
-    #     print(trade_date)
-    # for tradeStocks in trade_data['tradeStocks']:
-    #     operation_tradeDate = tradeStocks["tradeDate"]
-    #     print('操作时间')
-    #     print(operation_tradeDate)
-        # if trade_date not in trade_date_dict:
-        #     trade_date_dict[trade_date] = []
-        # trade_date_dict[trade_date].extend(trade_data["tradeStocks"])
-        # df = pd.DataFrame(trade_date_dict)
-        # print(df)
+        # 判断请求是否成功（状态码为200）
+        if response.status_code == 200:
+            data = response.json()
+            history_data = data["result"]["datas"]
+            all_history_data.extend(history_data)
+        else:
+            print(f"请求失败，状态码: {response.status_code}")
+            break
 
-    # 在控制台以表格形式输出调仓信息
-    print("tradeDate\tcode\tstkName\toperationType\ttradePrice\ttradeAmount\tposition")
-    for trade_date, stocks in trade_date_dict.items():
-        for stock in stocks:
-            print(f"{operation_tradeDate}\t{stock['code']}\t{stock['stkName']}\t{stock['operationType']}\t{stock['tradePrice']}\t{stock['tradeAmount']}\t{stock['position']}")
+    return all_history_data
 
-    # 将调仓信息保存到Excel文件
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "调仓信息"
+# 指定要下载的页数
+pages_to_download = 3 # 例如，下载5页数据
+history_data = fetch_history_trade_data(pages_to_download)
 
-    # 写入表头
-    ws.append(["tradeDate", "code", "stkName", "operationType", "tradePrice", "tradeAmount", "position"])
+print('所有调仓数据：')
+pprint(history_data)
 
-    # 写入数据
-    for trade_date, stocks in trade_date_dict.items():
-        for stock in stocks:
-            ws.append([trade_date, stock['code'], stock['stkName'], stock['operationType'], stock['tradePrice'], stock['tradeAmount'], stock['position']])
+# 用于存储按tradeDate分类的调仓信息
+trade_date_dict = {}
 
-    wb.save("调仓信息.xlsx")
-    print("调仓信息已成功保存到 '调仓信息.xlsx' 文件中。")
-else:
-    print(f"请求失败，状态码: {response.status_code}")
+for trade_data in history_data:
+    trade_date = trade_data["tradeDate"]
+    if trade_date not in trade_date_dict:
+        trade_date_dict[trade_date] = []
+    trade_date_dict[trade_date].extend(trade_data["tradeStocks"])
+
+# 在控制台以表格形式输出调仓信息
+print("tradeDate\toperation_tradeDate\tcode\tstkName\toperationType\ttradePrice\ttradeAmount\tposition")
+for trade_date, stocks in trade_date_dict.items():
+    for stock in stocks:
+        operation_tradeDate = stock['tradeDate']
+        print(f"{trade_date}\t{operation_tradeDate}\t{stock['code']}\t{stock['stkName']}\t{stock['operationType']}\t{stock['tradePrice']}\t{stock['tradeAmount']}\t{stock['position']}")
+
+# 将调仓信息保存到Excel文件
+wb = openpyxl.Workbook()
+ws = wb.active
+ws.title = "调仓信息"
+
+# 写入表头
+ws.append(["tradeDate", "operation_tradeDate", "code", "stkName", "operationType", "tradePrice", "tradeAmount", "position"])
+
+# 写入数据
+for trade_date, stocks in trade_date_dict.items():
+    for stock in stocks:
+        operation_tradeDate = stock['tradeDate']
+        ws.append([trade_date, operation_tradeDate, stock['code'], stock['stkName'], stock['operationType'], stock['tradePrice'], stock['tradeAmount'], stock['position']])
+
+wb.save("历史调仓信息.xlsx")
+print("调仓信息已成功保存到 '调仓信息.xlsx' 文件中。")

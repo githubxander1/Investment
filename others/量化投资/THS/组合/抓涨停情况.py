@@ -45,7 +45,7 @@ def process_product_ids(product_ids):
             print(f"Failed to retrieve data for product_id: {product_id}")
 
     df = pd.DataFrame(all_data)
-    df.to_excel('抓涨停情况.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\抓涨停情况.xlsx', index=False)
 
 product_ids = [
     14533,

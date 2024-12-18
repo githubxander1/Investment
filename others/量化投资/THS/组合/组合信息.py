@@ -40,6 +40,7 @@ def process_product_ids(product_ids):
     all_data = []
     for product_id in product_ids:
         result = get_package_portfolio_infos(product_id)
+        pprint(result)
         if result and result['status_code'] == 0:
             pprint(result)
             data = result['data']
@@ -50,7 +51,7 @@ def process_product_ids(product_ids):
 
     df = pd.DataFrame(all_data)
     pprint(df)
-    df.to_excel('组合信息.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合信息.xlsx', index=False)
 
 product_ids = [
     14533,

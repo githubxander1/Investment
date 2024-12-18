@@ -126,10 +126,11 @@ def main():
     ids = [
         19483, 16281, 23768, 8426, 9564, 6994, 7152, 20335, 21302, 19347, 8187, 18565, 14980, 16428
     ]
-
+    # ids =['20335']#财经皮克桃
     all_records = []
     for portfolio_id in ids:
         data = get_history_data(portfolio_id)
+        # pprint(data)
         if data:
             records = extract_and_filter_today_data(data, portfolio_id)
             all_records.extend(records)
@@ -137,7 +138,7 @@ def main():
     df = pd.DataFrame(all_records)
     df.sort_values(by='时间', ascending=False, inplace=True)
     print(df)
-    df.to_excel('调仓历史_当天.xlsx', index=False)
+    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\调仓历史_当天.xlsx', index=False)
 
 if __name__ == "__main__":
     main()
