@@ -8,22 +8,6 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s-%(levername)s-%(message)s")
 
-def save_to_excel(df, filename):
-    wb = Workbook()
-    ws = wb.active
-
-    # 将 DataFrame 写入工作表
-    for r in dataframe_to_rows(df, index=False, header=True):
-        ws.append(r)
-
-    # 自动调整列宽
-    for column_cells in ws.columns:
-        length = max(len(str(cell.value)) for cell in column_cells)
-        column = column_cells[0].column_letter
-        ws.column_dimensions[column].width = length + 2  # 加2作为缓冲
-
-    wb.save(filename)
-
 def strategy_detail(strategy_id):
     url = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/detail"
     headers = {
@@ -46,105 +30,127 @@ def strategy_detail(strategy_id):
     response = requests.get(url, headers=headers, params=params)
 
     # 判断请求是否成功（状态码为200表示成功）
-    # if response.status_code == 200:
+    if response.status_code != 200:
+        logging.warning(f"Failed to fetch data for strategy ID {strategy_id}. Status code: {response.status_code}")
+        return []
 
-    extract_data = []
-    result = response.json()['result']
-    pprint(result)
-    if result:
-        annualYield = result["annualYield"]
-        strategyName = result["strategyName"]
-        strategyType = result["strategyType"]
-        description = result["description"]
-        hqCodes = result["hqCodes"]
-        rises = result["rises"]
-        subType = result["subType"]
-        investIdea = result["investIdea"]
-        investPeriod = result["investPeriod"]
-        investStyle = result["investStyle"]
-        klineNum = result["klineNum"]
-        latestTradingDay = result["latestTradingDay"]
-        marketCodes = result["marketCodes"]
-        maxDrawDown = result["maxDrawDown"]
-        query = result["query"]
-        rateOfVolatility = result["rateOfVolatility"]
-        saleTime = result["saleTime"]
-        buyTime = result["buyTime"]
-        stkCodes = result["stkCodes"]
-        stkNames = result["stkNames"]
-        totalProfitRate = result["totalProfitRate"]
-        tradeRule = result["tradeRule"]
+    try:
+        extract_data = []
+        result = response.json()['result']
+        # pprint(result)
+        if not result:
+            return []
+        else:
+            annualYield = result["annualYield"]
+            strategyName = result["strategyName"]
+            strategyType = result["strategyType"]
+            description = result["description"]
+            hqCodes = result["hqCodes"]
+            rises = result["rises"]
+            subType = result["subType"]
+            investIdea = result["investIdea"]
+            investPeriod = result["investPeriod"]
+            investStyle = result["investStyle"]
+            klineNum = result["klineNum"]
+            latestTradingDay = result["latestTradingDay"]
+            marketCodes = result["marketCodes"]
+            maxDrawDown = result["maxDrawDown"]
+            query = result["query"]
+            rateOfVolatility = result["rateOfVolatility"]
+            saleTime = result["saleTime"]
+            buyTime = result["buyTime"]
+            stkCodes = result["stkCodes"]
+            stkNames = result["stkNames"]
+            totalProfitRate = result["totalProfitRate"]
+            tradeRule = result["tradeRule"]
 
-        stockInfoList = result["stockInfoList"]
-        for stockInfo in stockInfoList:
-            code = stockInfo["code"]
-            hqCode = stockInfo["hqCode"]
-            marketCode = stockInfo["marketCode"]
-            rise = stockInfo["rise"]
-            stkCode = stockInfo["stkCode"]
-            stkName = stockInfo["stkName"]
+            stockInfoList = result["stockInfoList"]
+            for stockInfo in stockInfoList:
+                code = stockInfo["code"]
+                hqCode = stockInfo["hqCode"]
+                marketCode = stockInfo["marketCode"]
+                rise = stockInfo["rise"]
+                stkCode = stockInfo["stkCode"]
+                stkName = stockInfo["stkName"]
 
-        conditions = result["conditions"]
-        for condition in conditions:
-            conditionKey = condition["conditionKey"]
-            conditionValue = condition["conditionValue"]
-            description = condition["description"]
+            conditions = result["conditions"]
+            for condition in conditions:
+                conditionKey = condition["conditionKey"]
+                conditionValue = condition["conditionValue"]
+                description = condition["description"]
 
-        anylysis = result["title"]
-        win_rate_value = None
-        sharpe_rate_value = None
-        industry_top3_rate_value = None
-        for anylysi in anylysis:
-            if anylysi["key"] == "win_rate":
-                win_rate_value = anylysi['value']
-            elif anylysi["key"] == "sharpe_rate":
-                sharpe_rate_value = anylysi["value"]
-            elif anylysi["key"] == "industry_top3_rate":
-                industry_top3_rate_value = anylysi["value"]
-            # label = anylysi["label"]
-            # name = anylysi["name"]
-            # value = anylysi["value"]
+            anylysis = result["title"]
+            win_rate_value = None
+            sharpe_rate_value = None
+            industry_top3_rate_value = None
+            for anylysi in anylysis:
+                if anylysi["key"] == "win_rate":
+                    win_rate_value = anylysi['value']
+                elif anylysi["key"] == "sharpe_rate":
+                    sharpe_rate_value = anylysi["value"]
+                elif anylysi["key"] == "industry_top3_rate":
+                    industry_top3_rate_value = anylysi["value"]
+                # label = anylysi["label"]
+                # name = anylysi["name"]
+                # value = anylysi["value"]
 
-        # 提取 stkName 和 rise 字段
-        extracted_info = [{"stkName": stock["stkName"], "rise": stock["rise"]} for stock in stockInfoList]
+            # 提取 stkName 和 rise 字段
+            extracted_info = [{"stkName": stock["stkName"], "rise": stock["rise"]} for stock in stockInfoList]
 
-        extract_data.append({
-            "策略ID": strategy_id,
-            "策略名称": strategyName,
-            "描述": description,
-            "说明": investIdea,
-            "周期": investPeriod,
-            "风格": investStyle,
-            "子风格": subType,
-            "选股": query,
-            "规则": tradeRule,
+            extract_data.append({
+                "策略ID": strategy_id,
+                "策略名称": strategyName,
+                "描述": description,
+                "说明": investIdea,
+                "周期": investPeriod,
+                "风格": investStyle,
+                "子风格": subType,
+                "选股": query,
+                "规则": tradeRule,
 
-            "总利润率": f"{totalProfitRate * 100:.2f}%",
-            # "总利润率": totalProfitRate * 100:.2f,
-            "年化收益": f'{annualYield * 100:.2f}%',
-            "最大回撤-20%": f"{maxDrawDown * 100:.2f}%",
-            "波动率": f"{rateOfVolatility * 100:.2f}%",
-            "胜率": f"{win_rate_value * 100:.2f}%",
-            "夏普比率-超额收益": sharpe_rate_value,
-            "持仓所属行业集中度": f"{industry_top3_rate_value * 100:.2f}%",
+                "总利润率": f"{totalProfitRate * 100:.2f}%",
+                # "总利润率": totalProfitRate * 100:.2f,
+                "年化收益": f'{annualYield * 100:.2f}%',
+                "最大回撤-20%": f"{maxDrawDown * 100:.2f}%",
+                "波动率": f"{rateOfVolatility * 100:.2f}%",
+                "胜率": f"{win_rate_value * 100:.2f}%",
+                "夏普比率-超额收益": sharpe_rate_value,
+                "持仓所属行业集中度": f"{industry_top3_rate_value * 100:.2f}%",
 
-            "选股结果": extracted_info,
-        })
+                "选股结果": extracted_info,
+            })
 
-    return extract_data
+        return extract_data
+    except Exception as e:
+        logging.error(f"Error processing data for strategy ID {strategy_id}: {str(e)}")
+        return []
+def save_to_excel(df, filename):
+    wb = Workbook()
+    ws = wb.active
+
+    # 将 DataFrame 写入工作表
+    for r in dataframe_to_rows(df, index=False, header=True):
+        ws.append(r)
+
+    # 自动调整列宽
+    for column_cells in ws.columns:
+        length = max(len(str(cell.value)) for cell in column_cells)
+        column = column_cells[0].column_letter
+        ws.column_dimensions[column].width = length + 2  # 加2作为缓冲
+
+    wb.save(filename)
+
 
 def main():
     # 要查询的id列表
-    strategy_ids = ['155259', '155680', '138036', '138386',
-                    '155270','118188','137789',
-                    '138006','136567','138127']
-
+    strategy_ids = ['155259', '155270', '137789',
+                    '155680', '138006']
     all_results = []
 
     # 遍历每个id
     for strategy_id in strategy_ids:
         result = strategy_detail(strategy_id)
-        pprint(result)
+        # pprint(result)
         if result:
             all_results.extend(result)
         # print(all_results)
@@ -154,12 +160,9 @@ def main():
     # 打印到控制台
     if all_results:
         df_all = pd.DataFrame(all_results)
-        # print(df_all)
-        # 保存为Excel文件
-        df_all.to_excel("策略详情对比.xlsx", index=False)
-        # save_to_excel(df_all,"策略详情.xlsx")
+        df_all.to_excel(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略对比.xlsx", index=False)
     else:
-        logging.info("没有成功获取任何数据")
+        logging.info("No successful data retrieved for any strategies.")
 
 if __name__ == "__main__":
     main()

@@ -264,6 +264,10 @@ def main():
     summary_df, stats_df = fetch_and_process_positions(ids)
     today_trade_df = get_all_today_trades(ids)
     # logging.info(today_trade_df)
+
+    # 打印到控制台时，去掉策略id，策略描述，说明
+    today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])
+    print(today_trade_df_print)
     post_df = process_historical_posts(ids)
     custom_sheet_names = {
         'summary_df': '持仓汇总表',

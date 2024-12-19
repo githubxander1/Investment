@@ -4,19 +4,19 @@ import pandas as pd
 import openpyxl
 
 # 接口的URL模板
-url_template = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/history_trade?strategyId=138006&page={}&pageSize=10"
+url_template = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/history_trade?strategyId=118188&page={}&pageSize=10"
 
 # 请求头，按照原始请求信息设置
 headers = {
     "Host": "ms.10jqka.com.cn",
-    "Connection": "keep-alive",
-    "Origin": "https://bowerbird.10jqka.com.cn",
-    "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme=0 innerversion=G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
-    "Accept": "*/*",
+    # "Connection": "keep-alive",
+    # "Origin": "https://bowerbird.10jqka.com.cn",
+    # "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme=0 innerversion=G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
+    # "Accept": "*/*",
     "Referer": "https://bowerbird.10jqka.com.cn/thslc/editor/view/fbea94598C?strategyId=138006",
-    "Accept-Encoding": "gzip, deflate",
-    "Accept-Language": "zh-CN,en-US;q=0.9",
-    "X-Requested-With": "com.hexin.plat.android"
+    # "Accept-Encoding": "gzip, deflate",
+    # "Accept-Language": "zh-CN,en-US;q=0.9",
+    # "X-Requested-With": "com.hexin.plat.android"
 }
 
 def fetch_history_trade_data(pages):
@@ -38,7 +38,7 @@ def fetch_history_trade_data(pages):
     return all_history_data
 
 # 指定要下载的页数
-pages_to_download = 3 # 例如，下载5页数据
+pages_to_download = 1 # 例如，下载5页数据
 history_data = fetch_history_trade_data(pages_to_download)
 
 print('所有调仓数据：')
@@ -74,5 +74,5 @@ for trade_date, stocks in trade_date_dict.items():
         operation_tradeDate = stock['tradeDate']
         ws.append([trade_date, operation_tradeDate, stock['code'], stock['stkName'], stock['operationType'], stock['tradePrice'], stock['tradeAmount'], stock['position']])
 
-wb.save(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\所有历史调仓信息.xlsx")
+wb.save(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\历史买卖_无最新.xlsx")
 print("调仓信息已成功保存到 '所有历史调仓信息.xlsx' 文件中。")

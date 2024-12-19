@@ -57,7 +57,7 @@ if response.status_code == 200:
         for stock in stocks:
             ws.append([trade_date, stock['code'], stock['stkName'], stock['operationType'], stock['tradePrice'], stock['tradeAmount'], stock['position']])
 
-    wb.save("调仓信息.xlsx")
+    wb.save(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\调仓信息.xlsx")
     print("调仓信息已成功保存到 '调仓信息.xlsx' 文件中。")
 else:
     print(f"请求失败，状态码: {response.status_code}")
