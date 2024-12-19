@@ -57,7 +57,7 @@ def get_product_info(product_id):
         print(f"请求出现错误: {e}")
         return None
 # pprint(get_product_info(19483))
-def get_history_data(portfolioId):
+def get_history_post_data(portfolioId):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
         "Host": "t.10jqka.com.cn",
@@ -89,7 +89,7 @@ def get_history_data(portfolioId):
 def process_ids(ids):
     all_data = []
     for portfolio_id in ids:
-        relocate_post = get_history_data(portfolio_id)['data']
+        relocate_post = get_history_post_data(portfolio_id)['data']
         pprint(relocate_post)
 
         extract_info = []
@@ -133,5 +133,5 @@ ids = [
 ]
 
 data = process_ids(ids)
-save_to_excel(data, r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\历史调仓_所有.xlsx")
+save_to_excel(data, r"/others/量化投资/THS/组合/保存的数据/历史调仓_所有.xlsx")
 print("已成功保存到 '历史调仓_所有.xlsx' 文件中。")

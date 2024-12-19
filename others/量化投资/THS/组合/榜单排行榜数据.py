@@ -1,10 +1,12 @@
+from pprint import pprint
+
 import requests
 import pandas as pd
 
 # 定义 listType 和对应的 Sheet 名称
 list_types = {
-    1: "日收益",
-    2: "周收益",
+    # 1: "日收益",
+    # 2: "周收益",
     3: "月收益",
     4: "总收益"
 }
@@ -27,7 +29,9 @@ headers = {
 }
 
 # 使用 ExcelWriter 将数据写入同一个 Excel 文件的不同 Sheet
-with pd.ExcelWriter(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\榜单数据.xlsx") as writer:
+print("开始爬取数据...")
+file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\榜单排行榜数据.xlsx"
+with pd.ExcelWriter(file_path) as writer:
     for list_type, sheet_name in list_types.items():
         # 请求参数
         params = {
@@ -44,10 +48,22 @@ with pd.ExcelWriter(r"D:\1document\1test\PycharmProject_gitee\others\量化投�
         # 检查响应状态码
         if response.status_code == 200:
             data = response.json()
+            pprint(f"listType: {list_type}")
+            pprint(data)
             # 将数据转换为DataFrame
             df = pd.DataFrame(data["result"]["list"])
             # 将 DataFrame 写入指定的 Sheet
             df.to_excel(writer, sheet_name=sheet_name, index=False)
+            print(f"{sheet_name} 数据已保存")
+
+            # 获取前二十条数据
+            top_data = data["result"]["list"][:20]
+            pprint(top_data)
+
+            # 将数据转换为DataFrame
+            df20 = pd.DataFrame(top_data)
+            # 将 DataFrame 写入指定的 Sheet
+            df20.to_excel(writer, sheet_name="前二十", index=False)
             print(f"{sheet_name} 数据已保存")
         else:
             print(f"请求失败，listType: {list_type}, 状态码: {response.status_code}")

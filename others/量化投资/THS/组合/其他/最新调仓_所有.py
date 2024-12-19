@@ -70,7 +70,7 @@ def get_newest_relocate_post(id):
         return None
 
 def process_ids(ids):
-    with pd.ExcelWriter(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\最新调仓_所有.xlsx') as writer:
+    with pd.ExcelWriter(r'/others/量化投资/THS/组合/保存的数据/最新调仓_所有.xlsx') as writer:
         for id in ids:
             result = get_newest_relocate_post(id)
             if result and result['status_code'] == 0:
