@@ -109,6 +109,7 @@ def get_historical_data(portfolio_id):
         logging.error(f"请求出现错误: {e}")
         return None
 
+pprint(get_historical_data(6994))
 # 获取历史调仓数据
 def get_historical_posts(portfolio_id):
     return get_historical_data(portfolio_id)
@@ -136,6 +137,7 @@ def get_all_today_trades(ids):
 
     for portfolio_id in ids:
         data = get_historical_data(portfolio_id)
+        # pprint(data)
         if data:
             for item in data['data']:
                 create_at = item['createAt']
@@ -167,6 +169,7 @@ def get_all_today_trades(ids):
 
     today_trade_df = pd.DataFrame(all_records)
     today_trade_df.sort_values(by='时间', ascending=False, inplace=True)
+    # pprint(all_records)
     return today_trade_df
 
 
@@ -200,7 +203,7 @@ def fetch_and_process_positions(ids):
     total_positive_count = sum(stats_df['positive_count'])
     total_negative_count = sum(stats_df['negative_count'])
     stats_df.loc[len(stats_df)] = [None, '总计', total_positive_count, total_negative_count, None]
-    return summary_df, stats_df
+    return summary_df
 
 # 提取和过滤历史调仓数据
 def process_historical_posts(ids):
@@ -228,6 +231,8 @@ def process_historical_posts(ids):
                     "操作类型": operation
                 })
         all_data.append((portfolio_id, extract_info))
+        # pprint('alldata')
+        # pprint(all_data)
     return all_data
 
 # 3保存数据
@@ -259,11 +264,12 @@ def save_to_excel(summary_df, today_trade_df, stats_df, post_df, ids, custom_she
 # 主程序入口
 def main():
     ids = [
-        6994, 18565, 14980, 16281, 7152, 13081, 11094
+        6994, 18565, 16281, 7152, 13081
     ]
+    # ids = [18565,14980]
     summary_df, stats_df = fetch_and_process_positions(ids)
     today_trade_df = get_all_today_trades(ids)
-    # logging.info(today_trade_df)
+    logging.info(today_trade_df)
 
     # 打印到控制台时，去掉策略id，策略描述，说明
     today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])

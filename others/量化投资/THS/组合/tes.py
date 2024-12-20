@@ -1,37 +1,14 @@
-import re
+import datetime
+from pprint import pprint
 import requests
 import pandas as pd
-from pprint import pprint
+import logging
 
+# 设置日志记录
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 定义要请求的id列表
-ids = [
-    6994, 18565, 14980, 16281, 14980, 7152, 13081, 11094
-]
-
-# 定义英文列名到中文列名的映射
-column_mapping = {
-    "策略id": "策略id",
-    "策略名称": "策略名称",
-    "策略描述": "策略描述",
-    "createAt": "创建时间",
-    "dailyIncomeRate": "日收益率",
-    "maxDrawdownRate": "最大回撤率",
-    "totalIncomeRate": "总收益率",
-    "product_name": "产品名称",
-    "product_desc": "产品描述"
-}
-
-# 存储所有结果的列表
-all_results = []
-
-
-def get_product_info(product_id):
-    """
-    根据产品ID获取产品信息
-    :param product_id: 产品ID
-    :return: 包含产品信息的字典或None
-    """
+# 获取策略名称和描述
+def get_strategy_details(product_id):
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
     headers = {
         "Host": "dq.10jqka.com.cn",
@@ -49,10 +26,7 @@ def get_product_info(product_id):
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
     }
-    params = {
-        "product_id": product_id,
-        "product_type": "portfolio"
-    }
+    params = {"product_id": product_id, "product_type": "portfolio"}
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
@@ -60,152 +34,56 @@ def get_product_info(product_id):
         if result['status_code'] == 0:
             product_name = result['data']['baseInfo']['productName']
             product_desc = result['data']['baseInfo']['productDesc']
-            user_id = result['data']['userInfo']['userId']
-            return {
-                "策略id": product_id,
-                "策略名称": product_name,
-                "策略描述": product_desc,
-                "主理人id": user_id,
-            }
+            return {"策略id": product_id, "策略名称": product_name, "策略描述": product_desc}
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            logging.error(f"Failed to retrieve data for product_id: {product_id}")
             return None
     except requests.RequestException as e:
-        print(f"请求出现错误: {e}")
+        logging.error(f"请求出现错误: {e}")
         return None
 
-
-def get_position_income_info(portfolio_id):
-    """
-    根据组合ID获取组合收益信息
-    :param portfolio_id: 组合ID
-    :return: 包含收益信息的字典或None
-    """
-    url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
-    headers = {
-        "Host": "dq.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Origin": "https://t.10jqka.com.cn",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-site",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
-    }
-    try:
-        params = {"id": portfolio_id}
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        if data['status_code'] == 0:
-            result = data['data']
-            result['策略ID'] = portfolio_id
-            create_at = result['createAt']
-            daily_income_rate = f"{result['dailyIncomeRate'] * 100:.2f}%"
-            max_drawdown_rate = f"{result['maxDrawdownRate'] * 100:.2f}%"
-            total_income_rate = f"{result['totalIncomeRate'] * 100:.2f}%"
-            return {
-                "创建时间": create_at,
-                "日收益率": daily_income_rate,
-                "最大回撤率": max_drawdown_rate,
-                "总收益率": total_income_rate
-            }
-        else:
-            print(f"请求错误 (id={portfolio_id}): {data['status_msg']}")
-            return None
-    except requests.RequestException as e:
-        print(f"请求出现错误 (id={portfolio_id}): {e}")
-        return None
-
-
-def get_package_feature_info(product_id):
-    """
-    根据产品ID获取产品特性信息
-    :param product_id: 产品ID
-    :return: 包含产品特性信息的字典或None
-    """
-    url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_feature_info"
-    headers = {
-        "Host": "dq.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "Origin": "https://t.10jqka.com.cn",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,en-US;q=0.9",
-        "X-Requested-With": "com.hexin.plat.android"
-    }
-    params = {
-        "product_id": product_id,
-        "product_type": "portfolio"
-    }
-    try:
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()
-        response = response.json()
-        data = response['data']
-        slogan = data['slogan']
-        labels = data['labels']
-        return {
-            '累抓涨停次数': re.findall(r'\d+', slogan)[0],
-            '标签': labels
-        }
-    except requests.RequestException as e:
-        print(f"请求出现错误: {e}")
-        return None
-
-
-def get_relocate_data_summary(portfolio_id):
-    """
-    根据组合ID获取调仓数据摘要
-    :param portfolio_id: 组合ID
-    :return: 包含调仓数据摘要的字典或None
-    """
-    url = "https://t.10jqka.com.cn/portfolio/relocate/v2/get_relocate_data_summary"
+# 获取当前持仓信息
+def get_current_positions(portfolio_id):
     headers = {
         "Host": "t.10jqka.com.cn",
         "Connection": "keep-alive",
         "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme=0 innerversion=G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
         "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/portfolioFront/historyTransfer.html?id=14533",
+        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,en-US;q=0.9",
-        "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNj04ODoxNzMzMT0xMTExOjo6MTY1ODE0834NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_488; escapename=mo_488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_488\",\"userid\":\"641926488\"}; hxmPid=hqMarketPkgVersionControl; v=A2J0tXgycd9rQ22D-pDEtNQeuuPEs2bNGLda8az7jlWAfw1ZlEO23ehHqgJ_",
+        "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0834NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_488\",\"userid\":\"641926488\"}; hxmPid=hqMarketPkgVersionControl; v=A-74WWxOBbvQTHHfb2LwELiaNk-w77LBxLJmzRi3Wxqu5oH1gH8C-ZRDtsvr",
+        "X-Requested-With": "com.hexin.plat.android"
     }
+    url = f"https://t.10jqka.com.cn/portfolio/relocate/user/getPortfolioHoldingData?id={portfolio_id}"
+
     params = {
-        "id": portfolio_id,
+        "id": portfolio_id
     }
     response = requests.get(url, headers=headers, params=params)
+
+    # 判断请求是否成功（状态码为200）
     if response.status_code == 200:
         data = response.json()
-        relocate_total = data["data"]["relocateTotal"]
-        profit_total = data["data"]["profitTotal"]
-        profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
-        return {
-            "调仓个股总数": relocate_total,
-            "盈利个股数": profit_total,
-            "胜率": profit_margin
-        }
+        # pprint(data)
+        positions = data["result"]["positions"]
+        for item in positions:
+            # profitLossRate = item["profitLossRate"]
+            item["incomeRate"] = f'{item["incomeRate"] * 100:.2f}%'
+            item["positionRealRatio"] = f'{item["positionRealRatio"] * 100:.2f}%'
+            item["positionRelocatedRatio"] = f'{item["positionRelocatedRatio"] * 100:.2f}%'
+            item["profitLossRate"] = f'{item["profitLossRate"] * 100:.2f}%'
+            # item["profitLossRate"] = item["profitLossRate"]   # 修改这里
+
+        return positions
     else:
-        print("请求失败，状态码:", response.status_code)
+        logging.error(f"请求失败，ID: {portfolio_id}")
+        return None
 
-
-def get_position_industry_info(portfolio_id):
-    """
-    根据组合ID获取持仓行业信息
-    :param portfolio_id: 组合ID
-    :return: 包含持仓行业信息的字典或None
-    """
-    url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_industry_info"
+# 获取历史调仓数据
+def get_historical_data(portfolio_id):
+    url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
         "Host": "t.10jqka.com.cn",
         "Connection": "keep-alive",
@@ -216,139 +94,241 @@ def get_position_industry_info(portfolio_id):
         "Sec-Fetch-Site": "same-origin",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Dest": "empty",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=A8oP8g1DmV6iqRXyZ91U_qvpGbtsu04VQD_CuVQDdp2oB2VhPEueJRDPEsAn"
+        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=A-gtFDtpG9AGTjdUiWYWoHVzu936EUwbLnUgn6IZNGNW_YfHSiEcq36F8Czx"
     }
-    params = {"id": portfolio_id}
+    params = {"id": portfolio_id, "dynamic_id": 0}
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
-        data = response.json()['data']
-        return data
+        return response.json()
     except requests.RequestException as e:
-        print(f"请求出现错误: {e}")
+        logging.error(f"请求出现错误: {e}")
         return None
 
-
-def get_portfolio_profitability_period_win_hs300(portfolio_id):
-    """
-    根据组合ID获取组合与沪深300的收益对比
-    :param portfolio_id: 组合ID
-    :return: 包含收益对比信息的字典或None
-    """
-    url = "https://t.10jqka.com.cn/portfolioedge/calculate/v1/get_portfolio_profitability"
-    headers = {
-        "Host": "t.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,en-US;q=0.9",
-        "X-Requested-With": "com.hexin.plat.android"
-    }
-    params = {
-        "id": portfolio_id
-    }
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        data = response.json()
-        if 'data' in data and 'profitabilityDataList' in data['data']:
-            profitability_data_list = data["data"]["profitabilityDataList"]
-            result = {}
-            for item in profitability_data_list:
-                time_span = item["timeSpan"]
-                portfolio_income = f'{item["portfolioIncome"] * 100:.2f}%'
-                hs300_income = f'{item["hs300Income"] * 100:.2f}%'
-                result[f'收益对比_{time_span}'] = {
-                    '组合收益': portfolio_income,
-                    '沪深300收益': hs300_income
-                }
-            return result
-        else:
-            print(f"API 响应格式不正确 (id={portfolio_id}): {data}")
-            return None
-    except requests.RequestException as e:
-        print(f"请求出现错误 (id={portfolio_id}): {e}")
-        return None
-    except Exception as e:
-        print(f"处理响应时出现错误 (id={portfolio_id}): {e}")
-        return None
-
-
-def get_popular_advisors():
-    """
-    获取人气投顾的userId列表
-    :return: 包含人气投顾userId的列表
-    """
-    url = "https://t.10jqka.com.cn/event/rank/popularity/v2"
-    headers = {
-        "Host": "t.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/tgactivity/portfolioSquare.html",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,en-US;q=0.9",
-        "Cookie": "user_status=0; user=MDptb18yNDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0,ExLDQwOzYsMSw0MDs1,ExsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1,ExsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_481926488; escapename=mo_481926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_481926488\",\"userid\":\"641926488\"}; hxmPid=sns_service_video_choice_detail_85853; v=Aw0bNHuLVti5yPKcsT7DJecHFSKH6kHtyxWlkE-SSIIT6SJYFzpRjFtutUDc",
-        "X-Requested-With": "com.hexin.plat.android"
-    }
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        if data['errorCode'] == 0:
-            results = data['result']
-            user_ids = [result['userId'] for result in results]
-            return user_ids
-        else:
-            print(f"请求错误: {data['errorMsg']}")
-            return []
-    except requests.RequestException as e:
-        print(f"请求出现错误: {e}")
-        return []
-
-
-# 主程序逻辑
-for id in ids:
-    product_info = get_product_info(id)
-    position_income_info = get_position_income_info(id)
-    relocate_data_summary = get_relocate_data_summary(id)
-    package_feature_info = get_package_feature_info(id)
-    industry_info = get_position_industry_info(id)
-    profitability_info = get_portfolio_profitability_period_win_hs300(id)
-
-    if profitability_info:
-        combined_info = {
-            **product_info,
-            **position_income_info,
-            **package_feature_info,
-            **relocate_data_summary,
-            **profitability_info
-        }
-        combined_info['持仓行业'] = industry_info
-
-        # 获取人气投顾的 userId 列表
-        popular_advisors = get_popular_advisors()
-        if product_info and '主理人id' in product_info:
-            combined_info['是否人气投顾'] = product_info['主理人id'] in popular_advisors
-        else:
-            combined_info['是否人气投顾'] = False
-
-        all_results.append(combined_info)
+# 根据股票代码判断市场
+def determine_market(stock_code):
+    if stock_code.startswith(('60', '00')):
+        return '沪深A股'
+    elif stock_code.startswith('688'):
+        return '科创板'
+    elif stock_code.startswith('300'):
+        return '创业板'
+    elif stock_code.startswith(('4', '8')):
+        return '北交所'
     else:
-        print(f"跳过，无法获取数据 (id={id})")
+        return '其他'
 
+# 处理汇总数据
+def process_summary_data(ids):
+    summary_df = pd.DataFrame(columns=[
+        '策略名称', 'code', 'costPrice', 'freezeRatio', 'incomeRate', 'marketCode',
+        'name', 'positionRealRatio', 'positionRelocatedRatio', 'price'
+    ])
+    positions_list = []
+    strategy_stats = {}
 
-# 将所有结果转换为DataFrame
-if all_results:
-    df = pd.DataFrame(all_results)
-    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\结合1.xlsx', index=False)
-    print("数据已成功保存到 '结合.xlsx'")
-else:
-    print("没有获取到任何数据")
+    for portfolio_id in ids:
+        positions = get_current_positions(portfolio_id)
+        if positions:
+            positions_list.extend([(portfolio_id, pos) for pos in positions])
+            strategy_stats[portfolio_id] = {'total_profit_loss': 0, 'positive_count': 0, 'negative_count': 0}
+
+    for portfolio_id, position in positions_list:
+        position['策略名称'] = get_strategy_details(portfolio_id).get('策略名称')
+        profit_loss_rate = float(position['profitLossRate'].rstrip('%'))
+        strategy_stats[portfolio_id]['total_profit_loss'] += profit_loss_rate
+        if profit_loss_rate > 0:
+            strategy_stats[portfolio_id]['positive_count'] += 1
+        elif profit_loss_rate < 0:
+            strategy_stats[portfolio_id]['negative_count'] += 1
+            #有报错
+        summary_df = pd.concat([summary_df, pd.DataFrame([position])], ignore_index=True)
+
+    summary_df.fillna('', inplace=True)
+
+    stats_df = pd.DataFrame(strategy_stats.items(), columns=['策略id', '统计数据'])
+    stats_df[['total_profit_loss', 'positive_count', 'negative_count']] = stats_df['统计数据'].apply(pd.Series)
+    stats_df.drop(columns=['统计数据'], inplace=True)
+    stats_df['策略名称'] = stats_df['策略id'].apply(lambda x: get_strategy_details(x).get('策略名称'))
+
+    total_positive_count = sum(stats_df['positive_count'])
+    total_negative_count = sum(stats_df['negative_count'])
+
+    stats_df.loc[len(stats_df)] = [None, '总计', total_positive_count, total_negative_count, None]
+
+    return summary_df, stats_df
+
+# 处理今天调仓数据
+def process_today_trades(ids):
+    all_records = []
+    today = datetime.date.today().strftime('%Y-%m-%d')
+
+    for portfolio_id in ids:
+        data = get_historical_data(portfolio_id)
+        # print('data')
+        # pprint(data)
+        if data:
+            for item in data['data']:
+                create_at = item['createAt']
+                date_part = create_at.split()[0]
+                if date_part == today:
+                    content = item['content']
+                    need_relocate_reason = item['needRelocateReason']
+                    for stock in item['relocateList']:
+                        code = stock['code']
+                        current_ratio = stock['currentRatio']
+                        final_price = stock['finalPrice']
+                        name = stock['name']
+
+                        # 检查股票名称是否为“匿名”
+                        if '***' in name:
+                            logging.warning(f"未订阅或股票名称显示异常 - 股票代码: {code}, 时间: {create_at}")
+                            continue
+
+                        new_ratio = stock['newRatio']
+                        market = determine_market(code)
+                        operation = '卖出' if new_ratio < current_ratio else '买入'
+
+                        all_records.append({
+                            '策略id': portfolio_id,
+                            '策略名称': get_strategy_details(portfolio_id).get("策略名称"),
+                            '描述': get_strategy_details(portfolio_id).get("策略描述"),
+                            '说明': content,
+                            '时间': create_at,
+                            '股票名称': name,
+                            '所属市场': market,
+                            '参考价': final_price,
+                            '操作': operation,
+                            '当前比例': f"{current_ratio * 100:.2f}%",
+                            '新比例': f"{new_ratio * 100:.2f}%"
+                        })
+
+    if not all_records:
+        logging.info("所选组合今天无调仓")
+        return None
+
+    today_trade_df = pd.DataFrame(all_records)
+    # today_trade_df.sort_values(by='时间', ascending=False, inplace=True)
+    # pprint(all_records)
+
+    return today_trade_df
+
+# 处理历史调仓数据
+def process_historical_posts(ids):
+    all_data = []
+
+    for portfolio_id in ids:
+        relocate_post = get_historical_data(portfolio_id)
+        if relocate_post and 'data' in relocate_post:
+            extract_info = []
+
+            for record in relocate_post['data']:
+                createAt = record['createAt']
+
+                for item in record['relocateList']:
+                    code = item['code']
+                    currentRatio = item['currentRatio']
+                    finalPrice = item['finalPrice']
+                    name = item['name']
+                    newRatio = item['newRatio']
+                    operation = '卖出' if newRatio < currentRatio else '买入'
+
+                    extract_info.append({
+                        "调仓时间": createAt,
+                        "股票代码": code,
+                        "股票名称": name,
+                        "股票市场": determine_market(code),
+                        "参考价": finalPrice,
+                        "当前比例": currentRatio,
+                        "调仓后比例": newRatio,
+                        "操作类型": operation
+                    })
+
+            all_data.append((portfolio_id, extract_info))
+
+        # pprint('alldata')
+        # pprint(all_data)
+
+    return all_data
+
+# 保存数据到Excel
+def save_to_excel(data_dict, file_path, custom_sheet_names=None):
+    """
+    将多个DataFrame保存到一个Excel文件的不同工作表中。
+
+    参数:
+    - data_dict: dict, 键为数据框名称（字符串），值为对应的数据框（pd.DataFrame）。
+    - file_path: str, Excel文件路径。
+    - custom_sheet_names: dict, 可选参数，键为数据框名称，值为自定义的工作表名称。
+    """
+    if custom_sheet_names is None:
+        custom_sheet_names = {}
+
+    with pd.ExcelWriter(file_path) as writer:
+        for df_name, df in data_dict.items():
+            if isinstance(df, list):  # 如果df是列表，则表示这是历史调仓数据
+                for portfolio_id, extract_info in df:
+                    sheet_name = custom_sheet_names.get(portfolio_id, get_strategy_details(portfolio_id).get('策略名称',
+                                                                                                             f"策略_{portfolio_id}"))
+                    sheet_name = sheet_name.replace('/', '_').replace('\\', '_')[:31]
+                    if sheet_name is not None:
+                        post_df = pd.DataFrame(extract_info)
+                        post_df.to_excel(writer, sheet_name=sheet_name, index=False)
+                    else:
+                        logging.error(f"无法获取策略名称，ID: {portfolio_id}")
+            else:
+                sheet_name = custom_sheet_names.get(df_name, df_name)
+                sheet_name = sheet_name.replace('/', '_').replace('\\', '_')[:31]
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+        if 'Sheet1' in writer.book.sheetnames:
+            del writer.book['Sheet1']
+
+    logging.info(f"已成功保存到 '{file_path}' 文件中。")
+
+# 示例用法
+def main():
+    ids = [
+          21209
+    ]
+    # ids = [
+    #      20335
+    # ]
+
+    summary_df, stats_df = process_summary_data(ids)
+
+    today_trade_df = process_today_trades(ids)
+    if today_trade_df is not None:
+        today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])
+        pprint(today_trade_df_print)
+    else:
+        logging.info("没有今天的调仓数据可供打印")
+
+    post_df = process_historical_posts(ids)
+
+    data_dict = {
+        'summary_df': summary_df,
+        'stats_df': stats_df,
+        # 'today_trade_df': today_trade_df
+    }
+
+    if today_trade_df is not None:
+        data_dict['today_trade_df'] = today_trade_df
+
+    for i, (portfolio_id, extract_info) in enumerate(post_df):
+        if extract_info:  # 检查 extract_info 是否为空
+            data_dict[f'post_df_{portfolio_id}'] = pd.DataFrame(extract_info)
+
+    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_持仓_今天调仓_历史调仓.xlsx"
+    custom_sheet_names = {
+        'summary_df': '持仓汇总表',
+        'today_trade_df': '今天调仓',
+        'stats_df': '策略收益统计'
+    }
+
+    save_to_excel(data_dict, file_path, custom_sheet_names)
+
+if __name__ == "__main__":
+    main()
