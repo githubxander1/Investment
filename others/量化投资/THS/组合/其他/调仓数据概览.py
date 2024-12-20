@@ -29,7 +29,7 @@ def get_relocate_data_summary(id):
     # 处理响应
     if response.status_code == 200:
         data = response.json()
-        pprint(data)
+        # pprint(data)
         # 提取调仓总次数
         relocate_total = data["data"]["relocateTotal"]
         # 提取盈利总次数
@@ -37,9 +37,18 @@ def get_relocate_data_summary(id):
         # 提取利润率
         profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
 
-        print("调仓个股总数:", relocate_total)
-        print("盈利个股数:", profit_total)
-        print("胜率:", profit_margin)
+        # print("调仓个股总数:", relocate_total)
+        # print("盈利个股数:", profit_total)
+        # print("胜率:", profit_margin)
         return relocate_total, profit_total, profit_margin
     else:
         print("请求失败，状态码:", response.status_code)
+
+
+# pprint(get_relocate_data_summary(19347))
+
+ids = [19347, 18565, 19880, 7152, 18868, 16281, 14980,
+       13081, 11094, 12436, 6602, 6994, 20335, 18710,
+       9564, 20244, 20245, 20442, 18669, 20205]
+for id in ids:
+    pprint(get_relocate_data_summary(id))

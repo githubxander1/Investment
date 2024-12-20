@@ -1,13 +1,15 @@
 import datetime
+import time
 from pprint import pprint
 import requests
 import pandas as pd
 import logging
 
 # 设置日志记录
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+import schedule
+from plyer import notification
 
-#1获取数据部分
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 获取策略名称和描述
 def get_strategy_details(product_id):
@@ -83,7 +85,7 @@ def get_current_positions(portfolio_id):
         logging.error(f"请求失败，ID: {portfolio_id}")
         return None
 
-# 获取历史数据
+# 获取历史调仓数据
 def get_historical_data(portfolio_id):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
@@ -109,11 +111,6 @@ def get_historical_data(portfolio_id):
         logging.error(f"请求出现错误: {e}")
         return None
 
-pprint(get_historical_data(6994))
-# 获取历史调仓数据
-def get_historical_posts(portfolio_id):
-    return get_historical_data(portfolio_id)
-
 # 根据股票代码判断市场
 def determine_market(stock_code):
     if stock_code.startswith(('60', '00')):
@@ -127,16 +124,54 @@ def determine_market(stock_code):
     else:
         return '其他'
 
+# 处理汇总数据
+def process_summary_data(ids):
+    summary_df = pd.DataFrame(columns=[
+        '策略名称', 'code', 'costPrice', 'freezeRatio', 'incomeRate', 'marketCode',
+        'name', 'positionRealRatio', 'positionRelocatedRatio', 'price'
+    ])
+    positions_list = []
+    strategy_stats = {}
 
-# 2处理数据部分
+    for portfolio_id in ids:
+        positions = get_current_positions(portfolio_id)
+        if positions:
+            positions_list.extend([(portfolio_id, pos) for pos in positions])
+            strategy_stats[portfolio_id] = {'total_profit_loss': 0, 'positive_count': 0, 'negative_count': 0}
 
-# 提取并过滤今天的调仓数
-def get_all_today_trades(ids):
+    for portfolio_id, position in positions_list:
+        position['策略名称'] = get_strategy_details(portfolio_id).get('策略名称')
+        profit_loss_rate = float(position['profitLossRate'].rstrip('%'))
+        strategy_stats[portfolio_id]['total_profit_loss'] += profit_loss_rate
+        if profit_loss_rate > 0:
+            strategy_stats[portfolio_id]['positive_count'] += 1
+        elif profit_loss_rate < 0:
+            strategy_stats[portfolio_id]['negative_count'] += 1
+            #有报错
+        summary_df = pd.concat([summary_df, pd.DataFrame([position])], ignore_index=True)
+
+    summary_df.fillna('', inplace=True)
+
+    stats_df = pd.DataFrame(strategy_stats.items(), columns=['策略id', '统计数据'])
+    stats_df[['total_profit_loss', 'positive_count', 'negative_count']] = stats_df['统计数据'].apply(pd.Series)
+    stats_df.drop(columns=['统计数据'], inplace=True)
+    stats_df['策略名称'] = stats_df['策略id'].apply(lambda x: get_strategy_details(x).get('策略名称'))
+
+    total_positive_count = sum(stats_df['positive_count'])
+    total_negative_count = sum(stats_df['negative_count'])
+
+    stats_df.loc[len(stats_df)] = [None, '总计', total_positive_count, total_negative_count, None]
+
+    return summary_df, stats_df
+
+# 处理今天调仓数据
+def process_today_trades(ids):
     all_records = []
     today = datetime.date.today().strftime('%Y-%m-%d')
 
     for portfolio_id in ids:
         data = get_historical_data(portfolio_id)
+        # print('data')
         # pprint(data)
         if data:
             for item in data['data']:
@@ -150,15 +185,24 @@ def get_all_today_trades(ids):
                         current_ratio = stock['currentRatio']
                         final_price = stock['finalPrice']
                         name = stock['name']
+
+                        # 检查股票名称是否为“匿名”
+                        if '***' in name:
+                            logging.warning(f"未订阅或股票名称显示异常 - 股票代码: {code}, 时间: {create_at}")
+                            continue
+
                         new_ratio = stock['newRatio']
                         market = determine_market(code)
                         operation = '卖出' if new_ratio < current_ratio else '买入'
-                        all_records.append({
+                        # 排除创业板的股票
+                        if market != '创业板':
+                            all_records.append({
                             '策略id': portfolio_id,
                             '策略名称': get_strategy_details(portfolio_id).get("策略名称"),
                             '描述': get_strategy_details(portfolio_id).get("策略描述"),
                             '说明': content,
                             '时间': create_at,
+                            # '股票代码': code,
                             '股票名称': name,
                             '所属市场': market,
                             '参考价': final_price,
@@ -167,120 +211,148 @@ def get_all_today_trades(ids):
                             '新比例': f"{new_ratio * 100:.2f}%"
                         })
 
+    if not all_records:
+        logging.info("所选组合今天无调仓")
+        return None
+
     today_trade_df = pd.DataFrame(all_records)
-    today_trade_df.sort_values(by='时间', ascending=False, inplace=True)
+    # today_trade_df.sort_values(by='时间', ascending=False, inplace=True)
     # pprint(all_records)
+
     return today_trade_df
 
-
-# 提取并过滤持仓数据，汇总
-def fetch_and_process_positions(ids):
-    summary_df = pd.DataFrame(columns=[
-        '策略名称', 'code', 'costPrice', 'freezeRatio', 'incomeRate', 'marketCode',
-        'name', 'positionRealRatio', 'positionRelocatedRatio', 'price'
-    ])
-    positions_list = []
-    strategy_stats = {}
-    for portfolio_id in ids:
-        positions = get_current_positions(portfolio_id)
-        if positions:
-            positions_list.extend([(portfolio_id, pos) for pos in positions])
-            strategy_stats[portfolio_id] = {'total_profit_loss': 0, 'positive_count': 0, 'negative_count': 0}
-    for portfolio_id, position in positions_list:
-        position['策略名称'] = get_strategy_details(portfolio_id).get('策略名称')
-        profit_loss_rate = float(position['profitLossRate'].rstrip('%'))
-        strategy_stats[portfolio_id]['total_profit_loss'] += profit_loss_rate
-        if profit_loss_rate > 0:
-            strategy_stats[portfolio_id]['positive_count'] += 1
-        elif profit_loss_rate < 0:
-            strategy_stats[portfolio_id]['negative_count'] += 1
-        summary_df = pd.concat([summary_df, pd.DataFrame([position])], ignore_index=True)
-    summary_df.fillna('', inplace=True)
-    stats_df = pd.DataFrame(strategy_stats.items(), columns=['策略id', '统计数据'])
-    stats_df[['total_profit_loss', 'positive_count', 'negative_count']] = stats_df['统计数据'].apply(pd.Series)
-    stats_df.drop(columns=['统计数据'], inplace=True)
-    stats_df['策略名称'] = stats_df['策略id'].apply(lambda x: get_strategy_details(x).get('策略名称'))
-    total_positive_count = sum(stats_df['positive_count'])
-    total_negative_count = sum(stats_df['negative_count'])
-    stats_df.loc[len(stats_df)] = [None, '总计', total_positive_count, total_negative_count, None]
-    return summary_df
-
-# 提取和过滤历史调仓数据
+# 处理历史调仓数据
 def process_historical_posts(ids):
     all_data = []
+
     for portfolio_id in ids:
-        relocate_post = get_historical_posts(portfolio_id)['data']
-        extract_info = []
-        for record in relocate_post:
-            createAt = record['createAt']
-            for item in record['relocateList']:
-                code = item['code']
-                currentRatio = item['currentRatio']
-                finalPrice = item['finalPrice']
-                name = item['name']
-                newRatio = item['newRatio']
-                operation = '卖出' if newRatio < currentRatio else '买入'
-                extract_info.append({
-                    "调仓时间": createAt,
-                    "股票代码": code,
-                    "股票名称": name,
-                    "股票市场": determine_market(code),
-                    "参考价": finalPrice,
-                    "当前比例": currentRatio,
-                    "调仓后比例": newRatio,
-                    "操作类型": operation
-                })
-        all_data.append((portfolio_id, extract_info))
+        relocate_post = get_historical_data(portfolio_id)
+        if relocate_post and 'data' in relocate_post:
+            extract_info = []
+
+            for record in relocate_post['data']:
+                createAt = record['createAt']
+
+                for item in record['relocateList']:
+                    code = item['code']
+                    currentRatio = item['currentRatio']
+                    finalPrice = item['finalPrice']
+                    name = item['name']
+                    newRatio = item['newRatio']
+                    operation = '卖出' if newRatio < currentRatio else '买入'
+
+                    extract_info.append({
+                        "调仓时间": createAt,
+                        "股票代码": code,
+                        "股票名称": name,
+                        "股票市场": determine_market(code),
+                        "参考价": finalPrice,
+                        "当前比例": currentRatio,
+                        "调仓后比例": newRatio,
+                        "操作类型": operation
+                    })
+
+            all_data.append((portfolio_id, extract_info))
+
         # pprint('alldata')
         # pprint(all_data)
+
     return all_data
 
-# 3保存数据
-def save_to_excel(summary_df, today_trade_df, stats_df, post_df, ids, custom_sheet_names=None):
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_持仓_今天调仓_历史调仓.xlsx"
+# 保存数据到Excel
+def save_to_excel(data_dict, file_path, custom_sheet_names=None):
+    """
+    将多个DataFrame保存到一个Excel文件的不同工作表中。
+
+    参数:
+    - data_dict: dict, 键为数据框名称（字符串），值为对应的数据框（pd.DataFrame）。
+    - file_path: str, Excel文件路径。
+    - custom_sheet_names: dict, 可选参数，键为数据框名称，值为自定义的工作表名称。
+    """
     if custom_sheet_names is None:
         custom_sheet_names = {}
+
     with pd.ExcelWriter(file_path) as writer:
-        sheet_name_summary = custom_sheet_names.get('summary_df', "汇总表")
-        summary_df.to_excel(writer, sheet_name=sheet_name_summary, index=False)
-        if not today_trade_df.empty:
-            sheet_name_today_trade = custom_sheet_names.get('today_trade_df', "今天调仓")
-            today_trade_df.to_excel(writer, sheet_name=sheet_name_today_trade, index=False)
-        sheet_name_stats = custom_sheet_names.get('stats_df', "策略收益统计")
-        stats_df.to_excel(writer, sheet_name=sheet_name_stats, index=False)
-        for portfolio_id, extract_info in post_df:
-            sheet_name = custom_sheet_names.get(portfolio_id, get_strategy_details(portfolio_id).get('策略名称', f"策略_{portfolio_id}"))
-            sheet_name = sheet_name.replace('/', '_').replace('\\', '_')[:31]
-            if sheet_name is not None:
-                post_df = pd.DataFrame(extract_info)
-                post_df.to_excel(writer, sheet_name=sheet_name, index=False)
+        for df_name, df in data_dict.items():
+            if isinstance(df, list):  # 如果df是列表，则表示这是历史调仓数据
+                for portfolio_id, extract_info in df:
+                    sheet_name = custom_sheet_names.get(portfolio_id, get_strategy_details(portfolio_id).get('策略名称',
+                                                                                                             f"策略_{portfolio_id}"))
+                    sheet_name = sheet_name.replace('/', '_').replace('\\', '_')[:31]
+                    if sheet_name is not None:
+                        post_df = pd.DataFrame(extract_info)
+                        post_df.to_excel(writer, sheet_name=sheet_name, index=False)
+                    else:
+                        logging.error(f"无法获取策略名称，ID: {portfolio_id}")
             else:
-                logging.error(f"无法获取策略名称，ID: {portfolio_id}")
+                sheet_name = custom_sheet_names.get(df_name, df_name)
+                sheet_name = sheet_name.replace('/', '_').replace('\\', '_')[:31]
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+
         if 'Sheet1' in writer.book.sheetnames:
             del writer.book['Sheet1']
-    logging.info("已成功保存到 '组合_持仓_今天调仓_历史调仓.xlsx' 文件中。")
+
+    logging.info(f"已成功保存到 '{file_path}' 文件中。")
 
 
-# 主程序入口
+def send_notification(title, message):
+    notification.notify(
+        title=title,
+        message=message,
+        app_name="量化投资监控",
+        timeout=10
+    )
+
+# 示例用法
 def main():
-    ids = [
-        6994, 18565, 16281, 7152, 13081
-    ]
-    # ids = [18565,14980]
-    summary_df, stats_df = fetch_and_process_positions(ids)
-    today_trade_df = get_all_today_trades(ids)
-    logging.info(today_trade_df)
+    ids = [6994, 18710, 16281, 19347, 13081]
 
-    # 打印到控制台时，去掉策略id，策略描述，说明
-    today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])
-    print(today_trade_df_print)
+    summary_df, stats_df = process_summary_data(ids)
+
+    today_trade_df = process_today_trades(ids)
+
+    if today_trade_df is not None:
+        today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])
+        # 过滤掉创业板的调仓信息
+        # today_trade_df_filtered = today_trade_df[~today_trade_df['股票代码'].str.startswith('300')]
+        pprint(today_trade_df_print)
+        send_notification("今日调仓提醒", "发现今日有新的调仓操作！组合")
+    else:
+        logging.info("没有今天的调仓数据可供打印")
+
     post_df = process_historical_posts(ids)
+
+    data_dict = {
+        'summary_df': summary_df,
+        'stats_df': stats_df,
+        # 'today_trade_df': today_trade_df
+    }
+
+    if today_trade_df is not None:
+        data_dict['today_trade_df'] = today_trade_df
+
+    for i, (portfolio_id, extract_info) in enumerate(post_df):
+        if extract_info:  # 检查 extract_info 是否为空
+            data_dict[f'post_df_{portfolio_id}'] = pd.DataFrame(extract_info)
+
+    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_持仓_今天调仓_历史调仓.xlsx"
     custom_sheet_names = {
         'summary_df': '持仓汇总表',
         'today_trade_df': '今天调仓',
         'stats_df': '策略收益统计'
     }
-    save_to_excel(summary_df, today_trade_df, stats_df, post_df, ids, custom_sheet_names)
+
+    save_to_excel(data_dict, file_path, custom_sheet_names)
+
+# 定时任务
+def job():
+    if datetime.datetime.now().weekday() < 5:  # 0-4 对应周一到周五
+        main()
+
+# schedule.every().minute.do(job)
 
 if __name__ == "__main__":
     main()
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
