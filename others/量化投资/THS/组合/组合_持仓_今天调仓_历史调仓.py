@@ -9,10 +9,12 @@ import logging
 import schedule
 from plyer import notification
 
+# 设置日志记录
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 获取策略名称和描述
 def get_strategy_details(product_id):
+    """获取策略名称和描述"""
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
     headers = {
         "Host": "dq.10jqka.com.cn",
@@ -36,9 +38,11 @@ def get_strategy_details(product_id):
         response.raise_for_status()
         result = response.json()
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
-            product_desc = result['data']['baseInfo']['productDesc']
-            return {"策略id": product_id, "策略名称": product_name, "策略描述": product_desc}
+            return {
+                "策略id": product_id,
+                "策略名称": result['data']['baseInfo']['productName'],
+                "策略描述": result['data']['baseInfo']['productDesc']
+            }
         else:
             logging.error(f"Failed to retrieve data for product_id: {product_id}")
             return None
@@ -48,6 +52,7 @@ def get_strategy_details(product_id):
 
 # 获取当前持仓信息
 def get_current_positions(portfolio_id):
+    """获取当前持仓信息"""
     headers = {
         "Host": "t.10jqka.com.cn",
         "Connection": "keep-alive",
@@ -61,32 +66,24 @@ def get_current_positions(portfolio_id):
         "X-Requested-With": "com.hexin.plat.android"
     }
     url = f"https://t.10jqka.com.cn/portfolio/relocate/user/getPortfolioHoldingData?id={portfolio_id}"
-
-    params = {
-        "id": portfolio_id
-    }
-    response = requests.get(url, headers=headers, params=params)
-
-    # 判断请求是否成功（状态码为200）
-    if response.status_code == 200:
+    params = {"id": portfolio_id}
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
         data = response.json()
         # pprint(data)
         positions = data["result"]["positions"]
         for item in positions:
-            # profitLossRate = item["profitLossRate"]
-            item["incomeRate"] = f'{item["incomeRate"] * 100:.2f}%'
-            item["positionRealRatio"] = f'{item["positionRealRatio"] * 100:.2f}%'
-            item["positionRelocatedRatio"] = f'{item["positionRelocatedRatio"] * 100:.2f}%'
-            item["profitLossRate"] = f'{item["profitLossRate"] * 100:.2f}%'
-            # item["profitLossRate"] = item["profitLossRate"]   # 修改这里
-
+            for key in ['incomeRate', 'positionRealRatio', 'positionRelocatedRatio', 'profitLossRate']:
+                item[key] = f'{item[key] * 100:.2f}%'
         return positions
-    else:
-        logging.error(f"请求失败，ID: {portfolio_id}")
+    except requests.RequestException as e:
+        logging.error(f"请求失败，ID: {portfolio_id}, 错误: {e}")
         return None
 
 # 获取历史调仓数据
 def get_historical_data(portfolio_id):
+    """获取历史调仓数据"""
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
         "Host": "t.10jqka.com.cn",
@@ -113,6 +110,7 @@ def get_historical_data(portfolio_id):
 
 # 根据股票代码判断市场
 def determine_market(stock_code):
+    """根据股票代码判断市场"""
     if stock_code.startswith(('60', '00')):
         return '沪深A股'
     elif stock_code.startswith('688'):
@@ -126,6 +124,7 @@ def determine_market(stock_code):
 
 # 处理汇总数据
 def process_summary_data(ids):
+    """处理汇总数据"""
     summary_df = pd.DataFrame(columns=[
         '策略名称', 'code', 'costPrice', 'freezeRatio', 'incomeRate', 'marketCode',
         'name', 'positionRealRatio', 'positionRelocatedRatio', 'price'
@@ -136,19 +135,16 @@ def process_summary_data(ids):
     for portfolio_id in ids:
         positions = get_current_positions(portfolio_id)
         if positions:
-            positions_list.extend([(portfolio_id, pos) for pos in positions])
             strategy_stats[portfolio_id] = {'total_profit_loss': 0, 'positive_count': 0, 'negative_count': 0}
-
-    for portfolio_id, position in positions_list:
-        position['策略名称'] = get_strategy_details(portfolio_id).get('策略名称')
-        profit_loss_rate = float(position['profitLossRate'].rstrip('%'))
-        strategy_stats[portfolio_id]['total_profit_loss'] += profit_loss_rate
-        if profit_loss_rate > 0:
-            strategy_stats[portfolio_id]['positive_count'] += 1
-        elif profit_loss_rate < 0:
-            strategy_stats[portfolio_id]['negative_count'] += 1
-            #有报错
-        summary_df = pd.concat([summary_df, pd.DataFrame([position])], ignore_index=True)
+            for pos in positions:
+                pos['策略名称'] = get_strategy_details(portfolio_id).get('策略名称')
+                profit_loss_rate = float(pos['profitLossRate'].rstrip('%'))
+                strategy_stats[portfolio_id]['total_profit_loss'] += profit_loss_rate
+                if profit_loss_rate > 0:
+                    strategy_stats[portfolio_id]['positive_count'] += 1
+                elif profit_loss_rate < 0:
+                    strategy_stats[portfolio_id]['negative_count'] += 1
+                summary_df = pd.concat([summary_df, pd.DataFrame([pos])], ignore_index=True)
 
     summary_df.fillna('', inplace=True)
 
@@ -166,6 +162,7 @@ def process_summary_data(ids):
 
 # 处理今天调仓数据
 def process_today_trades(ids):
+    """处理今天调仓数据"""
     all_records = []
     today = datetime.date.today().strftime('%Y-%m-%d')
 
@@ -197,19 +194,18 @@ def process_today_trades(ids):
                         # 排除创业板的股票
                         if market != '创业板':
                             all_records.append({
-                            '策略id': portfolio_id,
-                            '策略名称': get_strategy_details(portfolio_id).get("策略名称"),
-                            '描述': get_strategy_details(portfolio_id).get("策略描述"),
-                            '说明': content,
-                            '时间': create_at,
-                            # '股票代码': code,
-                            '股票名称': name,
-                            '所属市场': market,
-                            '参考价': final_price,
-                            '操作': operation,
-                            '当前比例': f"{current_ratio * 100:.2f}%",
-                            '新比例': f"{new_ratio * 100:.2f}%"
-                        })
+                                '策略id': portfolio_id,
+                                '策略名称': get_strategy_details(portfolio_id).get("策略名称"),
+                                '描述': get_strategy_details(portfolio_id).get("策略描述"),
+                                '说明': content,
+                                '时间': create_at,
+                                '股票名称': name,
+                                '所属市场': market,
+                                '参考价': final_price,
+                                '操作': operation,
+                                '当前比例': f"{current_ratio * 100:.2f}%",
+                                '新比例': f"{new_ratio * 100:.2f}%"
+                            })
 
     if not all_records:
         logging.info("所选组合今天无调仓")
@@ -223,6 +219,7 @@ def process_today_trades(ids):
 
 # 处理历史调仓数据
 def process_historical_posts(ids):
+    """处理历史调仓数据"""
     all_data = []
 
     for portfolio_id in ids:
@@ -276,8 +273,7 @@ def save_to_excel(data_dict, file_path, custom_sheet_names=None):
         for df_name, df in data_dict.items():
             if isinstance(df, list):  # 如果df是列表，则表示这是历史调仓数据
                 for portfolio_id, extract_info in df:
-                    sheet_name = custom_sheet_names.get(portfolio_id, get_strategy_details(portfolio_id).get('策略名称',
-                                                                                                             f"策略_{portfolio_id}"))
+                    sheet_name = custom_sheet_names.get(portfolio_id, get_strategy_details(portfolio_id).get('策略名称', f"策略_{portfolio_id}"))
                     sheet_name = sheet_name.replace('/', '_').replace('\\', '_')[:31]
                     if sheet_name is not None:
                         post_df = pd.DataFrame(extract_info)
@@ -296,6 +292,7 @@ def save_to_excel(data_dict, file_path, custom_sheet_names=None):
 
 
 def send_notification(title, message):
+    """发送桌面通知"""
     notification.notify(
         title=title,
         message=message,
@@ -305,6 +302,7 @@ def send_notification(title, message):
 
 # 示例用法
 def main():
+    """主函数"""
     ids = [6994, 18710, 16281, 19347, 13081]
 
     summary_df, stats_df = process_summary_data(ids)
@@ -335,7 +333,7 @@ def main():
         if extract_info:  # 检查 extract_info 是否为空
             data_dict[f'post_df_{portfolio_id}'] = pd.DataFrame(extract_info)
 
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_持仓_今天调仓_历史调仓.xlsx"
+    file_path = r"/others/量化投资/THS/组合/保存的数据/组合_持仓_今天调仓_历史调仓.xlsx"
     custom_sheet_names = {
         'summary_df': '持仓汇总表',
         'today_trade_df': '今天调仓',
@@ -346,6 +344,7 @@ def main():
 
 # 定时任务
 def job():
+    """定时任务"""
     if datetime.datetime.now().weekday() < 5:  # 0-4 对应周一到周五
         main()
 
