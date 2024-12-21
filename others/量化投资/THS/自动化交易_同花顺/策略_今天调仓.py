@@ -19,21 +19,28 @@ strategy_id_to_name = {
     '118188': '均线粘合平台突破'
 }
 
-def fetch_strategy_profit(strategy_id):
-    ua = UserAgent()
+ua = UserAgent()
+def get_latest_position_and_trade(strategy_id):
     url = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
-    params = {
-        "strategyId": strategy_id
-    }
-    headers = {
-        "User-Agent": ua.random
-    }
+    params = {"strategyId": strategy_id}
 
+    headers = {
+        "User-Agent": ua.random,
+        "Accept": "*/*",
+        "Origin": "https://bowerbird.10jqka.com.cn",
+        "X-Requested-With": "com.hexin.plat.android",
+        "Sec-Fetch-Site": "same-site",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Referer": f"https://bowerbird.10jqka.com.cn/thsic/editor/view/15f2E0a579?strategyId={{strategy_id}}",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
+    }
     response = requests.get(url, params=params, headers=headers)
 
     if response.status_code == 200:
         data = response.json()
-
+        # pprint(data)
         # 提取 latestTrade 信息
         latest_trade = data.get('result', {}).get('latestTrade', {})
         trade_date = latest_trade.get('tradeDate', 'N/A')
@@ -41,14 +48,15 @@ def fetch_strategy_profit(strategy_id):
 
         # 提取latestTrade所需字段
         latest_trade_info = []
-        for trade in trade_stocks:
-            name = trade.get('stkName', 'N/A')
-            code = trade.get('stkCode', 'N/A').split('.')[0]  # 提取股票代码
+        today_trades_info = []
+        for trade_info in trade_stocks:
+            name = trade_info.get('stkName', 'N/A')
+            code = trade_info.get('stkCode', 'N/A').split('.')[0]  # 提取股票代码
             market = determine_market(code)  # 判断市场
-            operation = trade.get('operationType', 'N/A')
+            operation = trade_info.get('operationType', 'N/A')
             time_str = trade_date  # 使用 latestTrade 的 tradeDate
-            price = trade.get('tradePrice', 'N/A')
-            quantity = trade.get('tradeAmount', 'N/A')
+            price = trade_info.get('tradePrice', 'N/A')
+            quantity = trade_info.get('tradeAmount', 'N/A')
 
             latest_trade_info.append({
                 '策略名称': strategy_id_to_name.get(strategy_id, '未知策略'),
@@ -60,7 +68,17 @@ def fetch_strategy_profit(strategy_id):
                 '数量': quantity,
             })
 
-        return latest_trade_info, trade_date
+        # 当前日期
+        current_date = datetime.now().date().strftime('%Y%m%d')
+        # 提取当天的交易信息
+        today_trades = [trade for trade in latest_trade_info if trade['时间'] == current_date]
+        today_trades_info.append(today_trades)
+
+        # 过滤掉创业板股票的交易信息
+        all_latest_trade_info = [trade for trade in latest_trade_info if not trade['市场'] == '创业板']
+        today_trades_info = [trade for trade in latest_trade_info if not trade['市场'] == '创业板']
+
+        return trade_date, latest_trade_info,  today_trades_info
     else:
         print(f"请求失败，状态码: {response.status_code}，策略ID: {strategy_id}")
         return [], 'N/A'
@@ -89,42 +107,27 @@ def main():
                     '155680', '138006', '118188']
 
     # 存储所有策略的交易信息
-    all_latest_trade_info = []
-    all_today_trades_info = []
-
-    # 当前日期
-    current_date = datetime.now().date().strftime('%Y%m%d')
-
-    # 遍历每个策略ID，获取其交易信息
     for strategy_id in strategy_ids:
-        latest_trade_info, trade_date = fetch_strategy_profit(strategy_id)
-        all_latest_trade_info.extend(latest_trade_info)
-        pprint(all_latest_trade_info)
-
-        # 提取当天的交易信息
-        today_trades = [trade for trade in latest_trade_info if trade['时间'] == current_date]
-        # all_today_trades_info.extend(today_trades)
-
-        # 过滤掉创业板股票的交易信息
-        # all_latest_trade_info = [trade for trade in all_latest_trade_info if not trade['市场'] == '创业板']
-        # all_today_trades_info = [trade for trade in all_today_trades_info if not trade['市场'] == '创业板']
+        all_latest_trade_info = get_latest_position_and_trade(strategy_id)
+        print(all_latest_trade_info)
+        all_today_trades_info = []
 
     # 创建DataFrame
     last_trades_df = pd.DataFrame(all_latest_trade_info)
-    today_trades_df = pd.DataFrame(all_today_trades_info)
+    today_trades_without_cyb_df = pd.DataFrame(all_today_trades_info)
 
     # 检查是否有数据并保存
-    if not last_trades_df.empty:
-        # today_trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\策略今天调仓.xlsx'
-        today_trades_file_path = r'/others/量化投资/THS/自动化交易_同花顺/保存的数据\策略今天调仓.xlsx'
+    if not today_trades_without_cyb_df.empty:
+        today_trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\策略今天调仓.xlsx'
+        # today_trades_file_path = r'/others/量化投资/THS/自动化交易_同花顺/保存的数据\策略今天调仓.xlsx'
         save_to_excel(last_trades_df, today_trades_file_path, '策略今天调仓')
     else:
         print("No today's trade data to save.")
 
     # 打印当天交易信息到控制台
     print("\n当天交易信息:")
-    if not last_trades_df.empty:
-        print(last_trades_df)
+    if not today_trades_without_cyb_df.empty:
+        print(today_trades_without_cyb_df)
         # 发送系统通知
         notification.notify(
             title="今日调仓提醒",

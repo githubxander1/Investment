@@ -100,7 +100,7 @@ def process_today_trades(ids):
             for item in data['data']:
                 create_at = item['createAt']
                 date_part = create_at.split()[0]
-                if date_part != today:
+                if date_part == today:
                     content = item['content']
                     need_relocate_reason = item['needRelocateReason']
                     for stock in item['relocateList']:
