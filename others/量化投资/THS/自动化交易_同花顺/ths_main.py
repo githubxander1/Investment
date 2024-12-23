@@ -1,12 +1,20 @@
+# ths_main.py
 import logging
 import os
 import time
 import pandas as pd
-from pprint import pprint
 
 import uiautomator2 as u2
 from others.量化投资.THS.自动化交易_同花顺.ths_logger import setup_logger
 from others.量化投资.THS.自动化交易_同花顺.ths_page import THSPage
+from file_monitor import FileMonitor
+from notification import send_notification
+from scheduler import Scheduler
+
+# 记录操作历史的文件路径
+OPERATION_HISTORY_FILE = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\operation_history.csv'
+# 文件夹路径
+WATCHED_FOLDER = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据'
 
 def connect_to_device():
     try:
@@ -19,7 +27,7 @@ def connect_to_device():
 
 def start_app(d, package_name):
     try:
-        d.app_start(package_name,wait=True)
+        d.app_start(package_name, wait=True)
         logger.info(f"启动app: {package_name}")
     except Exception as e:
         logger.error(f"启动app失败 {package_name}: {e}", exc_info=True)
@@ -47,6 +55,7 @@ def process_excel_files(d, ths_page, file_paths, operation_history_df):
                 if operation_history_df[(operation_history_df['stock_name'] == stock_name) & (operation_history_df['operation'] == operation)].empty:
                     if operation == 'SALE':
                         success = ths_page.sell_stock(stock_name, '200')
+                        send_notification(f"卖出 {stock_name} {'成功' if success else '失败'}")
                         if success:
                             datas.append({'stock_name': stock_name, 'operation': operation})
                             logger.info(f'卖出 {stock_name} 流程结束')
@@ -54,6 +63,7 @@ def process_excel_files(d, ths_page, file_paths, operation_history_df):
                             logger.error(f'卖出 {stock_name} 失败')
                     elif operation == 'BUY':
                         success = ths_page.buy_stock(stock_name, 200)
+                        send_notification(f"买入 {stock_name} {'成功' if success else '失败'}")
                         if success:
                             datas.append({'stock_name': stock_name, 'operation': operation})
                             logger.info(f'买入 {stock_name} 流程结束')
@@ -90,7 +100,15 @@ def main():
     # 加载操作历史
     operation_history_df = load_operation_history()
 
-    process_excel_files(d, ths_page, file_paths, operation_history_df)
+    # 文件监控
+    file_monitor = FileMonitor(WATCHED_FOLDER, lambda: process_excel_files(d, ths_page, file_paths, operation_history_df))
+    file_monitor_thread = threading.Thread(target=file_monitor.start)
+    file_monitor_thread.start()
+
+    # 定时任务
+    scheduler = Scheduler(30, lambda: process_excel_files(d, ths_page, file_paths, operation_history_df))
+    scheduler_thread = threading.Thread(target=scheduler.start)
+    scheduler_thread.start()
 
     # 打印设备信息
     device_info = d.info
@@ -101,8 +119,4 @@ def main():
 
 if __name__ == "__main__":
     logger = setup_logger(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\ths_auto_trade_log.txt')
-
-    # 记录操作历史的文件路径
-    OPERATION_HISTORY_FILE = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\operation_history.csv'
-
     main()
