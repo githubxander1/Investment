@@ -1,20 +1,17 @@
-# ths_main.py
+# 自动化交易.py
 import logging
 import os
+import threading
 import time
 import pandas as pd
 
 import uiautomator2 as u2
 from others.量化投资.THS.自动化交易_同花顺.ths_logger import setup_logger
-from others.量化投资.THS.自动化交易_同花顺.ths_page import THSPage
-from file_monitor import FileMonitor
-from notification import send_notification
-from scheduler import Scheduler
+from others.量化投资.THS.自动化交易_同花顺.整合.pages.ths_page import THSPage
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.file_monitor import FileMonitor
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.scheduler import Scheduler
 
-# 记录操作历史的文件路径
-OPERATION_HISTORY_FILE = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\operation_history.csv'
-# 文件夹路径
-WATCHED_FOLDER = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据'
 
 def connect_to_device():
     try:
