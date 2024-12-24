@@ -65,6 +65,13 @@ class THSPage:
     def withdraw_button(self):
         return self.d(resourceId="com.hexin.plat.android:id/confirm_btn_view", text='撤单')
 
+    def buy_fail_dialog_text(self):
+        text = '柜台 :可用余额不够'
+        # 使用f-string进行格式化，以便在正则表达式中包含特定文案
+        regex_pattern = fr"^.*{text}.*$"
+
+        # 使用uiautomator2的d()函数进行定位
+        return self.d(text=regex_pattern)
 
     def stock_log_button(self):
         return self.d(resourceId="com.hexin.plat.android:id/iv_stock_log")
@@ -143,6 +150,10 @@ class THSPage:
                 time.sleep(1)
                 self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
                 return True
+            elif self.buy_fail_dialog_text().exists:
+                logger.error(f"买入失败 {stock_name}: 资金不足")
+                time.sleep(1)
+                self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
             else:
                 logger.error(f"买入失败 {stock_name}: 确认按钮点击后未显示撤单按钮")
                 time.sleep(1)
