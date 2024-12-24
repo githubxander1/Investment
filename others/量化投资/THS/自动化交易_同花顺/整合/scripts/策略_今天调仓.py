@@ -12,7 +12,7 @@ from fake_useragent import UserAgent
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.api_client import APIClient
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, API_URL, HEADERS, \
-    STRATEGY_TODAY_ADJUSTMENT_FILE, STRATEGY_ID_TO_NAME
+    STRATEGY_TODAY_ADJUSTMENT_FILE, STRATEGY_ID_TO_NAME, OPRATION_RECORD_DONE_FILE
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.ths_logger import setup_logger
 
 logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
@@ -117,11 +117,15 @@ def main():
     if not today_trades_without_cyb_df.empty:
         save_to_excel(today_trades_without_cyb_df, STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')
         send_notification( "今天有新的调仓操作！策略")
+        # 创建标志文件
+        with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
+            f.write("组合调仓已完成")
         logger.info(f'去除创业板的今天交易信息\n{today_trades_without_cyb_df}')
     else:
         logger.info("No today's trade data available.")
 
     logger.info("策略调仓信息处理完成")
+
 
 if __name__ == '__main__':
     main()

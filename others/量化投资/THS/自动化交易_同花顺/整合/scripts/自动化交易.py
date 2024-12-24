@@ -1,17 +1,22 @@
-# scripts/自动化交易.py
+import datetime
 import logging
 import os
 import threading
 import time
 import pandas as pd
 import uiautomator2 as u2
-from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import THS_AUTO_TRADE_LOG_FILE_MAIN, OPERATION_HISTORY_FILE, DATA_DIR, \
-    WATCHED_FOLDER, SUCCESSFUL_OPERATIONS_FILE
+from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import (
+    THS_AUTO_TRADE_LOG_FILE_MAIN,
+    OPERATION_HISTORY_FILE,
+    SUCCESSFUL_OPERATIONS_FILE,
+    DATA_DIR,
+    WATCHED_FOLDER,
+    OPRATION_RECORD_DONE_FILE
+)
 from others.量化投资.THS.自动化交易_同花顺.整合.pages.ths_page import THSPage
-from others.量化投资.THS.自动化交易_同花顺.整合.utils.file_monitor import FileMonitor
-from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
-from others.量化投资.THS.自动化交易_同花顺.整合.utils.scheduler import Scheduler
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.ths_logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.file_monitor_utils import start_file_monitor
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.trade_operations import process_excel_files
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_MAIN)
 
@@ -28,159 +33,99 @@ def start_app(d, package_name):
     try:
         d.app_start(package_name, wait=True)
         logger.info(f"启动app: {package_name}")
+        return True
     except Exception as e:
         logger.error(f"启动app失败 {package_name}: {e}", exc_info=True)
+        return False
 
-def load_operation_history():
-    if not os.path.exists(OPERATION_HISTORY_FILE):
-        logger.info(f"文件 {OPERATION_HISTORY_FILE} 不存在，创建一个新的空 DataFrame")
-        return pd.DataFrame(columns=['stock_name', 'operation', 'status'])
-
-    try:
-        df = pd.read_csv(OPERATION_HISTORY_FILE)
-        if df.empty:
-            logger.info(f"文件 {OPERATION_HISTORY_FILE} 为空，返回一个新的空 DataFrame")
-            return pd.DataFrame(columns=['stock_name', 'operation', 'status'])
-        return df
-    except pd.errors.EmptyDataError:
-        logger.info(f"文件 {OPERATION_HISTORY_FILE} 为空，返回一个新的空 DataFrame")
-        return pd.DataFrame(columns=['stock_name', 'operation', 'status'])
-    except Exception as e:
-        logger.error(f"读取文件 {OPERATION_HISTORY_FILE} 时出错: {e}")
-        raise
-
-def load_successful_operations():
-    if not os.path.exists(SUCCESSFUL_OPERATIONS_FILE):
-        logger.info(f"文件 {SUCCESSFUL_OPERATIONS_FILE} 不存在，创建一个新的空 DataFrame")
-        return pd.DataFrame(columns=['stock_name', 'operation', 'status'])
-
-    try:
-        df = pd.read_csv(SUCCESSFUL_OPERATIONS_FILE)
-        if df.empty:
-            logger.info(f"文件 {SUCCESSFUL_OPERATIONS_FILE} 为空，返回一个新的空 DataFrame")
-            return pd.DataFrame(columns=['stock_name', 'operation', 'status'])
-        return df
-    except pd.errors.EmptyDataError:
-        logger.info(f"文件 {SUCCESSFUL_OPERATIONS_FILE} 为空，返回一个新的空 DataFrame")
-        return pd.DataFrame(columns=['stock_name', 'operation', 'status'])
-    except Exception as e:
-        logger.error(f"读取文件 {SUCCESSFUL_OPERATIONS_FILE} 时出错: {e}")
-        raise
-
-def save_operation_history(operation_history_df):
-    operation_history_df.to_csv(OPERATION_HISTORY_FILE, index=False)
-
-def save_successful_operations(successful_operations_df):
-    successful_operations_df.to_csv(SUCCESSFUL_OPERATIONS_FILE, index=False)
-
-def process_excel_files(d, ths_page, file_paths, operation_history_df, successful_operations_df):
-    datas = []
-    successful_datas = []
-    for file_path in file_paths:
-        logger.info(f"要操作的文件路径: {file_path}")
-        if not os.path.exists(file_path):
-            logger.warning(f"文件不存在: {file_path}")
-            continue
-        try:
-            df = pd.read_excel(file_path)
-            for index, row in df.iterrows():
-                stock_name = row['股票名称']
-                operation = row['操作']
-                if operation_history_df[(operation_history_df['stock_name'] == stock_name) & (operation_history_df['operation'] == operation)].empty:
-                    if operation == 'SALE':
-                        success = ths_page.sell_stock(stock_name, '200')
-                        send_notification(f"卖出 {stock_name} {'成功' if success else '失败'}")
-                        datas.append({'stock_name': stock_name, 'operation': operation, 'status': 'success' if success else 'failure'})
-                        if success:
-                            successful_datas.append({'stock_name': stock_name, 'operation': operation, 'status': 'success'})
-                            logger.info(f'卖出 {stock_name} 流程结束, 操作已记录')
-                        else:
-                            logger.error(f'卖出 {stock_name} 失败, 操作已记录')
-                    elif operation == 'BUY':
-                        success = ths_page.buy_stock(stock_name, 200)
-                        send_notification(f"买入 {stock_name} {'成功' if success else '失败'}")
-                        datas.append({'stock_name': stock_name, 'operation': operation, 'status': 'success' if success else 'failure'})
-                        if success:
-                            successful_datas.append({'stock_name': stock_name, 'operation': operation, 'status': 'success'})
-                            logger.info(f'买入 {stock_name} 流程结束, 操作已记录')
-                        else:
-                            logger.error(f'买入 {stock_name} 失败, 操作已记录')
-                    else:
-                        logger.warning(f"未知操作类型: {operation} 对于股票: {stock_name}")
-                else:
-                    logger.info(f"股票 {stock_name} 的操作 {operation} 已经执行过，跳过")
-        except Exception as e:
-            logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
-        # 更新操作历史
-        if datas:
-            operation_history_df = pd.concat([operation_history_df, pd.DataFrame(datas)], ignore_index=True)
-            datas = []
-            save_operation_history(operation_history_df)
-        # 更新成功操作记录
-        if successful_datas:
-            successful_operations_df = pd.concat([successful_operations_df, pd.DataFrame(successful_datas)], ignore_index=True)
-            successful_datas = []
-            save_successful_operations(successful_operations_df)
-    return operation_history_df, successful_operations_df
-
-def main():
+def initialize_device():
     d = connect_to_device()
     if d is None:
-        return
+        logger.error("连接设备失败，退出程序")
+        return None
+    if not start_app(d, 'com.hexin.plat.android'):
+        logger.error("启动APP失败，退出程序")
+        return None
+    return d
+def load_file(file_path, columns):
+    if not os.path.exists(file_path):
+        logger.info(f"文件 {file_path} 不存在，创建一个新的空 DataFrame")
+        return os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-    start_app(d, 'com.hexin.plat.android')
-    # 打印设备信息
-    device_info = d.info
-    logger.info(f"设备信息: {device_info}")
+    try:
+        df = pd.read_csv(file_path)
+        if df.empty:
+            logger.info(f"文件 {file_path} 为空，返回一个新的空 DataFrame")
+            return pd.DataFrame(columns=columns)
+        return df
+    except pd.errors.EmptyDataError:
+        logger.info(f"文件 {file_path} 为空，返回一个新的空 DataFrame")
+        return pd.DataFrame(columns=columns)
+    except Exception as e:
+        logger.error(f"读取文件 {file_path} 时出错: {e}")
+        raise
+def load_operation_data():
+    operation_history_df = load_file(OPERATION_HISTORY_FILE, ['stock_name', 'operation', 'status'])
+    logger.info(f'加载操作历史: \n{operation_history_df}')
+    successful_operations_df = load_file(SUCCESSFUL_OPERATIONS_FILE, ['stock_name', 'operation', 'status'])
+    logger.info(f'加载成功操作记录: \n{successful_operations_df}')
+    return operation_history_df, successful_operations_df
+def wait_for_flag_file(flag_file):
+    while not os.path.exists(flag_file):
+        logger.info("等待调仓操作记录完成的标志文件...")
+        time.sleep(10)
+    logger.info("检测到文件改动，今日调仓操作已记录完成，等待一分钟后开始自动化交易...")
+    time.sleep(20)
+    os.remove(flag_file)
+    logger.info("标志文件已删除")
+
+
+def main():
+    global processed_files
+
+    # 等待组合调仓完成的标志文件
+    flag_file = OPRATION_RECORD_DONE_FILE
+    wait_for_flag_file(flag_file)
+
+    # 初始化设备
+    d = initialize_device()
+    if d is None:
+        return
 
     time.sleep(10)
 
     ths_page = THSPage(d)
+
+
+    # 加载操作数据
+    operation_history_df, successful_operations_df = load_operation_data()
 
     # 假设Excel文件在同目录下的data文件夹中
     file_paths = [
         os.path.join(DATA_DIR, '策略今天调仓.xlsx'),
         os.path.join(DATA_DIR, '组合今天调仓.xlsx')
     ]
-
-    # 加载操作历史
-    operation_history_df = load_operation_history()
-    logger.info(f'加载操作历史: {operation_history_df}')
-
-    # 加载成功操作记录
-    successful_operations_df = load_successful_operations()
-    logger.info(f'加载成功操作记录: {successful_operations_df}')
-
-    # 文件监控回调函数
-    def file_monitor_callback():
+    # 定义处理文件的函数
+    def process_files(file_paths):
         nonlocal operation_history_df, successful_operations_df
-        logger.info(f"文件监控触发，开始处理文件: {file_paths}")
-        operation_history_df, successful_operations_df = process_excel_files(d, ths_page, file_paths, operation_history_df, successful_operations_df)
-        logger.info(f'文件监控回调函数执行完毕，更新后的操作历史: {operation_history_df}')
-        logger.info(f'文件监控回调函数执行完毕，更新后的成功操作记录: {successful_operations_df}')
+        operation_history_df, successful_operations_df = process_excel_files(d, THSPage,file_paths, operation_history_df, successful_operations_df)
 
-    file_monitor = FileMonitor(WATCHED_FOLDER, file_monitor_callback)
-    logger.info(f"文件监控已启动，监控目录: {WATCHED_FOLDER}")
-    file_monitor_thread = threading.Thread(target=file_monitor.start)
-    file_monitor_thread.start()
-    logger.info(f"文件监控线程已启动")
+    # 启动文件监控
+    start_file_monitor(file_paths, process_files)
 
-    # 定时任务回调函数
-    def scheduler_callback():
-        nonlocal operation_history_df, successful_operations_df
-        logger.info(f"定时任务触发，开始处理文件: {file_paths}")
-        operation_history_df, successful_operations_df = process_excel_files(d, ths_page, file_paths, operation_history_df, successful_operations_df)
-        logger.info(f'定时任务回调函数执行完毕，更新后的操作历史: {operation_history_df}')
-        logger.info(f'定时任务回调函数执行完毕，更新后的成功操作记录: {successful_operations_df}')
-
-    # scheduler = Scheduler(180, scheduler_callback)
-    # scheduler_thread = threading.Thread(target=scheduler.start)
-    # scheduler_thread.start()
-    # logger.info(f"定时任务线程已启动，间隔: {180} 秒")
-
-    logger.info('程序运行结束')
-    # 在程序结束前调用
-    logging.shutdown()
+    # 主循环，保持程序运行
+    try:
+        while True:
+            current_time = datetime.datetime.now().time()
+            if current_time >= datetime.time(19,0):
+                logger.info("当前时间已超过15点，程序将退出")
+                break
+            time.sleep(60)  # 每分钟检查一次
+    except KeyboardInterrupt:
+        logger.info("程序被手动终止")
+    finally:
+        logger.info("程序运行结束")
+        logging.shutdown()
 
 if __name__ == "__main__":
     main()

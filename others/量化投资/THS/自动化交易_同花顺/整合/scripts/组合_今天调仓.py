@@ -1,18 +1,19 @@
 # scripts/组合_今天调仓.py
 import logging
 import datetime
+from pprint import pprint
+
 import requests
 import pandas as pd
+from datetime import time
 
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import COMBINATION_TODAY_ADJUSTMENT_LOG_FILE, \
-    COMBINATION_TODAY_ADJUSTMENT_FILE, COMBINATION_ID_TO_NAME
+    COMBINATION_TODAY_ADJUSTMENT_FILE, COMBINATION_ID_TO_NAME, OPRATION_RECORD_DONE_FILE
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.ths_logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.scheduler import Scheduler
 
 logger = setup_logger(COMBINATION_TODAY_ADJUSTMENT_LOG_FILE)
-
-
-
 
 def determine_market(stock_code):
     """根据股票代码判断市场"""
@@ -27,8 +28,44 @@ def determine_market(stock_code):
     else:
         return '其他'
 
-def fetch_latest_trades(portfolio_id):
-    """获取指定组合的最新交易信息"""
+def get_strategy_details(product_id):
+    """获取组合名称和描述"""
+    url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
+    headers = {
+        "Host": "dq.10jqka.com.cn",
+        "Connection": "keep-alive",
+        "Accept": "application/json, text/plain, */*",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Origin": "https://t.10jqka.com.cn",
+        "X-Requested-With": "com.hexin.plat.android",
+        "Sec-Fetch-Site": "same-site",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
+    }
+    params = {"product_id": product_id, "product_type": "portfolio"}
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        if result['status_code'] == 0:
+            return {
+                "组合id": product_id,
+                "组合名称": result['data']['baseInfo']['productName'],
+                "组合描述": result['data']['baseInfo']['productDesc']
+            }
+        else:
+            logger.error(f"Failed to retrieve data for product_id: {product_id}")
+            return None
+    except requests.RequestException as e:
+        logger.error(f"请求出现错误: {e}")
+        return None
+def get_historical_data(portfolio_id):
+    """获取历史调仓数据"""
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
         "Host": "t.10jqka.com.cn",
@@ -47,31 +84,68 @@ def fetch_latest_trades(portfolio_id):
     params = {"id": portfolio_id, "dynamic_id": 0}
     try:
         response = requests.get(url, params=params, headers=headers)
-        # response.raise_for_status()
-        data = response.json()
-        latest_trade = data.get('result', {}).get('latestTrade', {})
-        trade_date = latest_trade.get('tradeDate', 'N/A')
-        trade_stocks = latest_trade.get('tradeStocks', [])
-        return trade_date, trade_stocks
+        response.raise_for_status()
+        # pprint(response.json())
+        return response.json()
     except requests.RequestException as e:
-        logger.error(f"请求失败，状态码: {response.status_code}，组合ID: {portfolio_id}")
-        return None, []
+        logger.error(f"请求出现错误: {e}")
+        return None
 
-def process_trade_info(trade_info, combination_name, current_date):
-    """处理单个交易信息"""
-    code = trade_info.get('stkCode', 'N/A').split('.')[0]
-    trade_entry = {
-        '组合名称': combination_name,
-        '时间': trade_info.get('tradeDate', 'N/A'),
-        '操作': trade_info.get('operationType', 'N/A'),
-        '股票名称': trade_info.get('stkName', 'N/A'),
-        '市场': determine_market(code),
-        '参考价': trade_info.get('tradePrice', 'N/A'),
-        '数量': trade_info.get('tradeAmount', 'N/A'),
-    }
-    if trade_entry['时间'] == current_date and trade_entry['市场'] != '创业板':
-        return trade_entry
-    return None
+def process_today_trades(ids):
+    """处理今天调仓数据"""
+    all_records = []
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    # print(f'今天{today}')
+    # processed_ids = set(read_processed_ids())
+
+    for portfolio_id in ids:
+        data = get_historical_data(portfolio_id)
+        # pprint(data)
+        if data:
+            for item in data['data']:
+                create_at = item['createAt']
+                # print(f'时间{create_at}')
+                date_part = create_at.split()[0]
+                if date_part == today:
+                    content = item['content']
+                    # need_relocate_reason = item['needRelocateReason']
+                    for relocate in item['relocateList']:
+                        code = relocate['code']
+                        current_ratio = relocate['currentRatio']
+                        final_price = relocate['finalPrice']
+                        name = relocate['name']
+                        # print(name)
+
+                        # 检查股票名称是否为“匿名”
+                        if '***' in name:
+                            logger.warning(f"未订阅或股票名称显示异常 - 股票代码: {code}, 时间: {create_at}")
+                            continue
+
+                        new_ratio = relocate['newRatio']
+                        market = determine_market(code)
+                        operation = 'SALE' if new_ratio < current_ratio else 'BUY'
+                        # 排除创业板的股票
+                        # if market != '创业板':
+                        all_records.append({
+                            '组合id': portfolio_id,
+                            '组合名称': get_strategy_details(portfolio_id).get("组合名称"),
+                            '描述': get_strategy_details(portfolio_id).get("组合描述"),
+                            '说明': content,
+                            '时间': create_at,
+                            '操作': operation,
+                            '市场': market,
+                            '股票名称': name,
+                            '参考价': final_price,
+                            '当前比例': f"{current_ratio * 100:.2f}%",
+                            '新比例': f"{new_ratio * 100:.2f}%"
+                        })
+                            # processed_ids.add(unique_id)
+    # pprint(all_records)
+    if not all_records:
+        logger.info("所选组合今天无调仓")
+        return None
+
+    return all_records
 
 def save_to_excel(df, filename, sheet_name, index=False):
     """保存DataFrame到Excel文件"""
@@ -83,29 +157,48 @@ def save_to_excel(df, filename, sheet_name, index=False):
         logger.error(f"保存数据到Excel文件失败: {e}")
 
 def main():
-    combination_ids = ['1001', '1002', '1003']
+    # combination_ids = [6994, 18710, 16281, 19347, 13081,14980]
+    combination_ids = ['14980']
     all_today_trades_info_without_cyb = []
     current_date = datetime.date.today().strftime('%Y%m%d')
 
     logger.info("开始处理组合调仓信息")
-    for combination_id in combination_ids:
-        combination_name = COMBINATION_ID_TO_NAME.get(combination_id, '未知组合')
-        trade_date, trade_stocks = fetch_latest_trades(combination_id)
-        if trade_stocks:
-            for trade_info in trade_stocks:
-                processed_trade = process_trade_info(trade_info, combination_name, current_date)
-                if processed_trade:
-                    all_today_trades_info_without_cyb.append(processed_trade)
+    today_trade_df = pd.DataFrame(process_today_trades(combination_ids))
+    # print(today_trade_df)
 
-    today_trades_without_cyb_df = pd.DataFrame(all_today_trades_info_without_cyb)
-    if not today_trades_without_cyb_df.empty:
-        save_to_excel(today_trades_without_cyb_df, COMBINATION_TODAY_ADJUSTMENT_FILE, '组合今天调仓')
-        send_notification("今天有新的调仓操作！组合")
-        logger.info(f'去除创业板的今天交易信息\n{today_trades_without_cyb_df}')
+    if not today_trade_df.empty:
+        today_trade_df.to_excel(file_path, sheet_name='组合今天调仓', index=False)
+
+        today_trade_df_print = today_trade_df.drop(columns=['组合id', '描述', '说明'])
+        today_trade_without_cyb_print = today_trade_df_print[~today_trade_df['市场'].isin(['创业板', '科创板'])]
+        # print(today_trade_df_print)
+        pprint(today_trade_without_cyb_print)
+
+        if not today_trade_without_cyb_print.empty:
+            send_notification( "今日有新的调仓操作！组合")
+            logger.info("发送通知成功: 今日有新的调仓操作（非创业板）")
+            # 创建标志文件
+            with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
+                f.write("组合调仓已完成")
+        else:
+            logger.info("未发送通知: 组合今天有调仓，但是是非沪深股票")
     else:
-        logger.info("今天没有调仓操作")
+        logger.info("今天没有调仓")
 
     logger.info("组合调仓信息处理完成")
 
+# # 创建标志文件
+#     with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
+#         f.write("组合调仓已完成")
+
 if __name__ == '__main__':
+    file_path = COMBINATION_TODAY_ADJUSTMENT_FILE
     main()
+
+    # start_time = time(9, 30)  # 九点半
+    # end_time = time(19, 0)    # 下午三点
+    # scheduler = Scheduler(30, main, start_time, end_time)
+    # try:
+    #     scheduler.start()
+    # except Exception as e:
+    #     logger.error(f"调度器启动失败: {e}",exc_info=True)

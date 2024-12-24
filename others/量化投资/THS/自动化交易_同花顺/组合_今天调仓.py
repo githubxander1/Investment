@@ -13,6 +13,9 @@ from others.量化投资.THS.自动化交易_同花顺.ths_logger import setup_l
 # logger.basicConfig(level=logger.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 根据股票代码判断市场
+from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import OPRATION_RECORD_DONE_FILE
+
+
 def determine_market(stock_code):
     """根据股票代码判断市场"""
     if stock_code.startswith(('60', '00')):
@@ -86,6 +89,7 @@ def get_historical_data(portfolio_id):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
+        pprint(response.json())
         return response.json()
     except requests.RequestException as e:
         logger.error(f"请求出现错误: {e}")
@@ -173,7 +177,7 @@ def main():
     11094 低位题材
     14980 波段突击'''
     # ids = [6994, 18710, 16281, 19347, 13081]
-    ids = [19347]
+    ids = [14980]
 
     today_trade_df = pd.DataFrame(process_today_trades(ids))
     # print(today_trade_df)
@@ -184,19 +188,23 @@ def main():
         today_trade_df_print = today_trade_df.drop(columns=['组合id', '描述', '说明'])
         today_trade_without_cyb_print = today_trade_df_print[today_trade_df['市场'] != '创业板']
         # print(today_trade_df_print)
-        # pprint(today_trade_without_cyb_print)
+        pprint(today_trade_without_cyb_print)
 
         if not today_trade_without_cyb_print.empty:
             send_notification("今日调仓提醒", "发现今日有新的调仓操作！组合")
             logger.info("发送通知成功: 今日有新的调仓操作（非创业板）")
+            # 创建标志文件
+            with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
+                f.write("组合调仓已完成")
         else:
             logger.info("未发送通知: 组合今天有调仓，但是是创业板股票")
     else:
         logger.info("今天没有调仓")
 
+
 if __name__ == "__main__":
     logger = setup_logger('组合_今天调仓.log')
-    file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\保存的数据\组合今天调仓.xlsx'
+    file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\data\组合今天调仓.xlsx'
     main()
     # schedule.every(30).minutes.do(main)
     # while True:
