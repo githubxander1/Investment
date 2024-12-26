@@ -99,7 +99,7 @@ if __name__ == '__main__':
         last_modification_times = get_file_modification_times(operation_history_file)
 
         # 主循环，保持程序运行
-        stop_time = datetime.time(19, 00)  # 设置停止时间为15:00
+        stop_time = datetime.time(15, 00)  # 设置停止时间为15:00
         while True:
             now = datetime.datetime.now().time()
 

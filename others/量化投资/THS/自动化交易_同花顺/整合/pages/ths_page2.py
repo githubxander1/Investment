@@ -166,8 +166,8 @@ class THSPage:
             self.buy_entry()
             self.search_stock(stock_name)
             self.input_volume(volume)
-            self.click_button_by_text('买 入(模拟炒股)')
-            # self.click_button_by_text('买 入')
+            # self.click_button_by_text('买 入(模拟炒股)')
+            self.click_button_by_text('买 入')
             self.confirm_transaction()
             time.sleep(1)
             success, info = self.handle_dialog()
@@ -185,8 +185,8 @@ class THSPage:
             self.search_stock(stock_name)
             if volume == '全仓' or volume == '半仓':
                 self.total_volume()
-                self.click_button_by_text('卖 出(模拟炒股)')
-            # self.click_button_by_text('卖 出')
+                # self.click_button_by_text('卖 出(模拟炒股)')
+                self.click_button_by_text('卖 出')
                 time.sleep(1)# 未持仓，委托数量为0
                 self.dialog_volume_zero_info = self.d(
                     resourceId='com.hexin.plat.android:id/prompt_content')  # 委托数量必须大于0
@@ -198,7 +198,8 @@ class THSPage:
                     self.click_back()
             else:
                 self.input_volume(volume)
-                self.click_button_by_text('卖 出(模拟炒股)')
+                # self.click_button_by_text('卖 出(模拟炒股)')
+                self.click_button_by_text('卖 出')
                 self.confirm_transaction()
                 time.sleep(1)
                 success, info = self.handle_dialog()
