@@ -9,7 +9,7 @@ from pprint import pprint
 #         6994,18565,14980,16281,7152,13081,11094
 #     ]
 # ids = ['7152']
-ids = [6994, 18710,16281,19347,13081]
+ids = [6994, 18710,16281,13081, 14980]
 
 # 定义英文列名到中文列名的映射
 column_mapping = {
@@ -191,14 +191,13 @@ def get_relocate_data_summary(portfolio_id):
         data = response.json()
         relocate_total = data["data"]["relocateTotal"]
         profit_total = data["data"]["profitTotal"]
-        # profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
+        profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
         # 提取利润率
-        profit_margin_percentage = f'{data["data"]["profitMargin"] * 100:.2f}%'
-        profit_margin_value = data["data"]["profitMargin"] * 100%
+# /        profit_margin_value = data["data"]["profitMargin"] * 100%
         return {
             "调仓个股总数": relocate_total,
             "盈利个股数": profit_total,
-            "胜率": profit_margin_value
+            "胜率": profit_margin
         }
     else:
         print("请求失败，状态码:", response.status_code)
@@ -356,7 +355,9 @@ for id in ids:
 # 将所有结果转换为DataFrame
 if all_results:
     df = pd.DataFrame(all_results)
-    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_性价比_胜率_累涨停数_收益对比.xlsx', index=False)
-    print("数据已成功保存到 '组合_性价比_胜率_累涨停数_收益对比_已参考.xlsx'")
+    print(df)
+    # df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_性价比_胜率_累涨停数_收益对比1.xlsx')
+    df.to_excel('组合_性价比.xlsx')
+    print("数据已成功保存到 '组合_性价比_胜率_累涨停数_收益对比.xlsx'")
 else:
     print("没有获取到任何数据")

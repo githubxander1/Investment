@@ -1,11 +1,9 @@
-# scripts/策略_今天调仓.py
 import logging
 import datetime
+from pprint import pprint
+
 import pandas as pd
 
-# from utils.notification import send_notification
-# from utils.ths_logger import setup_logger
-# from config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, STRATEGY_TODAY_ADJUSTMENT_FILE, API_URL, HEADERS
 import requests
 from fake_useragent import UserAgent
 
@@ -20,6 +18,7 @@ logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
 api_client = APIClient()
 
 ua = UserAgent()
+
 # 手动创建策略ID到策略名称的映射
 strategy_id_to_name = {
     '155259': 'TMT资金流入战法',
@@ -52,18 +51,8 @@ def get_latest_position_and_trade(strategy_id):
 
     headers = {
         "User-Agent": ua.random,
-        "Accept": "*/*",
-        "Origin": "https://bowerbird.10jqka.com.cn",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-site",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Referer": f"https://bowerbird.10jqka.com.cn/thsic/editor/view/15f2E0a579?strategyId={{strategy_id}}",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
     }
 
-    # logger.debug(f"正在请求策略ID: {strategy_id}")
     response = requests.get(url, params=params, headers=headers)
     data = response.json()
 
@@ -73,7 +62,6 @@ def get_latest_position_and_trade(strategy_id):
         trade_stocks = latest_trade.get('tradeStocks', [])
 
         latest_trade_info = []
-        today_trades_info = []
         for trade_info in trade_stocks:
             code = trade_info.get('stkCode', 'N/A').split('.')[0]
             trade_entry = {
@@ -86,13 +74,9 @@ def get_latest_position_and_trade(strategy_id):
                 '数量': trade_info.get('tradeAmount', 'N/A'),
             }
             latest_trade_info.append(trade_entry)
-            today_trades = [trade for trade in latest_trade_info if trade['时间'] == datetime.datetime.now().date().strftime('%Y%m%d')]
-            today_trades_info.extend(today_trades)
-
-        today_trades_info_without_cyb = [trade for trade in today_trades_info if not trade['市场'] == '创业板']
-        return trade_date, latest_trade_info, today_trades_info, today_trades_info_without_cyb
+        return latest_trade_info, trade_date
     else:
-        return None, [], []
+        return [], 'N/A'
 
 def save_to_excel(df, filename, sheet_name, index=False):
     try:
@@ -103,29 +87,53 @@ def save_to_excel(df, filename, sheet_name, index=False):
         logger.error(f"保存数据到Excel文件失败: {e}")
 
 def main():
-    strategy_ids = ['138006', '137789', '155259', '155270', '155680', '118188']
-    all_today_trades_info_without_cyb = []
+    strategy_ids = ['138006', '137789', '155259', '155270', '155680']
+    all_today_trades_info = []
+    all_latest_trade_info = []
 
     logger.info("开始处理策略调仓信息")
     for strategy_id in strategy_ids:
         combination_name = STRATEGY_ID_TO_NAME.get(strategy_id, '未知策略')
-        _, _, today_trades_info, today_trades_info_without_cyb = get_latest_position_and_trade(strategy_id)
-        if today_trades_info_without_cyb:
-            all_today_trades_info_without_cyb.extend(today_trades_info_without_cyb)
+        latest_trade_info, trade_date = get_latest_position_and_trade(strategy_id)
+        if latest_trade_info:
+            all_latest_trade_info.extend(latest_trade_info)
+            today_trades = [trade for trade in latest_trade_info if trade['时间'] == datetime.datetime.now().date().strftime('%Y%m%d')]
+            all_today_trades_info.extend(today_trades)
 
-    today_trades_without_cyb_df = pd.DataFrame(all_today_trades_info_without_cyb)
-    if not today_trades_without_cyb_df.empty:
-        save_to_excel(today_trades_without_cyb_df, STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')
-        send_notification( "今天有新的调仓操作！策略")
+    # 过滤掉创业板股票的交易信息
+    all_latest_trade_info_without_sc = [trade for trade in all_latest_trade_info if trade['市场'] not in ['创业板', '科创板']]
+    all_today_trades_info_without_sc = [trade for trade in all_today_trades_info if trade['市场'] not in ['创业板', '科创板']]
+
+    today_trades_without_sc_df = pd.DataFrame(all_today_trades_info_without_sc)
+
+    file_path = STRATEGY_TODAY_ADJUSTMENT_FILE
+    # 读取已存在的Excel文件
+    try:
+        existing_df = pd.read_excel(file_path, sheet_name='策略今天调仓')
+    except FileNotFoundError:
+        existing_df = pd.DataFrame()
+
+    # 找出新增的记录
+    new_records_df = today_trades_without_sc_df[
+        ~today_trades_without_sc_df.isin(existing_df.to_dict('list')).all(axis=1)]
+
+    if not new_records_df.empty:
+        # 追加保存新数据
+        save_to_excel(new_records_df, file_path, sheet_name='策略今天调仓', index=False)
+        logger.info("策略今日调仓信息已追加保存为excel")
+        logger.info(f'今日新增调仓：\n {new_records_df}')
+
+        # 发送通知
+        send_notification("今日有新的调仓操作！策略")
+        logger.info("发送通知成功: 今日有新的调仓操作（非双创）")
         # 创建标志文件
         with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
-            f.write("组合调仓已完成")
-        logger.info(f'去除创业板的今天交易信息\n{today_trades_without_cyb_df}')
+            f.write("策略调仓已完成")
+            logger.info("创建标志文件成功")
     else:
-        logger.info("No today's trade data available.")
+        logger.info("未发送通知: 组合今天有调仓，但是是非沪深股票或无新增调仓")
 
     logger.info("策略调仓信息处理完成")
-
 
 if __name__ == '__main__':
     main()

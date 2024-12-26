@@ -10,6 +10,7 @@ logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 class THSPage:
     def __init__(self, d):
         self.d = d
+        self.d.implicit_wait(10)
 
     # 元素定位
     def search_editor(self):

@@ -303,7 +303,7 @@ def send_notification(title, message):
 # 示例用法
 def main():
     """主函数"""
-    ids = [6994, 18710, 16281, 19347, 13081]
+
 
     summary_df, stats_df = process_summary_data(ids)
 
@@ -333,7 +333,7 @@ def main():
         if extract_info:  # 检查 extract_info 是否为空
             data_dict[f'post_df_{portfolio_id}'] = pd.DataFrame(extract_info)
 
-    file_path = r"/others/量化投资/THS/组合/保存的数据/组合_持仓_今天调仓_历史调仓.xlsx"
+    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_持仓_今天调仓_历史调仓.xlsx"
     custom_sheet_names = {
         'summary_df': '持仓汇总表',
         'today_trade_df': '今天调仓',
@@ -351,6 +351,17 @@ def job():
 # schedule.every().minute.do(job)
 
 if __name__ == "__main__":
+    ids = [6994, 18710, 16281, 19347, 13081,11094,20335,7152,18565,14980]
+    '''13081 好赛道出牛股
+16281 每天进步一点点
+18565 龙头一年三倍
+
+7152 中线龙头
+6994 梦想一号  死群，调仓好久好久甚至半年
+11094 低位题材
+14980 波段突击
+19347 超短稳定复利
+18710 用收益率征服您'''
     main()
     # while True:
     #     schedule.run_pending()

@@ -150,55 +150,72 @@ def process_today_trades(ids):
 def save_to_excel(df, filename, sheet_name, index=False):
     """保存DataFrame到Excel文件"""
     try:
-        with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-            df.to_excel(writer, sheet_name=sheet_name, index=index)
-        logger.info(f"成功保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
+        with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+            df.to_excel(writer, sheet_name=sheet_name, index=index, header=False, startrow=writer.sheets[sheet_name].max_row)
+        logger.info(f"成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
     except Exception as e:
-        logger.error(f"保存数据到Excel文件失败: {e}")
+        logger.error(f"追加数据到Excel文件失败: {e}")
 
 def main():
-    # combination_ids = [6994, 18710, 16281, 19347, 13081,14980]
-    combination_ids = ['14980']
+    combination_ids = [6994, 18710, 16281, 19347, 13081, 14980]
+    '''13081 好赛道出牛股
+16281 每天进步一点点
+18565 龙头一年三倍
+
+7152 中线龙头
+6994 梦想一号  死群，调仓好久好久甚至半年
+11094 低位题材
+14980 波段突击
+19347 超短稳定复利
+18710 用收益率征服您'''
+    # combination_ids = ['14980']
     all_today_trades_info_without_cyb = []
     current_date = datetime.date.today().strftime('%Y%m%d')
 
     logger.info("开始处理组合调仓信息")
     today_trade_df = pd.DataFrame(process_today_trades(combination_ids))
-    # print(today_trade_df)
 
     if not today_trade_df.empty:
-        today_trade_df.to_excel(file_path, sheet_name='组合今天调仓', index=False)
+        today_trade_print_df = today_trade_df.drop(columns=['组合id', '描述', '说明'])
+        today_trade_without_cyb_print_df = today_trade_print_df[~today_trade_df['市场'].isin(['创业板', '科创板'])]
 
-        today_trade_df_print = today_trade_df.drop(columns=['组合id', '描述', '说明'])
-        today_trade_without_cyb_print = today_trade_df_print[~today_trade_df['市场'].isin(['创业板', '科创板'])]
-        # print(today_trade_df_print)
-        pprint(today_trade_without_cyb_print)
+        # 读取已存在的Excel文件
+        try:
+            existing_df = pd.read_excel(file_path, sheet_name='组合今天调仓')
+        except FileNotFoundError:
+            existing_df = pd.DataFrame()
 
-        if not today_trade_without_cyb_print.empty:
-            send_notification( "今日有新的调仓操作！组合")
+        # 找出新增的记录
+        new_records_df = today_trade_without_cyb_print_df[~today_trade_without_cyb_print_df.isin(existing_df.to_dict('list')).all(axis=1)]
+
+        if not new_records_df.empty:
+            # 追加保存新数据
+            save_to_excel(new_records_df, file_path, sheet_name='组合今天调仓', index=False)
+            logger.info("组合今日调仓信息已追加保存为excel")
+            logger.info(f'今日新增调仓：\n {new_records_df}')
+
+            # 发送通知
+            send_notification("今日有新的调仓操作！组合")
             logger.info("发送通知成功: 今日有新的调仓操作（非创业板）")
             # 创建标志文件
             with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
                 f.write("组合调仓已完成")
+                logger.info("创建标志文件成功")
         else:
-            logger.info("未发送通知: 组合今天有调仓，但是是非沪深股票")
+            logger.info("未发送通知: 组合今天有调仓，但是是非沪深股票或无新增调仓")
     else:
         logger.info("今天没有调仓")
 
     logger.info("组合调仓信息处理完成")
 
-# # 创建标志文件
-#     with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
-#         f.write("组合调仓已完成")
-
 if __name__ == '__main__':
     file_path = COMBINATION_TODAY_ADJUSTMENT_FILE
     main()
 
-    # start_time = time(9, 30)  # 九点半
-    # end_time = time(19, 0)    # 下午三点
-    # scheduler = Scheduler(30, main, start_time, end_time)
-    # try:
-    #     scheduler.start()
-    # except Exception as e:
-    #     logger.error(f"调度器启动失败: {e}",exc_info=True)
+    start_time = time(9, 30)  # 九点半
+    end_time = time(15, 0)    # 下午三点
+    scheduler = Scheduler(15, main, start_time, end_time)
+    try:
+        scheduler.start()
+    except Exception as e:
+        logger.error(f"调度器启动失败: {e}", exc_info=True)

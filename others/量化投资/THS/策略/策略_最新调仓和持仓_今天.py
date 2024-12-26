@@ -134,7 +134,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
 def main():
     # 要查询的策略ID列表
     strategy_ids = ['155259', '155270', '137789',
-                    '155680', '138006', '118188']
+                    '155680', '138006']
     #待卖出国光股份，新华文轩，燕京啤酒后去掉118188
 
     # 存储所有策略的交易信息和持仓信息
@@ -166,19 +166,19 @@ def main():
 
     # 检查是否有数据并保存
     if not last_positions_df.empty:
-        positions_file_path = r'/others/量化投资/THS/策略/保存的数据/策略最新持仓_所有.xlsx'
+        positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
         save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
     else:
         print("No position data to save.")
 
     if not last_trades_df.empty:
-        trades_file_path = r'/others/量化投资/THS/策略/保存的数据/策略最新调仓_所有.xlsx'
+        trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
         save_to_excel(last_trades_df, trades_file_path, '策略最新调仓')
     else:
         print("No trade data to save.")
 
     if not today_trades_df.empty:
-        today_trades_file_path = r'/others/量化投资/THS/自动化交易_同花顺/保存的数据\策略今天调仓_所有.xlsx'
+        today_trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略今天调仓_所有.xlsx'
         save_to_excel(today_trades_df, today_trades_file_path, '策略今天调仓')
     else:
         print("No today's trade data to save.")

@@ -8,21 +8,23 @@ LOGS_DIR = os.path.join(BASE_DIR, 'logs')
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 # 日志文件路径
-THS_AUTO_TRADE_LOG_FILE_MAIN = os.path.join(LOGS_DIR, '自动化交易日志.log')
+THS_AUTO_TRADE_LOG_FILE = os.path.join(LOGS_DIR, '自动化交易日志.log')
 THS_AUTO_TRADE_LOG_FILE_PAGE = os.path.join(LOGS_DIR, '自动化交易日志_page.log')
 STRATEGY_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, '策略_今天调仓.log')
 COMBINATION_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, '组合_今天调仓.log')
 SCHEDULER_LOG_FILE = os.path.join(LOGS_DIR, '自动化交易定时任务.log')
 
 file_monitor_file = os.path.join(LOGS_DIR, '文件监控.log')
-trade_operations = os.path.join(LOGS_DIR, '自动化交易操作记录.log')
+trade_operations_log_file = os.path.join(LOGS_DIR, '自动化交易操作记录.log')
+
 # 数据文件路径
-OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '自动化交易操作历史.csv')
-SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
+OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.xlsx')
+SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.xlsx')
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.xlsx')
 COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.xlsx')
 
 OPRATION_RECORD_DONE_FILE = os.path.join(DATA_DIR, '调仓操作记录完成.flag')
+
 # 监控文件夹
 WATCHED_FOLDER = os.path.join(DATA_DIR)
 
