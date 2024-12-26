@@ -141,7 +141,7 @@ class THSPage:
             time.sleep(1)
             self.dialog_confirm()
             time.sleep(1)
-            self.click_back()
+            # self.click_back()
             # self.dialog_confirm()
             logger.info(f"失败,{info}")
             return False, info
@@ -209,9 +209,9 @@ class THSPage:
             logger.error(f"卖出 {stock_name} {volume} 股失败: {e}", exc_info=True)
             return False, f"卖出 {stock_name} {volume} 股失败: {e}"
 
-if __name__ == '__main__':
-
-    d = uiautomator2.connect()
-    page = THSPage(d)
-    # page.sell_stock('中国电信','半仓')
-    page.sell_stock('英维克','半仓')
+# if __name__ == '__main__':
+#
+#     d = uiautomator2.connect()
+#     page = THSPage(d)
+#     # page.sell_stock('中国电信','半仓')
+#     page.sell_stock('英维克','半仓')
