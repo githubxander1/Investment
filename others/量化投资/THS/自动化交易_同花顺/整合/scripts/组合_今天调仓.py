@@ -3,6 +3,7 @@ import logging
 import datetime
 from pprint import pprint
 
+import openpyxl
 import requests
 import pandas as pd
 from datetime import time
@@ -32,19 +33,19 @@ def get_strategy_details(product_id):
     """获取组合名称和描述"""
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
     headers = {
-        "Host": "dq.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
+        # "Host": "dq.10jqka.com.cn",
+        # "Connection": "keep-alive",
+        # "Accept": "application/json, text/plain, */*",
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Origin": "https://t.10jqka.com.cn",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-site",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
+        # "Content-Type": "application/x-www-form-urlencoded",
+        # "Origin": "https://t.10jqka.com.cn",
+        # "X-Requested-With": "com.hexin.plat.android",
+        # "Sec-Fetch-Site": "same-site",
+        # "Sec-Fetch-Mode": "cors",
+        # "Sec-Fetch-Dest": "empty",
         "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        # "Accept-Encoding": "gzip, deflate",
+        # "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
     }
     params = {"product_id": product_id, "product_type": "portfolio"}
@@ -68,17 +69,17 @@ def get_historical_data(portfolio_id):
     """获取历史调仓数据"""
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = {
-        "Host": "t.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
+        # "Host": "t.10jqka.com.cn",
+        # "Connection": "keep-alive",
+        # "Accept": "application/json, text/plain, */*",
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        # "Content-Type": "application/x-www-form-urlencoded",
+        # "X-Requested-With": "com.hexin.plat.android",
+        # "Sec-Fetch-Site": "same-origin",
+        # "Sec-Fetch-Mode": "cors",
+        # "Sec-Fetch-Dest": "empty",
+        # "Accept-Encoding": "gzip, deflate",
+        # "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=A-gtFDtpG9AGTjdUiWYWoHVzu936EUwbLnUgn6IZNGNW_YfHSiEcq36F8Czx"
     }
     params = {"id": portfolio_id, "dynamic_id": 0}
@@ -150,11 +151,43 @@ def process_today_trades(ids):
 def save_to_excel(df, filename, sheet_name, index=False):
     """保存DataFrame到Excel文件"""
     try:
-        with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
-            df.to_excel(writer, sheet_name=sheet_name, index=index, header=False, startrow=writer.sheets[sheet_name].max_row)
-        logger.info(f"成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
+        # 检查文件是否存在
+        try:
+            with pd.ExcelFile(filename) as _:
+                # 文件存在，追加模式
+                with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+                    # 检查表是否存在
+                    if sheet_name not in writer.book.sheetnames:
+                        df.to_excel(writer, sheet_name=sheet_name, index=index)
+                    else:
+                        df.to_excel(writer, sheet_name=sheet_name, index=index)
+                logger.info(f"成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
+        except FileNotFoundError:
+            # 文件不存在，创建新文件
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=index, header=True)
+            logger.info(f"成功创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
     except Exception as e:
-        logger.error(f"追加数据到Excel文件失败: {e}")
+        logger.error(f"保存数据到Excel文件失败: {e}")
+
+def clear_sheet(filename, sheet_name):
+    """清空指定Excel文件中的指定表格"""
+    try:
+        # 检查文件是否存在
+        try:
+            wb = openpyxl.load_workbook(filename)
+            if sheet_name in wb.sheetnames:
+                ws = wb[sheet_name]
+                # 删除所有行
+                ws.delete_rows(1, ws.max_row)
+                wb.save(filename)
+                logger.info(f"成功清空表格: {sheet_name} 在文件: {filename}")
+            else:
+                logger.warning(f"表格 {sheet_name} 不存在于文件: {filename}")
+        except FileNotFoundError:
+            logger.warning(f"文件 {filename} 不存在，无需清空")
+    except Exception as e:
+        logger.error(f"清空表格失败: {e}")
 
 def main():
     combination_ids = [6994, 18710, 16281, 19347, 13081, 14980]
@@ -179,32 +212,25 @@ def main():
         today_trade_print_df = today_trade_df.drop(columns=['组合id', '描述', '说明'])
         today_trade_without_cyb_print_df = today_trade_print_df[~today_trade_df['市场'].isin(['创业板', '科创板'])]
 
-        # 读取已存在的Excel文件
-        try:
-            existing_df = pd.read_excel(file_path, sheet_name='组合今天调仓')
-        except FileNotFoundError:
-            existing_df = pd.DataFrame()
+        # 清空昨天的数据
+        clear_sheet(file_path, '组合今天调仓')
 
-        # 找出新增的记录
-        new_records_df = today_trade_without_cyb_print_df[~today_trade_without_cyb_print_df.isin(existing_df.to_dict('list')).all(axis=1)]
+        # 保存今天的数据
+        save_to_excel(today_trade_without_cyb_print_df, file_path, sheet_name='组合今天调仓', index=False)
+        logger.info("组合今日调仓信息已保存为excel")
+        logger.info(f'今日调仓：\n {today_trade_without_cyb_print_df}')
 
-        if not new_records_df.empty:
-            # 追加保存新数据
-            save_to_excel(new_records_df, file_path, sheet_name='组合今天调仓', index=False)
-            logger.info("组合今日调仓信息已追加保存为excel")
-            logger.info(f'今日新增调仓：\n {new_records_df}')
-
-            # 发送通知
-            send_notification("今日有新的调仓操作！组合")
-            logger.info("发送通知成功: 今日有新的调仓操作（非创业板）")
-            # 创建标志文件
-            with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
-                f.write("组合调仓已完成")
-                logger.info("创建标志文件成功")
-        else:
-            logger.info("未发送通知: 组合今天有调仓，但是是非沪深股票或无新增调仓")
+        # 发送通知
+        send_notification("今日有新的调仓操作！组合")
+        logger.info("发送通知成功: 今日有新的调仓操作（非创业板）")
+        # 创建标志文件
+        with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
+            f.write("组合调仓已完成")
+            logger.info("创建标志文件成功")
     else:
-        logger.info("今天没有调仓")
+        # 清空昨天的数据
+        clear_sheet(file_path, '组合今天调仓')
+        logger.info("今天没有调仓，已清空昨天的数据")
 
     logger.info("组合调仓信息处理完成")
 

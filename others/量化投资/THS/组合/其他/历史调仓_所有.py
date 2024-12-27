@@ -133,5 +133,5 @@ ids = [
 ]
 
 data = process_ids(ids)
-save_to_excel(data, r"/others/量化投资/THS/组合/保存的数据/历史调仓_所有.xlsx")
+save_to_excel(data, r"/zothers/量化投资/THS/组合/保存的数据/历史调仓_所有.xlsx")
 print("已成功保存到 '历史调仓_所有.xlsx' 文件中。")

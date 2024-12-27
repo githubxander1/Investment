@@ -1,20 +1,16 @@
 import datetime
-import logging
 import os
 import sys
 import time
-import pandas as pd
 import uiautomator2 as u2
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import (
     THS_AUTO_TRADE_LOG_FILE,
     OPERATION_HISTORY_FILE,
-    DATA_DIR,
-    OPRATION_RECORD_DONE_FILE, trade_operations_log_file, STRATEGY_TODAY_ADJUSTMENT_FILE, COMBINATION_TODAY_ADJUSTMENT_FILE
+    OPRATION_RECORD_DONE_FILE, STRATEGY_TODAY_ADJUSTMENT_FILE, COMBINATION_TODAY_ADJUSTMENT_FILE
 )
 from others.量化投资.THS.自动化交易_同花顺.整合.pages.ths_page2 import THSPage
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.ths_logger import setup_logger
-from others.量化投资.THS.自动化交易_同花顺.整合.utils.file_monitor_utils import FileMonitor
-from others.量化投资.THS.自动化交易_同花顺.整合.utils.trade_operations import process_excel_files, read_operation_history, write_operation_history
+from others.量化投资.THS.自动化交易_同花顺.整合.scripts.数据处理 import process_excel_files
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE)
 

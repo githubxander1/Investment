@@ -63,7 +63,7 @@ print(result_local)
 
 # 示例调用：使用URL图片
 # url_image_url = "https://img1.baidu.com/it/u=1369931113,3388870256&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1703696400&t=f3028c7a1dca43a080aeb8239f09cc2f"
-# url_image_url = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\质谱ai\wx.png"
+# url_image_url = r"D:\1document\1test\PycharmProject_gitee\zothers\量化投资\质谱ai\wx.png"
 # result_url = analyze_image(image_source='url', image_url=url_image_url)
 # print("\nURL Image Analysis Result:")
 # print(result_url)

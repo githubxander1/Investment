@@ -1,8 +1,5 @@
-# trade_operations.py
+# 数据处理.py
 import os
-import shutil
-import tempfile
-from datetime import datetime
 
 import pandas as pd
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
@@ -14,9 +11,9 @@ from datetime import datetime
 logger = setup_logger(trade_operations_log_file)
 
 # 文件操作模块
-def get_daily_log_file():
-    today = datetime.now().strftime('%Y%m%d')
-    return os.path.join(os.path.dirname(OPERATION_HISTORY_FILE), f'交易记录_{today}.xlsx')
+# def get_daily_log_file():
+#     today = datetime.now().strftime('%Y%m%d')
+#     return os.path.join(os.path.dirname(OPERATION_HISTORY_FILE), f'交易记录_{today}.xlsx')
 
 def read_operation_history(file_path):
     today = datetime.now().strftime('%Y%m%d')
@@ -63,18 +60,6 @@ def write_operation_history(file_path, new_operation_history_df):
         with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
             updated_df.to_excel(writer, sheet_name=today, index=False)
 
-# def check_duplicate_operation(operation_history_df, stock_name, operation, current_time):
-#     existing_records = operation_history_df[
-#         (operation_history_df['股票名称'] == stock_name) &
-#         (operation_history_df['操作'] == operation) &
-#         (operation_history_df['时间'] == current_time)
-#     ]
-#
-#     if not existing_records.empty:
-#         logger.info(f"股票 {stock_name} 的操作 {operation} 已经执行过，跳过")
-#         return True
-#     return False
-
 def process_excel_files(ths_page, file_paths, operation_history_file):
     for file_path in file_paths:
         logger.info(f"检测到文件更新，即将进行操作的文件路径: {file_path}")
@@ -96,7 +81,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                     logger.info(f"{stock_name} 已经操作过，跳过")
                     continue
 
-                volume = 100000
+                volume = 200
                 status, info = ths_page.sell_stock(stock_name, volume) if operation == 'SALE' else ths_page.buy_stock(stock_name, volume)
                 logger.info(f"{operation} {stock_name} {'成功' if status else '失败'} {info}")
                 send_notification(f"{operation} {stock_name} {info}")

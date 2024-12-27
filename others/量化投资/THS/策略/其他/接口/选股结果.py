@@ -59,7 +59,7 @@ if response.status_code == 200:
         #
         # # 创建DataFrame并保存为Excel
         # df = pd.DataFrame(important_data)
-        # save_path = "D:\\1document\\1test\\PycharmProject_gitee\\others\\量化投资\\THS\\策略\\选股结果.xlsx"
+        # save_path = "D:\\1document\\1test\\PycharmProject_gitee\\zothers\\量化投资\\THS\\策略\\选股结果.xlsx"
         # df.to_excel(save_path, index=False)
         # print(f"文件已保存到: {save_path}")
         # # 控制台展示
