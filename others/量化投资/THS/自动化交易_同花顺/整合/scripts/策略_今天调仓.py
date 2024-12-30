@@ -9,6 +9,7 @@ import requests
 from fake_useragent import UserAgent
 
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.api_client import APIClient
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.determine_market import determine_market
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, API_URL, HEADERS, \
     STRATEGY_TODAY_ADJUSTMENT_FILE, STRATEGY_ID_TO_NAME, OPRATION_RECORD_DONE_FILE
@@ -33,26 +34,13 @@ strategy_id_to_name = {
     '118188': '均线粘合平台突破'
 }
 
-def determine_market(stock_code):
-    """根据股票代码判断市场"""
-    if stock_code.startswith(('60', '00')):
-        return '沪深A股'
-    elif stock_code.startswith('688'):
-        return '科创板'
-    elif stock_code.startswith('30'):
-        return '创业板'
-    elif stock_code.startswith(('4', '8')):
-        return '北交所'
-    else:
-        return '其他'
-
 def get_latest_position_and_trade(strategy_id):
     """获取策略的最新持仓和交易信息"""
     url = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
     params = {"strategyId": strategy_id}
 
     headers = {
-        "User-Agent": ua.random,
+        "User-Agent": ua.random
     }
 
     try:

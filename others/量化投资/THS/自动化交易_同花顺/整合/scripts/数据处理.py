@@ -76,13 +76,15 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 # 读取最新的操作历史记录
                 operation_history_df = read_operation_history(operation_history_file)
 
-                all_stock_names = operation_history_df['股票名称'].tolist()
-                if stock_name in all_stock_names:
-                    logger.info(f"{stock_name} 已经操作过，跳过")
-                    continue
+                # 检查股票名称和操作是否已经存在于操作历史中
+                if not operation_history_df.empty:
+                    existing_operations = operation_history_df[(operation_history_df['股票名称'] == stock_name) & (operation_history_df['操作'] == operation)]
+                    if not existing_operations.empty:
+                        logger.info(f"{stock_name} 和操作 {operation} 已经操作过，跳过")
+                        continue
 
-                volume = 200
-                status, info = ths_page.sell_stock(stock_name, volume) if operation == 'SALE' else ths_page.buy_stock(stock_name, volume)
+                volume = 100
+                status, info = ths_page.sell_stock(stock_name, '全仓') if operation == 'SALE' else ths_page.buy_stock(stock_name, volume)
                 logger.info(f"{operation} {stock_name} {'成功' if status else '失败'} {info}")
                 send_notification(f"{operation} {stock_name} {info}")
                 logger.info(f"发送通知成功")

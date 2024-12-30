@@ -23,6 +23,9 @@ SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.xlsx')
 COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.xlsx')
 
+TEMP_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '调仓操作记录.xlsx')
+CLEAR_FLAG_FILE = os.path.join(DATA_DIR, '清仓昨天操作记录.flag')
+
 OPRATION_RECORD_DONE_FILE = os.path.join(DATA_DIR, '调仓操作记录完成.flag')
 
 # 监控文件夹

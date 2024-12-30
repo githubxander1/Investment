@@ -1,7 +1,10 @@
 import base64
 from zhipuai import ZhipuAI
 
-def analyze_image(image_source, image_path=None, image_url=None):
+'''图片url或者base64编码。图像大小上传限制为每张图像 5M以下，且像素不超过 6000*6000。
+支持jpg、png、jpeg格式。
+说明： GLM-4V-Flash 不支持base64编码'''
+def analyze_image(image_source, question, image_path=None, image_url=None, ):
     """
     分析图像内容，可以选择本地图片路径或图片URL
     :param image_source: 'local' 或 'url'
@@ -18,21 +21,21 @@ def analyze_image(image_source, image_path=None, image_url=None):
             img_base = base64.b64encode(img_file.read()).decode('utf-8')
         content = [
             {
-                "type": "text",
-                "text": "图里有什么"
-            },
-            {
                 "type": "image_base64",
                 "image_base64": img_base
+            },
+            {
+                "type": "text",
+                "text": "图里有什么"
             }
         ]
     elif image_source == 'url':
         if not image_url:
-            raise ValueError("image_url is required when image_source is 'url'")
+            raise ValueError("图片URL 是必填项")
         content = [
             {
                 "type": "text",
-                "text": "图里有什么"
+                "text": question
             },
             {
                 "type": "image_url",
@@ -42,7 +45,7 @@ def analyze_image(image_source, image_path=None, image_url=None):
             }
         ]
     else:
-        raise ValueError("image_source must be 'local' or 'url'")
+        raise ValueError("图片源必须是 'local' 或 'url")
 
     response = client.chat.completions.create(
         model="glm-4v-flash",  # 填写需要调用的模型名称
@@ -56,9 +59,10 @@ def analyze_image(image_source, image_path=None, image_url=None):
     return response.choices[0].message
 
 # 示例调用：使用本地图片
+question = "请分析图片内容，并给出分析结果"
 local_image_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\Quicker_20231015_132533.jpg"
-result_local = analyze_image(image_source='local', image_path=local_image_path)
-print("Local Image Analysis Result:")
+result_local = analyze_image(image_source='local', question=question, image_path=local_image_path, )
+print("分析结果如下:")
 print(result_local)
 
 # 示例调用：使用URL图片

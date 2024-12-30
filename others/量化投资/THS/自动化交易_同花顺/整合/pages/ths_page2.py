@@ -122,6 +122,7 @@ class THSPage:
         dialog_sus_info = self.d.xpath('//*[contains(@text,"委托已提交")]')
         # self.dialog_salevolume_zero = self.d.xpath('//*[contains(@text,"委托数量必须大于")]')
 
+        dialog_confirm = self.d(resourceId='com.hexin.plat.android:id/left_btn', text='确定')
         dialog_info_transferred_founds = self.d.xpath('//*[contains(@text,"转入资金")]')
 
         # sell_confirm_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title', text='确定')
@@ -131,9 +132,10 @@ class THSPage:
             logger.info("委托已提交")
             return True, "委托已提交"
         elif dialog_info_transferred_founds.exists:
-            not_enough_money = self.d(resourceId='com.hexin.plat.android:id/content_scroll')
-            info = not_enough_money.get_text()
-            self.dialog_sell_confirm()
+            info = self.d(resourceId='com.hexin.plat.android:id/content_scroll')
+            info = info.get_text()
+            # self.dialog_sell_confirm()
+            dialog_confirm.click()
             logger.info(f"失败,{info}")
             return False, info
         elif self.dialog_volume_zero_info.exists:#委托数量必须大于0
