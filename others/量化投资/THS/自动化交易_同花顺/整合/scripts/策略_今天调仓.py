@@ -22,17 +22,7 @@ api_client = APIClient()
 ua = UserAgent()
 
 # 手动创建策略ID到策略名称的映射
-strategy_id_to_name = {
-    '155259': 'TMT资金流入战法',
-    '155680': 'GPT定期精选',
-    '138036': '低价小盘股战法',
-    '155270': '中字头概念',
-    '137789': '高现金毛利战法',
-    '138006': '连续五年优质股战法',
-    '136567': '净利润同比大增低估值战法',
-    '138127': '归母净利润高战法',
-    '118188': '均线粘合平台突破'
-}
+
 
 def get_latest_position_and_trade(strategy_id):
     """获取策略的最新持仓和交易信息"""
@@ -86,9 +76,9 @@ def save_to_excel(df, filename, sheet_name, index=False):
             # 文件不存在，创建新文件
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
-        logger.info(f"成功保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
+        logger.info(f"成功保存数据到文件: {filename}, 表名称: {sheet_name}")
     except Exception as e:
-        logger.error(f"保存数据到Excel文件失败: {e}")
+        logger.error(f"保存数据到文件失败: {e}")
 
 def clear_sheet(filename, sheet_name):
     """清空指定Excel文件中的指定表格"""
@@ -101,7 +91,7 @@ def clear_sheet(filename, sheet_name):
                 # 删除所有行
                 ws.delete_rows(1, ws.max_row)
                 wb.save(filename)
-                logger.info(f"成功清空表格: {sheet_name} 在文件: {filename}")
+                logger.info(f"成功清空表格: {sheet_name} 文件: {filename}")
             else:
                 logger.warning(f"表格 {sheet_name} 不存在于文件: {filename}")
         except FileNotFoundError:
@@ -136,13 +126,11 @@ def main():
 
     # 保存今天的数据，即使为空也会覆盖昨天的数据
     save_to_excel(today_trades_without_sc_df, file_path, sheet_name='策略今天调仓', index=False)
-    logger.info("策略今日调仓信息已保存为excel")
     logger.info(f'今日调仓：\n {today_trades_without_sc_df}')
 
     if not today_trades_without_sc_df.empty:
         # 发送通知
         send_notification("今日有新的调仓操作！策略")
-        logger.info("发送通知成功: 今日有新的调仓操作（非双创）")
         # 创建标志文件
         with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
             f.write("策略调仓已完成")
@@ -153,4 +141,15 @@ def main():
     logger.info("策略调仓信息处理完成")
 
 if __name__ == '__main__':
+    strategy_id_to_name = {
+        '155259': 'TMT资金流入战法',
+        '155680': 'GPT定期精选',
+        '138036': '低价小盘股战法',
+        '155270': '中字头概念',
+        '137789': '高现金毛利战法',
+        '138006': '连续五年优质股战法',
+        '136567': '净利润同比大增低估值战法',
+        '138127': '归母净利润高战法',
+        '118188': '均线粘合平台突破'
+    }
     main()

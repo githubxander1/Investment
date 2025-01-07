@@ -27,7 +27,7 @@ def get_strategy_details(product_id):
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
     headers = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+        # "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
         "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
     }
     params = {"product_id": product_id, "product_type": "portfolio"}
@@ -104,7 +104,7 @@ def process_today_trades(ids):
                             '组合名称': get_strategy_details(portfolio_id).get("组合名称"),
                             '描述': get_strategy_details(portfolio_id).get("组合描述"),
                             '说明': content,
-                            '时间': create_at,
+                            '时间': pd.to_datetime(create_at),
                             '操作': operation,
                             '市场': market,
                             '股票名称': name,
@@ -189,43 +189,40 @@ def check_clear_flag(flag_file):
             logger.error(f"清空表格失败: {e}")
             return
 
-def check_new_data(adjustment_file, today_trade_without_cyb_print_df):
-    # 读取上次保存的结果,检查是否有新增
-    try:
-        if not os.path.exists(adjustment_file):
-            with pd.ExcelWriter(adjustment_file, engine='openpyxl') as writer:
-                writer.save(writer, sheet_name='上次保存结果', index=False, header=True)
-                logger.info(f"成功创建并保存数据到Excel文件: {adjustment_file}")
-            # empty_df = pd.DataFrame()
-            # save_to_excel(empty_df, TEMP_ADJUSTMENT_FILE, sheet_name='上次保存结果', index=False)
-            # logger.info(f"文件 {TEMP_ADJUSTMENT_FILE} 不存在，创建并保存空表")
+def check_new_data(existing_df, today_trade_without_cyb_print_df):
+    # 读取上次保存的结果,检查
+    if not existing_df.empty:
+        new_data = today_trade_without_cyb_print_df.merge(existing_df, how='outer', indicator=True).loc[
+            lambda x: x['_merge'] == 'left_only'].drop(columns='_merge')
 
-        existing_df = pd.read_excel(adjustment_file, sheet_name='上次保存结果')
-        logger.info(f"读取上次保存的结果: \n{adjustment_file}")
+    else:
+        new_data = today_trade_without_cyb_print_df.copy()
 
-        # 比较结果
-        if existing_df.empty:
-            logger.info("上次保存的结果为空")
-        else:
-            # 找到新增的数据
-            new_data = today_trade_without_cyb_print_df.merge(existing_df, how='outer', indicator=True).loc[
-                lambda x: x['_merge'] == 'left_only'].drop(columns='_merge')
 
-            if not new_data.empty:
-                logger.info(f'新增调仓：\n {new_data}')
-                # 合并新旧数据并排序
-                combined_df = pd.concat([new_data, today_trade_without_cyb_print_df], ignore_index=True)
-                combined_df['时间'] = pd.to_datetime(combined_df['时间'])  # 确保时间列是datetime类型
-                combined_df.sort_values(by='时间', ascending=True, inplace=True)  # 按时间降序排列
+    if not new_data.empty:
+        logger.info(f'新增调仓：\n {new_data}')
+        # 合并新旧数据并排序
+        combined_df = pd.concat([new_data, today_trade_without_cyb_print_df], ignore_index=True)
+        #去重
+        # combined_df.drop_duplicates(subset=['股票名称', '操作', '时间'], keep='first', inplace=True)
+        # 去重，对比所有字段
+        combined_df.drop_duplicates(subset=None, keep='first', inplace=True)
+        combined_df['时间'] = pd.to_datetime(combined_df['时间'])  # 确保时间列是datetime类型
+        combined_df.sort_values(by='时间', ascending=True, inplace=True)  # 按时间降序排列
+        logger.info(f'合并新旧数据：\n {combined_df}')
+        # print(f'合并新旧数据：\n {combined_df}')
 
-                save_to_excel(combined_df, adjustment_file, sheet_name='上次保存结果', index=False)
-            else:
-                logger.info("没有新增调仓数据")
-    except FileNotFoundError:
-        existing_df = pd.DataFrame()
-        logger.info(f"没有上次保存的结果，保存当前结果{existing_df}")
+        save_to_excel(combined_df, file_path, sheet_name='组合今天调仓', index=False)
+
+        send_notification("今天有新调仓，组合")
+
+        # 创建标志文件
+        create_flag_file(OPRATION_RECORD_DONE_FILE)
+    else:
+        logger.info("没有新增调仓数据")
+
 def main():
-    combination_ids = [6994, 18710, 16281, 19347, 13081, 14980]
+    combination_ids = [6994, 7152,18710, 16281, 19347, 13081, 14980]
     '''
     13081 好赛道出牛股
 16281 每天进步一点点
@@ -241,33 +238,16 @@ def main():
     logger.info("开始处理组合调仓信息")
     today_trade_without_cyb_print_df = process_today_trades(combination_ids)
 
-    if not today_trade_without_cyb_print_df.empty:
-        # clear_sheet(file_path)
+    if today_trade_without_cyb_print_df is not None:
+        logger.info(f'今日调仓：\n {today_trade_without_cyb_print_df}')
+        try:
+            existing_df = pd.read_excel(file_path, sheet_name='组合今天调仓')
+        except FileNotFoundError:
+            existing_df = pd.DataFrame()
+            existing_df.to_excel(file_path, sheet_name='组合今天调仓', index=False)
+            logger.info("Excel文件不存在，创建新文件")
 
-        # 检查清空标志文件
-        clear_flag_file = CLEAR_FLAG_FILE
-        check_clear_flag(clear_flag_file)
-
-        # logger.info("创建标志文件成功")
-
-
-        if not os.path.exists(clear_flag_file):
-            save_to_excel(today_trade_without_cyb_print_df, file_path, sheet_name='组合今天调仓', index=False)
-            # logger.info("保存今天调仓到文件")
-
-            send_notification("今天有新调仓，组合")
-            logger.info('发送通知成功: 今天有新调仓，组合')
-
-            # 创建标志文件
-            create_flag_file(OPRATION_RECORD_DONE_FILE)
-
-            # os.remove(clear_flag_file)
-            # logger.info("删除清空标志文件")
-        else:
-            # 检查是否有新增数据
-            adjustment_file = TEMP_ADJUSTMENT_FILE
-            check_new_data(adjustment_file, today_trade_without_cyb_print_df)
-
+        check_new_data(existing_df, today_trade_without_cyb_print_df)
 
     else:
         logger.info("今天没有新的调仓操作")
@@ -279,13 +259,13 @@ if __name__ == '__main__':
     main()
 
     start_time = time(9, 30)  # 九点半
-    end_time = time(17, 30)    # 下午三点
+    end_time = time(15, 00)    # 下午三点
     scheduler = Scheduler(1, main, start_time, end_time)
     try:
         scheduler.start()
     except Exception as e:
         logger.error(f"调度器启动失败: {e}", exc_info=True)
-    finally:
-        if os.path.exists(CLEAR_FLAG_FILE):
-            os.remove(CLEAR_FLAG_FILE)
-            logger.info("删除清空标志文件")
+    # finally:
+    #     if os.path.exists(CLEAR_FLAG_FILE):
+    #         os.remove(CLEAR_FLAG_FILE)
+    #         logger.info("删除清空标志文件")

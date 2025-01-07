@@ -6,7 +6,7 @@ import pyaml
 from ddt import ddt, data, unpack, file_data
 
 
-from com_excel import readExcel
+from 读写excel import readExcel
 @ddt  # 声明类装饰器
 class TestDdt(unittest.TestCase):
     # 加载excel文件

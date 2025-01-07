@@ -2,6 +2,42 @@ import requests
 import pandas as pd
 from pprint import pprint
 
+def get_product_info(product_id):
+    url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
+    headers = {
+        "Host": "dq.10jqka.com.cn",
+        "Connection": "keep-alive",
+        "Accept": "application/json, text/plain, */*",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Origin": "https://t.10jqka.com.cn",
+        "X-Requested-With": "com.hexin.plat.android",
+        "Sec-Fetch-Site": "same-site",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
+    }
+    params = {
+        "product_id": product_id,
+        "product_type": "portfolio"
+    }
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        # pprint(result)
+        if result['status_code'] == 0:
+            product_name = result['data']['baseInfo']['productName']
+            return product_name
+        else:
+            print(f"Failed to retrieve data for product_id: {product_id}")
+            return None
+    except requests.RequestException as e:
+        print(f"请求出现错误: {e}")
+        return None
 def get_showRelocateData(portfolioId):
     url = "https://t.10jqka.com.cn/portfolio/base/showRelocateData"
     params = {
@@ -16,7 +52,7 @@ def get_showRelocateData(portfolioId):
         "Referer": f"https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id={portfolioId}",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,en-US;q=0.9",
-        "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0,ExLDQwOzYsMSw0MDs1,ExsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1,ExsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; hxmPid=sns_service_video_choice_detail_85853; v=A1BGY94YA48K6d-L6Aq26kqEKJWiGTRmVv2IZ0ohHKt-hf-P8ikE86YNWOaZ",
+        "Cookie": "user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; IFUserCookieKey={'escapename':'mo_641926488','userid':'641926488'}; hxmPid=free_zhengu_002884; v=A16btkHntfVksuERtM-LYb1Hrf-gHyKZtOPWfQjnyqGcK_GlcK9yqYRzJorb",
         "X-Requested-With": "com.hexin.plat.android"
     }
 
@@ -28,59 +64,127 @@ def get_showRelocateData(portfolioId):
         print(f"请求出现错误: {e}")
         return None
 
-def process_ids(ids):
+def get_newest_relocate_post(id):
+    url = "https://t.10jqka.com.cn/portfolio/post/v2/get_newest_relocate_post"
+
+    # 请求头
+    headers = {
+        "Host": "t.10jqka.com.cn",
+        "Connection": "keep-alive",
+        "Accept": "application/json, text/plain, */*",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "com.hexin.plat.android",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Cookie": "IFUserCookieKey={}; user=MDptb18yNDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=A8UAY_5aDh_T8CrD0hwDXwiQ1gr_gnkTwzZdaMcqgfwLXupwj9KJ5FOGbTdU"
+    }
+    params = {"id": id}
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        pprint(response.json())
+        return response.json()
+    except requests.RequestException as e:
+        print(f"请求出现错误: {e}")
+        return None
+
+def process_newest_relocate_post_ids(ids):
+    # with pd.ExcelWriter(r'/zothers/量化投资/THS/组合/保存的数据/最新调仓_所有.xlsx') as writer:
+    for id in ids:
+        result = get_newest_relocate_post(id)
+        if result and result['status_code'] == 0:
+            data = result['data']
+            content = data['content']
+            relocate_list = data.get('relocateList', [])
+            all_data = []
+            for item in relocate_list:
+                entry = {
+                    # '内容': content,
+                    '当前比例': item.get('currentRatio') * 100 if item.get('currentRatio') is not None else None,
+                    '最终价格': item.get('finalPrice'),
+                    '股票名称': item.get('name'),
+                    '新比例': item.get('newRatio') * 100 if item.get('newRatio') is not None else None,
+                    '组合ID': id
+                }
+                all_data.append(entry)
+
+            df = pd.DataFrame(all_data)
+            pprint(df)
+            # df.to_excel(writer, sheet_name=get_product_info(id), index=False)
+        else:
+            print(f"Failed to retrieve data for id: {id}")
+def process_showRelocateData_ids(ids):
     all_holding_info = []
     for portfolio_id in ids:
         result = get_showRelocateData(portfolio_id)
-        if result and result['errorCode'] == 0:
+        pprint(result)
+        if result and result['errorMsg'] == 'Success':
             holding_info = result['result']['holdingInfo']
-            # 检查并处理可能的None值
-            profit_loss_rate = holding_info.get('profitLossRate')
-            position_real_ratio = holding_info.get('positionRealRatio')
+            relocateInfo = result['result']['relocateInfo']
 
-            if profit_loss_rate is not None:
-                profit_loss_rate *= 100
-            if position_real_ratio is not None:
-                position_real_ratio *= 100
+            # 检查 profitLossRate 是否为 None
+            profit_loss_rate_relocate = relocateInfo.get('profitLossRate')
+            if profit_loss_rate_relocate is None:
+                profit_loss_rate_relocate = 0  # 设置默认值
+            new_ratio = relocateInfo.get('newRatio')
+            if new_ratio is None:
+                new_ratio = 0
 
-            holding_info['profitLossRate'] = profit_loss_rate
-            holding_info['positionRealRatio'] = position_real_ratio
-            holding_info['portfolioId'] = portfolio_id
-            all_holding_info.append(holding_info)
+            relocateInfos = {
+                '组合id': portfolio_id,
+                '组合名称': id_to_name.get(portfolio_id, 'Unknown'),
+                '股票': relocateInfo.get('name'),
+                # '成本价': holding_info.get('costPrice'),
+                '成本价': relocateInfo.get('finalPrice'),
+                '盈亏率(%)': profit_loss_rate_relocate * 100,
+                '持仓比例(%)': new_ratio * 100,
+                '入仓时间': relocateInfo.get('relocateTime')
+            }
+            profitLossRate = holding_info.get('profitLossRate')
+            if profitLossRate is None:
+                profitLossRate = 0
+            positionRealRatio = holding_info.get('positionRealRatio')
+            if positionRealRatio is None:
+                positionRealRatio = 0
+
+            all_holding_info.append({
+                '组合id': portfolio_id,
+                '组合名称': id_to_name.get(portfolio_id, 'Unknown'),
+                '股票': holding_info.get('name'),
+                '成本价': holding_info.get('costPrice'),
+                '现价': holding_info.get('presentPrice'),
+                '盈亏率(%)': profitLossRate * 100,
+                '持仓比例(%)': positionRealRatio * 100
+            })
+            all_holding_info.append(relocateInfos)
         else:
             print(f"Failed to retrieve data for portfolioId: {portfolio_id}")
 
-    # 定义列名映射以中文显示
-    column_mapping = {
-        'code': '股票代码',
-        'costPrice': '成本价',
-        'name': '股票名称',
-        'positionRealRatio': '持仓比例 (%)',
-        'presentPrice': '现价',
-        'profitLossRate': '盈亏率 (%)',
-        'portfolioId': '组合ID'
-    }
-
-    df = pd.DataFrame(all_holding_info).rename(columns=column_mapping)
+    # df = pd.DataFrame(all_holding_info).rename(columns=column_mapping)
+    df = pd.DataFrame(all_holding_info)
     print(df)
     df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\持仓详情.xlsx', index=False)
 
-ids = [
-    19483,
-    14533,
-    16281,
-    23768,
-    8426,
-    9564,
-    6994,
-    7152,
-    20335,
-    21302,
-    19347,
-    8187,
-    18565,
-    14980,
-    16428
-]
+if __name__ == '__main__':
 
-process_ids(ids)
+    # combination_ids = [6994, 7152,18710, 16281, 19347, 13081, 14980]
+    combination_ids = [6994]
+
+    id_to_name = {
+        13081:'好赛道出牛股',
+        16281:'每天进步一点点',
+        18565:'龙头一年三倍',
+        7152:'中线龙头',
+        6994:'梦想一号' ,
+        11094:'低位题材',
+        14980:'波段突击',
+        19347:'超短稳定复利',
+        18710:'用收益率征服您'}
+
+    # process_showRelocateData_ids(combination_ids)
+    process_newest_relocate_post_ids(combination_ids)

@@ -13,7 +13,7 @@ THS_AUTO_TRADE_LOG_FILE_PAGE = os.path.join(LOGS_DIR, '自动化交易日志_pag
 STRATEGY_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, '策略_今天调仓.log')
 COMBINATION_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, '组合_今天调仓.log')
 SCHEDULER_LOG_FILE = os.path.join(LOGS_DIR, '自动化交易定时任务.log')
-
+send_notification = os.path.join(LOGS_DIR, '发送通知.log')
 file_monitor_file = os.path.join(LOGS_DIR, '文件监控.log')
 trade_operations_log_file = os.path.join(LOGS_DIR, '自动化交易操作记录.log')
 

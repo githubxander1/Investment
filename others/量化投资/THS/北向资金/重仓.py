@@ -50,12 +50,26 @@ payload = {
 response = requests.post(url, json=payload, headers=headers)
 # 检查请求是否成功（状态码为200）
 if response.status_code == 200:
-    data = response.json()
     try:
+        data = response.json()
+        # 尝试提取data下的data信息
         result_data = data.get('data', {}).get('data', [])
+
+        # 解析数据
+        parsed_data = []
         for item in result_data:
-            print(item)
-    except KeyError:
-        print("返回数据格式不符合预期，找不到对应的'data'下的'data'字段。")
+            parsed_item = {}
+            for value in item['values']:
+                parsed_item[value['idx']] = value['value']
+            parsed_data.append(parsed_item)
+
+        # 转换为DataFrame
+        df = pd.DataFrame(parsed_data)
+        df.to_csv('data.csv', index=False)
+        print(df)
+    except (ValueError) as e:
+        print(f"解析 JSON 失败: {e}")
+    except KeyError as e:
+        print(f"键不存在: {e}")
 else:
     print(f"请求失败，状态码: {response.status_code}")

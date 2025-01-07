@@ -146,6 +146,12 @@ def process_summary_data(ids):
                     strategy_stats[portfolio_id]['negative_count'] += 1
                 summary_df = pd.concat([summary_df, pd.DataFrame([pos])], ignore_index=True)
 
+                # 检查 summary_df 是否为空
+                if summary_df.empty:
+                    summary_df = pd.DataFrame([pos])
+                else:
+                    summary_df = pd.concat([summary_df, pd.DataFrame([pos])], ignore_index=True)
+
     summary_df.fillna('', inplace=True)
 
     stats_df = pd.DataFrame(strategy_stats.items(), columns=['策略id', '统计数据'])

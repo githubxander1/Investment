@@ -1,5 +1,4 @@
 from pprint import pprint
-
 import pandas as pd
 import requests
 
@@ -28,8 +27,26 @@ if response.status_code == 200:
     data = response.json()
     # 这里先简单打印出整个返回的JSON数据，后续你可以根据实际情况提取具体字段进行分析
     pprint(data)
-    df = pd.DataFrame(data['data']['list'])
-    df.to_excel('减持.xlsx', index=False)
+
+    # 提取重要信息
+    extracted_data = []
+    for item in data['data']:
+        stock_info = {
+            '股票代码': item['code'],
+            '股票名称': item['name'],
+            '报告期': item['report'],
+            '持仓总规模': item['scale'],
+            '持仓变动规模': item['sqScale']
+        }
+        for i, holder in enumerate(item['holders']):
+            stock_info[f'股东名称_{i+1}'] = holder['name']
+            stock_info[f'持仓规模_{i+1}'] = holder['scale']
+            stock_info[f'股东类型_{i+1}'] = holder['tag']
+        extracted_data.append(stock_info)
+
+    # 转换为DataFrame
+    df = pd.DataFrame(extracted_data)
+    df.to_excel('增持最多.xlsx', index=False)
     print(df)
 else:
     print(f"请求失败，状态码: {response.status_code}")

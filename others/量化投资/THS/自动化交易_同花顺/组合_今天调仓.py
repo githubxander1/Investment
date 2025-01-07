@@ -16,18 +16,18 @@ from others.量化投资.THS.自动化交易_同花顺.ths_logger import setup_l
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import OPRATION_RECORD_DONE_FILE
 
 
-def determine_market(stock_code):
-    """根据股票代码判断市场"""
-    if stock_code.startswith(('60', '00')):
-        return '沪深A股'
-    elif stock_code.startswith('688'):
-        return '科创板'
-    elif stock_code.startswith('30'):
-        return '创业板'
-    elif stock_code.startswith(('4', '8')):
-        return '北交所'
-    else:
-        return '其他'
+# def determine_market(stock_code):
+#     """根据股票代码判断市场"""
+#     if stock_code.startswith(('60', '00')):
+#         return '沪深A股'
+#     elif stock_code.startswith('688'):
+#         return '科创板'
+#     elif stock_code.startswith('30'):
+#         return '创业板'
+#     elif stock_code.startswith(('4', '8')):
+#         return '北交所'
+#     else:
+#         return '其他'
 
 # 获取组合名称和描述
 def get_strategy_details(product_id):
