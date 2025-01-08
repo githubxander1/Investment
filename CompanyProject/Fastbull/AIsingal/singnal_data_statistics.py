@@ -6,16 +6,16 @@
 import datetime
 import time
 from typing import List
+
 import pandas as pd
 import yaml
-
 # from .base import calculate_average, time_format, get_time_day
 # from .conversion_data import Synchronous_Data
 # from .db_handler import DBHandler
 from CompanyProject.Fastbull.base import get_time_day, calculate_average
 from CompanyProject.Fastbull.conversion_data import Synchronous_Data
-from CompanyProject.Fastbull.AIsingal.db_handler import DBHandler
 
+from CompanyProject.Fastbull.AIsingal.db_handler import DBHandler
 
 # f = open(r'D:\1test\PycharmProject\pycharm_ze\CompanyProject\Fastbull\config.sina.yaml', encoding='utf-8')
 f = open('config.yaml', encoding='utf-8')
@@ -181,15 +181,15 @@ def check_singnal_data_statistics(table_strategy,table_strategy_signal):
     profitLossCount = []
     for i,value in enumerate(time1_list):
         print(f'第{i+1}遍历的近期表现:')
-        #图表 - 开仓信号数量
+        #双均线图表 - 开仓信号数量
         sql_opentime_signal_count="""
         select count(*) from strategy_signal where openTime>={}  and openTime<= {} and status =实例25_批量生成PPT版荣誉证书
         """
-        #图表 - 平仓信号数量
+        #双均线图表 - 平仓信号数量
         sql_closetime_signal_count="""
         select count(*) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
         """
-        #图表 - 平仓盈亏点数
+        #双均线图表 - 平仓盈亏点数
         sql_profit_signal_count = """
         select sum(profitLoss) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
             """
@@ -226,15 +226,15 @@ def check_singnal_data_statistics(table_strategy,table_strategy_signal):
     profitLossCount1 = []
     for i,value in enumerate(time1_list1):
         # print(f'第{i + 实例25_批量生成PPT版荣誉证书}遍历的近期表现:')
-        # 图表 - 开仓信号数量
+        # 双均线图表 - 开仓信号数量
         sql_opentime_signal_count = """
             select count(*) from strategy_signal where openTime>={}  and openTime<= {} and status =实例25_批量生成PPT版荣誉证书
             """
-        # 图表 - 平仓信号数量
+        # 双均线图表 - 平仓信号数量
         sql_closetime_signal_count = """
             select count(*) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
             """
-        # 图表 - 平仓盈亏点数
+        # 双均线图表 - 平仓盈亏点数
         sql_profit_signal_count = """
             select sum(profitLoss) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
                 """

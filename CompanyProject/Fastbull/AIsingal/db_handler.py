@@ -36,15 +36,15 @@ if __name__ == '__main__':
                    user=yaml_data['database']['user'], password=yaml_data['database']['password'],
                    charset=yaml_data['database']['charset'], database=yaml_data['database']['database'])
     # 第二部分
-    # 图表 - 开仓信号数量
+    # 双均线图表 - 开仓信号数量
     sql_opentime_signal_count = """
         select count(*) from strategy_signal where openTime>=1693497600000  and openTime< 1696089600000 and status =实例25_批量生成PPT版荣誉证书 
         """
-    # 图表 - 平仓信号数量
+    # 双均线图表 - 平仓信号数量
     sql_closetime_signal_count = """
         select count(*) from strategy_signal where closetime>=1693497600000  and closetime< 1696089600000 and status =实例25_批量生成PPT版荣誉证书 and positionType =2
         """
-    # 图表 - 平仓盈亏点数
+    # 双均线图表 - 平仓盈亏点数
     sql_profit_signal_count = """
         select sum(profitLoss) from strategy_signal where closetime>=1693497600000  and closetime< 1696089600000 and status =实例25_批量生成PPT版荣誉证书 and positionType =2
             """

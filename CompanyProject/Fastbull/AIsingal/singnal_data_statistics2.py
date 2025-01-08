@@ -4,9 +4,7 @@
 # @File    : singnal_data_statistics.py
 # @Software: PyCharm
 import datetime
-import time
-from typing import List
-import yaml
+
 from pymongo import MongoClient
 
 client = MongoClient("mongodb://Fastbull:IOE*2EW#OIWddOPcDWE@192.168.7.72:27017/fastbull_macro_data_test?authSource=admin")
@@ -26,7 +24,6 @@ collection = db.strategy_signal
 # from .base import calculate_average, time_format, get_time_day
 # from .conversion_data import Synchronous_Data
 # from .db_handler import DBHandler
-from CompanyProject.Fastbull.conversion_data import Synchronous_Data
 
 
 #
@@ -202,15 +199,15 @@ def get_start_end_time_month_time():
 #     profitLossCount = []
 #     for i,value in enumerate(time1_list):
 #         print(f'第{i+实例25_批量生成PPT版荣誉证书}遍历的近期表现:')
-#         #图表 - 开仓信号数量
+#         #双均线图表 - 开仓信号数量
 #         sql_opentime_signal_count="""
 #         select count(*) from strategy_signal where openTime>={}  and openTime<= {} and status =实例25_批量生成PPT版荣誉证书
 #         """
-#         #图表 - 平仓信号数量
+#         #双均线图表 - 平仓信号数量
 #         sql_closetime_signal_count="""
 #         select count(*) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
 #         """
-#         #图表 - 平仓盈亏点数
+#         #双均线图表 - 平仓盈亏点数
 #         sql_profit_signal_count = """
 #         select sum(profitLoss) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
 #             """
@@ -247,15 +244,15 @@ def get_start_end_time_month_time():
 #     profitLossCount1 = []
 #     for i,value in enumerate(time1_list1):
 #         # print(f'第{i + 实例25_批量生成PPT版荣誉证书}遍历的近期表现:')
-#         # 图表 - 开仓信号数量
+#         # 双均线图表 - 开仓信号数量
 #         sql_opentime_signal_count = """
 #             select count(*) from strategy_signal where openTime>={}  and openTime<= {} and status =实例25_批量生成PPT版荣誉证书
 #             """
-#         # 图表 - 平仓信号数量
+#         # 双均线图表 - 平仓信号数量
 #         sql_closetime_signal_count = """
 #             select count(*) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
 #             """
-#         # 图表 - 平仓盈亏点数
+#         # 双均线图表 - 平仓盈亏点数
 #         sql_profit_signal_count = """
 #             select sum(profitLoss) from strategy_signal where closetime>={}  and closetime<= {} and status =实例25_批量生成PPT版荣誉证书 and positionType =2
 #                 """

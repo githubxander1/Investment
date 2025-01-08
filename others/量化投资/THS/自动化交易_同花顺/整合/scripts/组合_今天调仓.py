@@ -1,22 +1,19 @@
 # scripts/组合_今天调仓.py
-import logging
 import datetime
 import os
-from pprint import pprint
-
-import openpyxl
-import requests
-import pandas as pd
 from datetime import time
 
+import openpyxl
+import pandas as pd
+import requests
 from fake_useragent import UserAgent
 
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import COMBINATION_TODAY_ADJUSTMENT_LOG_FILE, \
-    COMBINATION_TODAY_ADJUSTMENT_FILE, COMBINATION_ID_TO_NAME, OPRATION_RECORD_DONE_FILE, TEMP_ADJUSTMENT_FILE, CLEAR_FLAG_FILE
+    COMBINATION_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.determine_market import determine_market
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.notification import send_notification
-from others.量化投资.THS.自动化交易_同花顺.整合.utils.ths_logger import setup_logger
 from others.量化投资.THS.自动化交易_同花顺.整合.utils.scheduler import Scheduler
+from others.量化投资.THS.自动化交易_同花顺.整合.utils.ths_logger import setup_logger
 
 logger = setup_logger(COMBINATION_TODAY_ADJUSTMENT_LOG_FILE)
 
@@ -238,6 +235,8 @@ def main():
     logger.info("开始处理组合调仓信息")
     today_trade_without_cyb_print_df = process_today_trades(combination_ids)
 
+    # existing_df = pd.DataFrame()
+    # existing_df.to_excel(file_path, sheet_name='组合今天调仓', index=False)
     if today_trade_without_cyb_print_df is not None:
         logger.info(f'今日调仓：\n {today_trade_without_cyb_print_df}')
         try:
