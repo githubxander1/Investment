@@ -54,8 +54,8 @@ async def main():
         asyncio.create_task(scheduler_combination.start())
         logger.info("组合调度器已启动")
 
-        # 调度器3：10:00 到 10:30 每2分钟执行一次自动化交易
-        scheduler_auto = Scheduler(interval=120,  # 120秒
+        # 调度器3：9:30 到 15:00 每2分钟执行一次自动化交易
+        scheduler_auto = Scheduler(interval=2,  # 120秒
                                    callback=auto_main_wrapper,
                                    start_time=dt_time(9, 30),
                                    end_time=dt_time(15, 0))
