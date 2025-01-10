@@ -4,7 +4,7 @@ import time
 # logger = setup_logger(r'/zothers/量化投资/THS/自动化交易_同花顺/保存的数据/同花顺自动化交易.log')
 from others.量化投资.THS.自动化交易_同花顺.整合.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
 
-from others.量化投资.THS.自动化交易_同花顺.utils.ths_logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 class THSPage:

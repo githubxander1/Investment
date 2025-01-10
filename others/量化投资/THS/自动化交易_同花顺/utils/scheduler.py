@@ -3,7 +3,7 @@ import asyncio
 from datetime import datetime, time as dt_time, timedelta
 
 from others.量化投资.THS.自动化交易_同花顺.config.settings import SCHEDULER_LOG_FILE
-from others.量化投资.THS.自动化交易_同花顺.utils.ths_logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
 
 logger = setup_logger(SCHEDULER_LOG_FILE)
 

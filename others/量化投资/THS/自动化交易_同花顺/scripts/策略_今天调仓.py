@@ -10,8 +10,8 @@ from others.量化投资.THS.自动化交易_同花顺.config.settings import ST
     STRATEGY_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Strategy_id_to_name, Strategy_ids
 from others.量化投资.THS.自动化交易_同花顺.utils.api_client import APIClient
 from others.量化投资.THS.自动化交易_同花顺.utils.determine_market import determine_market
+from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
 from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification
-from others.量化投资.THS.自动化交易_同花顺.utils.ths_logger import setup_logger
 
 logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
 

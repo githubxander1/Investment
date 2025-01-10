@@ -5,8 +5,8 @@ from datetime import datetime
 import pandas as pd
 
 from others.量化投资.THS.自动化交易_同花顺.config.settings import trade_operations_log_file
+from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
 from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification
-from others.量化投资.THS.自动化交易_同花顺.utils.ths_logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
 

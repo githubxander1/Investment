@@ -372,7 +372,7 @@ if all_results:
     df_without_profitability = df.drop(columns=['收益比_-1', '收益比_7', '收益比_30', '收益比_90', '收益比_180', '持仓行业', '策略id' , '策略描述', '主理人id', '标签', ])
     print(df_without_profitability)
     df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_对比.xlsx')
-    # df.to_excel('组合_性价比.xlsx')
-    print("数据已成功保存到 '组合对比.xlsx'")
+    df.to_excel('组合_对比.xlsx')
+    print("数据已成功保存到 '组合_对比.xlsx'")
 else:
     print("没有获取到任何数据")

@@ -4,7 +4,7 @@ import time
 from uiautomator2 import UiObjectNotFoundError
 
 from others.量化投资.THS.自动化交易_同花顺.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
-from others.量化投资.THS.自动化交易_同花顺.utils.ths_logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 

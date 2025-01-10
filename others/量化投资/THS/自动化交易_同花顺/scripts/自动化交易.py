@@ -11,7 +11,7 @@ from others.量化投资.THS.自动化交易_同花顺.config.settings import (
 )
 from others.量化投资.THS.自动化交易_同花顺.pages.ths_page2 import THSPage
 from others.量化投资.THS.自动化交易_同花顺.scripts.数据处理 import process_excel_files
-from others.量化投资.THS.自动化交易_同花顺.utils.ths_logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE)
 

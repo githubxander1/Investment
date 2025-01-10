@@ -106,7 +106,7 @@ def process_and_save_data(file_path, list_types):
 
 # 示例调用
 if __name__ == '__main__':
-    file_path = r"/others/量化投资/THS/组合/保存的数据/榜单排行榜数据.xlsx"
+    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\榜单排行榜数据.xlsx"
     list_types = {
         # 1: "日收益",
         # 2: "周收益",

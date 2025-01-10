@@ -1,4 +1,4 @@
-# utils/ths_logger.py
+# utils/logger.py
 import logging
 import os
 
