@@ -19,14 +19,11 @@ plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
 pd.set_option('display.max_rows', 5000)  # 最多显示数据的行数
 
-# 移动平均线周期
-window = 5
 
-# 时间段，可根据数据时间更改
+# 时间段
 start_time = '20230531'
 end_time = '20240424'
 
-# 获取所有股票数据的股票代码
 # 获取股票文件夹路径
 file_path = os.path.abspath(os.path.dirname(__file__)) + '/股票数据/'  # 返回当前文件路径
 # 获取文件夹下的所有csv文件的文件路径
@@ -155,7 +152,7 @@ def main(strategy_file):
         plot_assets_and_cumulative_returns(stock_results, stock_name, strategy_dir, strategy_module_name)
 
     # 使用 ExcelWriter 将每个股票的交易记录保存到不同的工作表中
-    with pd.ExcelWriter('all_transactions.xlsx') as writer:
+    with pd.ExcelWriter('记录/all_transactions.xlsx') as writer:
         for stock, transactions in all_transactions.items():
             stock_transactions = pd.DataFrame(transactions)
             stock_transactions['股票代码'] = stock.split('.')[0]

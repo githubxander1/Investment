@@ -1,0 +1,927 @@
+[31m2025-01-02 14:15:57 - ERROR - 买入 中航光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:15:57 - INFO - 交易通知: BUY 中航光电 买入 中航光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:16:08 - ERROR - 买入 北方华创 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:16:08 - INFO - 交易通知: BUY 北方华创 买入 北方华创 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:16:19 - ERROR - 买入 英维克 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:16:19 - INFO - 交易通知: BUY 英维克 买入 英维克 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:16:29 - ERROR - 买入 国光股份 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:16:29 - INFO - 交易通知: BUY 国光股份 买入 国光股份 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:16:40 - ERROR - 卖出 中兴通讯 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 185, in sell_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:16:40 - INFO - 交易通知: SALE 中兴通讯 卖出 中兴通讯 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:16:51 - ERROR - 买入 拓日新能 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:16:51 - INFO - 交易通知: BUY 拓日新能 买入 拓日新能 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:17:02 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:17:02 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:17:13 - ERROR - 买入 红旗连锁 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:17:13 - INFO - 交易通知: BUY 红旗连锁 买入 红旗连锁 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:17:23 - ERROR - 卖出 小商品城 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 185, in sell_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:17:23 - INFO - 交易通知: SALE 小商品城 卖出 小商品城 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:17:34 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:17:34 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:17:45 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:17:45 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:17:56 - ERROR - 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 185, in sell_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:17:56 - INFO - 交易通知: SALE 国星光电 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:18:07 - ERROR - 卖出 中信海直 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 185, in sell_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:18:07 - INFO - 交易通知: SALE 中信海直 卖出 中信海直 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-02 14:18:18 - ERROR - 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 185, in sell_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-02 14:18:18 - INFO - 交易通知: SALE 国星光电 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-06 09:33:30 - ERROR - 卖出 凌霄泵业 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 185, in sell_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-06 09:33:30 - INFO - 交易通知: SALE 凌霄泵业 卖出 凌霄泵业 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[31m2025-01-06 09:33:41 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 167, in buy_stock
+    self.click_trade_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 27, in click_trade_entry
+    trade_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-01-06 09:33:41 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+[32m2025-01-06 09:33:46 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:33:56 - ERROR - 卖出 拓日新能 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:33:56 - INFO - 交易通知: SALE 拓日新能 卖出 拓日新能 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:33:56 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:34:07 - ERROR - 买入 红旗连锁 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:34:07 - INFO - 交易通知: BUY 红旗连锁 买入 红旗连锁 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:34:07 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:34:17 - ERROR - 卖出 小商品城 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:34:17 - INFO - 交易通知: SALE 小商品城 卖出 小商品城 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:34:18 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:34:28 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:34:28 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:34:28 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:34:38 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:34:38 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:34:39 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:34:49 - ERROR - 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:34:49 - INFO - 交易通知: SALE 国星光电 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:34:49 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:35:00 - ERROR - 卖出 中信海直 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:35:00 - INFO - 交易通知: SALE 中信海直 卖出 中信海直 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:35:00 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:35:10 - ERROR - 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:35:10 - INFO - 交易通知: SALE 国星光电 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:40:54 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:41:04 - ERROR - 卖出 凌霄泵业 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:41:04 - INFO - 交易通知: SALE 凌霄泵业 卖出 凌霄泵业 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:41:05 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:41:15 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:41:15 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:41:15 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:41:25 - ERROR - 卖出 拓日新能 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:41:25 - INFO - 交易通知: SALE 拓日新能 卖出 拓日新能 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:41:26 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:41:36 - ERROR - 买入 红旗连锁 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:41:36 - INFO - 交易通知: BUY 红旗连锁 买入 红旗连锁 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:41:36 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:41:46 - ERROR - 卖出 小商品城 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:41:46 - INFO - 交易通知: SALE 小商品城 卖出 小商品城 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:41:47 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:41:57 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:41:57 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:41:58 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:42:08 - ERROR - 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 168, in buy_stock
+    self.buy_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 32, in buy_entry
+    buy_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}
+[32m2025-01-06 09:42:08 - INFO - 交易通知: BUY 国星光电 买入 国星光电 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_buy_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:42:08 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:42:18 - ERROR - 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:42:18 - INFO - 交易通知: SALE 国星光电 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:42:19 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:42:29 - ERROR - 卖出 中信海直 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:42:29 - INFO - 交易通知: SALE 中信海直 卖出 中信海直 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-06 09:42:30 - INFO - 点击交易按钮[0m
+[31m2025-01-06 09:42:40 - ERROR - 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\整合\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-06 09:42:40 - INFO - 交易通知: SALE 国星光电 卖出 国星光电 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-10 10:05:57 - INFO - 自动化交易程序开始运行[0m
+[32m2025-01-10 10:05:57 - INFO - 检测到标志文件，今日调仓操作已记录完成，开始自动化交易...[0m
+[32m2025-01-10 10:05:57 - INFO - 标志文件已删除[0m
+[32m2025-01-10 10:05:59 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-01-10 10:06:00 - INFO - 启动app: com.hexin.plat.android[0m
+[32m2025-01-10 10:06:00 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略今天调仓.xlsx[0m
+[32m2025-01-10 10:06:01 - INFO - 文件处理完成 D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略今天调仓.xlsx 
+[0m
+[32m2025-01-10 10:06:01 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\组合今天调仓.xlsx[0m
+[32m2025-01-10 10:06:01 - INFO - 要处理的信息: 共进股份, 操作: SALE[0m
+[32m2025-01-10 10:06:16 - INFO - 点击交易按钮[0m
+[31m2025-01-10 10:06:26 - ERROR - 卖出 共进股份 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\pages\ths_page2.py", line 186, in sell_stock
+    self.sell_entry()
+  File "D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\pages\ths_page2.py", line 37, in sell_entry
+    sell_entry.click()
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+  File "C:\Python310\lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}
+[32m2025-01-10 10:06:26 - INFO - SALE 共进股份 失败 卖出 共进股份 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-10 10:06:26 - INFO - 交易通知: SALE 共进股份 卖出 共进股份 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_sale_text']", 'method': 'wait'}[0m
+[32m2025-01-10 10:06:26 - INFO - 发送通知成功[0m
+[32m2025-01-10 10:06:26 - INFO - 今天的工作表不存在，创建新的操作记录: 
+   股票名称  ...                   时间
+0  共进股份  ...  2025-01-10 10:06:26
+
+[1 rows x 5 columns][0m
+[32m2025-01-10 10:06:26 - INFO - 写入操作历史文件成功[0m
+[32m2025-01-10 10:06:26 - INFO - SALE 共进股份 流程结束, 操作已记录[0m
+[32m2025-01-10 10:06:26 - INFO - 文件处理完成 D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\组合今天调仓.xlsx 
+[0m
+[32m2025-01-10 10:06:56 - INFO - 自动化交易程序开始运行[0m
+[32m2025-01-10 10:06:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:07:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:07:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:07:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:07:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:07:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:07:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:08:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:08:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:08:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:08:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:08:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:08:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:09:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:09:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:09:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:09:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:09:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:09:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:10:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:10:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:10:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:10:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:10:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:10:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:11:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:11:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:11:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:11:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:11:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:11:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:12:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:12:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:12:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:12:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:12:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:12:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:13:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:13:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:13:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:13:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:13:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:13:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:14:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:14:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:14:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:14:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:14:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:14:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:15:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:15:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:15:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:15:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:15:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:15:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:16:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:16:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:16:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:16:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:16:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:16:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:17:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:17:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:17:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:17:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:17:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:17:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:18:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:18:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:18:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:18:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:18:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:18:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:19:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:19:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:19:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:19:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:19:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:19:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:20:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:20:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:20:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:20:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:20:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:20:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:21:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:21:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:21:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:21:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:21:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:21:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:22:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:22:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:22:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:22:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:22:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:22:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:23:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:23:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:23:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:23:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:23:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:23:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:24:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:24:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:24:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:24:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:24:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:24:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:25:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:25:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:25:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:25:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:25:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:25:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:26:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:26:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:26:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:26:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:26:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:26:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:27:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:27:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:27:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:27:38 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:27:48 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:27:58 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:28:08 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:28:18 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:28:28 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:28:39 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:28:49 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:28:59 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:29:09 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:29:19 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:29:29 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:29:39 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:29:49 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:29:59 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:30:09 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:30:19 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:30:29 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:30:39 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:30:49 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:30:59 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:31:09 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:31:19 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:31:29 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:31:39 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:31:49 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:31:59 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:32:09 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:32:19 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:32:29 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:32:39 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:32:49 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:32:59 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:33:09 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:33:19 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:33:29 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:33:39 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:33:49 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:33:59 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:34:09 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:34:19 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:34:29 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:34:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:34:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:35:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:35:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:35:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:35:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:35:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:35:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:36:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:36:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:36:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:36:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:36:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:36:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:37:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:37:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:37:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:37:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:37:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:37:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:38:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:38:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:38:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:38:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:38:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:38:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:39:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:39:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:39:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:39:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:39:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:39:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:40:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:40:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:40:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:40:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:40:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:40:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:41:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:41:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:41:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:41:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:41:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:41:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:42:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:42:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:42:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:42:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:42:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:42:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:43:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:43:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:43:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:43:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:43:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:43:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:44:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:44:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:44:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:44:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:44:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:44:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:45:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:45:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:45:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:45:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:45:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:45:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:46:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:46:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:46:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:46:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:46:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:46:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:47:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:47:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:47:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:47:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:47:40 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:47:50 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:48:00 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:48:10 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:48:20 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:48:30 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:48:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:48:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:49:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:49:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:49:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:49:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:49:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:49:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:50:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:50:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:50:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:50:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:50:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:50:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:51:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:51:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:51:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:51:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:51:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:51:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:52:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:52:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:52:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:52:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:52:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:52:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:53:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:53:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:53:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:53:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:53:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:53:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:54:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:54:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:54:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:54:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:54:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:54:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:55:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:55:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:55:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:55:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:55:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:55:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:56:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:56:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:56:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:56:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:56:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:56:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:57:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:57:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:57:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:57:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:57:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:57:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:58:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:58:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:58:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:58:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:58:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:58:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:59:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:59:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:59:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:59:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:59:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 10:59:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:00:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:00:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:00:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:00:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:00:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:00:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:01:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:01:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:01:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:01:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:01:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:01:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:02:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:02:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:02:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:02:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:02:41 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:02:51 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:03:01 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:03:11 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:03:21 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:03:31 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:03:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:03:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:04:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:04:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:04:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:04:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:04:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:04:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:05:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:05:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:05:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:05:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:05:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:05:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:06:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:06:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:06:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:06:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:06:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:06:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:07:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:07:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:07:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:07:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:07:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:07:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:08:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:08:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:08:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:08:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:08:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:08:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:09:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:09:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:09:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:09:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:09:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:09:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:10:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:10:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:10:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:10:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:10:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:10:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:11:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:11:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:11:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:11:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:11:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:11:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:12:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:12:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:12:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:12:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:12:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:12:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:13:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:13:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:13:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:13:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:13:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:13:52 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:14:02 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:14:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:14:22 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:14:32 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:14:42 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 11:14:49 - INFO - 程序被手动终止[0m
+[32m2025-01-10 11:14:49 - INFO - 程序结束运行[0m
+[32m2025-01-10 12:12:46 - INFO - 自动化交易程序开始运行[0m
+[32m2025-01-10 12:12:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:12:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:13:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:13:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:13:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:13:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:13:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:13:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:14:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:14:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:14:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:14:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:14:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:14:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:15:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:15:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:15:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:15:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:15:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:15:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:16:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:16:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:16:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:16:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:16:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:16:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:17:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:17:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:17:26 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:17:36 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:17:46 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:17:56 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:18:06 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:18:16 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:18:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:18:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:18:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:18:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:19:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:19:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:19:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:19:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:19:41 - INFO - 程序被手动终止[0m
+[32m2025-01-10 12:19:41 - INFO - 程序结束运行[0m
+[32m2025-01-10 12:20:44 - INFO - 程序被手动终止[0m
+[32m2025-01-10 12:20:44 - INFO - 程序结束运行[0m
+[32m2025-01-10 12:20:47 - INFO - 自动化交易程序开始运行[0m
+[32m2025-01-10 12:20:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:20:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:21:07 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:21:17 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:21:27 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:21:37 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:21:47 - INFO - 等待调仓操作记录完成的标志文件...[0m
+[32m2025-01-10 12:21:53 - INFO - 程序被手动终止[0m
+[32m2025-01-10 12:21:53 - INFO - 程序结束运行[0m

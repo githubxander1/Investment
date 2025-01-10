@@ -1,15 +1,14 @@
 import datetime
-import time
-from pprint import pprint
-import requests
-import pandas as pd
 import logging
 
+import pandas as pd
+import requests
 # 设置日志记录
-import schedule
 from plyer import notification
 
 # 设置日志记录
+from others.量化投资.THS.自动化交易_同花顺.config.settings import Combination_ids
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 获取策略名称和描述
@@ -314,15 +313,15 @@ def main():
     summary_df, stats_df = process_summary_data(ids)
 
     today_trade_df = process_today_trades(ids)
-
-    if today_trade_df is not None:
-        today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])
-        # 过滤掉创业板的调仓信息
-        # today_trade_df_filtered = today_trade_df[~today_trade_df['股票代码'].str.startswith('300')]
-        pprint(today_trade_df_print)
-        send_notification("今日调仓提醒", "发现今日有新的调仓操作！组合")
-    else:
-        logging.info("没有今天的调仓数据可供打印")
+    #
+    # if today_trade_df is not None:
+    #     today_trade_df_print = today_trade_df.drop(columns=['策略id', '描述', '说明'])
+    #     # 过滤掉创业板的调仓信息
+    #     # today_trade_df_filtered = today_trade_df[~today_trade_df['股票代码'].str.startswith('300')]
+    #     pprint(today_trade_df_print)
+    #     send_notification("今日调仓提醒", "发现今日有新的调仓操作！组合")
+    # else:
+    #     logging.info("没有今天的调仓数据可供打印")
 
     post_df = process_historical_posts(ids)
 
@@ -339,7 +338,7 @@ def main():
         if extract_info:  # 检查 extract_info 是否为空
             data_dict[f'post_df_{portfolio_id}'] = pd.DataFrame(extract_info)
 
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_持仓_今天调仓_历史调仓.xlsx"
+    file_path = r"/others/量化投资/THS/组合/保存的数据/组合_持仓_今天调仓_历史调仓.xlsx"
     custom_sheet_names = {
         'summary_df': '持仓汇总表',
         'today_trade_df': '今天调仓',
@@ -357,7 +356,7 @@ def job():
 # schedule.every().minute.do(job)
 
 if __name__ == "__main__":
-    ids = [6994, 18710, 16281, 19347, 13081,11094,20335,7152,18565,14980]
+    ids = Combination_ids
     '''13081 好赛道出牛股
 16281 每天进步一点点
 18565 龙头一年三倍
@@ -369,6 +368,3 @@ if __name__ == "__main__":
 19347 超短稳定复利
 18710 用收益率征服您'''
     main()
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)

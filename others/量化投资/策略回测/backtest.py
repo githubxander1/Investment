@@ -5,7 +5,10 @@ from decimal import Decimal, getcontext
 import pandas as pd
 
 getcontext().prec = 10
-logging.basicConfig(filename='回测log.log', level=logging.INFO)
+logging.basicConfig(filename='记录/回测log.log',
+                    level=logging.INFO,
+                    encoding='utf-8',
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 def backtest(df, initial_capital=Decimal('100000.0')):
     # 复制 DataFrame 以避免 SettingWithCopyWarning
@@ -159,9 +162,10 @@ def backtest(df, initial_capital=Decimal('100000.0')):
     total_profit = last_cumulative_profit
 
     # 将 `transactions` 添加到表格中
+    file_path = '记录/transactions.xlsx'
     df['transactions'] = [transactions] * len(df)
-    df['transactions'].to_excel('transactions.xlsx', index=False)
-    df.to_excel('output.xlsx', index=False)
+    df['transactions'].to_excel(file_path, index=False)
+    # df.to_excel('output.xlsx', index=False)
 
     # 创建一个新的 DataFrame 来存储交易记录
     transaction_df = pd.DataFrame(transactions)
