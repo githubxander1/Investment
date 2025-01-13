@@ -13,6 +13,7 @@
     <orderEntry type="module" module-name="myblog" />
     <orderEntry type="module" module-name="OpenAOE" />
     <orderEntry type="module" module-name="邢不行技术指标回测代码大全" />
+    <orderEntry type="module" module-name="python-crawler" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="" />

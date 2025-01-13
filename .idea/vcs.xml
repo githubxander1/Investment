@@ -4,5 +4,7 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/others/量化投资/autotrade" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/others/量化投资/stock" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/personal-website_1" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/python-crawler" vcs="Git" />
   </component>
 </project>

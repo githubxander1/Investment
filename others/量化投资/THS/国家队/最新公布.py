@@ -20,15 +20,61 @@ headers = {
     "Cookie": "v=A0WC0sa2jqWkK6p5raMLXZ9_XYp_AvmeQ7Ld6EeqAciLxWrwD1IJZNMG7bPU"
 }
 
-# 发送GET请求
-response = requests.get(url, headers=headers)
+def fetch_data(url, headers):
+    """
+    发送GET请求并返回解析后的JSON数据
+    """
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # 若请求不成功，抛出异常
+        return response.json()  # 返回解析后的JSON数据
+    except requests.RequestException as e:
+        print(f"请求出现错误: {e}")
+        return None
 
-# 判断请求是否成功（状态码为200）
-if response.status_code == 200:
-    data = response.json()
-    pprint(data)
-    df = pd.DataFrame(data['data']['list'])
-    df.to_excel('国家队持股.xlsx', index=False)
-    print(df)
-else:
-    print(f"请求失败，状态码: {response.status_code}")
+def extract_result(data):
+    """
+    从接口返回数据中提取结果
+    """
+    if data and 'data' in data:
+        result_list = data['data']
+        extracted_data = []
+        for item in result_list:
+            holders_info = ', '.join([f"{holder['name']} ({holder['scale']}%)" for holder in item.get('holders', [])])
+            extracted_data.append({
+                '股票代码': item.get('code'),
+                '股票名称': item.get('name'),
+                '报告期': item.get('report'),
+                '公告日期': item.get('declare'),
+                '总持股比例': item.get('scale'),
+                '持有人信息': holders_info,
+                '社保': item.get('sb'),
+                '养老金': item.get('ylj'),
+                '证金': item.get('zj'),
+                '汇金': item.get('hj')
+            })
+        return extracted_data
+    return []
+
+def save_to_excel(data, filename):
+    """
+    将数据保存到Excel文件
+    """
+    if data:
+        df = pd.DataFrame(data)
+        print(df)
+        df.to_excel(filename, index=False)
+    else:
+        print("未提取到有效数据")
+
+def main():
+    data = fetch_data(url, headers)
+    if data:
+        pprint(data)
+        extracted_result = extract_result(data)
+        save_to_excel(extracted_result, '国家队持股.xlsx')
+    else:
+        print("未获取到数据")
+
+if __name__ == "__main__":
+    main()

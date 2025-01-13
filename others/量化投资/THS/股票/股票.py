@@ -1,4 +1,8 @@
+from pprint import pprint
+
+import pandas as pd
 import requests
+
 
 def get_index_source():
     """
@@ -49,9 +53,52 @@ def get_index_source():
         print(f"请求发生异常: {e}")
         return None
 
+def save_to_excel(data, filename='stock_data.xlsx'):
+    """
+    将数据保存到Excel文件中
+    """
+    # 创建一个Excel writer对象
+    with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+        # 保存banner_card到Excel
+        banner_card_df = pd.DataFrame(data.get('banner_card', []))
+        banner_card_df.to_excel(writer, sheet_name='banner_card', index=False)
+
+        # 保存latest_index到Excel
+        latest_index = data.get('latest_index', [])
+        latest_index_df = pd.DataFrame([
+            {
+                '指标ID': item['index_id'],
+                '名称': item['name'],
+                '值': item['value'],
+                '单位': item['unit'],
+                '来源': item['source']
+            }
+            for item in latest_index
+        ])
+        latest_index_df.to_excel(writer, sheet_name='latest_index', index=False)
+
+        # 保存jump_url到Excel
+        jump_url_df = pd.DataFrame([{'jump_url': data.get('jump_url', '')}])
+        jump_url_df.to_excel(writer, sheet_name='jump_url', index=False)
+
+        # 保存main_operate_list到Excel（如果存在）
+        main_operate_list = data.get('main_operate_list', [])
+        if main_operate_list:
+            main_operate_list_df = pd.DataFrame(main_operate_list)
+            main_operate_list_df.to_excel(writer, sheet_name='main_operate_list', index=False)
+
+        # 保存source到Excel
+        source_df = pd.DataFrame([{'source': data.get('source', '')}])
+        source_df.to_excel(writer, sheet_name='source', index=False)
+
+        print(f"数据已保存到 {filename}")
+
 if __name__ == "__main__":
     # 调用函数获取指数源数据
-    result = get_index_source()
-    if result:
-        # 如果获取到数据，则可以进行进一步的处理（这里只是简单打印）
-        print(result)
+    data = get_index_source()
+    if data:
+        # 打印原始数据
+        pprint(data)
+
+        # 保存到Excel文件
+        save_to_excel(data)
