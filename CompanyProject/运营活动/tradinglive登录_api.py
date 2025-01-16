@@ -39,12 +39,12 @@ print(response.status_code)  # prints the response status code, e.g. 200 or 404
 #     'User-Agent': 'okhttp/4.9.3'
 # }
 #
-# data = {
+# testdata = {
 #     'email': '实例25_批量生成PPT版荣誉证书@qq.com',
 #     'password': '5690dddfa28ae085d23518a035707282'
 # }
 #
-# response = requests.post(url, headers=headers, data=json.dumps(data))
+# response = requests.post(url, headers=headers, testdata=json.dumps(testdata))
 #
 # print(response.status_code)
 # print(response.json())

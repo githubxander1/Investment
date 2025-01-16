@@ -4,12 +4,12 @@ import os
 import allure
 import pytest
 from ApiTest_mindmaster.common.logger_handler import LoggerHandler
-from CompanyProject.Fastbull.Api_fastbull.common.mongoDB_handler import MongoDBHandler
-from CompanyProject.Fastbull.Api_fastbull.logic.ask import addAsk, deleteAsk, get_expert_ask_reply_page, get_ask_ids
-
 from ApiTest_mindmaster.common.yaml_handler import YamlHandler
 
-yamlhandler=YamlHandler('../data/ask.yaml')
+from CompanyProject.Fastbull.Api_fastbull.common.mongoDB_handler import MongoDBHandler
+from CompanyProject.Fastbull.Api_fastbull.logic.ask import addAsk
+
+yamlhandler=YamlHandler('../testdata/ask.yaml')
 filename=os.path.basename(__file__).split('.')[0]
 logger=LoggerHandler(name='root',level='WARNING',file=f'../log/{filename}_log.log',format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -48,7 +48,7 @@ class TestAddAsk:
     @pytest.mark.parametrize('add_data',yamlhandler.read_yaml()['addAsk'],ids=lambda add_data: add_data['name'])
     def test_add_ask(self,add_data):
         # 获取请求参数
-        body = add_data['data']
+        body = add_data['testdata']
         try:
             # 发送请求
             response = addAsk(body)

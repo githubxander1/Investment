@@ -1,9 +1,8 @@
-from ApiTest_mindmaster.common.yaml_handler import YamlHandler
 from ApiTest_mindmaster.common.logger_handler import LoggerHandler
-from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
-
+from ApiTest_mindmaster.common.yaml_handler import YamlHandler
 # file='Api1.yaml'
-from ApiTest_mindmaster.middleware.helper import  token
+from ApiTest_mindmaster.middleware.helper import token
+from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 
 yamlreader = YamlHandler('Api1.yaml')
 # print(yaml_data['login']['url'])
@@ -20,7 +19,7 @@ class Logic(object):
         # self.__logger.info('newFold_add')
         url=yamlreader.read_yaml()['addNewFold']['url']
         method=yamlreader.read_yaml()['addNewFold']['method']
-        data=yamlreader.read_yaml()['addNewFold']['data']
+        data=yamlreader.read_yaml()['addNewFold']['testdata']
         headers = {
             'Authorization': self.token
         }

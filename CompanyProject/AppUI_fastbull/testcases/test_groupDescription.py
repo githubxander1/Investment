@@ -1,17 +1,13 @@
-import unittest
-import time
-
 import logging
+import time
+import unittest
 
 import pytest
 
-from CompanyProject.AppUI_fastbull.operation.ChatWindows.GroupWindow import GroupWindow
-from CompanyProject.AppUI_fastbull.base.basePage import Base1, d
-from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupSet import GroupSet
-from CompanyProject.AppUI_fastbull.operation.op_Home import Home
-
+from CompanyProject.AppUI_fastbull.base.basePage import Base1
 # 设置日志格式
 from CompanyProject.AppUI_fastbull.data.load_testdata import load_data
+from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupSet import GroupSet
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -38,8 +34,8 @@ class Test_groupDescription(unittest.TestCase):
 
     # def load_data(self):
     #     with open('testdata.yaml','r', encoding='utf-8') as file:
-    #         data=yaml.safe_load(file)
-    #     return  data['groupDescription']
+    #         testdata=yaml.safe_load(file)
+    #     return  testdata['groupDescription']
     @pytest.mark.parametrize('testdata', load_data()['groupDescription'])
     def test_groupDescription(self,testdata):
         with self.subTest():

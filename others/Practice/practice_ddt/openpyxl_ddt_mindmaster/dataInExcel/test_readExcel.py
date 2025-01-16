@@ -1,16 +1,19 @@
 # https://blog.csdn.net/baidu_41615818/article/details/120241397
 import unittest
+
 import requests
 # 步骤1
-from ddt import ddt, data, unpack, file_data
+from ddt import ddt, data
+
 from com_getExcelData import get_excel_data
+
 
 # 步骤2
 @ddt  # 表示当前类要进行数据驱动测试
 class Demo(unittest.TestCase):
     # 字典外加列表：因为unpack后是列表
-    # @data()里面的是测试数据
-    # @data([第一组数据]，[第二组数据])，有几组数据就执行几次测试用例
+    # @testdata()里面的是测试数据
+    # @testdata([第一组数据]，[第二组数据])，有几组数据就执行几次测试用例
     # 步骤3
     @data(*get_excel_data())
     # 将一组数据（列表，元组）拆分成单个元素，然后一一对应传递给形式参数。只拆分一次。

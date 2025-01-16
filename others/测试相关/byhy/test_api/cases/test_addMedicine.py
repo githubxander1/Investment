@@ -1,5 +1,6 @@
 import pytest
 import requests
+
 from others.测试相关.byhy.test_api.lib import APIMgr, host
 
 
@@ -15,7 +16,7 @@ class TestAddMedicine():
         response = requests.post(url=host + "/api/mgr/medicines", cookies=self.cookies,
                                 json={
                                     "action":"add_medicine",
-                                    "data":{
+                                    "testdata":{
                                         "name": "青霉素",
                                         "desc": "青霉素 国字号",
                                         "sn": "099877883837"
@@ -30,7 +31,7 @@ class TestAddMedicine():
         response = requests.post(url=host + "/api/mgr/medicines", cookies=self.cookies,
                                  json={
                                      "action": "add_medicine",
-                                     "data": {
+                                     "testdata": {
                                          "name": "青霉素",
                                          "desc": "青霉素 国字号",
                                          # "sn": "099877883837"
@@ -46,7 +47,7 @@ class TestAddMedicine():
         response = requests.post(url=host + "/api/mgr/medicines", cookies=self.cookies,
                                  json={
                                      "action": "add_medicine",
-                                     "data": {
+                                     "testdata": {
                                          "name": "",
                                          "desc": "青霉素 国字号",
                                          "sn": "099877883837"

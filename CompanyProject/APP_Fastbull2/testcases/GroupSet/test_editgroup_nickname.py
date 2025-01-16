@@ -1,23 +1,16 @@
-import inspect
-import os
-import unittest
-import time
-
 import logging
-from datetime import datetime
+import os
+import time
+import unittest
 
 import allure
 import pytest
-import yaml
-from xmlrunner import XMLTestRunner
-
-# from CompanyProject.APP_Fastbull2.common import C
-# from CompanyProject.APP_Fastbull2.data.load_testdata import load_data
-from CompanyProject.APP_Fastbull2.common.common import Common
-from CompanyProject.APP_Fastbull2.operation.ChatWindows.GroupWindow import GroupWindow
-from CompanyProject.APP_Fastbull2.base.basePage import Base1, d
 from CompanyProject.APP_Fastbull2.operation.GroupSet.GroupSet import GroupSet
-from CompanyProject.APP_Fastbull2.operation.op_Home import Home
+
+from CompanyProject.APP_Fastbull2.base.basePage import Base1
+# from CompanyProject.APP_Fastbull2.common import C
+# from CompanyProject.APP_Fastbull2.testdata.load_testdata import load_data
+from CompanyProject.APP_Fastbull2.common.common import Common
 
 # 设置日志格式
 logging.basicConfig(level=logging.INFO,

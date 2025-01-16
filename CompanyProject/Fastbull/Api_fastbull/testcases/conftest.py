@@ -1,6 +1,5 @@
 # 这是一个特殊的pytest模块，可以放置在任意目录下，用于定义fixture、钩子函数、共享的测试配置和初始化代码。它可以被pytest自动发现并使用。
 import base64
-import json
 import hashlib
 import random
 import re
@@ -9,7 +8,6 @@ import time
 
 import pytest
 from Crypto.Cipher import AES
-import requests
 
 from CompanyProject.Fastbull.Api_fastbull.common.requests_handler import RequestsHandler
 from CompanyProject.Fastbull.Api_fastbull.common.yaml_handler import YamlHandler
@@ -142,12 +140,12 @@ def get_identity():
 # def get_identity():
 #     url = "https://testfbapi.tostar.top/fastbull-user-service/api/postLoginByAccount"
 #     # 请求体数据
-#     data = {
+#     testdata = {
 #         # "requestData": "OqRZEG9mm9B/y92h7+muv9Wo/hqLayfEHblOiW/1ePColbT1ffuMo1ApsQPHr4G02+zbOMm2tnftFXUAhKjlxV6rosUNFayqQABV7DhESBjMTNzgCI3tF5P5afpnQFK0Ux09uC6F4gHEE+MN4Ydt32pu25IbXW0GVRzoSjAaDxB+cQVsBQ2JKGlXPVEI+FfU",
 #         # 8@qq.com
 #         "requestData": "OqRZEG9mm9B/y92h7+muvwcxB8yVV/QwIWGPo5b44f6kMu6+64Nx3ZHpA/BbJRO7RKBB48RGqfRNBe+fehjZmu2L1wAKO884B1+7MKqDorE99P4QKtg9NrlPjtthAoaWXozHS7SJEboLxvkw0R5DK3jpe1JcPK05mOYHmHPkNps6laBE5o5z9cr5yv1aNiap",
 #     }
-#     response = requests.post(url, json=data)
+#     response = requests.post(url, json=testdata)
 #
 #     # 验证响应状态码
 #     assert response.status_code == 200, f"登录请求失败，状态码为：{response.status_code}"

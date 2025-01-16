@@ -37,13 +37,13 @@ data={
 # data_list=html.xpath('//div[@class="cell"]')
 # # data_list=html.xpath('//*[@id="main"]/div[3]/div/div[2]/div/div/div[2]/div[实例25_批量生成PPT版荣誉证书]/div[2]/div/div/div[3]/table/tbody/tr[2]/td[实例25_批量生成PPT版荣誉证书]/div')
 # # print(data_list)
-# for data in data_list:
+# for testdata in data_list:
 #     da=data_list.xpath('./@href')[0]
 #     name=data_list.xpath('./a/text()')[0]
 #     print(da)
 #     print(name)
 data=requests.post('http://www.cninfo.com.cn/new/hisAnnouncement/query',headers=headers,data=data).json()
-# print(data)
+# print(testdata)
 announcements=data['announcements']
 # print(announcements)
 for d in announcements:

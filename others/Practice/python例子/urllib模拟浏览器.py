@@ -1,5 +1,5 @@
-import urllib.request
 import random
+import urllib.request
 
 url = 'http://www.baidu.com'
 # 方法1，模拟请求头,字典
@@ -15,8 +15,8 @@ req = urllib.request.Request(url, headers=headers)
 # 发起请求
 response = urllib.request.urlopen(req)
 data = response.read().decode('utf-8')
-# print(type(data)) # <class 'str'>
-# print(data) # 打印出来的就是百度首页的内容
+# print(type(testdata)) # <class 'str'>
+# print(testdata) # 打印出来的就是百度首页的内容
 
 # 方法2
 agentList = [

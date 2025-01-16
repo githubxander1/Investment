@@ -61,7 +61,7 @@ class APIMgr:
         response = requests.post(url=host+"/api/mgr/customers",cookies=self.cookies,
               json={
                     "action":"add_customer",
-                    "data":{
+                    "testdata":{
                         "name":name,
                         "phonenumber":phonenumber,
                         "address":address
@@ -77,7 +77,7 @@ class APIMgr:
         response = requests.post(url=host+"/api/mgr/customers",
               json={
                     "action":"add_customer",
-                    "data":data
+                    "testdata":data
                 })
 
         self._printResponse(response)
@@ -156,7 +156,7 @@ class APIMgr:
         response=requests.post(url=host+'/api/mgr/medicines',data=
                         {
                             "action":"add_medicine",
-                            "data":{
+                            "testdata":{
                                 "name": "青霉素",
                                 "desc": "青霉素 国字号",
                                 "sn": "099877883837"

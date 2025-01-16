@@ -1,8 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 # 创建浏览器对象并打开网页
 driver = webdriver.Chrome()
@@ -13,7 +13,7 @@ country_code_input = driver.find_element_by_name("code")
 country_code_input.click()
 
 # 找到香港并选择
-hongkong_option = driver.find_element(By.XPATH,"//li[@data-value='852']")
+hongkong_option = driver.find_element(By.XPATH,"//li[@testdata-value='852']")
 hongkong_option.click()
 
 # 找到手机号输入框并输入手机号

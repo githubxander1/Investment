@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 import pandas as pd
 
 # 数据
@@ -79,7 +80,7 @@ def calculate_subsidy(duration):
 # 遍历数据并计算结果
 results = []
 for i in range(len(data['姓名'])):
-    # name = data['姓名'][i]
+    # name = testdata['姓名'][i]
     date = data['日期'][i]
     start_time = data['上班1打卡时间'][i]
     end_time = data['下班1打卡时间'][i]

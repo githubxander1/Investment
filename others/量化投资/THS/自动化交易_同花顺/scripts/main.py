@@ -63,7 +63,11 @@ async def main():
         # logger.info("自动化交易调度器已启动")
 
         # 运行事件循环
-        await asyncio.gather(asyncio.Event().wait())
+        await asyncio.gather(
+            scheduler_strategy.wait_until_done(),
+            scheduler_combination.wait_until_done(),
+            # scheduler_auto.wait_until_done(),
+        )
 
     except Exception as e:
         logger.error(f"调度器启动失败: {e}", exc_info=True)

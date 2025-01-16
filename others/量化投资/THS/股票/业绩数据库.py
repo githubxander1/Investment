@@ -47,7 +47,7 @@ def post_api_data():
 
 def extract_result(data):
     if data and data['status_code'] == 0:
-        result_list = data.get("data", {}).get("data", [])
+        result_list = data.get("testdata", {}).get("testdata", [])
         extracted_data = []
         for item in result_list:
             extracted_data.append({

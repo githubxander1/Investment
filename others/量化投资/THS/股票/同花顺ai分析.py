@@ -18,5 +18,5 @@ headers = {
 }
 
 response = requests.get(url, headers=headers)
-data = response.json()["data"]
+data = response.json()["testdata"]
 print(response.text)

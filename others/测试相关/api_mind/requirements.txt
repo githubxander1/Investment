@@ -1,0 +1,5 @@
+requests==2.31.0
+pytest==7.3.1
+allure-pytest==2.9.45
+PyYAML==6.0
+smtplib2==3.0.0

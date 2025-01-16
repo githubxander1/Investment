@@ -1,9 +1,9 @@
 import os
-from pprint import pprint
+from datetime import datetime
+
+import pandas as pd
 import requests
 from fake_useragent import UserAgent
-import pandas as pd
-from datetime import datetime
 
 # 手动创建策略ID到策略名称的映射
 strategy_id_to_name = {
@@ -30,7 +30,7 @@ def fetch_strategy_profit(strategy_id):
 
     if response.status_code == 200:
         data = response.json()
-        # pprint(data)
+        # pprint(testdata)
 
         # 提取 latestTrade 信息
         latest_trade = data.get('result', {}).get('latestTrade', {})

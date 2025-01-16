@@ -1,10 +1,11 @@
 # utils/sync_oss.py
-import os
 import hashlib
-from aliyunsdkcore.client import AcsClient
-from aliyunsdkoss.request.v20190517 import ListObjectsRequest, PutObjectRequest, DeleteObjectRequest
+import os
+
 from aliyunsdkcore.auth.credentials import AccessKeyCredential
 from aliyunsdkcore.auth.credentials.provider import StaticCredentialProvider
+from aliyunsdkcore.client import AcsClient
+from aliyunsdkoss.request.v20190517 import ListObjectsRequest
 
 access_key_id = 'your_access_key_id'
 access_key_secret = 'your_access_key_secret'
@@ -76,7 +77,7 @@ def sync_files(local_dir, bucket_name, prefix=''):
 
 
 if __name__ == "__main__":
-    local_dir = "/path/to/local/data"
+    local_dir = "/path/to/local/testdata"
     bucket_name = 'your_bucket_name'
     prefix = 'notes'
     sync_files(local_dir, bucket_name, prefix)

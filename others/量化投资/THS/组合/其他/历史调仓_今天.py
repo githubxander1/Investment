@@ -47,15 +47,15 @@ def get_name_desc(product_id):
         response.raise_for_status()
         result = response.json()
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
-            product_desc = result['data']['baseInfo']['productDesc']
+            product_name = result['testdata']['baseInfo']['productName']
+            product_desc = result['testdata']['baseInfo']['productDesc']
             return {
                 "策略id": product_id,
                 "策略名称": product_name,
                 "策略描述": product_desc
             }
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -93,7 +93,7 @@ def get_history_data(portfolioId):
 def extract_and_filter_today_data(data, portfolioId):
     today = datetime.date.today().strftime('%Y-%m-%d')
     records = []
-    for item in data['data']:
+    for item in data['testdata']:
         create_at = item['createAt']
         date_part = create_at.split()[0]
         if date_part == today:
@@ -131,7 +131,7 @@ def main():
     all_records = []
     for portfolio_id in ids:
         data = get_history_data(portfolio_id)
-        # pprint(data)
+        # pprint(testdata)
         if data:
             records = extract_and_filter_today_data(data, portfolio_id)
             all_records.extend(records)

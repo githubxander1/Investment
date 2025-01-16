@@ -12,11 +12,11 @@ def base_dir():
 
 # 读取文件里面的参数
 def getID(filename):
-    with open(file=os.path.join(base_dir(),'data',filename),mode='r')as f:
+    with open(file=os.path.join(base_dir(),'testdata',filename),mode='r')as f:
             return f.read()
 
 
 # 将参数写入文件
 def writeID(filename,countent):
-    with open(file=os.path.join(base_dir(),'data',filename),mode='w')as f:
+    with open(file=os.path.join(base_dir(),'testdata',filename),mode='w')as f:
             f.write(countent)

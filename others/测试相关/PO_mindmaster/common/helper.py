@@ -32,7 +32,7 @@ class Helper:
         '''
         return str(self.readExcels(rowx)[1])
 
-    def dirname(self, filename, filepath='data'):
+    def dirname(self, filename, filepath='testdata'):
         '''
         :param filename
         :param filepath
@@ -54,13 +54,13 @@ class Helper:
     def readyaml(self, filename):
         with open(filename, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
-            # print(data)
+            # print(testdata)
         return data
 
 
 help = Helper()
-# data = help.readyaml('../data/login.yaml')
-# pprint(data)
-# print(data['login'])
-# print(data['login']['username'])
+# testdata = help.readyaml('../testdata/login.yaml')
+# pprint(testdata)
+# print(testdata['login'])
+# print(testdata['login']['username'])
 # print(re.readExcels(2))

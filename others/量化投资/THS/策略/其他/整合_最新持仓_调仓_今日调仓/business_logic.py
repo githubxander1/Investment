@@ -1,10 +1,11 @@
 import os
-from pprint import pprint
-import pandas as pd
 from datetime import datetime
-from latest_position_and_trade_api import get_latest_position_and_trade
-from data_processor import extract_latest_trade_info, extract_latest_positions_info, determine_market
+
+import pandas as pd
+
+from data_processor import extract_latest_trade_info, extract_latest_positions_info
 from file_operations import save_to_excel
+from latest_position_and_trade_api import get_latest_position_and_trade
 from notification import send_notification
 
 strategy_id_to_name = {
@@ -54,19 +55,19 @@ def main():
         positions_file_path = os.path.join(os.getcwd(), '策略保存的数据', '策略最新持仓_所有.xlsx')
         save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
     else:
-        print("No position data to save.")
+        print("No position testdata to save.")
 
     if not last_trades_df.empty:
         trades_file_path = os.path.join(os.getcwd(), '策略保存的数据', '策略最新调仓_所有.xlsx')
         save_to_excel(last_trades_df, trades_file_path, '策略最新调仓')
     else:
-        print("No trade data to save.")
+        print("No trade testdata to save.")
 
     if not today_trades_df.empty:
         today_trades_file_path = os.path.join(os.getcwd(), '策略保存的数据', '策略今天调仓.xlsx')
         save_to_excel(today_trades_df, today_trades_file_path, '策略今天调仓')
     else:
-        print("No today's trade data to save.")
+        print("No today's trade testdata to save.")
 
     print("\n当天交易信息:")
     if not today_trades_df.empty:

@@ -18,10 +18,10 @@
 #         with open(self.file, encoding=encoding) as f:
 #             return sina.yaml.load(f.read(), Loader=sina.yaml.FullLoader)
 #
-#     def write_yaml(self, data, encoding='utf-8'):
+#     def write_yaml(self, testdata, encoding='utf-8'):
 #         """向yaml文件写入数据"""
 #         with open(self.file, encoding=encoding, mode='w') as f:
-#             return sina.yaml.dump(data, stream=f, allow_unicode=True)
+#             return sina.yaml.dump(testdata, stream=f, allow_unicode=True)
 #
 #
 # yaml_data = YamlHandler(r'C:\Users\Administrator\PycharmProjects\pythonProject\test_mindmaster\config\config.sina.yaml').read_yaml()

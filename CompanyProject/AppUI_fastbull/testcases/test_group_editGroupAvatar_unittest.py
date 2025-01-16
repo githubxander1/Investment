@@ -1,8 +1,8 @@
 
 # coding: utf-8
+import HTMLTestRunner
 import time
 import unittest
-import HTMLTestRunner
 
 from CompanyProject.AppUI_fastbull.base.basePage import Base1
 from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupManage.EditGroupFiles.op_EditGroupAvatar import GroupAvatar
@@ -49,7 +49,7 @@ if __name__ == "__main__":
             title='Test Report',
             description=''
         )
-        # Run the tests and generate the flashing_icon report
+        # Run the testcases and generate the flashing_icon report
         print('kais')
         runner.run(unittest.makeSuite(Test_editGroupAvatar))
         print('jies')

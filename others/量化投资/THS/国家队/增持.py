@@ -9,7 +9,7 @@ def gjd_zjc(operation):
 
     # 请求头，按照给定的原始请求信息进行设置
     headers = {
-        "Host": "data.hexin.cn",
+        "Host": "testdata.hexin.cn",
         "Connection": "keep-alive",
         "Accept": "application/json",
         "X-Requested-With": "XMLHttpRequest",

@@ -1,17 +1,9 @@
 import os
-import time
-
-import pytest
 import sys
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from seleniumwire import webdriver
-
+import pytest
 from others.PO_mindmaster.basepage.baseBase import BasePage
-from others.PO_mindmaster.common.getImage import SaveImage
-from others.PO_mindmaster.common.helper import help, Helper
+from others.PO_mindmaster.common.helper import help
 from others.PO_mindmaster.page.loginpage import LoginPage
 
 sys.path.append('../basepage')
@@ -30,7 +22,7 @@ class TestLogin(BasePage):
         print('结束')
 
         @pytest.mark.allure_story('登录')
-        @pytest.mark.parametrize('logindata', help.readyaml('../data/login.yaml'))
+        @pytest.mark.parametrize('logindata', help.readyaml('../testdata/login.yaml'))
         def test_login(self, logindata):
             self.loginpage = LoginPage()
             '''登录成功'''

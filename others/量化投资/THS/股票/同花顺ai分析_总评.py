@@ -34,12 +34,12 @@ try:
 
     if data["status_code"] == 0:
         # 提取关键信息
-        overview = data["data"]["overview"]
-        reports = data["data"]["reports"]
-        highlights = data["data"]["highlight"]
-        code = data["data"]["code"]
-        name = data["data"]["name"]
-        industry = data["data"]["industry"]
+        overview = data["testdata"]["overview"]
+        reports = data["testdata"]["reports"]
+        highlights = data["testdata"]["highlight"]
+        code = data["testdata"]["code"]
+        name = data["testdata"]["name"]
+        industry = data["testdata"]["industry"]
 
         # 打印提取的信息
         print(f"股票代码: {code}")

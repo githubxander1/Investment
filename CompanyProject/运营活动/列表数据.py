@@ -2,7 +2,7 @@ import json
 import pandas as pd
 
 # with open('数据.txt', 'rb') as f:
-#     data = json.loads(f.read().decode(chardet.detect(f.read())['encoding']))
+#     testdata = json.loads(f.read().decode(chardet.detect(f.read())['encoding']))
 
 # txt转Excel
 with open('正式_列表数据.txt', 'r', encoding='utf-8') as f:

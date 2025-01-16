@@ -41,8 +41,8 @@ def extract_result(data):
     """
     从接口返回数据中提取结果
     """
-    if data and 'data' in data and 'data' in data['data']:
-        result_data = data['data']['data']
+    if data and 'testdata' in data and 'testdata' in data['testdata']:
+        result_data = data['testdata']['testdata']
         parsed_data = []
         for item in result_data:
             parsed_item = {}

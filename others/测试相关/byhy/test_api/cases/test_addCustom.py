@@ -1,6 +1,8 @@
 import pytest
 import requests
+
 from others.测试相关.byhy.test_api.lib import APIMgr
+
 
 class TestAddCustomer():
     # @classmethod
@@ -14,7 +16,7 @@ class TestAddCustomer():
         url = 'http://127.0.0.1:8047/api/mgr/customers'
         data ={
             "action":"add_customer",
-            "data":{
+            "testdata":{
                 "name":"test_customer1",
                 "phonenumber":"12345678910",
                 "address":"test_address1"
@@ -31,7 +33,7 @@ class TestAddCustomer():
         url = 'http://127.0.0.1:8047/api/mgr/customers'
         data ={
             "action":"add_customer",
-            "data":{
+            "testdata":{
                 "name":"test_customer2",
                 "phonenumber":"13245698745",
 
@@ -48,7 +50,7 @@ class TestAddCustomer():
         url = 'http://127.0.0.1:8047/api/mgr/customers'
         data ={
             "action":"add_customer",
-            "data":{
+            "testdata":{
                 "name":"test_customer",
                 "phonenumber":"",
                 "address":"test_address"

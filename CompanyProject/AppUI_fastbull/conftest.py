@@ -53,7 +53,7 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 #             file_name = report.nodeid.replace("::", "_")+".png"
 #             screen_img = _capture_screenshot()
 #             if file_name:
-#                 html = '<div><img src="data:image/png;base64,%s" alt="screenshot" style="width:600px;height:300px;" ' \
+#                 html = '<div><img src="testdata:image/png;base64,%s" alt="screenshot" style="width:600px;height:300px;" ' \
 #                        'onclick="window.open(this.src)" align="right"/></div>' % screen_img
 #                 extra.append(pytest_html.extras.html(html))
 #                 # 检查描述文档是否存在，如果存在则设置为报告的description属性

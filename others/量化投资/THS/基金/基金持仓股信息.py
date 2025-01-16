@@ -54,7 +54,7 @@ def get_fund_hold_stock(trade_code):
 def save_to_excel(data, trade_code, writer):
     # 提取所需字段
     stock_data = []
-    for stock in data['data']:
+    for stock in data['testdata']:
         stock_info = {
             '板块': stock['block'],
             '基金代码': stock['code'],

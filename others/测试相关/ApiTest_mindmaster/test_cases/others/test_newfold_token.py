@@ -2,8 +2,8 @@ import unittest
 # from common.requests_handler import RequestsHandler
 from pprint import pprint
 
+from ApiTest_mindmaster.middleware.helper import save_token
 from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
-from ApiTest_mindmaster.middleware.helper import save_token, Context
 
 
 class LoginTest(unittest.TestCase):
@@ -30,7 +30,7 @@ class LoginTest(unittest.TestCase):
         headers = {'Authorization':token}
 
         res = self.req.visit('post', newfold_url,headers=headers,json=data)
-        # pprint(res['data'])
+        # pprint(res['testdata'])
         pprint(res)
         # self.assertEqual('success', res['status'])
 

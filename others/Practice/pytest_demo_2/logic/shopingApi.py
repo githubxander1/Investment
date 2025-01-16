@@ -1,13 +1,13 @@
-import pytest
 import allure
+
 from others.Practice.pytest_demo_2.api_keyword.api_key import ApiKey
-from others.Practice.pytest_demo_2.data_driver.yaml_driver import load_yaml
 from others.Practice.pytest_demo_2.params.allParams import URL
 
-# data = {
+
+# testdata = {
 #             'email': "2695418206@qq.com",
 #             'pw': "f2d8ddfc169a0ee6f8b0ecd924b1d300"
-# @pytest.mark.parametirze('userdata',load_yaml(f'../data/user.yaml'))
+# @pytest.mark.parametirze('userdata',load_yaml(f'../testdata/user.yaml'))
 #         }
 class ApiCase():
     # 登录逻辑
@@ -124,6 +124,6 @@ class ApiCase():
             result = ak.get_text(res1.text, 'result')
             assert 'success' == result
 
-# userdata=load_yaml(f'../data/user.yaml')
+# userdata=load_yaml(f'../testdata/user.yaml')
 # apicase=ApiCase()
 # apicase.params_login(userdata)

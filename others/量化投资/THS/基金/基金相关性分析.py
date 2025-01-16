@@ -68,7 +68,7 @@ def get_fund_name(trade_code):
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         data = response.json()
-        info = data['data']
+        info = data['testdata']
         simpleName = info.get('simpleName')
         return simpleName
     except requests.RequestException as e:
@@ -78,8 +78,8 @@ def get_fund_name(trade_code):
 # 提取基金持仓股票的证券代码
 def extract_sec_codes(data):
     sec_codes = set()
-    if 'data' in data and isinstance(data['data'], list):
-        for stock in data['data']:
+    if 'testdata' in data and isinstance(data['testdata'], list):
+        for stock in data['testdata']:
             if 'secCode' in stock:
                 sec_codes.add(stock['secCode'])
     return sec_codes

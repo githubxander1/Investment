@@ -1,10 +1,10 @@
 import unittest
 # from common.requests_handler import RequestsHandler
 from pprint import pprint
-from parameterized import parameterized
 
-from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 from ApiTest_mindmaster.middleware.helper import save_token
+from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
+from parameterized import parameterized
 
 data={'prefix':'test_新建'}
 
@@ -32,14 +32,14 @@ class TestNewFold(unittest.TestCase):
         token = save_token()
         print(token)
         newfold_url = 'https://masterapi.edrawsoft.cn/api/oss/23928516/obj'
-        # data = {
+        # testdata = {
         #     "prefix": "新建1",
         #     # "id": 23928516
         # }
         headers = {'Authorization': token}
 
         res = self.req.visit('post', newfold_url, headers=headers, json=data)
-        # pprint(res['data'])
+        # pprint(res['testdata'])
         pprint(res)
         # self.assertEqual('success', res['status'])
 

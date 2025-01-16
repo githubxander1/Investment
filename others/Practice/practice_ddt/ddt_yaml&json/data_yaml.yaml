@@ -17,7 +17,7 @@
 #  title: 用户名长度小于6位，注册失败
 #  url: http://api.nnzhp.cn/api/user/user_reg
 #  method: POST
-#  data:
+#  testdata:
 #    username: yingc
 #    pwd: Ace123456
 #    cpwd: Ace123456

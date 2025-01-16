@@ -43,15 +43,15 @@ def get_product_info(product_id):
         response.raise_for_status()
         result = response.json()
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
-            product_desc = result['data']['baseInfo']['productDesc']
+            product_name = result['testdata']['baseInfo']['productName']
+            product_desc = result['testdata']['baseInfo']['productDesc']
             return {
                 "策略id": product_id,
                 "策略名称": product_name,
                 "策略描述": product_desc
             }
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -89,7 +89,7 @@ def get_history_post_data(portfolioId):
 def process_ids(ids):
     all_data = []
     for portfolio_id in ids:
-        relocate_post = get_history_post_data(portfolio_id)['data']
+        relocate_post = get_history_post_data(portfolio_id)['testdata']
         pprint(relocate_post)
 
         extract_info = []

@@ -39,5 +39,5 @@ class ExcelHandle:
 
     if __name__ == "__main__":
         # 以下为测试代码
-        excel = ExcelHandler('../data/cases.xlsx')
+        excel = ExcelHandler('../testdata/cases.xlsx')
         data = excel.read_excel('login')

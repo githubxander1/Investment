@@ -6,9 +6,8 @@ fizz_buzz_list = [
 print(fizz_buzz_list)
 
 # 2. 使用with语句和csv模块读取CSV文件
-import csv
 
-# with open("data.csv", "r") as file:
+# with open("testdata.csv", "r") as file:
 #     reader = csv.reader(file)
 #     for row in reader:
 #         print(row)
@@ -136,7 +135,9 @@ def print_numbers():
         print("Done!")
 
 # 19. 使用multiprocessing模块进行多进程编程
-from multiprocessing import Process,cpu_count
+from multiprocessing import Process
+
+
 def print_numbers1():
     for i in range(1, 6):
         print(i)
@@ -149,7 +150,6 @@ response = requests.get("https://www.example.com")
 print(f'使用requests模块进行HTTP请求:{response.status_code}')
 
 # 21. 使用matplotlib模块进行简单的绘图
-import matplotlib.pyplot as plt
 x = [1, 2, 3, 4, 5]
 y = [2, 4, 6, 8, 10]
 # plt.plot(x, y)

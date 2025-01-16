@@ -1,6 +1,7 @@
 from pprint import pprint
-import requests
+
 import pandas as pd
+import requests
 
 # 接口URL
 url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
@@ -62,7 +63,7 @@ for id in ids:
 
         if data['status_code'] == 0:
             # 提取结果部分
-            result = data['data']
+            result = data['testdata']
             # 添加id信息以便区分
             result['策略ID'] = id
             # 将收益率转换为百分比

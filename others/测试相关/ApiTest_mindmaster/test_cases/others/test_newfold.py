@@ -25,7 +25,7 @@ class TestNewFold(unittest.TestCase):
         res = self.req.visit('post', login_url, json=payload)
 
         # 获取保存token
-        token = res['data']['token']
+        token = res['testdata']['token']
         token = 'Bearer' + ' ' + token
         print(token)
         # token放到请求头中
@@ -40,7 +40,7 @@ class TestNewFold(unittest.TestCase):
         }
 
         res = self.req.visit('post', newfold_url, headers=headers,json=data)
-        # pprint(res['data'])
+        # pprint(res['testdata'])
         pprint(res)
         self.assertEqual('success', res['status'])
 

@@ -1,15 +1,16 @@
 import unittest
+
 import requests
 # 步骤1
-from ddt import ddt, data, unpack, file_data
+from ddt import ddt, data, unpack
 
 
 # 步骤2
 @ddt  # 表示当前类要进行数据驱动测试
 class Demo(unittest.TestCase):
     # 字典外加列表：因为unpack后是列表
-    # @data()里面的是测试数据
-    # @data([第一组数据]，[第二组数据])，有几组数据就执行几次测试用例
+    # @testdata()里面的是测试数据
+    # @testdata([第一组数据]，[第二组数据])，有几组数据就执行几次测试用例
     # 步骤3
     @data([
         {'email': "2695418206@qq.com",

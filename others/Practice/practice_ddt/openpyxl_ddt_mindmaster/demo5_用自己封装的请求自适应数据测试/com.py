@@ -24,7 +24,7 @@ def get_excel_data3():
     row_data = []
     for item in res[1:]:
         data = [i.value for i in item]
-        # dic = dict(zip(data))
+        # dic = dict(zip(testdata))
         row_data.append(data)
     print(row_data)
     return row_data
@@ -64,7 +64,7 @@ import requests
 
 def send_request(url, data, data_type, type, **kwargs):
     if type == "post":
-        if data_type == "data":
+        if data_type == "testdata":
             return requests.post(url=url, data=data, **kwargs)
         elif data_type == "json":
             return requests.post(url=url, json=data, **kwargs)

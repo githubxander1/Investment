@@ -32,11 +32,11 @@ def get_strategy_details(product_id):
         response.raise_for_status()
         result = response.json()
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
-            product_desc = result['data']['baseInfo']['productDesc']
+            product_name = result['testdata']['baseInfo']['productName']
+            product_desc = result['testdata']['baseInfo']['productDesc']
             return {"策略id": product_id, "策略名称": product_name, "策略描述": product_desc}
         else:
-            logging.error(f"Failed to retrieve data for product_id: {product_id}")
+            logging.error(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         logging.error(f"请求出现错误: {e}")
@@ -66,7 +66,7 @@ def get_current_positions(portfolio_id):
     # 判断请求是否成功（状态码为200）
     if response.status_code == 200:
         data = response.json()
-        # pprint(data)
+        # pprint(testdata)
         positions = data["result"]["positions"]
         for item in positions:
             # profitLossRate = item["profitLossRate"]
@@ -167,10 +167,10 @@ def process_today_trades(ids):
 
     for portfolio_id in ids:
         data = get_historical_data(portfolio_id)
-        # print('data')
-        # pprint(data)
+        # print('testdata')
+        # pprint(testdata)
         if data:
-            for item in data['data']:
+            for item in data['testdata']:
                 create_at = item['createAt']
                 date_part = create_at.split()[0]
                 if date_part == today:
@@ -221,10 +221,10 @@ def process_historical_posts(ids):
 
     for portfolio_id in ids:
         relocate_post = get_historical_data(portfolio_id)
-        if relocate_post and 'data' in relocate_post:
+        if relocate_post and 'testdata' in relocate_post:
             extract_info = []
 
-            for record in relocate_post['data']:
+            for record in relocate_post['testdata']:
                 createAt = record['createAt']
 
                 for item in record['relocateList']:
@@ -496,26 +496,26 @@ def main():
         positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
         save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
     else:
-        print("No position data to save.")
+        print("No position testdata to save.")
 
     if not last_trades_df.empty:
         trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新调仓_所有.xlsx'
         save_to_excel(last_trades_df, trades_file_path, '策略最新调仓')
     else:
-        print("No trade data to save.")
+        print("No trade testdata to save.")
 
     if not today_trades_df.empty:
         today_trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略今天调仓_所有.xlsx'
         save_to_excel(today_trades_df, today_trades_file_path, '策略今天调仓')
     else:
-        print("No today's trade data to save.")
+        print("No today's trade testdata to save.")
 
     # 打印当天交易信息到控制台
     print("\n当天交易信息:")
     if not today_trades_df.empty:
         print(today_trades_df)
     else:
-        print("No today's trade data available.")
+        print("No today's trade testdata available.")
 
 
 if __name__ == '__main__':

@@ -7,9 +7,6 @@
 import time
 
 # 函数收集测试结果
-from datetime import datetime
-
-from CompanyProject.APP_Fastbull2.base.basePage import d
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
@@ -62,7 +59,7 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 #             file_name = report.nodeid.replace("::", "_")+".png"
 #             screen_img = _capture_screenshot()
 #             if file_name:
-#                 html = '<div><img src="data:image/png;base64,%s" alt="screenshot" style="width:600px;height:300px;" ' \
+#                 html = '<div><img src="testdata:image/png;base64,%s" alt="screenshot" style="width:600px;height:300px;" ' \
 #                        'onclick="window.open(this.src)" align="right"/></div>' % screen_img
 #                 extra.append(pytest_html.extras.html(html))
 #                 # 检查描述文档是否存在，如果存在则设置为报告的description属性
@@ -93,9 +90,6 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 # #     if driver is None:
 # #         driver=webdriver.Edge()
 # #     return driver
-import os
-import allure
-import pytest
 # from webdriver_helper import get_webdriver
 
 # driver = None
@@ -197,7 +191,7 @@ import pytest
 #             file_name = report.nodeid.replace("::", "_")+".png"
 #             screen_img = _take_screenshot()
 #             if file_name:
-#                 html = '<div><img src="data:image/png;base64,%s" alt="screenshot" style="width:600px;height:300px;" ' \
+#                 html = '<div><img src="testdata:image/png;base64,%s" alt="screenshot" style="width:600px;height:300px;" ' \
 #                        'οnclick="window.open(this.src)" align="right"/></div>' % screen_img
 #                 extra.append(pytest_html.extras.html(html))
 #         report.extra = extra

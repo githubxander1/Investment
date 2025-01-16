@@ -1,6 +1,8 @@
-import requests
-import pandas as pd
 from pprint import pprint
+
+import pandas as pd
+import requests
+
 
 def get_owner_principal_info(product_id):
     """
@@ -60,7 +62,7 @@ all_results = []
 for product_id in ids:
     data = get_owner_principal_info(product_id)
     if data and data['status_code'] == 0:
-        result = data['data']
+        result = data['testdata']
         result['product_id'] = product_id
         all_results.append(result)
     else:

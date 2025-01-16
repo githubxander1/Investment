@@ -536,7 +536,7 @@ def check_singnal_data_statistics(table_strategy,table_strategy_signal):
             'select count(*) from {} where closeTime>={} and closetime<{} and positionType = "2" and  status=实例25_批量生成PPT版荣誉证书'.format(table_strategy_signal,month_star_time,month_end_time), one=False)
         ##某个策略的所有品种数据个数
         count = count[0]["count(*)"]
-        # print(data)
+        # print(testdata)
         if count != 0:
             time_format(data, count)
         else:

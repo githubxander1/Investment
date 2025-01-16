@@ -2,13 +2,12 @@ import json
 import os
 
 import allure
-import requests
 
-from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 from CompanyProject.Fastbull.Api_fastbull.common.logger_handler import LoggerHandler
+from CompanyProject.Fastbull.Api_fastbull.common.requests_handler import RequestsHandler
+from CompanyProject.Fastbull.Api_fastbull.common.yaml_handler import YamlHandler
 from CompanyProject.Fastbull.Api_fastbull.logic.conftest import common_data, generate_nonce, timestamp, generate_btoken, \
     generate_sign_login, generate_token, get_identity
-from CompanyProject.Fastbull.Api_fastbull.common.yaml_handler import YamlHandler
 
 nonce = generate_nonce()
 req=RequestsHandler()
@@ -67,8 +66,8 @@ data = {
         "askContent": "日元趋势如何",
         "askImage": "https://img.fastbull.com/test/image/2024/02/C0F94A3E97D149449A0BA67A93F4050E?w=3840&h=2400"
         }
-# print(addAsk(data))
-# print(get_addAsk_id(data))
+# print(addAsk(testdata))
+# print(get_addAsk_id(testdata))
 def deleteAsk(body):
     function_name = addAsk.__qualname__
     headers = {
@@ -155,7 +154,7 @@ def get_expert_ask_reply_page(pagesize):
         "uid": common_data['uid']
     }
     data = yamlhandler.read_yaml()['get_expert_ask_reply_page']
-    # url = data['url']+f'?r=0.2840183065749913&pageSize={pagesize}&timestamp={timestamp}'
+    # url = testdata['url']+f'?r=0.2840183065749913&pageSize={pagesize}&timestamp={timestamp}'
     url = data['url']+f'?r=0.2840183065749914&pageSize={pagesize}&startTime={timestamp}'
     # ?r=0.2840183065749913&pageSize={pagesize}&timestamp=1706780569357
     method = data['method']

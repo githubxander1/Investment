@@ -14,12 +14,13 @@ class Scheduler:
         self.start_time = start_time if start_time is not None else dt_time.min
         self.end_time = end_time if end_time is not None else dt_time.max
         self.is_trading_day = lambda: True
+        self._done_event = asyncio.Event()
 
     async def job(self):
         if self.is_trading_day():
             try:
                 await self.callback()
-                next_run_time = self.get_next_run_time()
+                next_run_time = await self.get_next_run_time()  # 使用 await 调用异步方法
                 if next_run_time:
                     countdown = (next_run_time - datetime.now()).seconds
                     logger.info(f"下一次任务将在 {countdown} 秒后 {next_run_time} 执行")
@@ -38,6 +39,7 @@ class Scheduler:
             current_time = datetime.now().time()
             if current_time > dt_time(15, 0):  # 检查当前时间是否超过下午三点
                 logger.info("当前时间超过下午三点，停止任务执行")
+                self._done_event.set()
                 break
             if self.start_time <= current_time <= self.end_time:
                 await self.job()
@@ -46,12 +48,15 @@ class Scheduler:
                 logger.info(f"当前时间为{current_time},不在任务执行窗口内，等待...")
                 await asyncio.sleep(60)  # 等待一分钟再检查
 
-    def get_next_run_time(self):
+    async def get_next_run_time(self):
         now = datetime.now()
         next_run = now + timedelta(minutes=self.interval)# 如果是秒就改为timedelta(seconds=self.interval)
         if next_run.time() > self.end_time:
             return None
         return next_run
+
+    async def wait_until_done(self):
+        await self._done_event.wait()
 
     # def is_trading_day(self, date):
     #     xshg = mcal.get_calendar('XSHG')  # 获取上海证券交易所的交易日历

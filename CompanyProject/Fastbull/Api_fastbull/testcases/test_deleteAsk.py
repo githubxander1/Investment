@@ -1,17 +1,13 @@
-import json
 import os
-from pprint import pprint
 
 import allure
 import pytest
-import requests
-from requests.auth import HTTPBasicAuth
-import logging
-# from allure_commons._allure import Allure
-from CompanyProject.Fastbull.Api_fastbull.logic.ask import addAsk, deleteAsk
 from ApiTest_mindmaster.common.yaml_handler import YamlHandler
 
-yamlhandler=YamlHandler('../data/ask.yaml')
+# from allure_commons._allure import Allure
+from CompanyProject.Fastbull.Api_fastbull.logic.ask import deleteAsk
+
+yamlhandler=YamlHandler('../testdata/ask.yaml')
 class TestDeleteAsk:
     def setup(self):
         # pass

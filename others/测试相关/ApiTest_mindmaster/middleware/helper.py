@@ -1,15 +1,11 @@
 # 辅助
 # 处理token
-import json
-import random
 
 import jsonpath as jsonpath
-from jsonpath import jsonpath
-import requests
-
-from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 from ApiTest_mindmaster.common.yaml_handler import YamlHandler
 from ApiTest_mindmaster.config.setting import config
+from jsonpath import jsonpath
+from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 
 yamlreader = YamlHandler('../common/Api1.yaml')
 req = RequestsHandler()
@@ -17,13 +13,13 @@ def login():
     '''登录，接口返回token'''
     url = yamlreader.read_yaml()['login']['url']
     method = yamlreader.read_yaml()['login']['method']
-    data = yamlreader.read_yaml()['login']['data']
+    data = yamlreader.read_yaml()['login']['testdata']
     req1 = req.visit(url=config.host + url, method=method,json=data)
     assert req1['status'] == 'success'
     return req1
     # print(req1)
     # 获取保存token
-    # token = req1['data']['token']
+    # token = req1['testdata']['token']
     # token ='Bearer'+' '+ token
     # print(token)
     # return token
@@ -49,7 +45,7 @@ def token():
     # print(token_type)
     # token = " ".join([token_type, token])
 
-    # token = r.json()['data']['token']
+    # token = r.json()['testdata']['token']
     token = 'Bearer' + ' ' + token
     # print(token)
     return token

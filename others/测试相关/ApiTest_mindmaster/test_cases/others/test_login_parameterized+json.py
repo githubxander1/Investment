@@ -1,12 +1,9 @@
 import json
 import unittest
-from pprint import pprint
 
 import requests
 from parameterized import parameterized
 
-from ApiTest_mindmaster.common.excel_handle import ExcelHandler
-from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 
 def build_data():
     with open('../../data/loginData.json') as f:
@@ -15,7 +12,7 @@ def build_data():
         # pprint(result)
         for i in result:
             data.append((i.get('email'),i.get('pw'),i.get('from'),i.get('product')))
-            # print(data)
+            # print(testdata)
     return data
 print(build_data())
 

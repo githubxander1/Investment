@@ -8,7 +8,7 @@ url = "https://data.hexin.cn/zjc/zjcApi/method/zcjc/cate/jc/"
 
 # 请求头，按照给定的原始请求信息设置
 headers = {
-    "Host": "data.hexin.cn",
+    "Host": "testdata.hexin.cn",
     "Connection": "keep-alive",
     "Accept": "application/json",
     "X-Requested-With": "XMLHttpRequest",
@@ -28,7 +28,7 @@ if response.status_code == 200:
     data = response.json()
     # 这里先简单打印出整个返回的JSON数据，你可以根据实际返回的数据结构进一步提取所需信息
     pprint(data)
-    df = pd.DataFrame(data['data']['list'])
+    df = pd.DataFrame(data['testdata']['list'])
     df.to_excel('减持.xlsx', index=False)
     print(df)
 else:

@@ -1,8 +1,9 @@
+import json
 import unittest
+
 # from common.requests_handler import RequestsHandler
 # from common.excel_handler import ExcelHandler
 import ddt
-import json
 # from common.logger_handler import logger
 from ApiTest_mindmaster.common.excel_handle import ExcelHandler
 from ApiTest_mindmaster.common.logger_handler import logger
@@ -12,7 +13,7 @@ from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 @ddt.ddt
 class TestLogin(unittest.TestCase):
     # 读取excel中的数据
-    excel = ExcelHandler('../../data/openpyxl_mindmaster2.xlsx')
+    excel = ExcelHandler('../../testdata/openpyxl_mindmaster2.xlsx')
     case_data = excel.read_excel('login')
     print(case_data)
     def setUp(self):
@@ -40,8 +41,8 @@ class TestLogin(unittest.TestCase):
             raise e
         finally:
             # 将响应的状态码，写到excel的第9列，即写入返回的状态码
-            TestLogin.excel.write_excel("../data/cases.xlsx", 'login', items['case_id'] + 1, 9, res['code'])
+            TestLogin.excel.write_excel("../testdata/cases.xlsx", 'login', items['case_id'] + 1, 9, res['code'])
             # 如果断言成功，则在第10行(测试结果)写入Pass,否则，写入Fail
-            TestLogin.excel.write_excel("../data/cases.xlsx", 'login', items['case_id'] + 1, 10, result)
+            TestLogin.excel.write_excel("../testdata/cases.xlsx", 'login', items['case_id'] + 1, 10, result)
 if __name__ == '__main__':
     unittest.main()

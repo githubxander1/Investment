@@ -18,7 +18,7 @@ response = requests.get(url, headers=headers)
 # 确保请求成功，状态码为200
 if response.status_code == 200:
     data = response.json()
-    etf_list = data["data"]["list"]
+    etf_list = data["testdata"]["list"]
 
     etf_datas = []
     for etf in etf_list:

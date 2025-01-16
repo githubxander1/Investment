@@ -1,18 +1,16 @@
 # 收藏
 import json
-import logging
 import os
 import time
 
-import allure
 import jsonpath
-
 from ApiTest_mindmaster.common.logger_handler import LoggerHandler
 from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
+
+from CompanyProject.Fastbull.Api_fastbull.common.yaml_handler import YamlHandler
 # from CompanyProject.Fastbull.Api_fastbull.logic.comment import nonce
 from CompanyProject.Fastbull.Api_fastbull.logic.conftest import generate_sign_login, get_identity, generate_btoken, \
     generate_nonce, generate_token, timestamp, common_data
-from CompanyProject.Fastbull.Api_fastbull.common.yaml_handler import YamlHandler
 
 nonce = generate_nonce()
 req=RequestsHandler()
@@ -71,7 +69,7 @@ def add_favour(refId,favourType):
     # requests_log = logging.getLogger("requests.packages.urllib3")
     # requests_log.setLevel(logging.DEBUG)
     # requests_log.propagate = True
-    # response=req.visit(url=yamlhandler.read_yaml()['add_favour']['url'],method=method,headers=headers,data=data)
+    # response=req.visit(url=yamlhandler.read_yaml()['add_favour']['url'],method=method,headers=headers,testdata=testdata)
     response=req.visit(url=url+f'favourType={favourType}&refId={refId}',method=method,headers=headers,data=data)
     print(response)
     return response
@@ -127,7 +125,7 @@ def delete_favour(refId,favourType):
     # requests_log = logging.getLogger("requests.packages.urllib3")
     # requests_log.setLevel(logging.DEBUG)
     # requests_log.propagate = True
-    # response=req.visit(url=yamlhandler.read_yaml()['add_favour']['url'],method=method,headers=headers,data=data)
+    # response=req.visit(url=yamlhandler.read_yaml()['add_favour']['url'],method=method,headers=headers,testdata=testdata)
     response=req.visit(url=url+f'favourType={favourType}&refId={refId}',method=method,headers=headers,data=data)
     print(response)
     return response

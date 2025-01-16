@@ -10,7 +10,7 @@ while  True:
     # udp 无连接、直接接受数据包
 
     # 请求处理
-    # data 当前数据包
+    # testdata 当前数据包
     # addr 当前连接ip:port
     data,addr=s.recvfrom(1024)
     print(data)

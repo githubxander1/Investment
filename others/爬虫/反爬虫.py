@@ -70,7 +70,7 @@ def process_data(html_content, base_url):
     images = soup.find_all('img')
     for img in images:
         src = img.get('src')
-        data_src = img.get('data-src')
+        data_src = img.get('testdata-src')
         if src and (src.lower().endswith('.jpg') or src.lower().endswith('.png')):
             image_list.append(urljoin(base_url, src))
         elif data_src and (data_src.lower().endswith('.jpg') or data_src.lower().endswith('.png')):
@@ -129,7 +129,7 @@ def main():
     all_video_list = []
 
     for url in daohang_list:
-        print(f"Fetching data from {url}")
+        print(f"Fetching testdata from {url}")
         try:
             driver.get(url)
             # 滚动页面以触发懒加载

@@ -9,7 +9,7 @@ url = "https://data.hexin.cn/tradetip/trade/day/2024-12-17/"
 
 # 请求头，按照原始请求信息进行设置
 headers = {
-    "Host": "data.hexin.cn",
+    "Host": "testdata.hexin.cn",
     "Connection": "keep-alive",
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
@@ -72,7 +72,7 @@ if response.status_code == 200:
             'scale': '规模'
         })
 
-        save_to_sheet(data['fhsz']['data'], '分红送股', writer, {
+        save_to_sheet(data['fhsz']['testdata'], '分红送股', writer, {
             'bonus': '分红方案',
             'code': '股票代码',
             'name': '股票名称'
@@ -84,13 +84,13 @@ if response.status_code == 200:
             'reason': '原因'
         })
 
-        save_to_sheet(data['xgfx']['data'], '新股发行', writer, {
+        save_to_sheet(data['xgfx']['testdata'], '新股发行', writer, {
             'code': '股票代码',
             'name': '股票名称',
             'limit': '发行数量'
         })
 
-        save_to_sheet(data['yjyg']['data'], '业绩预告', writer, {
+        save_to_sheet(data['yjyg']['testdata'], '业绩预告', writer, {
             'code': '股票代码',
             'name': '股票名称',
             'type': '类型'

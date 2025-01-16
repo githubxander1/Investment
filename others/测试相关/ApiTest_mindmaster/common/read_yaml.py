@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import yaml
 
 
@@ -24,20 +22,20 @@ def clearYaml(file):
 # import yaml
 
 
-# def write_and_check_data(data):
+# def write_and_check_data(testdata):
 #     # 写入数据
-#     with open('../data/loginDataParameter.yaml', 'a', encoding='utf-8') as f:
-#         yaml.dump(data)
+#     with open('../testdata/loginDataParameter.yaml', 'a', encoding='utf-8') as f:
+#         yaml.dump(testdata)
 #
 #     # 重新打开并读取文件内容
-#     with open('../data/loginDataParameter.yaml', 'r', encoding='utf-8') as f:
+#     with open('../testdata/loginDataParameter.yaml', 'r', encoding='utf-8') as f:
 #         file_content = yaml.safe_load(f)
 #         pprint(file_content)
 #
 #         # 遍历列表查找新添加的数据
 #     found = False
 #     for item in file_content:
-#         if item == data:
+#         if item == testdata:
 #             found = True
 #             break
 #     # 假设你知道要检查的数据的具体结构和内容，进行断言

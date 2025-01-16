@@ -1,5 +1,6 @@
 import requests
-from pprint import  pprint
+
+
 # from hyrobot.common import *
 
 class APIMgr:
@@ -54,7 +55,7 @@ class APIMgr:
         response = self.s.post("http://127.0.0.1/api/mgr/customers",
               json={
                     "action":"add_customer",
-                    "data":{
+                    "testdata":{
                         "name":name,
                         "phonenumber":phonenumber,
                         "address":address
@@ -69,7 +70,7 @@ class APIMgr:
         response = self.s.post("http://127.0.0.1/api/mgr/customers",
               json={
                     "action":"add_customer",
-                    "data":data
+                    "testdata":data
                 })
 
         self._printResponse(response)

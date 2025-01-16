@@ -1,0 +1,7 @@
+login:
+  - name: success
+    email: "2695418206@qq.com"
+    password: "f2d8ddfc169a0ee6f8b0ecd924b1d300"
+  - name: false
+    email: "2695418206@qq.com"
+    password: "f2d8ddfc169a0ee6f8b0ecd924b1d30"

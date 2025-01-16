@@ -1,7 +1,8 @@
-import pandas as pd
-import redis
 import json
 from datetime import datetime, timedelta
+
+import pandas as pd
+import redis
 
 r = redis.Redis(host='3.71.83.141', port=6379, password='L7lfDSe#OIEWQ*R', db=1, socket_timeout=5)
 
@@ -34,8 +35,8 @@ print(df.to_string())
 import numpy as np
 
 # 计算相对强弱指标(RSI)
-# def calculate_rsi(data, n=14):
-#     delta = np.diff(data)
+# def calculate_rsi(testdata, n=14):
+#     delta = np.diff(testdata)
 #     gain = delta * np.where(delta > 0, 1, 0)
 #     loss = -delta * np.where(delta < 0, 1, 0)
 #     avg_gain = np.convolve(gain, np.ones((n,))/n, mode='valid')
@@ -45,45 +46,45 @@ import numpy as np
 #     return np.r_[np.zeros(n-1), rsi]
 #
 # # 计算KD随机指标(K)
-# def calculate_kdj_k(data, n_slow=9, n_fast=3):
-#     low_n = data['Low'].rolling(window=n_slow).min()
-#     high_n = data['High'].rolling(window=n_slow).max()
-#     rsv = (data['Close'] - low_n) / (high_n - low_n) * 100
+# def calculate_kdj_k(testdata, n_slow=9, n_fast=3):
+#     low_n = testdata['Low'].rolling(window=n_slow).min()
+#     high_n = testdata['High'].rolling(window=n_slow).max()
+#     rsv = (testdata['Close'] - low_n) / (high_n - low_n) * 100
 #     k = rsv.ewm(span=n_fast, adjust=False).mean()
 #     return k
 #
 # # 计算KD随机指标(D)
-# def calculate_kdj_d(data, n=3):
-#     k = calculate_kdj_k(data)
+# def calculate_kdj_d(testdata, n=3):
+#     k = calculate_kdj_k(testdata)
 #     d = k.ewm(span=n, adjust=False).mean()
 #     return d
 #
 # # 计算随机RSI(K)
-# def calculate_rsi_k(data, n=5):
-#     rsi = calculate_rsi(data['Close'], n)
+# def calculate_rsi_k(testdata, n=5):
+#     rsi = calculate_rsi(testdata['Close'], n)
 #     rsi_k = rsi.ewm(span=3, adjust=False).mean()
 #     return rsi_k
 #
 # # 计算随机RSI(D)
-# def calculate_rsi_d(data, n=3):
-#     rsi_k = calculate_rsi_k(data)
+# def calculate_rsi_d(testdata, n=3):
+#     rsi_k = calculate_rsi_k(testdata)
 #     rsi_d = rsi_k.ewm(span=n, adjust=False).mean()
 #     return rsi_d
 #
 # # 计算异同移动平均线(MACD)
-# def calculate_macd(data, fast_period=12, slow_period=26, signal_period=9):
-#     ema_fast = data['Close'].ewm(span=fast_period, adjust=False).mean()
-#     ema_slow = data['Close'].ewm(span=slow_period, adjust=False).mean()
+# def calculate_macd(testdata, fast_period=12, slow_period=26, signal_period=9):
+#     ema_fast = testdata['Close'].ewm(span=fast_period, adjust=False).mean()
+#     ema_slow = testdata['Close'].ewm(span=slow_period, adjust=False).mean()
 #     macd = ema_fast - ema_slow
 #     signal = macd.ewm(span=signal_period, adjust=False).mean()
 #     return macd, signal, macd - signal
 #
 # # 计算简单移动平均线(SMA)
-# def calculate_sma(data, periods=[5, 10, 20, 50, 100, 200]):
+# def calculate_sma(testdata, periods=[5, 10, 20, 50, 100, 200]):
 #     for period in periods:
 #         sma_name = f"SMA_{period}"
-#         data[sma_name] = data['Close'].rolling(window=period).mean()
-#     return data
+#         testdata[sma_name] = testdata['Close'].rolling(window=period).mean()
+#     return testdata
 #
 # # 在获取并处理Redis数据后
 # # ...

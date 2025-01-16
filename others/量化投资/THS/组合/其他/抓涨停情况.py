@@ -37,12 +37,12 @@ def process_product_ids(product_ids):
         result = get_package_feature_info(product_id)
         if result and result['status_code'] == 0:
             pprint(result)
-            data = result['data']
+            data = result['testdata']
             data['product_id'] = product_id
 
             all_data.append(data)
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
 
     df = pd.DataFrame(all_data)
     df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\抓涨停情况.xlsx', index=False)

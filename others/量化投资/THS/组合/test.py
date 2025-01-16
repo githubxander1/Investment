@@ -1,8 +1,9 @@
 import datetime
-from pprint import pprint
-import requests
-import pandas as pd
 import logging
+from pprint import pprint
+
+import pandas as pd
+import requests
 
 # 设置日志记录
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -34,11 +35,11 @@ def get_strategy_details(product_id):
         response.raise_for_status()
         result = response.json()
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
-            product_desc = result['data']['baseInfo']['productDesc']
+            product_name = result['testdata']['baseInfo']['productName']
+            product_desc = result['testdata']['baseInfo']['productDesc']
             return {"策略id": product_id, "策略名称": product_name, "策略描述": product_desc}
         else:
-            logging.error(f"Failed to retrieve data for product_id: {product_id}")
+            logging.error(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         logging.error(f"请求出现错误: {e}")
@@ -68,7 +69,7 @@ def get_current_positions(portfolio_id):
     # 判断请求是否成功（状态码为200）
     if response.status_code == 200:
         data = response.json()
-        # pprint(data)
+        # pprint(testdata)
         positions = data["result"]["positions"]
         for item in positions:
             # profitLossRate = item["profitLossRate"]
@@ -137,9 +138,9 @@ def get_all_today_trades(ids):
 
     for portfolio_id in ids:
         data = get_historical_data(portfolio_id)
-        # pprint(data)
+        # pprint(testdata)
         if data:
-            for item in data['data']:
+            for item in data['testdata']:
                 create_at = item['createAt']
                 date_part = create_at.split()[0]
                 if date_part == today:
@@ -209,7 +210,7 @@ def fetch_and_process_positions(ids):
 def process_historical_posts(ids):
     all_data = []
     for portfolio_id in ids:
-        relocate_post = get_historical_posts(portfolio_id)['data']
+        relocate_post = get_historical_posts(portfolio_id)['testdata']
         extract_info = []
         for record in relocate_post:
             createAt = record['createAt']

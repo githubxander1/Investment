@@ -1,0 +1,2 @@
+# .gitignore   为了安全起见，确保 .env 文件不被提交到版本控制系统。可以在 .gitignore 文件中添加 .env
+.env

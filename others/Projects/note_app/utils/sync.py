@@ -1,7 +1,9 @@
 # utils/sync.py
-import os
 import hashlib
+import os
+
 import rclone
+
 
 def get_file_hash(file_path):
     """计算文件的哈希值"""
@@ -53,6 +55,6 @@ def sync_files(local_dir, remote_dir):
             rclone.run_command(["rclone", "delete", remote_file])
 
 if __name__ == "__main__":
-    local_dir = "/path/to/local/data"
+    local_dir = "/path/to/local/testdata"
     remote_dir = "remote:backup/notes"
     sync_files(local_dir, remote_dir)

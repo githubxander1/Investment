@@ -547,16 +547,16 @@ def get_start_end_time_month_time():
 #         print("平均亏损:{:.2f}".format(average3))
 #
 #         # 某个时间段的所有品种数据得开仓平仓列
-#         data = db.query('select openTime,closeTime from {} where closeTime>={} and closetime<{} and positionType = "2" and status=实例25_批量生成PPT版荣誉证书'.format(table_strategy_signal,month_star_time,month_end_time), one=False)
+#         testdata = db.query('select openTime,closeTime from {} where closeTime>={} and closetime<{} and positionType = "2" and status=实例25_批量生成PPT版荣誉证书'.format(table_strategy_signal,month_star_time,month_end_time), one=False)
 #
 #         # 某个时间段的所有品种数据个数
 #         count = db.query(
 #             'select count(*) from {} where closeTime>={} and closetime<{} and positionType = "2" and  status=实例25_批量生成PPT版荣誉证书'.format(table_strategy_signal,month_star_time,month_end_time), one=False)
 #         ##某个策略的所有品种数据个数
 #         count = count[0]["count(*)"]
-#         # print(data)
+#         # print(testdata)
 #         if count != 0:
-#             time_format(data, count)
+#             time_format(testdata, count)
 #         else:
 #             print("平均持仓时间不存在")
 #

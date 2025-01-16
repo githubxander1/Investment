@@ -1,12 +1,11 @@
 # get_ddt
 import unittest
 
-import openpyxl
-import pyaml
-from ddt import ddt, data, unpack, file_data
-
+from ddt import ddt, data, unpack
 
 from 读写excel import readExcel
+
+
 @ddt  # 声明类装饰器
 class TestDdt(unittest.TestCase):
     # 加载excel文件
@@ -34,11 +33,11 @@ class TestDdt(unittest.TestCase):
 
     # 加载yaml文件
     # @file_data('data_yaml.sina.yaml')
-    # def test04(self,model,title,url,method,data,check):
-    #     username=data['username']
-    #     password=data['password']
+    # def test04(self,model,title,url,method,testdata,check):
+    #     username=testdata['username']
+    #     password=testdata['password']
     #
-    #     print(model,title,url,method,data,check)
+    #     print(model,title,url,method,testdata,check)
     #     print(username,password)
 
     # @file_data('data_yaml.sina.yaml')

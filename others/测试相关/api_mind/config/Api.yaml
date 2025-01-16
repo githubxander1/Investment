@@ -1,0 +1,46 @@
+login:
+  url: "https://goapi.edrawsoft.cn/api/user/ws/account/login"
+  method: POST
+  headers: {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "zh-CN,zh;q=0.9",
+        "cache-control": "no-cache",
+        "content-type": "application/json;charset=UTF-8",
+        "pragma": "no-cache",
+        "sec-ch-ua": "\"Chromium\";v=\"121\", \"Not A(Brand\";v=\"99\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site"
+      }
+  data: {"email": "2695418206@qq.com",
+         "from": "web",
+         "product":"master-online",
+         "pw": "f2d8ddfc169a0ee6f8b0ecd924b1d300"}
+rename:
+  url: "https://mindapi.edrawsoft.cn/api/mm_web/file"
+  method: POST
+#  data: {
+#            "name": name,
+#            "file_key": file_key,
+#            "folder_id": folder_id
+#        }
+logout:
+  url: "https://userapi.edrawsoft.cn/api/user/23928516/auth/logout"
+  method: GET
+  headers: {
+      "accept": "application/json, text/plain, */*",
+      "accept-language": "zh-CN,zh;q=0.9",
+      "cache-control": "no-cache",
+      "pragma": "no-cache",
+      "sec-ch-ua": "\"Chromium\";v=\"121\", \"Not A(Brand\";v=\"99\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-site"
+    }
+  params: {
+      "token": TOKEN
+      }

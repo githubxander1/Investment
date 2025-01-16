@@ -1,12 +1,8 @@
 from pprint import pprint
 
-import requests
 import pandas as pd
-
-from pprint import pprint
-
 import requests
-import pandas as pd
+
 
 def get_portfolio_profitability_period_win_hs300(id):
     # 请求的URL
@@ -38,15 +34,15 @@ def get_portfolio_profitability_period_win_hs300(id):
         # 翻译字段
         translated_result = {
             "数据": {
-                "盈利水平": result["data"]["profitabilityLevel"],
-                "时间跨度": result["data"]["timeSpan"],
+                "盈利水平": result["testdata"]["profitabilityLevel"],
+                "时间跨度": result["testdata"]["timeSpan"],
                 "盈利数据列表": [
                     {
                         "时间跨度": item["timeSpan"],
                         "组合收益": item["portfolioIncome"],
                         "沪深300收益": item["hs300Income"]
                     }
-                    for item in result["data"]["profitabilityDataList"]
+                    for item in result["testdata"]["profitabilityDataList"]
                 ]
             }
         }

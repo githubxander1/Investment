@@ -10,7 +10,7 @@ r = requests.post(url,
                   })
 
 # 获取保存token
-token = r.json()['data']['token']
+token = r.json()['testdata']['token']
 token ='Bearer'+' '+ token
 print(token)
 # token放到请求头中

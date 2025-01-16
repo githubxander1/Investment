@@ -34,7 +34,7 @@ def get_etf_base_info(trade_code):
 
 def extract_important_info(data):
     if data and data['status_code'] == 0:
-        info = data['data']
+        info = data['testdata']
         return {
             '基金名称': info.get('fullname'),
             '简称': info.get('simpleName'),
@@ -61,7 +61,7 @@ def print_fund_info(fund_ids):
     all_info = {}
     for fund_id in fund_ids:
         data = get_etf_base_info(fund_id)
-        # pprint(data)
+        # pprint(testdata)
         info = extract_important_info(data)
         if info:
             all_info[info['基金名称']] = info

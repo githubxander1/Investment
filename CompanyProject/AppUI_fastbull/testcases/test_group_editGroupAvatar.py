@@ -1,13 +1,14 @@
 import os
 import time
 import unittest
+
 import pytest
-import allure
 
 from CompanyProject.AppUI_fastbull.base.basePage import Base1, d
 from CompanyProject.AppUI_fastbull.common.common import common
 from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupManage.EditGroupFiles.op_EditGroupAvatar import GroupAvatar
 from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupManage.ManageGroup import ManageGroup
+
 
 class Test_editGroupAvatar(unittest.TestCase):
     name = '编辑群头像'
@@ -65,7 +66,7 @@ class Test_editGroupAvatar(unittest.TestCase):
 
 if __name__ == '__main__':
     pytest.main(['-vs', 'test_editGroupAvatar.py'])
-    # Run the tests and generate the Allure report
+    # Run the testcases and generate the Allure report
     # pytest.main(['-s', '-v', '--alluredir', 'allure_reports'])
     #
     # Generate the Allure report

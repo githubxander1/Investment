@@ -1,8 +1,6 @@
 import unittest
-from pprint import pprint
-from ddt import ddt,data
 
-from ApiTest_mindmaster.common.excel_handle import ExcelHandler
+from ddt import ddt, data
 from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 
 case_data1 = [{'actual_result': None,
@@ -11,7 +9,7 @@ case_data1 = [{'actual_result': None,
                  'expected_result': 'success',
                  'method': 'post',
                  'model_name': '登录',
-                 'data': '{\'email\': "695418206@qq.com",\'from\': "web",\'product\': '
+                 'testdata': '{\'email\': "695418206@qq.com",\'from\': "web",\'product\': '
                             '"master-online",\'pw\': "f2d8ddfc169a0ee6f8b0ecd924b1d300"}',
                  'test_result': None,
                  'url': 'https://userapi.edrawsoft.cn/api/user/login'},
@@ -21,7 +19,7 @@ case_data1 = [{'actual_result': None,
                              'expected_result': 'fault',
                              'method': 'post',
                              'model_name': '登录',
-                             'data': '{\'email\': "69541820@qq.com",\'from\': "web",\'product\': '
+                             'testdata': '{\'email\': "69541820@qq.com",\'from\': "web",\'product\': '
                                         '"master-online",\'pw\': "f2d8ddfc169a0ee6f8b0ecd924b1d300"}',
                              'test_result': None,
                              'url': 'https://userapi.edrawsoft.cn/api/user/login'}  ]
@@ -29,7 +27,7 @@ case_data1 = [{'actual_result': None,
 class TestLogin(unittest.TestCase):
 
     # # 读取excel中的数据
-    # excel = ExcelHandler('../data/openpyxl_mindmaster2.xlsx')
+    # excel = ExcelHandler('../testdata/openpyxl_mindmaster2.xlsx')
     # case_data = excel.read_excel('login')
     # pprint(case_data)
     def setUp(self):
@@ -45,7 +43,7 @@ class TestLogin(unittest.TestCase):
         print(items)
         res = self.req.visit(url=items['url'],
                              method=items['method'],
-                             data=items['data'])
+                             data=items['testdata'])
         print(res)
 
 

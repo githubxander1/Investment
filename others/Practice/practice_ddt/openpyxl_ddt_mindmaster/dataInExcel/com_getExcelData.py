@@ -1,5 +1,4 @@
 import openpyxl
-import os
 
 
 def get_excel_data():
@@ -12,7 +11,7 @@ def get_excel_data():
             print(data.value)  # 打印单元格的值
         # 将字符串类型的字典转换成成它本身的字典
         # 不转换的画，会将每一行数据都变成列表转换出来，字典多加了引号
-        # data[0]=eval(data[0])
+        # testdata[0]=eval(testdata[0])
         # 将取到的数据存到列表中
         row_data.append(data)
     return row_data

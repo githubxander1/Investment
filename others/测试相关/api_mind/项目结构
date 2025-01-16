@@ -1,0 +1,21 @@
+ApiTest_mindmaster/
+├── config/
+│   └── endpoints.yaml
+├── data/
+│   └── test_data.yaml
+├── logic/
+│   ├── login.py
+│   ├── rename.py
+│   └── logout.py
+├── reports/
+├── tests/
+│   ├── test_login.py
+│   ├── test_rename.py
+│   └── test_logout.py
+├── utils/
+│   ├── api_client.py
+│   ├── logger.py
+│   └── email_sender.py
+├── conftest.py
+├── requirements.txt
+└── Jenkinsfile

@@ -3,7 +3,7 @@ import requests
 def options_api_request():
     url = "https://data.10jqka.com.cn/dataapi/performance_forecast/v2/notice_query"
     headers = {
-        "Host": "data.10jqka.com.cn",
+        "Host": "testdata.10jqka.com.cn",
         "Connection": "keep-alive",
         "Accept": "*/*",
         "Access-Control-Request-Method": "POST",

@@ -1,6 +1,6 @@
 import pytest
 
-from others.ApiTest_mindmaster.common.requests_handler import RequestsHandler
+from others.测试相关.ApiTest_mindmaster.common.requests_handler import RequestsHandler
 
 
 @pytest.fixture(autouse=True)

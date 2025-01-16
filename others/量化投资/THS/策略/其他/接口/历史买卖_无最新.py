@@ -4,24 +4,40 @@ import pandas as pd
 import openpyxl
 
 # 接口的URL模板
-url_template = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/history_trade?strategyId=118188&page={}&pageSize=10"
 
-# 请求头，按照原始请求信息设置
-headers = {
-    "Host": "ms.10jqka.com.cn",
-    "Referer": "https://bowerbird.10jqka.com.cn/thslc/editor/view/fbea94598C?strategyId=138006",
-}
 
 def fetch_history_trade_data(pages):
+    url = 'https://ms.10jqka.com.cn/iwencai/iwc - web - business - center/strategy_unify/history_trade'
+
+    # 请求头，按照原始请求信息设置
+    headers = {
+        'Host': 'ms.10jqka.com.cn',
+        'Connection': 'keep - alive',
+        'User - Agent': 'Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.19.03 (Royal Flush) hxtheme/1 innerversion/G037.08.990.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0',
+        'Accept': '*/*',
+        'Origin': 'https://bowerbird.10jqka.com.cn',
+        'X - Requested - With': 'com.hexin.plat.android',
+        'Sec - Fetch - Site': 'same - site',
+        'Sec - Fetch - Mode': 'cors',
+        'Sec - Fetch - Dest': 'empty',
+        'Referer': 'https://bowerbird.10jqka.com.cn/thslc/editor/view/fbea94598C?strategyId=155680',
+        'Accept - Encoding': 'gzip, deflate',
+        'Accept - Language': 'zh - CN,zh;q = 0.9,en - US;q = 0.8,en;q = 0.7'
+    }
     all_history_data = []
 
     for page in range(pages):
-        url = url_template.format(page)
-        response = requests.get(url, headers=headers)
+        params = {
+            'strategyId': '155680',
+            'page': pages,
+            'pageSize': '20'
+        }
+        response = requests.get(url, headers=headers, params=params)
 
         # 判断请求是否成功（状态码为200）
         if response.status_code == 200:
             data = response.json()
+            print(data)
             history_data = data["result"]["datas"]
             all_history_data.extend(history_data)
         else:

@@ -1,17 +1,17 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:张红
-import os.path
-
 # from common.public import base_dir
 import json
+import os.path
+
 import yaml
 
 from others.测试相关.api_baofyy import base_dir
 
 
 def readJson():
-         return json.load(open(file=os.path.join(base_dir(),'data','fengbao.json'),encoding='utf-8'))
+         return json.load(open(file=os.path.join(base_dir(),'testdata','fengbao.json'),encoding='utf-8'))
 
 # print(readJson())
 

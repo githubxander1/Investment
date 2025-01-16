@@ -1,7 +1,8 @@
 from pprint import pprint
-import requests
-import ddt
+
 import openpyxl
+
+
 class ExcelHandler:
     def __init__(self, file):
         self.file = file
@@ -51,5 +52,5 @@ if __name__ == "__main__":
     # 以下为测试代码
     excel = ExcelHandler('../data/openpyxl_mindmaster2.xlsx')
     data = excel.read_excel('login')
-#     # excel.write_excel('../data/openpyxl_mindmaster2.xlsx', 'login',4, 9, 200)
+#     # excel.write_excel('../testdata/openpyxl_mindmaster2.xlsx', 'login',4, 9, 200)
     pprint(data)
