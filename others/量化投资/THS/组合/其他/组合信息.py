@@ -1,6 +1,7 @@
-import requests
-import pandas as pd
 from pprint import pprint
+
+import pandas as pd
+import requests
 
 # 接口URL
 url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
@@ -43,11 +44,11 @@ def process_product_ids(product_ids):
         pprint(result)
         if result and result['status_code'] == 0:
             pprint(result)
-            data = result['data']
+            data = result['testdata']
             data['product_id'] = product_id
             all_data.append(data)
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
 
     df = pd.DataFrame(all_data)
     pprint(df)

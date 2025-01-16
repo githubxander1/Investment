@@ -44,7 +44,7 @@ def get_api_data(offset_num=0, page_size=20, shape_type=2, chip_type=1,
 
 def extract_result(data):
     if data and data['status_code'] == 0:
-        result_list = data.get("data", {}).get("list", [])
+        result_list = data.get("testdata", {}).get("list", [])
         extracted_data = []
         for item in result_list:
             stock_info = item.get('stock', {})

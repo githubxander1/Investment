@@ -68,9 +68,9 @@ def get_product_info(product_id):
         result = response.json()
         # print(result)
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
-            product_desc = result['data']['baseInfo']['productDesc']
-            userId = result['data']['userInfo']['userId']
+            product_name = result['testdata']['baseInfo']['productName']
+            product_desc = result['testdata']['baseInfo']['productDesc']
+            userId = result['testdata']['userInfo']['userId']
             return {
                 "策略id": product_id,
                 "策略名称": product_name,
@@ -79,7 +79,7 @@ def get_product_info(product_id):
 
             }
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -114,7 +114,7 @@ def get_position_income_info(portfolio_id):
         response.raise_for_status()
         data = response.json()
         if data['status_code'] == 0:
-            result = data['data']
+            result = data['testdata']
             result['策略ID'] = id
             createAt = result['createAt']
             dailyIncomeRate = result['dailyIncomeRate'] = f"{result['dailyIncomeRate'] * 100:.2f}%"
@@ -162,7 +162,7 @@ def get_package_feature_info(product_id):
         response.raise_for_status()
         response = response.json()
 
-        data = response['data']
+        data = response['testdata']
         slogan = data['slogan']
         labels = data['labels']
 
@@ -202,11 +202,11 @@ def get_relocate_data_summary(portfolio_id):
     response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
         data = response.json()
-        relocate_total = data["data"]["relocateTotal"]
-        profit_total = data["data"]["profitTotal"]
-        profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
+        relocate_total = data["testdata"]["relocateTotal"]
+        profit_total = data["testdata"]["profitTotal"]
+        profit_margin = f'{data["testdata"]["profitMargin"] * 100:.2f}%'
         # 提取利润率
-# /        profit_margin_value = data["data"]["profitMargin"] * 100%
+# /        profit_margin_value = testdata["testdata"]["profitMargin"] * 100%
         return {
             "胜率": profit_margin,
             "盈利股数": profit_total,
@@ -242,7 +242,7 @@ def get_position_industry_info(portfolio_id):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
-        data = response.json()['data']
+        data = response.json()['testdata']
         return data
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -274,8 +274,8 @@ def get_portfolio_profitability_period_win_hs300(portfolio_id):
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
         data = response.json()
-        if 'data' in data and 'profitabilityDataList' in data['data']:
-            profitability_data_list = data["data"]["profitabilityDataList"]
+        if 'testdata' in data and 'profitabilityDataList' in data['testdata']:
+            profitability_data_list = data["testdata"]["profitabilityDataList"]
             result = {}
             for item in profitability_data_list:
                 time_span = item["timeSpan"]

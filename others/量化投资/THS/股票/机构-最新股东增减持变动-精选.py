@@ -1,8 +1,9 @@
 from pprint import pprint
+
 import pandas as pd
 import requests
-from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.utils import get_column_letter
+
 
 def fetch_and_save_holder_data_jingxuan(output_file, pages_to_fetch=2):
     '''
@@ -42,7 +43,7 @@ def fetch_and_save_holder_data_jingxuan(output_file, pages_to_fetch=2):
         # 确保请求成功，状态码为200
         if response.status_code == 200:
             data = response.json()
-            holder_list = data["data"]["list"]
+            holder_list = data["testdata"]["list"]
 
             for holder in holder_list:
                 holder["change_type"] = "增持" if holder["change_type"] == 1 else "减持"

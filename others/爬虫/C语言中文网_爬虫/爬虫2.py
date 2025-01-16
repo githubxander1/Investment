@@ -1,4 +1,3 @@
-import json
 # import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -26,14 +25,14 @@ class AVSpider():
             for dl in dl_tags:
                 # 获取链接
                 link = dl.find('dd').find('a')['href']
-                # 获取标题（这里假设标题是"data-tip"属性中的加密内容，实际请根据网页实际情况处理）
+                # 获取标题（这里假设标题是"testdata-tip"属性中的加密内容，实际请根据网页实际情况处理）
                 title_data_tip = dl.find('dd').find('a').find('h3').text
                 # 解密title（此处仅为示例，实际解密方式取决于网站实际加密规则）
                 # 注意：这段解密逻辑需要根据实际网站的数据加密方式来实现，以下为模拟解密过程
                 title = title_data_tip  # 在这里插入解密函数或逻辑以获取真实标题
 
                 # 获取封面图片URL
-                img_url = dl.find('dt').find('img')['data-original']
+                img_url = dl.find('dt').find('img')['testdata-original']
 
                 baseurl='https://www.ldstv-0108.com:2083'
                 print(f'链接: {baseurl}{link}')
@@ -41,8 +40,8 @@ class AVSpider():
                 print(f'封面图片URL: {img_url}\n')
 
                 # # 创建DataFrame并设置列名
-                # data = {'链接': links, '标题': titles}
-                # df = pd.DataFrame(data)
+                # testdata = {'链接': links, '标题': titles}
+                # df = pd.DataFrame(testdata)
                 #
                 # # 输出表格样式
                 # print(df.to_string(index=False))

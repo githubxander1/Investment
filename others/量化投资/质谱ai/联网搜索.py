@@ -1,9 +1,9 @@
-import logging
-from pprint import pprint
-import requests
-import uuid
 import json
+import logging
+import uuid
 from textwrap import fill
+
+import requests
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -75,7 +75,7 @@ def save_to_file(data, file_path):
     将数据保存到文件中
 
     参数：
-    data: 要保存的数据
+    testdata: 要保存的数据
     file_path: 文件名，包括路径
     '''
     try:

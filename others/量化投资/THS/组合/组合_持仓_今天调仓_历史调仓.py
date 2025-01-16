@@ -39,11 +39,11 @@ def get_strategy_details(product_id):
         if result['status_code'] == 0:
             return {
                 "策略id": product_id,
-                "策略名称": result['data']['baseInfo']['productName'],
-                "策略描述": result['data']['baseInfo']['productDesc']
+                "策略名称": result['testdata']['baseInfo']['productName'],
+                "策略描述": result['testdata']['baseInfo']['productDesc']
             }
         else:
-            logging.error(f"Failed to retrieve data for product_id: {product_id}")
+            logging.error(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         logging.error(f"请求出现错误: {e}")
@@ -70,7 +70,7 @@ def get_current_positions(portfolio_id):
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
         data = response.json()
-        # pprint(data)
+        # pprint(testdata)
         positions = data["result"]["positions"]
         for item in positions:
             for key in ['incomeRate', 'positionRealRatio', 'positionRelocatedRatio', 'profitLossRate']:
@@ -173,10 +173,10 @@ def process_today_trades(ids):
 
     for portfolio_id in ids:
         data = get_historical_data(portfolio_id)
-        # print('data')
-        # pprint(data)
+        # print('testdata')
+        # pprint(testdata)
         if data:
-            for item in data['data']:
+            for item in data['testdata']:
                 create_at = item['createAt']
                 date_part = create_at.split()[0]
                 if date_part == today:
@@ -229,10 +229,10 @@ def process_historical_posts(ids):
 
     for portfolio_id in ids:
         relocate_post = get_historical_data(portfolio_id)
-        if relocate_post and 'data' in relocate_post:
+        if relocate_post and 'testdata' in relocate_post:
             extract_info = []
 
-            for record in relocate_post['data']:
+            for record in relocate_post['testdata']:
                 createAt = record['createAt']
 
                 for item in record['relocateList']:

@@ -1,6 +1,6 @@
 from pprint import pprint
+
 import requests
-import pandas as pd
 
 # 请求的URL
 url = "https://ms.10jqka.com.cn/index/robotindex/"
@@ -31,8 +31,8 @@ if response.status_code == 200:
     # pprint(result)
     # 提取数据
     try:
-        data = result["answer"]["components"][0]["data"]
-        # pprint(data)
+        data = result["answer"]["components"][0]["testdata"]
+        # pprint(testdata)
         for row in data:
             columns = data["columns"]
             columns_names = ["label"]
@@ -45,16 +45,16 @@ if response.status_code == 200:
 
 
             # print(df)
-        # columns = [col["label"] for col in data["columns"]]
+        # columns = [col["label"] for col in testdata["columns"]]
         # rows = []
-        # for row in data["datas"]:
-        #     rows.append([row[col["key"]] for col in data["columns"]])
+        # for row in testdata["datas"]:
+        #     rows.append([row[col["key"]] for col in testdata["columns"]])
         #
         # # 提取重要字段
         # important_columns = ["code", "股票简称", "最新价", "涨跌幅", "所属概念", "区间资金流向[20241212-20241216]", "交易状态[20241216]"]
         # important_data = []
-        # for row in data["datas"]:
-        #     important_row = {col["label"]: row[col["key"]] for col in data["columns"] if col["label"] in important_columns}
+        # for row in testdata["datas"]:
+        #     important_row = {col["label"]: row[col["key"]] for col in testdata["columns"] if col["label"] in important_columns}
         #     important_data.append(important_row)
         #
         # # 创建DataFrame并保存为Excel
@@ -66,7 +66,7 @@ if response.status_code == 200:
         # print(df)
     except KeyError as e:
         print(f"KeyError: {e}")
-        print("Received JSON data:")
+        print("Received JSON testdata:")
         pprint(result)
 else:
     print(f"请求失败，状态码: {response.status_code}")

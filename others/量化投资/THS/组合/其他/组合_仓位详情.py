@@ -34,10 +34,10 @@ def get_product_info(product_id):
         result = response.json()
         # pprint(result)
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
+            product_name = result['testdata']['baseInfo']['productName']
             return product_name
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -102,7 +102,7 @@ def process_newest_relocate_post_ids(ids):
     for id in ids:
         result = get_newest_relocate_post(id)
         if result and result['status_code'] == 0:
-            data = result['data']
+            data = result['testdata']
             content = data['content']
             relocate_list = data.get('relocateList', [])
             all_data = []
@@ -121,7 +121,7 @@ def process_newest_relocate_post_ids(ids):
             pprint(df)
             # df.to_excel(writer, sheet_name=get_product_info(id), index=False)
         else:
-            print(f"Failed to retrieve data for id: {id}")
+            print(f"Failed to retrieve testdata for id: {id}")
 def process_showRelocateData_ids(ids):
     all_holding_info = []
     for portfolio_id in ids:
@@ -171,7 +171,7 @@ def process_showRelocateData_ids(ids):
                 print(f"Warning: holdingInfo is None for combination_id: {portfolio_id}")
 
         else:
-            print(f"Failed to retrieve data for portfolioId: {portfolio_id}")
+            print(f"Failed to retrieve testdata for portfolioId: {portfolio_id}")
 
     df = pd.DataFrame(all_holding_info)
     print(df)

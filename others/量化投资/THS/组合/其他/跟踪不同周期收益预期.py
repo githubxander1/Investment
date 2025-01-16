@@ -1,7 +1,7 @@
 from pprint import pprint
 
-import requests
 import pandas as pd
+import requests
 
 # 请求的URL
 url = "https://t.10jqka.com.cn/portfolioedge/calculate/v1/get_portfolio_profit_probability?id=14533"
@@ -29,16 +29,16 @@ if response.status_code == 200:
     translated_result = {
         "状态码": result["status_code"],
         "数据": {
-            "盈利水平": result["data"]["profitLevel"],
-            "跟踪天数": result["data"]["followDay"],
-            "盈利概率": result["data"]["profitProbability"],
+            "盈利水平": result["testdata"]["profitLevel"],
+            "跟踪天数": result["testdata"]["followDay"],
+            "盈利概率": result["testdata"]["profitProbability"],
             "跟踪盈利数据列表": [
                 {
                     "跟踪天数": item["followDay"],
                     "平均收益": item["averageIncome"],
                     "盈利概率": item["profitProbability"]
                 }
-                for item in result["data"]["followProfitDataList"]
+                for item in result["testdata"]["followProfitDataList"]
             ]
         },
         "状态消息": result["status_msg"]

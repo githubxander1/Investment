@@ -1,8 +1,4 @@
-import base64
-import io
-import json
 # import pandas as pd
-import os
 import re
 
 import requests
@@ -42,7 +38,7 @@ class AVSpider():
             src = img.get('src')
             if src:
                 # 如果src是Base64编码，解码然后保存
-                if src.startswith('data:image/'):
+                if src.startswith('testdata:image/'):
                     pass
                     # 分割数据URIscheme
                     # scheme, media_type, encoded_string = src.split(',', 2)

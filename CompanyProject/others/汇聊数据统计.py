@@ -1,6 +1,3 @@
-from pprint import pprint
-
-import openpyxl
 import pymysql
 # from prettytable import PrettyTable
 
@@ -45,7 +42,7 @@ print("Connected to the database")
 #     # get the worksheet named '补充的页面'
 #     new_worksheet = workbook['补充的页面']
 #
-#     # add the data to the worksheet
+#     # add the testdata to the worksheet
 #     new_worksheet.append(list(class_name_mapping_result))
 #     result = False
 
@@ -59,7 +56,7 @@ print("Connected to the database")
 #     # get the worksheet named '补充的页面'
 #     new_worksheet = workbook['补充的页面']
 #
-#     # add the data to the worksheet
+#     # add the testdata to the worksheet
 #     new_worksheet.append(list(class_name_mapping_result))
 #     result = False
 

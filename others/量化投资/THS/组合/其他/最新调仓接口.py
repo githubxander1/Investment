@@ -1,7 +1,8 @@
-from pprint import pprint
-import requests
-import pandas as pd
 import logging
+from pprint import pprint
+
+import pandas as pd
+import requests
 
 # 设置日志记录
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -41,7 +42,7 @@ class PortfolioAPI:
 
     def _extract_data(self, result):
         extract_data = []
-        data = result.get("data")
+        data = result.get("testdata")
         if data:
             content = data.get("content")
             createAt = data.get("createAt")

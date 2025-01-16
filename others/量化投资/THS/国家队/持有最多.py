@@ -8,7 +8,7 @@ url = "https://data.hexin.cn/gjd/team/type/2/page/1/"
 
 # 请求头信息，按照你提供的内容进行设置
 headers = {
-    "Host": "data.hexin.cn",
+    "Host": "testdata.hexin.cn",
     "Connection": "keep-alive",
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
@@ -28,7 +28,7 @@ if response.status_code == 200:
     data = response.json()
     # 这里先简单打印出整个返回的JSON数据内容，你可以根据实际情况深入解析具体的字段信息
     pprint(data)
-    df = pd.DataFrame(data['data']['list'])
+    df = pd.DataFrame(data['testdata']['list'])
     df.to_excel('减持.xlsx', index=False)
     print(df)
 else:

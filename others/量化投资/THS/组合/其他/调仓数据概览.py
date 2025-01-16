@@ -2,6 +2,7 @@ from pprint import pprint
 
 import requests
 
+
 def get_relocate_data_summary(id):
     # 接口URL
     url = "https://t.10jqka.com.cn/portfolio/relocate/v2/get_relocate_data_summary"
@@ -29,13 +30,13 @@ def get_relocate_data_summary(id):
     # 处理响应
     if response.status_code == 200:
         data = response.json()
-        # pprint(data)
+        # pprint(testdata)
         # 提取调仓总次数
-        relocate_total = data["data"]["relocateTotal"]
+        relocate_total = data["testdata"]["relocateTotal"]
         # 提取盈利总次数
-        profit_total = data["data"]["profitTotal"]
+        profit_total = data["testdata"]["profitTotal"]
         # 提取利润率
-        profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
+        profit_margin = f'{data["testdata"]["profitMargin"] * 100:.2f}%'
 
         # print("调仓个股总数:", relocate_total)
         # print("盈利个股数:", profit_total)

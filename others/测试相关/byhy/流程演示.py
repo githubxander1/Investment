@@ -1,6 +1,3 @@
-import time
-from pprint import pprint
-
 import requests
 host = 'http://127.0.0.1:8047'
 
@@ -19,7 +16,7 @@ login()
 # customers_add = requests.post(url=host+"/api/mgr/customers",cookies=cookies,
 #               json={
 #                     "action":"add_customer",
-#                     "data":{
+#                     "testdata":{
 #                         "name":'实例25_批量生成PPT版荣誉证书',
 #                         "phonenumber":'123',
 #                         "address":'1234'

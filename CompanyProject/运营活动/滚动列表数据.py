@@ -1,5 +1,6 @@
-import requests
 import pandas as pd
+import requests
+
 # headers = {
 #     'token': 'U81HC5JM36sWt9hK0NM/Mw8RhtRkkvVXIRidU9Iui7eozJbFIrLaFeUebCrTRtTh0Aiz0L6TJRRBfJdRSmdPiOoI7pfZ7wCiodwluUBhl5YuLIQGa8f5UA4Lu4vMIs++geqkDezCcDqlf36f/nXL9fulK/anoMKEkNcspGNheg4=',
 #     'deviceId': '28f7b12416cc40e6f92cd946241639c4',
@@ -38,11 +39,11 @@ print(df)
 # rewards=df['reward']
 # print(rewards)
 
-# Assuming you have extracted the data into a DataFrame called 'df'
-# Convert the 'reward' column to a numeric data type
+# Assuming you have extracted the testdata into a DataFrame called 'df'
+# Convert the 'reward' column to a numeric testdata type
 df['reward'] = pd.to_numeric(df['reward'])
 # print(df['reward'])
-# Filter the data for the 'reward' values in the specified intervals
+# Filter the testdata for the 'reward' values in the specified intervals
 interval1 = df[(df['reward'] >= 0) & (df['reward'] < 1)]['reward']
 interval2 = df[(df['reward'] >= 1) & (df['reward'] < 2)]['reward']
 interval3 = df[(df['reward'] >= 2)]['reward']

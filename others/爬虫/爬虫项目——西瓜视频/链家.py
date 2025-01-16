@@ -3,7 +3,7 @@ import requests
 from lxml import etree
 from pyecharts.charts import Bar
 '''
-知识点“
+知识点.md“
     实例25_批量生成PPT版荣誉证书.python数据类型：
     str
     content.decode()

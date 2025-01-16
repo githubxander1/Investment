@@ -1,6 +1,6 @@
-import requests
 import pandas as pd
-from datetime import datetime
+import requests
+
 
 def get_stock_all_notices():
     """
@@ -51,11 +51,11 @@ def process_notices(data):
     """
     该函数用于处理公告数据，提取关键字段并组织成DataFrame。
     """
-    if not data or 'data' not in data or 'data' not in data['data']:
+    if not data or 'testdata' not in data or 'testdata' not in data['testdata']:
         print("数据格式不正确")
         return pd.DataFrame()
 
-    notices = data['data']['data']
+    notices = data['testdata']['testdata']
     extracted_data = []
 
     for notice in notices:

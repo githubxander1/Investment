@@ -1,6 +1,7 @@
-import requests
-import pandas as pd
 from pprint import pprint
+
+import pandas as pd
+import requests
 
 
 def get_product_info(product_id):
@@ -31,10 +32,10 @@ def get_product_info(product_id):
         result = response.json()
         # pprint(result)
         if result['status_code'] == 0:
-            product_name = result['data']['baseInfo']['productName']
+            product_name = result['testdata']['baseInfo']['productName']
             return product_name
         else:
-            print(f"Failed to retrieve data for product_id: {product_id}")
+            print(f"Failed to retrieve testdata for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -74,7 +75,7 @@ def process_ids(ids):
         for id in ids:
             result = get_newest_relocate_post(id)
             if result and result['status_code'] == 0:
-                data = result['data']
+                data = result['testdata']
                 content = data['content']
                 relocate_list = data.get('relocateList', [])
                 all_data = []
@@ -93,7 +94,7 @@ def process_ids(ids):
                 pprint(df)
                 df.to_excel(writer, sheet_name=get_product_info(id), index=False)
             else:
-                print(f"Failed to retrieve data for id: {id}")
+                print(f"Failed to retrieve testdata for id: {id}")
 
 ids = [
     14533,

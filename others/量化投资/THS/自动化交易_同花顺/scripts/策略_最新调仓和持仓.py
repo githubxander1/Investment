@@ -112,7 +112,7 @@ def main():
         positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略最新持仓_所有.xlsx'
         save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
     else:
-        print("No position data to save.")
+        print("No position testdata to save.")
 
 def job():
     if datetime.now().weekday() < 5:  # 0-4 对应周一到周五

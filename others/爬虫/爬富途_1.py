@@ -1,7 +1,8 @@
+import time
+
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
-import time
 
 # 目标URL
 url = "https://news.futunn.com/main?lang=zh-cn&global_content=%7B%22promote_id%22%3A13766,%22sub_promote_id%22%3A3%7Dts"
@@ -65,7 +66,7 @@ if items:
                 })
 
         # 数据提取完成后，data列表将包含所有条目的分类数据
-    # print(data)
+    # print(testdata)
 #
     # 写入Excel
     df = pd.DataFrame(data, columns=['序号','标题', '链接地址', '来源', '时间'])

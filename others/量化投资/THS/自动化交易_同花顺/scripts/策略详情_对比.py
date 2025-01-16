@@ -32,7 +32,7 @@ def strategy_detail(strategy_id):
 
     # 判断请求是否成功（状态码为200表示成功）
     if response.status_code != 200:
-        logging.warning(f"Failed to fetch data for strategy ID {strategy_id}. Status code: {response.status_code}")
+        logging.warning(f"Failed to fetch testdata for strategy ID {strategy_id}. Status code: {response.status_code}")
         return []
 
     try:
@@ -123,7 +123,7 @@ def strategy_detail(strategy_id):
 
         return extract_data
     except Exception as e:
-        logging.error(f"Error processing data for strategy ID {strategy_id}: {str(e)}")
+        logging.error(f"Error processing testdata for strategy ID {strategy_id}: {str(e)}")
         return []
 def save_to_excel(df, filename):
     wb = Workbook()
@@ -163,7 +163,7 @@ def main():
         df_all.to_excel(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略对比.xlsx", index=False)
         print('保存成功')
     else:
-        logging.info("No successful data retrieved for any strategies.")
+        logging.info("No successful testdata retrieved for any strategies.")
 
 if __name__ == "__main__":
     main()

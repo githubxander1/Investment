@@ -1,5 +1,6 @@
 import logging
 from pprint import pprint
+
 import openpyxl
 import pandas as pd
 import requests
@@ -36,7 +37,7 @@ def fetch_and_save_holder_data(output_file, pages_to_fetch=2):
             # 确保请求成功，状态码为200
             if response.status_code == 200:
                 data = response.json()
-                holder_list = data["data"]["list"]
+                holder_list = data["testdata"]["list"]
                 all_holder_list.extend(holder_list)
             else:
                 logging.error(f"请求失败，状态码: {response.status_code}")

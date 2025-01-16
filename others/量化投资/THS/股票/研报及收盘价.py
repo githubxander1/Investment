@@ -1,5 +1,4 @@
 import requests
-import requests
 
 
 def get_stock_report_data():
@@ -68,7 +67,7 @@ def save_to_excel(data, filename='stock_data.xlsx'):
 
         # 保存select_data到Excel
         select_data = data.get('select_data', {})
-        select_df = pd.DataFrame(select_data.get('data', []))
+        select_df = pd.DataFrame(select_data.get('testdata', []))
         select_df.to_excel(writer, sheet_name='select_data', index=False)
 
         # 保存select_data中的quote到Excel
@@ -82,10 +81,10 @@ if __name__ == "__main__":
     data = get_stock_report_data()
     if data:
         # 打印原始数据
-        # pprint(data)
+        # pprint(testdata)
 
         # 提取count_data
-        count_data = data['data']['count_data']
+        count_data = data['testdata']['count_data']
         count_summary = [
             {'时间范围': item['title'],
              '买入': round(item['buy'],0),
@@ -97,19 +96,19 @@ if __name__ == "__main__":
         ]
 
         # 提取forecast_data
-        forecast_data = data['data']['forecast_data']
+        forecast_data = data['testdata']['forecast_data']
         forecast_summary = [
             {'年份': item['title'], '每股收益': item['stock_eps']}
             for item in forecast_data
         ]
 
         # 提取quote_price
-        quote_price = data['data']['quote_price']
+        quote_price = data['testdata']['quote_price']
         quote_price_summary = [
             {'高': quote_price['high'], '低': quote_price['low']}
         ]
         #提取quote_price
-        select_data = data['data']['select_data']['quote']
+        select_data = data['testdata']['select_data']['quote']
         select_quote_summary = [
             {'日期': item['date'], '价格': item['price']}
             for item in select_data

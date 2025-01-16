@@ -1,4 +1,5 @@
 from pprint import pprint
+
 import pandas as pd
 import requests
 
@@ -7,7 +8,7 @@ url = "https://data.hexin.cn/gjd/team/type/4/page/1/"
 
 # 请求头，按照给定的原始请求信息进行设置
 headers = {
-    "Host": "data.hexin.cn",
+    "Host": "testdata.hexin.cn",
     "Connection": "keep-alive",
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
@@ -30,7 +31,7 @@ if response.status_code == 200:
 
     # 提取重要信息
     extracted_data = []
-    for item in data['data']:
+    for item in data['testdata']:
         stock_info = {
             '股票代码': item['code'],
             '股票名称': item['name'],

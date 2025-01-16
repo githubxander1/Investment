@@ -31,7 +31,7 @@ if response.status_code == 200:
     result = response.json()
     print(result)
     # 这里可以进一步对返回的结果进行处理，例如提取评论内容、用户信息等
-    for comment in result["answer"]["components"][0]["data"]["datas"]:
+    for comment in result["answer"]["components"][0]["testdata"]["datas"]:
         print(f"用户名: {comment['userName']}")
         print(f"评论时间: {comment['time']}")
         print(f"评论内容: {comment['content']}")

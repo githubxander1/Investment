@@ -1,11 +1,8 @@
-import os
-from pprint import pprint
-import requests
-import schedule
-from fake_useragent import UserAgent
-import pandas as pd
 from datetime import datetime
 
+import pandas as pd
+import requests
+from fake_useragent import UserAgent
 # 手动创建策略ID到策略名称的映射
 from plyer import notification
 
@@ -169,19 +166,19 @@ def main():
         positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
         save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
     else:
-        print("No position data to save.")
+        print("No position testdata to save.")
 
     if not last_trades_df.empty:
         trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
         save_to_excel(last_trades_df, trades_file_path, '策略最新调仓')
     else:
-        print("No trade data to save.")
+        print("No trade testdata to save.")
 
     if not today_trades_df.empty:
         today_trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略今天调仓_所有.xlsx'
         save_to_excel(today_trades_df, today_trades_file_path, '策略今天调仓')
     else:
-        print("No today's trade data to save.")
+        print("No today's trade testdata to save.")
 
     # 打印当天交易信息到控制台
     print("\n当天交易信息:")
@@ -195,7 +192,7 @@ def main():
             timeout=10
         )
     else:
-        print("No today's trade data available.")
+        print("No today's trade testdata available.")
 
 
 def job():

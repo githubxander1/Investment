@@ -77,7 +77,7 @@ def save_to_excel(df, writer, sheet_name):
         print(f"保存 {sheet_name} 数据时出错: {e}")
 
 def process_and_save_data(file_path, list_types):
-    """Process and save portfolio rank data to an Excel file."""
+    """Process and save portfolio rank testdata to an Excel file."""
 
     with pd.ExcelWriter(file_path) as writer:
         for list_type, sheet_name in list_types.items():

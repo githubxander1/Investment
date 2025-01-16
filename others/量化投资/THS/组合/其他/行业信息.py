@@ -1,7 +1,7 @@
-import requests
-import pandas as pd
 from pprint import pprint
 
+import pandas as pd
+import requests
 
 
 def get_position_industry_info(portfolio_id):
@@ -28,7 +28,7 @@ def get_position_industry_info(portfolio_id):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
-        data = response.json()['data']
+        data = response.json()['testdata']
         return data
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")

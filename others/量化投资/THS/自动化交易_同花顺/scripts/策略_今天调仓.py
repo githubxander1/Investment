@@ -142,17 +142,17 @@ async def strategy_main():
 
     logger.info("策略调仓信息处理完成")
 
-# if __name__ == '__main__':
-#     strategy_id_to_name = Strategy_id_to_name
-#     import asyncio
+if __name__ == '__main__':
+    strategy_id_to_name = Strategy_id_to_name
+    import asyncio
 
-    # asyncio.run(strategy_main())
-    #
+    asyncio.run(strategy_main())
+
     # try:
     #     scheduler = Scheduler(interval=0.25,
     #                           callback=main,
     #                           start_time=dt_time(9, 29),
-    #                           end_time=dt_time(9, 33))
+    #                           end_time=dt_time(10, 33))
     #     scheduler.start()
     # except Exception as e:
     #     logger.error(f"调度器启动失败: {e}", exc_info=True)

@@ -8,7 +8,7 @@ url = "https://data.hexin.cn/gjd/team/type/1/page/1/"
 
 # 请求头，按照你提供的原始请求信息设置
 headers = {
-    "Host": "data.hexin.cn",
+    "Host": "testdata.hexin.cn",
     "Connection": "keep-alive",
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
@@ -36,8 +36,8 @@ def extract_result(data):
     """
     从接口返回数据中提取结果
     """
-    if data and 'data' in data:
-        result_list = data['data']
+    if data and 'testdata' in data:
+        result_list = data['testdata']
         extracted_data = []
         for item in result_list:
             holders_info = ', '.join([f"{holder['name']} ({holder['scale']}%)" for holder in item.get('holders', [])])

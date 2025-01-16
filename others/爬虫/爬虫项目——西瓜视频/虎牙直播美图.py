@@ -11,7 +11,7 @@ pic_list=html.xpath("//img[@class='pic']")
 # 循环获取图片
 for pic in pic_list:
     # 图片路径
-    pic_src=pic.xpath('./@data-original')[0]
+    pic_src=pic.xpath('./@testdata-original')[0]
     big_pic_src=pic_src.split('?')[0]
     # 名称
     name=pic.get('alt')
