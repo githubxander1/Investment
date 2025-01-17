@@ -1,9 +1,9 @@
 ApiTest_mindmaster/
 ├── config/
-│   └── endpoints.yaml
-├── data/
+│   └── api.yaml #放请求接口和环境配置
+├── testdata/
 │   └── test_data.yaml
-├── logic/
+├── logic/  #请求逻辑
 │   ├── login.py
 │   ├── rename.py
 │   └── logout.py
@@ -12,8 +12,9 @@ ApiTest_mindmaster/
 │   ├── test_login.py
 │   ├── test_rename.py
 │   └── test_logout.py
-├── utils/
-│   ├── api_client.py
+├── utils/ #各种中间件工具
+│   ├── excel_handler.py
+
 │   ├── logger.py
 │   └── email_sender.py
 ├── conftest.py

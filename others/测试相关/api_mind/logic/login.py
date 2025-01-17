@@ -1,6 +1,8 @@
 # others.测试相关.ApiTest_mindmaster.api_mind.logic.login.py
+import json
 import os
 
+import jsonpath
 import requests
 
 from others.测试相关.api_mind.utils.requests_handler import RequestsHandler
@@ -22,24 +24,26 @@ def login(email, pw):
            "from": "web",
            "product": "master-online",
            "pw": pw}
-    try:
-        response = RequestsHandler().visit(url=url, method=method, headers=headers, json=data)
-
-        # pprint(response)
-
-        data = response.json()['data']
-        # refresh_token = data['refresh_token']
-        token = data['token']
-        # pprint(response.json())
-        return data, token
-    #     else:
-    #         print(f"请求失败，状态码: {response.status_code}")
-    except requests.RequestException as e:
-        print(f"请求出错: {e}")
+    response = RequestsHandler().visit(url=url, method=method, headers=headers, json=data)
+    if response.status_code == 200:
+        try:
+            data = response.json()
+            token_list = jsonpath.jsonpath(data, '$..token')
+            if token_list and len(token_list) > 0:
+                token = token_list[0]
+                return response, token
+            else:
+                raise ValueError("Token not found in response")
+        except (ValueError, json.JSONDecodeError) as e:
+            # 处理 JSON 解析错误
+            print(f"Failed to parse JSON: {e}")
+            token = None
 
 
 if __name__ == '__main__':
-    pass
-    # data, token = login()
-    # print(token)
+    email = "2695418206@qq.com"
+    pw = "f2d8ddfc169a0ee6f8b0ecd924b1d300"
+    # pass
+    response, token = login(email, pw)
+    print(token)
     # print(login()[1])

@@ -7,6 +7,9 @@ import openpyxl
 from others.测试相关.api_mind.utils.logger import logger
 
 
+# from xTookit import xfile
+# xfile = xfile.read('testdata/rename.xlsx').excel_to_dict(sheet=1)
+
 def read_excel(file_path):
     wb = openpyxl.load_workbook(file_path)
     sheet = wb.active
