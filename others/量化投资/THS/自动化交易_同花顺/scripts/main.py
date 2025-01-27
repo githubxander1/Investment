@@ -1,6 +1,6 @@
 # main.py
 import asyncio
-from datetime import time as dt_time
+from datetime import time as dt_time, datetime
 
 from others.量化投资.THS.自动化交易_同花顺.scripts.策略_今天调仓 import strategy_main
 from others.量化投资.THS.自动化交易_同花顺.scripts.组合_今天调仓 import combination_main
@@ -38,6 +38,17 @@ async def auto_main_wrapper():
 
 async def main():
     try:
+        # 检查是否为周末
+        if datetime.now().weekday() >= 5:
+            logger.info("今天是周末，停止程序")
+            return
+
+        # 检查当前时间是否在任务执行窗口内
+        current_time = datetime.now().time()
+        if not (dt_time(9, 25) <= current_time <= dt_time(15, 0)):
+            logger.info("当前时间不在任务执行窗口内，停止程序")
+            return
+
         # 调度器1：9:29 到 9:33 每0.25分钟执行一次策略
         scheduler_strategy = Scheduler(interval=0.25,  # 0.25分钟
                                        callback=strategy_main_wrapper,

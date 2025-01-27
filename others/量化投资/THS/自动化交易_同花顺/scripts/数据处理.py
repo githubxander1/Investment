@@ -72,7 +72,8 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 stock_name = row['股票名称']
                 operation = row['操作']
                 time = row['时间']
-                logger.info(f"要处理的信息: {stock_name}, 操作: {operation}")
+                quantity = str(row['数量'])  # 假设数量列名为'数量'
+                logger.info(f"要处理的信息: {stock_name}, 操作: {operation}, 数量: {quantity}")
 
                 # 读取最新的操作历史记录
                 operation_history_df = read_operation_history(operation_history_file)
@@ -84,8 +85,13 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                         logger.info(f"{stock_name} 和操作 {operation} 已经操作过，跳过")
                         continue
 
-                volume = 100
-                status, info = ths_page.sell_stock(stock_name, '200') if operation == 'SALE' else ths_page.buy_stock(stock_name, volume)
+                # 根据数量的首位数字设置买入和卖出的数量
+                multiplier = int(quantity[0]) if quantity[0].isdigit() else 1
+                volume = multiplier * 100
+                if volume > 1000:
+                    volume = 1000
+
+                status, info = ths_page.sell_stock(stock_name, volume) if operation == 'SALE' else ths_page.buy_stock(stock_name, volume)
                 logger.info(f"{operation} {stock_name} {'成功' if status else '失败'} {info}")
                 send_notification(f"{operation} {stock_name} {info}")
                 logger.info(f"发送通知成功")

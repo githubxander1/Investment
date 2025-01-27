@@ -1,1 +1,0 @@
-&type=Intel(R) HD Graphics 520&_byte=134217728&_GB=0

@@ -16,8 +16,13 @@ class Scheduler:
         self.is_trading_day = lambda: True
         self._done_event = asyncio.Event()
 
+    def is_weekend(self):
+        """检查今天是否为周末"""
+        today = datetime.now().weekday()
+        return today >= 5  # 5 表示星期六，6 表示星期日
+
     async def job(self):
-        if self.is_trading_day():
+        if self.is_trading_day() and not self.is_weekend():
             try:
                 await self.callback()
                 next_run_time = await self.get_next_run_time()  # 使用 await 调用异步方法
@@ -29,7 +34,7 @@ class Scheduler:
             except Exception as e:
                 logger.error(f"任务执行失败: {e}", exc_info=True)
         else:
-            logger.info("今天不是交易日，跳过任务执行")
+            logger.info("今天不是交易日或为周末，跳过任务执行")
 
     async def start(self):
         # schedule.every(self.interval).minutes.do(lambda: asyncio.create_task(self.job()))# 如果是秒要去掉
@@ -50,7 +55,7 @@ class Scheduler:
 
     async def get_next_run_time(self):
         now = datetime.now()
-        next_run = now + timedelta(minutes=self.interval)# 如果是秒就改为timedelta(seconds=self.interval)
+        next_run = now + timedelta(minutes=self.interval)  # 如果是秒就改为timedelta(seconds=self.interval)
         if next_run.time() > self.end_time:
             return None
         return next_run

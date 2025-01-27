@@ -11,7 +11,7 @@ from others.量化投资.THS.自动化交易_同花顺.config.settings import CO
     COMBINATION_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Combination_ids
 from others.量化投资.THS.自动化交易_同花顺.utils.determine_market import determine_market
 from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
-from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification
+from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification, send_email
 
 logger = setup_logger(COMBINATION_TODAY_ADJUSTMENT_LOG_FILE)
 
@@ -227,6 +227,7 @@ def check_new_data(existing_df, today_trade_without_cyb_print_df):
         save_to_excel(combined_df, file_path, sheet_name='组合今天调仓', index=False)
 
         send_notification("今天有新调仓，组合")
+        send_email('股票策略调仓', combined_df.to_string(), '2695418206@qq.com')
 
         # 创建标志文件
         create_flag_file(OPRATION_RECORD_DONE_FILE)

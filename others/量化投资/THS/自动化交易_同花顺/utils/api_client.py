@@ -1,6 +1,7 @@
 # utils/api_client.py
 import requests
 
+# from config.settings import API_URL, HEADERS
 from others.量化投资.THS.自动化交易_同花顺.config.settings import API_URL, HEADERS
 
 

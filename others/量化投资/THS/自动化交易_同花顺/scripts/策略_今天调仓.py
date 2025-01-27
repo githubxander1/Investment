@@ -6,12 +6,23 @@ import pandas as pd
 import requests
 from fake_useragent import UserAgent
 
+# from config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE
 from others.量化投资.THS.自动化交易_同花顺.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     STRATEGY_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Strategy_id_to_name, Strategy_ids
 from others.量化投资.THS.自动化交易_同花顺.utils.api_client import APIClient
+# from config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
+#     STRATEGY_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Strategy_id_to_name, Strategy_ids
+# from others.量化投资.THS.自动化交易_同花顺.utils.api_client import APIClient
+# from utils.api_client import APIClient
 from others.量化投资.THS.自动化交易_同花顺.utils.determine_market import determine_market
+# from utils.determine_market import determine_market
 from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
-from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification
+# from utils.logger import setup_logger
+from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification, send_email
+
+# from utils.notification import send_notification
+
+# from utils.notification import
 
 logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
 
@@ -21,6 +32,15 @@ ua = UserAgent()
 
 # 手动创建策略ID到策略名称的映射
 
+
+def send_http_request(url, params, headers):
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()  # 检查请求是否成功
+        return response.json()
+    except requests.RequestException as e:
+        logger.error(f"请求失败: {e}")
+        return None
 
 def get_latest_position_and_trade(strategy_id):
     strategy_id_to_name = Strategy_id_to_name
@@ -32,14 +52,7 @@ def get_latest_position_and_trade(strategy_id):
         "User-Agent": ua.random
     }
 
-    try:
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()  # 检查请求是否成功
-        data = response.json()
-    except requests.RequestException as e:
-        logger.error(f"请求失败: {e}")
-        return [], 'N/A'
-
+    data = send_http_request(url, params, headers)
     if data:
         latest_trade = data.get('result', {}).get('latestTrade', {})
         trade_date = latest_trade.get('tradeDate', 'N/A')
@@ -133,6 +146,7 @@ async def strategy_main():
     if not today_trades_without_sc_df.empty:
         # 发送通知
         send_notification("今日有新的调仓操作！策略")
+        send_email('股票策略调仓', today_trades_without_sc_df.to_string(), '2695418206@qq.com')
         # 创建标志文件
         with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
             f.write("策略调仓已完成")
@@ -156,3 +170,4 @@ if __name__ == '__main__':
     #     scheduler.start()
     # except Exception as e:
     #     logger.error(f"调度器启动失败: {e}", exc_info=True)
+
