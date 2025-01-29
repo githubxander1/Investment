@@ -68,7 +68,7 @@ def get_latest_position_and_trade(strategy_id):
                 '市场': determine_market(code),
                 '股票名称': trade_info.get('stkName', 'N/A'),
                 '参考价': trade_info.get('tradePrice', 'N/A'),
-                '数量': trade_info.get('tradeAmount', 'N/A'),
+                '新比例%': trade_info.get('tradeAmount', 'N/A'),
             }
             latest_trade_info.append(trade_entry)
         return latest_trade_info, trade_date

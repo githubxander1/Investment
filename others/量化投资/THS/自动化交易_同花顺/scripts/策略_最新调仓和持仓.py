@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from fake_useragent import UserAgent
 
-from others.量化投资.THS.自动化交易_同花顺.config.settings import Strategy_ids
+from others.量化投资.THS.自动化交易_同花顺.config.settings import Strategy_ids, Strategy_info_file
 from others.量化投资.THS.自动化交易_同花顺.utils.determine_market import determine_market
 
 # 手动创建策略ID到策略名称的映射
@@ -109,8 +109,9 @@ def main():
 
     # 检查是否有数据并保存
     if not last_positions_df.empty:
-        positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略最新持仓_所有.xlsx'
-        save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
+        # positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略最新持仓_所有.xlsx'
+        # positions_file_path = Strategy_info_file
+        save_to_excel(last_positions_df, Strategy_info_file, '策略最新持仓')
     else:
         print("No position testdata to save.")
 

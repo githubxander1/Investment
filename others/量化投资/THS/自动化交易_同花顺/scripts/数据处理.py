@@ -60,7 +60,7 @@ def write_operation_history(file_path, new_operation_history_df):
         with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
             updated_df.to_excel(writer, sheet_name=today, index=False)
 
-def process_excel_files(ths_page, file_paths, operation_history_file):
+def process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file):
     for file_path in file_paths:
         logger.info(f"检测到文件更新，即将进行操作的文件路径: {file_path}")
         if not os.path.exists(file_path):
@@ -72,7 +72,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 stock_name = row['股票名称']
                 operation = row['操作']
                 time = row['时间']
-                quantity = str(row['数量'])  # 假设数量列名为'数量'
+                quantity = str(row['新比例%'])
                 logger.info(f"要处理的信息: {stock_name}, 操作: {operation}, 数量: {quantity}")
 
                 # 读取最新的操作历史记录
@@ -85,11 +85,25 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                         logger.info(f"{stock_name} 和操作 {operation} 已经操作过，跳过")
                         continue
 
-                # 根据数量的首位数字设置买入和卖出的数量
-                multiplier = int(quantity[0]) if quantity[0].isdigit() else 1
-                volume = multiplier * 100
-                if volume > 1000:
-                    volume = 1000
+                if quantity == '0':
+                    # 读取持仓信息
+                    try:
+                        holding_stock_df = pd.read_excel(holding_stock_file, sheet_name="持仓数据")
+                        holding_stock = holding_stock_df[holding_stock_df['股票名'] == stock_name]
+                        if not holding_stock.empty:
+                            available = holding_stock['持仓/可用'].str.split('/').str[1].iloc[0]
+                            volume = int(available)
+                            logger.info(f"根据持仓信息，卖出 {stock_name} 的可用数量: {volume}")
+                        else:
+                            logger.error(f"未找到 {stock_name} 的持仓信息")
+                            continue
+                    except Exception as e:
+                        logger.error(f"读取持仓信息文件失败: {e}", exc_info=True)
+                        continue
+                else:
+                    multiplier = int(quantity[0]) if quantity[0].isdigit() else 1
+                    volume = multiplier * 100
+                    volume = min(volume, 1000)
 
                 status, info = ths_page.sell_stock(stock_name, volume) if operation == 'SALE' else ths_page.buy_stock(stock_name, volume)
                 logger.info(f"{operation} {stock_name} {'成功' if status else '失败'} {info}")

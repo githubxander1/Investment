@@ -1,0 +1,8 @@
+2025-01-29 17:46:10,480 - INFO - Starting test case: success
+2025-01-29 17:46:18,000 - ERROR - Test case success failed with exception: Expected 'token' in response, got (<Response [200]>, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJFZHJhd1NvZnQiLCJzdWIiOiJ7XCJjb3JwVXNlcklkXCI6XCJcIixcIm9wZW5JZFwiOlwiXCIsXCJjb3JwSWRcIjpcIlwiLFwidW5pb25fa2V5XCI6XCJcIixcInBsYXRmb3JtXCI6XCJ3ZWJcIn0iLCJleHAiOjE3NDA3MzU5NzgsImlhdCI6MTczODE0MzkxOCwiYXVkIjoiMjM5Mjg1MTYiLCJzcmMiOiJwYXNzd29yZCJ9.UNoCDzPs2Vd694d_VrBAn_ptlqOdRW_gbH_0Dnsh2yY')
+assert 'user_name' in <Response [200]>
+2025-01-29 17:46:18,439 - INFO - Starting test case: False
+2025-01-29 17:46:25,861 - INFO - 开始 rename 测试: 重命名成功
+2025-01-29 17:46:33,288 - INFO - 接口返回: <Response [200]>
+2025-01-29 17:46:33,308 - INFO - 开始 rename 测试: 重命名失败
+2025-01-29 17:46:40,695 - INFO - 接口返回: <Response [200]>

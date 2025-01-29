@@ -103,9 +103,10 @@ def sell_stock(stock_name, volume):
     click_back()
 
 # 示例调用
-if __name__ == "__main__":
+# if __name__ == "__main__":
+#     pass
     # d.app_start('com.hexin.plat.android')
     # time.sleep(5)
-    click_trade_entry()
-    buy_stock('工商银行', 2000)
+    # click_trade_entry()
+    # buy_stock('工商银行', 2000)
     # sell_stock('工商银行', 1000)

@@ -11,9 +11,9 @@
 # page.ele('@placeholder=请输入密码').input("yourpassword")
 # page.ele("登录").click()
 # time.sleep(1000)
+from DrissionPage._pages.web_page import WebPage
 
-
-from others.测试相关.DrissionPage1 import WebPage
+# from others.测试相关.DrissionPage1 import WebPage
 
 # d: 操作浏览器模式
 page = WebPage('d')

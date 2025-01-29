@@ -5,8 +5,8 @@ import zipfile
 
 import allure
 import pytest
+from dotenv import load_dotenv
 
-from others.测试相关.api_mind.utils.email_sender import send_email
 from others.测试相关.api_mind.utils.excel_handler import read_excel
 
 # 加载 .env 文件
@@ -46,4 +46,4 @@ if __name__ == '__main__':
     to_email = "2695418206@qq.com"
     attachment_path = allure_report_zip
 
-    send_email(subject, body, to_email, attachment_path)
+    # send_email(subject, body, to_email, attachment_path)

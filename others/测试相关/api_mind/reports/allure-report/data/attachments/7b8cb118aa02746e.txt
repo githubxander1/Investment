@@ -1,0 +1,2 @@
+INFO     api_test:test_rename.py:18 开始 rename 测试: 重命名成功
+INFO     api_test:test_rename.py:21 接口返回: <Response [200]>

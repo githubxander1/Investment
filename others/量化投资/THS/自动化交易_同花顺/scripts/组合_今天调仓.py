@@ -119,7 +119,7 @@ def process_today_trades(ids):
                             '股票名称': name,
                             '参考价': final_price,
                             '当前比例': f"{current_ratio * 100:.2f}%",
-                            '新比例': f"{new_ratio * 100:.2f}%"
+                            '新比例%': f"{new_ratio * 100:.2f}%"
                         })
                             # processed_ids.add(unique_id)
     # pprint(all_records)

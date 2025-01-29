@@ -7,7 +7,8 @@ import uiautomator2 as u2
 from others.量化投资.THS.自动化交易_同花顺.config.settings import (
     THS_AUTO_TRADE_LOG_FILE,
     OPERATION_HISTORY_FILE,
-    OPRATION_RECORD_DONE_FILE, STRATEGY_TODAY_ADJUSTMENT_FILE, COMBINATION_TODAY_ADJUSTMENT_FILE
+    OPRATION_RECORD_DONE_FILE, STRATEGY_TODAY_ADJUSTMENT_FILE, COMBINATION_TODAY_ADJUSTMENT_FILE,
+    ETF_TODAY_ADJUSTMENT_FILE
 )
 from others.量化投资.THS.自动化交易_同花顺.pages.ths_page2 import THSPage
 from others.量化投资.THS.自动化交易_同花顺.scripts.数据处理 import process_excel_files
@@ -67,7 +68,8 @@ async def auto_main():
     logger.info("自动化交易程序开始运行")
     file_paths = [
         STRATEGY_TODAY_ADJUSTMENT_FILE,
-        COMBINATION_TODAY_ADJUSTMENT_FILE
+        COMBINATION_TODAY_ADJUSTMENT_FILE,
+        ETF_TODAY_ADJUSTMENT_FILE
     ]
     operation_history_file = OPERATION_HISTORY_FILE
     last_modification_times = get_file_modification_times(operation_history_file)

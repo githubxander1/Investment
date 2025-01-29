@@ -1,5 +1,6 @@
-import pandas as pd
 from datetime import datetime, timedelta
+
+import pandas as pd
 
 # 初始化 DataFrame 时指定列的数据类型
 data = {
@@ -13,8 +14,8 @@ data = {
     '餐补次数': [0] * 10,
     '交补次数': [0] * 10
 }
-午休时间：12:0-13:30
-晚餐时间：18:00-19:00
+# 午休时间：12:0-13:30
+# 晚餐时间：18:00-19:00
 
 df = pd.DataFrame(data)
 

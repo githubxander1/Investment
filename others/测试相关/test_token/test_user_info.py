@@ -1,7 +1,12 @@
 # -*- coding:utf-8 -*-
-from interface.user import user_info
-from commen.headle_token import *
-import unittest, os
+# from interface.user import user_info
+# from commen.headle_token import *
+import os
+import unittest
+
+from others.测试相关.test_token.headle import get_yaml
+from others.测试相关.test_token.user import user_info
+
 current_path = os.path.dirname(os.path.realpath(__file__))  # 获取当前路径
 # 获取 token 的路径
 token_path = os.path.join(current_path, "commen")

@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
-from others.PO_test.POtest_wechat.page.base_page import BasePage
-from others.PO_test.POtest_wechat.page.register import Register
+
+from others.测试相关.PO_test.POtest_wechat.page.base_page import BasePage
+from others.测试相关.PO_test.POtest_wechat.page.register import Register
 
 
 class Login(BasePage):

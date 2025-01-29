@@ -1,4 +1,5 @@
 import base64
+
 from zhipuai import ZhipuAI
 
 '''图片url或者base64编码。图像大小上传限制为每张图像 5M以下，且像素不超过 6000*6000。
@@ -19,16 +20,8 @@ def analyze_image(image_source, question, image_path=None, image_url=None, ):
             raise ValueError("image_path is required when image_source is 'local'")
         with open(image_path, 'rb') as img_file:
             img_base = base64.b64encode(img_file.read()).decode('utf-8')
-        content = [
-            {
-                "type": "image_base64",
-                "image_base64": img_base
-            },
-            {
-                "type": "text",
-                "text": "图里有什么"
-            }
-        ]
+        # 由于 glm-4v-flash 不支持 base64 编码，需要上传到服务器并获取 URL
+        raise ValueError("glm-4v-flash 不支持 base64 编码，请使用 image_url")
     elif image_source == 'url':
         if not image_url:
             raise ValueError("图片URL 是必填项")
@@ -45,7 +38,7 @@ def analyze_image(image_source, question, image_path=None, image_url=None, ):
             }
         ]
     else:
-        raise ValueError("图片源必须是 'local' 或 'url")
+        raise ValueError("图片源必须是 'local' 或 'url'")
 
     response = client.chat.completions.create(
         model="glm-4v-flash",  # 填写需要调用的模型名称
@@ -59,15 +52,17 @@ def analyze_image(image_source, question, image_path=None, image_url=None, ):
     return response.choices[0].message
 
 # 示例调用：使用本地图片
-question = "请分析图片内容，并给出分析结果"
-local_image_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\Quicker_20231015_132533.jpg"
-result_local = analyze_image(image_source='local', question=question, image_path=local_image_path, )
+# question = "请分析图片内容，并给出分析结果"
+# local_image_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\Quicker_20231015_132533.jpg"
+# 由于 glm-4v-flash 不支持 base64 编码，需要上传到服务器并获取 URL
+# 这里假设你已经有一个图片的 URL
+image_url = "https://example.com/path/to/your/image.jpg"
+result_local = analyze_image(image_source='url', question=question, image_url=image_url)
 print("分析结果如下:")
 print(result_local)
 
 # 示例调用：使用URL图片
 # url_image_url = "https://img1.baidu.com/it/u=1369931113,3388870256&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1703696400&t=f3028c7a1dca43a080aeb8239f09cc2f"
-# url_image_url = r"D:\1document\1test\PycharmProject_gitee\zothers\量化投资\质谱ai\wx.png"
 # result_url = analyze_image(image_source='url', image_url=url_image_url)
 # print("\nURL Image Analysis Result:")
 # print(result_url)

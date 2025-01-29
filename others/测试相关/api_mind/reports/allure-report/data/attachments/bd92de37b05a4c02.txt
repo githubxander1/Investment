@@ -1,0 +1,3 @@
+INFO     api_test:test_login.py:21 Starting test case: success
+ERROR    api_test:test_login.py:34 Test case success failed with exception: Expected 'token' in response, got (<Response [200]>, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJFZHJhd1NvZnQiLCJzdWIiOiJ7XCJjb3JwVXNlcklkXCI6XCJcIixcIm9wZW5JZFwiOlwiXCIsXCJjb3JwSWRcIjpcIlwiLFwidW5pb25fa2V5XCI6XCJcIixcInBsYXRmb3JtXCI6XCJ3ZWJcIn0iLCJleHAiOjE3NDA3MzU5NzgsImlhdCI6MTczODE0MzkxOCwiYXVkIjoiMjM5Mjg1MTYiLCJzcmMiOiJwYXNzd29yZCJ9.UNoCDzPs2Vd694d_VrBAn_ptlqOdRW_gbH_0Dnsh2yY')
+assert 'user_name' in <Response [200]>

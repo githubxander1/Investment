@@ -1,6 +1,3 @@
-from pprint import pprint
-
-import pandas as pd
 import requests
 
 
@@ -43,33 +40,31 @@ def extract_result(data):
     etf_list=data.get('list', [])
     extracted_data = []
     for item in etf_list:
+        portfo_labels = item.get('portfolio_labels', [])
+        label = portfo_labels[0]['label'] if portfo_labels else '无标签'
         etf_info = {
-            '盈亏率%': range(item.get('income_rate', 0),2),
-            # 'jump_url': item.get('jump_url', ''),
-            'portfolio_id': item.get('portfolio_id', 0),
-            'portfolio_labels': item.get('portfolio_labels', []),
-            'portfolio_name': item.get('portfolio_name', ''),
-            'portfolio_type_name': item.get('portfolio_type_name', ''),
-            # 'user_info': item.get('user_info', {})
+            '组合id': item.get('portfolio_id', 0),
+            '组合名称': item.get('portfolio_name', ''),
+            '盈亏率%': item.get('income_rate', 0) * 100,
+            '标签': label
         }
         extracted_data.append(etf_info)
+        # pprint(extracted_data)
     return extracted_data
 
 
 def main():
     result = send_request()
-    pprint(result)
+    # pprint(result)
     extracted_result = extract_result(result)
+    # extract_datas = f'提取{result}里的income_rate（用百分比表示），portfolio_id，portfolio_name，label，用pandas表格样式展示'
+    # print(AIchat(extract_datas))
+    # ids = [etf.get('portfolio_id') for etf in extracted_result]
+    # print(ids)
 
-    ids = [etf.get('portfolio_id') for etf in extracted_result]
-    print(ids)
-    # 遍历 extracted_result 列表并打印每个 etf 的 portfolio_id
-    # for etf in extracted_result:
-    #     print(etf.get('portfolio_id'))
-
-    df = pd.DataFrame(extracted_result)
+    # df = pd.DataFrame(extracted_result)
     # df.to_excel('etf_list.xlsx', index=False)
-    print(df)
+    # print(df)
     # print(extracted_result)
 
 
