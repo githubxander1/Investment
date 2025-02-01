@@ -1,0 +1,14 @@
+# 安装Termux:Boot
+# 1. 在Termux中执行：
+pkg install termux-boot
+
+# 2. 创建~/.termux/boot/目录
+mkdir -p ~/.termux/boot
+
+# 3. 创建启动脚本 ~/.termux/boot/start_tracker
+echo '#!/data/data/com.termux/files/usr/bin/sh
+termux-wake-lock
+python ~/tracker.py' > ~/.termux/boot/start_tracker
+
+# 4. 赋予执行权限
+chmod +x ~/.termux/boot/start_tracker

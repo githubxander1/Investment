@@ -1,4 +1,7 @@
-import os,time
+import os
+import time
+
+
 def SaveImage(driver,errorImage):
     '''用例失败截图'''
     Rawpath=os.path.join(os.path.dirname(os.path.dirname(__file__)),'Image')
