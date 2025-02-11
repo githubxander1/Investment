@@ -30,6 +30,7 @@ ETF_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF今天调仓.xlsx')
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.xlsx')
 ETF_info_file = os.path.join(DATA_DIR, 'ETF组合信息.xlsx')
 Strategy_info_file = os.path.join(DATA_DIR, '策略信息.xlsx')
+Combination_list_file = os.path.join(DATA_DIR, '组合榜单列表.xlsx')
 
 Holding_Stockes_info_file = os.path.join(DATA_DIR, '账户持仓信息.xlsx')
 

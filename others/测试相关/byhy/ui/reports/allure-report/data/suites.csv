@@ -1,0 +1,7 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Mon Feb 10 18:43:29 CST 2025","Mon Feb 10 18:43:31 CST 2025","2189","tests","test_order","","","","test_add_order[\u8ba2\u53551-80-11]",""
+"passed","Mon Feb 10 18:43:05 CST 2025","Mon Feb 10 18:43:08 CST 2025","2946","tests","test_customer","","","","test_add_customer[customer_data1]",""
+"passed","Mon Feb 10 18:43:14 CST 2025","Mon Feb 10 18:43:16 CST 2025","2092","tests","test_medicine","","","","test_add_medicine[\u65b0\u589e\u836f\u54c11-001-\u63cf\u8ff0\u968f\u98ce\u5012\u968f\u98ce\u5012\u5341\u5206]",""
+"passed","Mon Feb 10 18:43:21 CST 2025","Mon Feb 10 18:43:23 CST 2025","1913","tests","test_medicine","","","","test_add_medicine[\u65b0\u589e\u836f\u54c12-002-\u63cf\u8ff0\u968f\u98ce\u5012\u968f\u98ce\u5012\u5341\u5206]",""
+"passed","Mon Feb 10 18:43:38 CST 2025","Mon Feb 10 18:43:40 CST 2025","2261","tests","test_order","","","","test_add_order[\u8ba2\u53552-81-12]",""
+"passed","Mon Feb 10 18:42:53 CST 2025","Mon Feb 10 18:42:57 CST 2025","3504","tests","test_customer","","","","test_add_customer[customer_data0]",""

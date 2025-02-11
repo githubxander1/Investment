@@ -5,9 +5,9 @@
 #     browser = p.chromium.launch(channel="msedge",headless=False)
 #     # browser = p.chromium.launch(channel="chrome"，headless = False)
 #     # browser = p.webkit.launch(headless=False)
-#     page = browser.new_page()
-#     page.goto('http://www.baidu.com')
-#     print(page.title)
+#     pom = browser.new_page()
+#     pom.goto('http://www.baidu.com')
+#     print(pom.title)
 #     # browser.close()
 import asyncio
 

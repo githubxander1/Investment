@@ -1,4 +1,4 @@
-# others.测试相关.ApiTest_mindmaster.api_mind.logic.login.py
+# others.测试相关.ApiTest_mindmaster.api_mind.logic.logic.py
 import json
 import os
 

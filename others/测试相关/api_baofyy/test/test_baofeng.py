@@ -4,12 +4,12 @@
 
 # from utils.operationJson import readJson
 # from flashing_icon.test_login import LoginTest
-# from page.baofeng import *
+# from pom.baofeng import *
 import unittest
 
 from others.测试相关.api_baofyy import addProduct, delProduct, modifyProduct, queryProduct
-from others.测试相关.api_baofyy.test.test_login import LoginTest
 from others.测试相关.api_baofyy import readJson
+from others.测试相关.api_baofyy.test.test_login import LoginTest
 
 
 class Fengbao(LoginTest):

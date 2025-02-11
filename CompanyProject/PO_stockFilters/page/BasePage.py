@@ -73,5 +73,5 @@ class BasePage:
         self.page.wait_for_load_state("networkidle")
         self.page.wait_for_load_state("load")
         self.page.screenshot(path=filename, full_page=True)
-        # self.page.screenshot(path=path)
+        # self.pom.screenshot(path=path)
         # return path

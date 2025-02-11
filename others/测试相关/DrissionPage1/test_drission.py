@@ -5,11 +5,11 @@
 #
 # # set_paths(browser_path=r'C:\Program Files\Google\Chrome\Application\chrome.exe')
 #
-# page = ChromiumPage()
-# page.get('https://designer.vivo.com.cn/#/login')
-# ele = page.ele("@placeholder=支持邮箱/用户名登录").input('yourname')
-# page.ele('@placeholder=请输入密码').input("yourpassword")
-# page.ele("登录").click()
+# pom = ChromiumPage()
+# pom.get('https://designer.vivo.com.cn/#/login')
+# ele = pom.ele("@placeholder=支持邮箱/用户名登录").input('yourname')
+# pom.ele('@placeholder=请输入密码').input("yourpassword")
+# pom.ele("登录").click()
 # time.sleep(1000)
 from DrissionPage._pages.web_page import WebPage
 

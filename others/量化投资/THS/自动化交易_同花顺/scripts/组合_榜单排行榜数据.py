@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 
+from others.量化投资.THS.自动化交易_同花顺.config.settings import Combination_list_file
+
 
 def get_all_portfolio_rank_data(list_type):
     url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/blockList"
@@ -106,14 +108,14 @@ def process_and_save_data(file_path, list_types):
 
 # 示例调用
 if __name__ == '__main__':
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\榜单排行榜数据.xlsx"
+    file_path = Combination_list_file
     list_types = {
         # 1: "日收益",
         # 2: "周收益",
         3: "月收益",
         4: "总收益"
     }
-    # process_and_save_data(file_path, list_types)
+    process_and_save_data(file_path, list_types)
 
     extract_da = extract_data(get_all_portfolio_rank_data(4))
     portfolio_ids = [item["组合id"] for item in extract_da][:20]

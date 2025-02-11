@@ -22,7 +22,7 @@ def post_api_data():
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
     }
     data = {
-        "page": 1,
+        "pom": 1,
         "size": 50,
         "filters": [
             {"field": "report", "args": ["2024-4"], "exp": "equals"},

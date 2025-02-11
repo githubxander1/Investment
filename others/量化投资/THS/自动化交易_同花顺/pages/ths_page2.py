@@ -215,6 +215,6 @@ class THSPage:
 # if __name__ == '__main__':
 #
 #     d = uiautomator2.connect()
-#     page = THSPage(d)
-#     # page.sell_stock('中国电信','半仓')
-#     page.sell_stock('英维克','半仓')
+#     pom = THSPage(d)
+#     # pom.sell_stock('中国电信','半仓')
+#     pom.sell_stock('英维克','半仓')

@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:张红
-import unittest
-import requests
 import time as t
-# ttfrom page.login import login
-# from page.login import headers
+import unittest
+
+import requests
+
+# ttfrom pom.login import login
+# from pom.login import headers
 # from utils.operationJson import readJson
 # from utils.operationJson import readYaml
 from others.测试相关.api_baofyy import headers

@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 
 import openpyxl
@@ -72,7 +73,7 @@ def extract_result(data, id):
             '最新价': infos.get('finalPrice'),
             '当前比例%': round(infos.get('currentRatio') * 100,2),
             '新比例%': round(infos.get('newRatio') * 100,2),
-            '说明': content,
+            # '说明': content,
             '时间': createAt
         }
         newest_post_infos.append(newest_post)
@@ -144,14 +145,19 @@ def process_today_trades(ids):
         return None
 
     today_trade_df = pd.DataFrame(all_records)
-    # today_trade_print_df = today_trade_df.drop(columns=['组合id', '描述', '说明'])
-    # today_trade_without_cyb_print_df = today_trade_print_df[~today_trade_df['市场'].isin(['创业板', '科创板'])]
-    # logger.info('去掉创业板和科创板')
-    # logger.info('去掉参考价大于30的')
-    # today_trade_without_cyb_print_df = today_trade_without_cyb_print_df[today_trade_without_cyb_print_df['参考价'] < 30]
+    # 将 '时间' 列转换为 datetime 类型
+    today_trade_df['时间'] = pd.to_datetime(today_trade_df['时间'])
     return today_trade_df
 
 def check_new_data(existing_df, today_trade_df):
+    # 确保 '代码' 列的数据类型一致
+    today_trade_df['代码'] = today_trade_df['代码'].astype(str)
+    existing_df['代码'] = existing_df['代码'].astype(str)
+
+    # 确保 '时间' 列的数据类型一致
+    today_trade_df['时间'] = pd.to_datetime(today_trade_df['时间'])
+    existing_df['时间'] = pd.to_datetime(existing_df['时间'])
+
     if not existing_df.empty:
         new_data = today_trade_df.merge(existing_df, how='outer', indicator=True).loc[
             lambda x: x['_merge'] == 'left_only'].drop(columns='_merge')
@@ -174,9 +180,10 @@ def check_new_data(existing_df, today_trade_df):
     else:
         logger.info("没有新增调仓数据")
 
-def ETF_main():
+async def ETF_main():
     logger.info("开始处理ETF调仓信息")
     today_trade_df = process_today_trades(ETF_ids)
+    # print(today_trade_df)
 
     if today_trade_df is not None:
         logger.info(f'今日调仓：\n {today_trade_df}')
@@ -184,6 +191,7 @@ def ETF_main():
             existing_df = pd.read_excel(ETF_TODAY_ADJUSTMENT_FILE, sheet_name='ETF最新调仓')
         except FileNotFoundError:
             existing_df = pd.DataFrame()
+            # print(existing_df)
             existing_df.to_excel(ETF_TODAY_ADJUSTMENT_FILE, sheet_name='ETF最新调仓', index=False)
             logger.info("Excel文件不存在，创建新文件")
 
@@ -192,4 +200,4 @@ def ETF_main():
         logger.info("今天没有新的调仓操作")
 
 if __name__ == "__main__":
-    ETF_main()
+    asyncio.run(ETF_main())

@@ -46,16 +46,16 @@ def test_create_filter(setup_and_teardown):
     stock_filters_page.screen_shot("test_create_filter.png")
 
 
-    # toast_saved = stock_filters_page.page.locator('/html/body/div[2]')
+    # toast_saved = stock_filters_page.pom.locator('/html/body/div[2]')
 
-    # def wait_for_toast(page, selector, timeout=5000, interval=500):
-    #     start_time = page.timeouts()['timeout']
+    # def wait_for_toast(pom, selector, timeout=5000, interval=500):
+    #     start_time = pom.timeouts()['timeout']
     #     end_time = start_time + timeout
-    #     while page.timeouts()['timeout'] < end_time:
-    #         elements = page.query_selector_all(selector)
+    #     while pom.timeouts()['timeout'] < end_time:
+    #         elements = pom.query_selector_all(selector)
     #         if elements:
     #             return elements
-    #         page.wait_for_timeout(interval)
+    #         pom.wait_for_timeout(interval)
     #     return None
     #
     # toast_elements = wait_for_toast(stock_filters_page, toast_saved)
@@ -66,7 +66,7 @@ def test_create_filter(setup_and_teardown):
     # else:
     #     print("未找到Toast提示")
     # 验证筛选器是否被正确创建
-    # assert "TestFilter" in stock_filters_page.page.content(), "筛选器未被正确创建"
+    # assert "TestFilter" in stock_filters_page.pom.content(), "筛选器未被正确创建"
 
 @pytest.mark.skip
 def test_clear_filter(setup_and_teardown):

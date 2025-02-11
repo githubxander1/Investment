@@ -40,14 +40,14 @@ def previous_interface(session,name):
         "sec-fetch-dest": "empty",
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-site",
-        "x-zp-page-code": "4077",
+        "x-zp-pom-code": "4077",
         "cookie": "x-zp-client-id=2fd27151-b667-47a6-ac7f-f5b93ba9c279; sajssdk_2015_cross_new_user=1; sensorsdata2015jssdkchannel=%7B%22prop%22%3A%7B%22_sa_channel_landing_url%22%3A%22%22%7D%7D; Hm_lvt_7fa4effa4233f03d11c7e2c710749600=1736414481; HMACCOUNT=C2895077A52D2177; at=fdb4d115626c48b5af34f1ff2a61b39d; rt=2c628a8e5b89478c9b67551f2bfce66c; sts_deviceid=1944a5eea2d16e-029a88aff9b36-3e3b7a0e-655712-1944a5eea2e4c0; sts_sg=1; sts_chnlsid=Unknown; zp_src_url=https%3A%2F%2Fpassport.zhaopin.com%2F; ZP_OLD_FLAG=false; LastCity=%E6%B7%B1%E5%9C%B3; LastCity%5Fid=765; locationInfo_search={%22code%22:%22%22}; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%221108031382%22%2C%22first_id%22%3A%221944941ffaa17-09dcd02bd354e98-3e3b7a0e-655712-1944941ffab29f%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTk0NDk0MWZmYWExNy0wOWRjZDAyYmQzNTRlOTgtM2UzYjdhMGUtNjU1NzEyLTE5NDQ5NDFmZmFiMjlmIiwiJGlkZW50aXR5X2xvZ2luX2lkIjoiMTEwODAzMTM4MiJ9%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%221108031382%22%7D%2C%22%24device_id%22%3A%221944941ffaa17-09dcd02bd354e98-3e3b7a0e-655712-1944941ffab29f%22%7D; selectCity_search=765; Hm_lpvt_7fa4effa4233f03d11c7e2c710749600=1736427089; zp_passport_deepknow_sessionId=03838883s88e8a449b954677f8cc927f994d; ZL_REPORT_GLOBAL={%22jobs%22:{%22recommandActionidShare%22:%22fc62ef36-98f4-4a42-8e1d-6399680f45ef-job%22}}"
     }
     body = {
         "at": "fdb4d115626c48b5af34f1ff2a61b39d",
         "rt": "2c628a8e5b89478c9b67551f2bfce66c",
         # "_v": "0.77444523",
-        # "x-zp-page-request-id": "e33f5ee0e47a4174ba4d8f7d15da71b0-1736427149768-552466",
+        # "x-zp-pom-request-id": "e33f5ee0e47a4174ba4d8f7d15da71b0-1736427149768-552466",
         # "x-zp-client-id": "2fd27151-b667-47a6-ac7f-f5b93ba9c279"
         "isKeyWord": False,
         "name": name

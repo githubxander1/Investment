@@ -1,6 +1,8 @@
 import os
+
 import pdfkit
 from jinja2 import Environment, FileSystemLoader
+
 
 def read_files_in_dir(directory):
     """ 递归读取目录下所有文件的内容 """
@@ -41,7 +43,7 @@ if __name__ == "__main__":
     # 生成PDF
     output_file = os.path.join(r'D:\1test\PycharmProject\others\项目实战\局域网文件互传', '局域网output.pdf')
     pdfkit.from_string(html_content, output_file, options={
-        'page-size': 'Letter',
+        'pom-size': 'Letter',
         'margin-top': '0.75in',
         'margin-right': '0.75in',
         'margin-bottom': '0.75in',

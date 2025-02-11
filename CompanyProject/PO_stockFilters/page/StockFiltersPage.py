@@ -183,25 +183,25 @@ if __name__ == '__main__':
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
-        # login_page = LoginPage(page)
+        # login_page = LoginPage(pom)
         filters_page = StockFiltersPage(page)
         # filters_page.setup_stock_filters_page()
         filters_page.select_indicator('估值指标','<12')
-        # selected_indicator = filters_page.page.locator(filters_page.SELECTED_FILTER_XPATH)
+        # selected_indicator = filters_page.pom.locator(filters_page.SELECTED_FILTER_XPATH)
         # filters_page.clear_filter()
         filters_page.create_filter('测试')
 
-        # toast_saved = filters_page.page.locator(filters_page.TOAST_SAVED_XPATH)
+        # toast_saved = filters_page.pom.locator(filters_page.TOAST_SAVED_XPATH)
         #
         #
-        # def wait_for_toast(page, selector, timeout=5000, interval=500):
-        #     start_time = page.timeouts()['timeout']
+        # def wait_for_toast(pom, selector, timeout=5000, interval=500):
+        #     start_time = pom.timeouts()['timeout']
         #     end_time = start_time + timeout
-        #     while page.timeouts()['timeout'] < end_time:
-        #         elements = page.query_selector_all(selector)
+        #     while pom.timeouts()['timeout'] < end_time:
+        #         elements = pom.query_selector_all(selector)
         #         if elements:
         #             return elements
-        #         page.wait_for_timeout(interval)
+        #         pom.wait_for_timeout(interval)
         #     return None
         #
         #
@@ -213,6 +213,6 @@ if __name__ == '__main__':
         # else:
         #     print("未找到Toast提示")
 
-        # assert '<12' in filters_page.page.content(), f"指标 {'<12'} 未被正确选择"
+        # assert '<12' in filters_page.pom.content(), f"指标 {'<12'} 未被正确选择"
 
         page.wait_for_timeout(20000)

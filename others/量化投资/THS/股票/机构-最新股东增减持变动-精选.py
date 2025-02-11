@@ -31,7 +31,7 @@ def fetch_and_save_holder_data_jingxuan(output_file, pages_to_fetch=2):
 
     for page in range(1, pages_to_fetch + 1):
         params = {
-            "page": page,
+            "pom": page,
             "page_size": 20,
             "is_org": 1,
             "cur_tracer_id": "a88198583"

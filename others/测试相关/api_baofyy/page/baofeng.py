@@ -2,20 +2,19 @@
 # -*- coding:utf-8 -*-
 # author:张红
 import requests
+
+from others.测试相关.api_baofyy import headers
+from others.测试相关.api_baofyy import readYaml
+# 定义一个增加产品的函数
+from others.测试相关.api_baofyy import writeID, getID
+
+
 # from common.public import writeID
 # from common.public import getID
 # from utils.operationJson import readJson
 # import json
-# from page.login import headers
+# from pom.login import headers
 # from utils.operationJson import readYaml
-
-
-
-
-        # 定义一个增加产品的函数
-from others.测试相关.api_baofyy import writeID, getID
-from others.测试相关.api_baofyy import headers
-from others.测试相关.api_baofyy import readYaml
 
 
 def addProduct(name, product_type, version, master, description):

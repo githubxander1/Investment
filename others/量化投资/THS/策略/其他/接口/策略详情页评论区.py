@@ -7,7 +7,7 @@ params = {
     "tag": "策略详情页评论区",
     "code": "6w5aqh",
     "market_code": "100002",
-    "page": 1,
+    "pom": 1,
     "size": 3
 }
 # 请求头，直接复制提供内容

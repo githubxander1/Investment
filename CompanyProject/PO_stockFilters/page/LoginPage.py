@@ -56,10 +56,10 @@ class LoginPage(BasePage):
 #         with sync_playwright() as p:
 #             browser = p.chromium.launch(headless=False)
 #             context = browser.new_context()
-#             page = context.new_page()
+#             pom = context.new_page()
 #
 #             # 创建 LoginPage 实例并登录
-#             login_page = LoginPage(page)
+#             login_page = LoginPage(pom)
 #             login_page.login()
 #
 #     # 运行同步函数

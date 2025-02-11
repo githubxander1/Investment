@@ -1,7 +1,8 @@
+import time
+
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
-import time
 
 # 设置请求头
 headers = {
@@ -32,9 +33,9 @@ print(f"链接文本: {link_texts}")
 
 # 提取class="footer-source"或class="footer-topic"的span标签的文本内容
 source = market_wrap.find('span', class_='footer-source').text.strip()
-topic = market_wrap.find('span', class_='footer-topic').text.strip()
+# topic = market_wrap.find('span', class_='footer-topic').text.strip()
 print(f"提示词来源: {source}")
-print(f"提示词主题: {topic}")
+# print(f"提示词主题: {topic}")
 
 # 提取class="footer-time"的span标签的全部文本内容
 time_info = market_wrap.find('span', class_='footer-time').text.strip()

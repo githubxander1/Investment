@@ -1,7 +1,9 @@
-import requests
 from pprint import pprint
-import pandas as pd
+
 import openpyxl
+import pandas as pd
+import requests
+
 
 # 接口的URL模板
 
@@ -29,7 +31,7 @@ def fetch_history_trade_data(pages):
     for page in range(pages):
         params = {
             'strategyId': '155680',
-            'page': pages,
+            'pom': pages,
             'pageSize': '20'
         }
         response = requests.get(url, headers=headers, params=params)
