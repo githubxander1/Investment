@@ -25,15 +25,15 @@ async def main():
     """主函数，调度策略和组合任务"""
     try:
         # 检查是否为周末
-        if datetime.now().weekday() >= 5:
-            logger.info("今天是周末，停止程序")
-            return
+        # if datetime.now().weekday() >= 5:
+        #     logger.info("今天是周末，停止程序")
+        #     return
 
         # 检查当前时间是否在任务执行窗口内
         current_time = datetime.now().time()
-        if not (dt_time(9, 30) <= current_time <= dt_time(20, 30)):
-            logger.info("当前时间不在任务执行窗口内，停止程序")
-            return
+        # if not (dt_time(9, 30) <= current_time <= dt_time(20, 30)):
+        #     logger.info("当前时间不在任务执行窗口内，停止程序")
+        #     return
 
         # 调度器1：9:30 到 9:33 每0.25分钟执行一次策略
         scheduler_strategy = Scheduler(

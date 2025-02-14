@@ -39,19 +39,19 @@ class Scheduler:
     async def start(self):
         # schedule.every(self.interval).minutes.do(lambda: asyncio.create_task(self.job()))# 如果是秒要去掉
 
+        # while True:
+        #     current_time = datetime.now().time()
+        #     if current_time > dt_time(20, 0):  # 检查当前时间是否超过下午三点
+        #         logger.info("当前时间超过下午三点，停止任务执行")
+        #         self._done_event.set()
+        #         break
+        #     if self.start_time <= current_time <= self.end_time:
+        await self.job()
         logger.info("定时任务已启动")
-        while True:
-            current_time = datetime.now().time()
-            if current_time > dt_time(19, 0):  # 检查当前时间是否超过下午三点
-                logger.info("当前时间超过下午三点，停止任务执行")
-                self._done_event.set()
-                break
-            if self.start_time <= current_time <= self.end_time:
-                await self.job()
-                await asyncio.sleep(self.interval * 60)  # 将分钟转换为秒
-            else:
-                logger.info(f"当前时间为{current_time},不在任务执行窗口内，等待...")
-                await asyncio.sleep(60)  # 等待一分钟再检查
+        await asyncio.sleep(self.interval * 60)  # 将分钟转换为秒
+            # else:
+            #     logger.info(f"当前时间为{current_time},不在任务执行窗口内，等待...")
+            #     await asyncio.sleep(60)  # 等待一分钟再检查
 
     async def get_next_run_time(self):
         now = datetime.now()
