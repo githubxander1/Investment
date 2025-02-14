@@ -9,9 +9,10 @@ import requests
 #     ]
 # ids = ['7152']
 # ids = [6994, 18710,16281,13081, 14980,11094]
-from others.量化投资.THS.自动化交易_同花顺.config.settings import Combination_ids
+from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, compare_ETF_info_file
 
-ids = Combination_ids
+# ids = Combination_ids
+ids = ETF_ids
 # ids = [6994, 7152,18710, 16281, 19347, 13081, 14980,11094,20335,20245,20205]
 '''
     13081 好赛道出牛股
@@ -68,9 +69,9 @@ def get_product_info(product_id):
         result = response.json()
         # print(result)
         if result['status_code'] == 0:
-            product_name = result['testdata']['baseInfo']['productName']
-            product_desc = result['testdata']['baseInfo']['productDesc']
-            userId = result['testdata']['userInfo']['userId']
+            product_name = result['data']['baseInfo']['productName']
+            product_desc = result['data']['baseInfo']['productDesc']
+            userId = result['data']['userInfo']['userId']
             return {
                 "策略id": product_id,
                 "策略名称": product_name,
@@ -79,7 +80,7 @@ def get_product_info(product_id):
 
             }
         else:
-            print(f"Failed to retrieve testdata for product_id: {product_id}")
+            print(f"Failed to retrieve data for product_id: {product_id}")
             return None
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -114,7 +115,7 @@ def get_position_income_info(portfolio_id):
         response.raise_for_status()
         data = response.json()
         if data['status_code'] == 0:
-            result = data['testdata']
+            result = data['data']
             result['策略ID'] = id
             createAt = result['createAt']
             dailyIncomeRate = result['dailyIncomeRate'] = f"{result['dailyIncomeRate'] * 100:.2f}%"
@@ -162,7 +163,7 @@ def get_package_feature_info(product_id):
         response.raise_for_status()
         response = response.json()
 
-        data = response['testdata']
+        data = response['data']
         slogan = data['slogan']
         labels = data['labels']
 
@@ -202,11 +203,11 @@ def get_relocate_data_summary(portfolio_id):
     response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
         data = response.json()
-        relocate_total = data["testdata"]["relocateTotal"]
-        profit_total = data["testdata"]["profitTotal"]
-        profit_margin = f'{data["testdata"]["profitMargin"] * 100:.2f}%'
+        relocate_total = data["data"]["relocateTotal"]
+        profit_total = data["data"]["profitTotal"]
+        profit_margin = f'{data["data"]["profitMargin"] * 100:.2f}%'
         # 提取利润率
-# /        profit_margin_value = testdata["testdata"]["profitMargin"] * 100%
+# /        profit_margin_value = data["data"]["profitMargin"] * 100%
         return {
             "胜率": profit_margin,
             "盈利股数": profit_total,
@@ -242,7 +243,7 @@ def get_position_industry_info(portfolio_id):
     try:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
-        data = response.json()['testdata']
+        data = response.json()['data']
         return data
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -274,8 +275,8 @@ def get_portfolio_profitability_period_win_hs300(portfolio_id):
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
         data = response.json()
-        if 'testdata' in data and 'profitabilityDataList' in data['testdata']:
-            profitability_data_list = data["testdata"]["profitabilityDataList"]
+        if 'data' in data and 'profitabilityDataList' in data['data']:
+            profitability_data_list = data["data"]["profitabilityDataList"]
             result = {}
             for item in profitability_data_list:
                 time_span = item["timeSpan"]
@@ -369,10 +370,11 @@ for id in ids:
 if all_results:
     df = pd.DataFrame(all_results)
     #去掉收益比
-    df_without_profitability = df.drop(columns=['收益比_-1', '收益比_7', '收益比_30', '收益比_90', '收益比_180', '持仓行业', '策略id' , '策略描述', '主理人id', '标签', ])
-    print(df_without_profitability)
-    df.to_excel(r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_对比.xlsx')
-    df.to_excel('组合_对比.xlsx')
-    print("数据已成功保存到 '组合_对比.xlsx'")
+    # df_without_profitability = df.drop(columns=['收益比_-1', '收益比_7', '收益比_30', '收益比_90', '收益比_180', '持仓行业', '策略id' , '策略描述', '主理人id', '标签', ])
+    # print(df_without_profitability)
+    filepath = compare_ETF_info_file
+    # df.to_excel(r'D:\1document\1\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_对比.xlsx')
+    df.to_excel(filepath)
+    print("数据已成功保存到 '对比.xlsx'")
 else:
     print("没有获取到任何数据")

@@ -62,8 +62,8 @@ def get_historical_data(portfolio_id):
     'Referer': 'https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19347',
     'Accept-Encoding': 'gzip, deflate',
     'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-    # 'Cookie': 'userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM2NzMyMzMwOjo6MTY1ODE0Mjc4MDo2MDQ4MDA6MDoxMTcxNGNhNjA4OGM2NGZjNmY0MWVkNGQ5MmEwNTc1MzA6OjA%3D; ticket=1c551a19d21c9927ea95c883812c6140; hxmPid=sns_lungu_t_stock_1a14k164i9md4nf84df948; v=A88KQVhM9EGhNvA9yPYqHkQ8XGjZ9CMWvUgnCuHcaz5FsOAS6cSzZs0Yt1Dy'
-    "Cookie": "IFUserCookieKey={'escapename':'mo_641926488','userid':'641926488'}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM2NzU2NDc1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTAxODI2NGI3OWQ2ZmY2NGQ5NGVmODAwNzRkZGQ4YjE0Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=09d01d1d463fb3e5acd370b28660230f; user_status=0; hxmPid=adm_sjpopfuceng_434005; v=A6ex5u1NjDNZUgi_xIb0QmCXP9BxLHsM1QH_gnkUwT5dnMiKgfwLXuXQj9mK"
+    'Cookie': 'userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM5MTUxNjM1Ojo6MTY1ODE0Mjc4MDo2MDQ4MDA6MDoxMmIyZjQ0YTY4ODFiODQ3NzVjNjYzMzYwYzY0ZTFmMzA6OjA%3D; ticket=3420cf092830838b512cc96c07f9bd09; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; hxmPid=sns_lungu_t_stock_2186139115; v=A6di2fA0jBBh7wicz7vCFjxENNBxLHsN1QD_gnkUwzZdaMiKgfwLXuXQj8KK'
+
 }
     params = {"id": portfolio_id, "dynamic_id": 0}
     try:

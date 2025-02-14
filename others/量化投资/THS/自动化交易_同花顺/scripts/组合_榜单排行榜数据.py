@@ -5,7 +5,9 @@ from others.量化投资.THS.自动化交易_同花顺.config.settings import Co
 
 
 def get_all_portfolio_rank_data(list_type):
+    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/blockList"
     url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/blockList"
+    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list?offset=0&page_size=8&block_id=0&list_type=4&match_id=14"
 
     headers = {
         "Host": "t.10jqka.com.cn",
@@ -22,14 +24,15 @@ def get_all_portfolio_rank_data(list_type):
 
     params = {
         "offset": 0,
-        "pageSize": 50,
-        "matchId": 0,
+        "pageSize": 20,
+        "matchId": 0,#0 为全国总榜
         "blockId": 0,
         "listType": list_type
     }
 
     # 发送GET请求
     response = requests.get(url, params=params, headers=headers)
+    # response = requests.get(url, headers=headers)
 
     # 检查响应状态码
     if response.status_code == 200:

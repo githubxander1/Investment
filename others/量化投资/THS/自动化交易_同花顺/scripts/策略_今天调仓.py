@@ -53,6 +53,7 @@ def get_latest_position_and_trade(strategy_id):
     }
 
     data = send_http_request(url, params, headers)
+    # pprint(data)
     if data:
         latest_trade = data.get('result', {}).get('latestTrade', {})
         trade_date = latest_trade.get('tradeDate', 'N/A')
@@ -68,7 +69,7 @@ def get_latest_position_and_trade(strategy_id):
                 '市场': determine_market(code),
                 '股票名称': trade_info.get('stkName', 'N/A'),
                 '参考价': trade_info.get('tradePrice', 'N/A'),
-                '新比例%': trade_info.get('tradeAmount', 'N/A'),
+                '新比例%': round(trade_info.get('position', 'N/A') * 100,2)
             }
             latest_trade_info.append(trade_entry)
         return latest_trade_info, trade_date

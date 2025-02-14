@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 
+from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, ETF_ids_to_name
+
 
 def get_portfolio_holding_data(id):
     url = f"https://t.10jqka.com.cn/portfolio/relocate/user/getPortfolioHoldingData?id={id}"
@@ -19,7 +21,7 @@ def get_portfolio_holding_data(id):
 
         df = pd.DataFrame({
             # "id": [id] * len(positions),
-            "组合名称": id_to_name[id],
+            "组合名称": ETF_ids_to_name.get(id, '未知ETF'),
             "股票代码": [position.get("code", "") for position in positions],
             "股票名称": [position.get("name", "") for position in positions],
             "成本价": [position["costPrice"] for position in positions],
@@ -41,7 +43,7 @@ def get_portfolio_holding_data(id):
 
 if __name__ == '__main__':
     # 多个id
-    combination_ids = [6994, 7152, 18710, 16281, 19347, 13081, 14980]
+    # combination_ids = [6994, 7152, 18710, 16281, 19347, 13081, 14980]
     # combination_ids = [6994]
 
     id_to_name = {
@@ -57,13 +59,13 @@ if __name__ == '__main__':
     # 存储所有结果的列表
     all_dfs = []
 
-    for id in combination_ids:
+    for id in ETF_ids:
         get_portfolio_holding_data(id)
     # 合并所有DataFrame
     final_df = pd.concat(all_dfs, ignore_index=True)
 
     # 保存为Excel文件
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\组合持仓.xlsx"
+    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\持仓ETF.xlsx"
     final_df.to_excel(file_path, index=False)
     print("数据已保存到Excel文件：", file_path)
 

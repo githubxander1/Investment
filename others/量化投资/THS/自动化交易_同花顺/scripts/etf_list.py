@@ -1,3 +1,6 @@
+from pprint import pprint
+
+import pandas as pd
 import requests
 
 
@@ -5,7 +8,7 @@ def send_request():
     url = 'https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list'
     params = {
         'offset': 0,
-        'page_size': 8,
+        'page_size': 10,
         'block_id': 0,
         'list_type': 4,
       'match_id': 14
@@ -55,16 +58,16 @@ def extract_result(data):
 
 def main():
     result = send_request()
-    # pprint(result)
+    pprint(result)
     extracted_result = extract_result(result)
     # extract_datas = f'提取{result}里的income_rate（用百分比表示），portfolio_id，portfolio_name，label，用pandas表格样式展示'
     # print(AIchat(extract_datas))
-    # ids = [etf.get('portfolio_id') for etf in extracted_result]
-    # print(ids)
+    ids = [etf.get('portfolio_id') for etf in extracted_result]
+    print(ids)
 
-    # df = pd.DataFrame(extracted_result)
+    df = pd.DataFrame(extracted_result)
     # df.to_excel('etf_list.xlsx', index=False)
-    # print(df)
+    print(df)
     # print(extracted_result)
 
 

@@ -1,6 +1,5 @@
 import datetime
 import logging
-from pprint import pprint
 
 import pandas as pd
 import requests
@@ -8,7 +7,8 @@ import requests
 from plyer import notification
 
 # 设置日志记录
-from others.量化投资.THS.自动化交易_同花顺.config.settings import Combination_ids
+from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, \
+    ETF_info_file
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -165,6 +165,7 @@ def process_summary_data(ids):
     total_negative_count = sum(stats_df['negative_count'])
 
     stats_df.loc[len(stats_df)] = [None, '总计', total_positive_count, total_negative_count, None]
+    print(summary_df)
 
     return summary_df, stats_df
 
@@ -177,7 +178,7 @@ def process_today_trades(ids):
     for portfolio_id in ids:
         data = get_historical_data(portfolio_id)
         # print('testdata')
-        pprint(data)
+        # pprint(data)
         if data:
             for item in data['data']:
                 create_at = item['createAt']
@@ -341,7 +342,9 @@ def main():
         if extract_info:  # 检查 extract_info 是否为空
             data_dict[f'post_df_{portfolio_id}'] = pd.DataFrame(extract_info)
 
-    file_path = "组合_持仓_今天调仓_历史调仓.xlsx"
+    # file_path = "../../组合/组合_持仓_今天调仓_历史调仓.xlsx"
+    # file_path = Combination_info_file
+    file_path = ETF_info_file
     custom_sheet_names = {
         'summary_df': '持仓汇总表',
         'today_trade_df': '今天调仓',
@@ -359,7 +362,8 @@ def job():
 # schedule.every().minute.do(job)
 
 if __name__ == "__main__":
-    ids = Combination_ids
+    # ids = Combination_ids
+    ids = ETF_ids
     '''13081 好赛道出牛股
 16281 每天进步一点点
 18565 龙头一年三倍

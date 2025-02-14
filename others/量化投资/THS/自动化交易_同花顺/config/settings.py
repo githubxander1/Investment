@@ -25,10 +25,16 @@ SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史
 
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.xlsx')
 COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.xlsx')
-ETF_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF今天调仓.xlsx')
+ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和组合_今天调仓.xlsx')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.xlsx')
-ETF_info_file = os.path.join(DATA_DIR, 'ETF组合信息.xlsx')
+ETF_info_file = os.path.join(DATA_DIR, 'ETF组合持仓_历史调仓_今天调仓.xlsx')
+Combination_info_file = os.path.join(DATA_DIR, '股票组合持仓_历史调仓_今天调仓.xlsx')
+
+compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
+# compare_Strategy_info_file = os.path.join(DATA_DIR, '策略信息.xlsx')
+compare_Combination_info_file = os.path.join(DATA_DIR, '股票组合对比.xlsx')
+
 Strategy_info_file = os.path.join(DATA_DIR, '策略信息.xlsx')
 Combination_list_file = os.path.join(DATA_DIR, '组合榜单列表.xlsx')
 
@@ -59,7 +65,7 @@ HEADERS = {
 }
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = [6994, 18710, 16281, 19347, 13081, 14980, 11094]
+Combination_ids = ['18710', '16281', '19347', '13081', '14980', '11094']
 # Combination_ids = [ 16281, 19347, 6994]
 Combination_ids_to_name = {
     '13081': '好赛道出牛股',
@@ -67,7 +73,7 @@ Combination_ids_to_name = {
     '18565': '龙头一年三倍',
 
     '7152': '中线龙头',
-    '6994': '梦想一号',
+    # '6994': '梦想一号',#中芯国际盈利占比过大
     '11094': '低位题材',
     '14980': '波段突击',
     '19347': '超短稳定复利',  # 超短稳定复利,
@@ -87,15 +93,13 @@ Strategy_id_to_name = {
         '118188': '均线粘合平台突破'
     }
 
-ETF_ids = ['27122', '29617', '29665', '29671', '29656', '29734', '29714', '29646']
+ETF_ids = ['27122', '29617', '29665',  '29656', '29734',  '29646']
 ETF_ids_to_name = {
     '27122': '热点多因子驱动',
     '29617': 'ETF灵蛇智投',
     '29665': '轮动寻金ETF',
-    '29671': '波段擒龙ETF',
     '29656': '龙头驾到ETF',
     '29734': '热点追击ETF',
-    '29714': '波段加短线ETF',
     '29646': '热点追踪猎手'
 }
 # for id in ETF_ids:

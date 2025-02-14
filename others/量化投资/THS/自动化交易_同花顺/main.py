@@ -2,48 +2,27 @@
 import asyncio
 from datetime import time as dt_time, datetime
 
-from others.量化投资.THS.自动化交易_同花顺.scripts.etf_今天调仓 import ETF_main
+from others.量化投资.THS.自动化交易_同花顺.scripts.etf和股票组合_今天调仓 import ETF_Combination_main
 from others.量化投资.THS.自动化交易_同花顺.scripts.策略_今天调仓 import strategy_main
-from others.量化投资.THS.自动化交易_同花顺.scripts.组合_今天调仓 import combination_main
-# from others.量化投资.THS.自动化交易_同花顺.scripts.自动化交易 import auto_main
-# from others.量化投资.THS.自动化交易_同花顺.scripts.账户持仓信息 import update_holding_info
 from others.量化投资.THS.自动化交易_同花顺.utils.scheduler import Scheduler, logger
 
 
+# logger = setup_logger(SCHEDULER_LOG_FILE)
 async def strategy_main_wrapper():
-    logger.info("当前时间介于9:29 9:33，执行策略 today_trade")
+    """策略任务的包装函数，执行策略逻辑"""
+    logger.info("当前时间介于9:30 9:33，执行策略 today_trade")
     if strategy_main is None:
         logger.error("strategy_main 为 None")
     else:
         await strategy_main()
 
-async def combination_main_wrapper():
-    logger.info("当前时间介于9:25 15:00，执行组合 today_trade")
-    await combination_main()
-
-async def ETF_main_wrapper():
-    logger.info("当前时间介于9:25 15:00，执行etf组合 today_trade")
-    await ETF_main()
-
-# async def auto_main_wrapper():
-#     logger.info("当前时间介于9:25 15:00，执行组合 today_trade")
-#     await auto_main()
+async def ETF_Combination_main_wrapper():
+    """组合任务的包装函数，执行ETF和股票组合逻辑"""
+    logger.info("当前时间介于9:30 15:30，执行etf和股票组合")
+    await ETF_Combination_main()
 
 async def main():
-    try:
-        current_time = datetime.datetime.now().time()
-
-        if dt_time(9, 29) <= current_time < dt_time(9, 33):
-            await strategy_main_wrapper()
-        elif dt_time(9, 25) <= current_time < dt_time(15, 0):
-            await combination_main_wrapper()
-            await ETF_main_wrapper()
-        else:
-            print("不在执行时间段内")
-    except Exception as e:
-        logger.error(f"主函数执行失败: {e}", exc_info=True)
-
-async def main():
+    """主函数，调度策略和组合任务"""
     try:
         # 检查是否为周末
         if datetime.now().weekday() >= 5:
@@ -52,33 +31,29 @@ async def main():
 
         # 检查当前时间是否在任务执行窗口内
         current_time = datetime.now().time()
-        if not (dt_time(9, 25) <= current_time <= dt_time(15, 0)):
+        if not (dt_time(9, 30) <= current_time <= dt_time(20, 30)):
             logger.info("当前时间不在任务执行窗口内，停止程序")
             return
 
-        # 调度器1：9:29 到 9:33 每0.25分钟执行一次策略
-        scheduler_strategy = Scheduler(interval=0.25,  # 0.25分钟
-                                       callback=strategy_main_wrapper,
-                                       start_time=dt_time(9, 29),
-                                       end_time=dt_time(9, 33))
+        # 调度器1：9:30 到 9:33 每0.25分钟执行一次策略
+        scheduler_strategy = Scheduler(
+            interval=0.25,  # 0.25分钟 = 15秒
+            callback=strategy_main_wrapper,
+            start_time=dt_time(9, 30),
+            end_time=dt_time(9, 33)
+        )
         asyncio.create_task(scheduler_strategy.start())
         logger.info("策略调度器已启动")
 
-        # 调度器2：9:25 到 15:00 每1分钟执行一次组合
-        scheduler_combination = Scheduler(interval=1,  # 1分钟 = 60秒
-                                          callback=combination_main_wrapper,
-                                          start_time=dt_time(9, 25),
-                                          end_time=dt_time(15, 00))
-        asyncio.create_task(scheduler_combination.start())
-        logger.info("组合调度器已启动")
-
-        # 调度器2：9:25 到 15:00 每1分钟执行一次组合
-        scheduler_etf = Scheduler(interval=1,  # 1分钟 = 60秒
-                                          callback=ETF_main_wrapper,
-                                          start_time=dt_time(9, 25),
-                                          end_time=dt_time(15, 00))
+        # 调度器2：9:30 到 15:30 每1分钟执行一次组合
+        scheduler_etf = Scheduler(
+            interval=1,  # 1分钟 = 60秒
+            callback=ETF_Combination_main_wrapper,
+            start_time=dt_time(9, 30),
+            end_time=dt_time(20, 30)
+        )
         asyncio.create_task(scheduler_etf.start())
-        logger.info("etf组合调度器已启动")
+        logger.info("组合调度器已启动")
 
         # 调度器3：9:30 到 15:00 每2分钟执行一次自动化交易
         # scheduler_auto = Scheduler(interval=2,  # 2分钟 = 120秒
@@ -91,9 +66,7 @@ async def main():
         # 运行事件循环
         await asyncio.gather(
             scheduler_strategy.wait_until_done(),
-            scheduler_combination.wait_until_done(),
             scheduler_etf.wait_until_done(),
-            # scheduler_auto.wait_until_done(),
         )
 
         # 所有调度任务完成后，更新账户持仓信息

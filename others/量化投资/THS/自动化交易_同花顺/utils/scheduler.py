@@ -42,7 +42,7 @@ class Scheduler:
         logger.info("定时任务已启动")
         while True:
             current_time = datetime.now().time()
-            if current_time > dt_time(15, 0):  # 检查当前时间是否超过下午三点
+            if current_time > dt_time(19, 0):  # 检查当前时间是否超过下午三点
                 logger.info("当前时间超过下午三点，停止任务执行")
                 self._done_event.set()
                 break
