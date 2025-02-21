@@ -1,0 +1,28 @@
+api_test_framework/
+├── api/
+│   ├── auth_api.py  # 认证 API 类
+│   ├── comment_api.py  # 评论 API 类
+│   ├── chat_api.py  # 聊天 API 类
+│   ├── password_api.py  # 修改密码 API 类
+├── tests/
+│   ├── test_auth_api.py  # 认证 API 测试用例
+│   ├── test_comment_api.py  # 评论 API 测试用例
+│   ├── test_chat_api.py  # 聊天 API 测试用例
+│   ├── test_password_api.py  # 修改密码 API 测试用例
+├── utils/
+│   ├── request_utils.py  # 请求工具类
+│   ├── logger.py  # 日志工具类
+│   ├── retry_decorator.py  # 重试装饰器
+│   ├── dingtalk_notifier.py  # 钉钉通知工具类
+├── conftest.py  # pytest 配置文件
+├── pytest.ini  # pytest 配置文件
+
+UserAPI 类：封装了用户相关的 API 请求方法，将 API 请求逻辑封装在一个类中，方便管理和调用。
+test_get_user_info 测试用例：使用 pytest 编写测试用例，调用 UserAPI 类的方法发送请求，并验证响应状态码。
+request_utils.py：封装了发送请求的方法，方便统一管理请求参数和请求头。
+conftest.py：使用 pytest 的 fixture 功能，在每个测试用例执行前初始化 UserAPI 类的实例。
+
+comment_api.py：实现了发表评论的 API 接口，需要传入认证的 token 来确保用户的身份。
+chat_api.py：包含发送消息和发送文件两个功能的 API 接口，同样需要认证 token。发送文件时，需要确保文件存在。
+password_api.py：提供修改密码的 API 接口，需要传入旧密码和新密码。
+conftest.py：更新后添加了多个 fixture，用于初始化不同 API 类的实例，确保每个测试用例都能获取到有效的认证 token。

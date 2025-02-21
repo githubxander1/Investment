@@ -1,16 +1,17 @@
 import asyncio
 import datetime
+import os
 
 import openpyxl
 import pandas as pd
 import requests
 
 from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, ETF_ids_to_name, \
-    ETF_ADJUSTMENT_LOG_FILE, OPRATION_RECORD_DONE_FILE, Combination_ids, \
+    ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
     Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE
 from others.量化投资.THS.自动化交易_同花顺.utils.determine_market import determine_market
 from others.量化投资.THS.自动化交易_同花顺.utils.logger import setup_logger
-from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification, send_email
+from others.量化投资.THS.自动化交易_同花顺.utils.notification import send_notification
 
 logger = setup_logger(ETF_ADJUSTMENT_LOG_FILE)
 
@@ -28,7 +29,9 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
         "Sec-Fetch-Dest": "empty",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": 'user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM3MzM4ODA5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTJiMmY0NGE2ODgxYjg0Nzc1YzY2MzM2MGM2NGUxZjMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=ee119caec220dd3e984ad47c01216b5f; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; hxmPid=free_stock_159866.dstx; v=A2CljHMxEwZDm68CVQqtG88ZM2UyaUQz5k2YN9pxLHsO1Q9fgnkUwzZdaMQp'
+        # "Cookie": 'user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM3MzM4ODA5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTJiMmY0NGE2ODgxYjg0Nzc1YzY2MzM2MGM2NGUxZjMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=ee119caec220dd3e984ad47c01216b5f; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; hxmPid=free_stock_159866.dstx; v=A2CljHMxEwZDm68CVQqtG88ZM2UyaUQz5k2YN9pxLHsO1Q9fgnkUwzZdaMQp'
+        "Cookie": "IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM5NzU2NTIyOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTkzMGZkYjc2OWQ2ZTE5OTI0MWNkYWVlZGE4YmFiYzA5Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=3c97544e804cd21dbbfc935c45b489fa; user_status=0; hxmPid=ann_50844723; v=AyHkTzoW4ka_Bk6yYR38qIZGMuY7zpXAv0I51IP2HSiH6k4cyx6lkE-SSbQQ"
+
     }
     params = {"id": portfolio_id, "dynamic_id": 0}
     try:
@@ -77,7 +80,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
 
                     newest_post = {
                         '组合名称': combination_name,
-                        '代码': code,
+                        '代码':  str(code).zfill(6),  # 提前统一格式
                         '名称': name,
                         '市场': market,
                         '操作': operation,
@@ -112,19 +115,16 @@ def save_to_excel(df, filepath, sheet_name, index=False):
 def clear_sheet(filepath, sheet_name):
     """清空指定Excel文件中的指定表格"""
     try:
-        # 检查文件是否存在
-        try:
-            wb = openpyxl.load_workbook(filepath)
-            if sheet_name in wb.sheetnames:
-                ws = wb[sheet_name]
-                # 删除所有行
-                ws.delete_rows(1, ws.max_row)
-                wb.save(filepath)
-                logger.info(f"成功清空表格: {sheet_name} 文件: {filepath}")
-            else:
-                logger.warning(f"表格 {sheet_name} 不存在于文件: {filepath}")
-        except FileNotFoundError:
-            logger.warning(f"文件 {filepath} 不存在，无需清空")
+        wb = openpyxl.load_workbook(filepath)
+        if sheet_name in wb.sheetnames:
+            ws = wb[sheet_name]
+            ws.delete_rows(1, ws.max_row)
+            wb.save(filepath)
+            logger.info(f"成功清空表格: {sheet_name}")
+        else:
+            logger.debug(f"表格 {sheet_name} 不存在，无需清空")  # 降低日志级别 ✅
+    except FileNotFoundError:
+        logger.debug(f"文件 {filepath} 不存在，无需清空")  # 降低日志级别 ✅
     except Exception as e:
         logger.error(f"清空表格失败: {e}")
 
@@ -162,17 +162,104 @@ def process_today_trades(ids, is_etf=True):
     # today_trade_df = today_trade_df[~today_trade_df['代码'].str.startswith('60') | today_trade_df['代码'].str.startswith('30')]
     today_trade_df = today_trade_df[~today_trade_df['市场'].isin(['创业板', '科创板'])]
 
+
     return today_trade_df
+async def check_new_data(existing_df, today_trade_df, sheet_name):
+    """优化后的数据合并函数
+
+    对比新旧数据
+    找出新增
+    附加补充新增数据到旧表
+
+    Args:
+        existing_df: 已存在的历史数据DataFrame
+        today_trade_df: 当天获取的新数据DataFrame
+        sheet_name: 要操作的Excel表名称
+
+    Returns:
+        pd.DataFrame: 合并后的完整数据集
+    """
+    try:
+        # 预处理时间字段（精确到分钟）
+        today_trade_df = today_trade_df.copy()
+        today_trade_df['时间'] = pd.to_datetime(today_trade_df['时间']).dt.floor('Min')
+
+        # 生成唯一标识（组合名称+代码+操作+新比例+时分）
+        def create_unique_id(row):
+            try:
+                # 统一股票代码为6位格式（自动补零）
+                formatted_code = str(row['代码']).zfill(6)  # 关键修复点
+
+                ratio = "{:.2f}".format(float(row['新比例%']))
+                time_str = row['时间'].strftime('%H%M%S')
+                return f"{row['组合名称']}_{formatted_code}_{row['操作']}_{ratio}_{time_str}"
+            except Exception as e:
+                logger.error(f"生成唯一标识失败: {str(e)}")
+                return "error_id"
+
+
+        today_trade_df['strict_id'] = today_trade_df.apply(create_unique_id, axis=1)
+
+        # 处理空历史数据情况
+        if existing_df.empty:
+            # 首次保存时添加时间排序
+            sorted_df = today_trade_df.sort_values('时间', ascending=True)
+            save_to_excel(sorted_df, ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name)
+            send_notification(f"首次发现调仓，{sheet_name}")
+            return sorted_df
+
+        # 标准化历史数据格式
+        existing_df = existing_df.copy()
+        existing_df['strict_id'] = existing_df.apply(create_unique_id, axis=1)  # 统一列名
+
+        # 找出新增数据（修复查询条件）
+        mask = ~today_trade_df['strict_id'].isin(existing_df['strict_id'])
+        new_data = today_trade_df[mask].copy()
+
+        # 合并数据并去重
+        if not new_data.empty:
+            # 合并前再次去重（防止多次运行产生重复）
+            updated_df = pd.concat([existing_df, new_data], ignore_index=True)
+            updated_df = updated_df.drop_duplicates(subset=['strict_id'], keep='last')
+
+            # 按精确时间排序（秒级精度）
+            sorted_df = updated_df.sort_values('时间', ascending=True).reset_index(drop=True)
+
+            # 原子写入操作
+            temp_file = ETF_Combination_TODAY_ADJUSTMENT_FILE.replace('.xlsx', '_temp.xlsx')
+            save_to_excel(sorted_df, temp_file, sheet_name)
+
+            if os.path.exists(temp_file):
+                os.replace(temp_file, ETF_Combination_TODAY_ADJUSTMENT_FILE)
+
+            logger.info(f"新增{len(new_data)}条唯一调仓记录")
+        else:
+            logger.info("没有新增调仓数据")
+            sorted_df = existing_df
+
+        return sorted_df.drop(columns=['strict_id'], errors='ignore')
+
+    except Exception as e:
+        logger.error(f"数据处理失败: {str(e)}")
+        # 保留临时文件供调试
+        if 'temp_file' in locals() and os.path.exists(temp_file):
+            logger.error(f"临时文件保留在: {temp_file}")
+        return existing_df
+
 
 async def ETF_Combination_main():
     logger.info("开始处理ETF和股票组合调仓信息")
 
     # 处理 ETF 组合
     etf_today_trade_df = process_today_trades(ETF_ids, is_etf=True)
+    # print('ETF今日调仓：\n')
+    # print(etf_today_trade_df)
     if etf_today_trade_df is not None:
         logger.info(f'ETF今日调仓：\n {etf_today_trade_df}')
         try:
             existing_etf_df = pd.read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='ETF最新调仓')
+            print('已存在数据ETF：')
+            print(existing_etf_df)
         except FileNotFoundError:
             existing_etf_df = pd.DataFrame()
             logger.info("ETF Excel文件不存在，创建新文件")
@@ -180,78 +267,32 @@ async def ETF_Combination_main():
             existing_etf_df = pd.DataFrame()
             logger.info("ETF工作表不存在，创建新工作表")
 
-        check_new_data(existing_etf_df, etf_today_trade_df, sheet_name='ETF最新调仓')
+        await check_new_data(existing_etf_df, etf_today_trade_df, sheet_name='ETF最新调仓')
     else:
         logger.info("今天没有新的ETF调仓操作")
 
     # 处理股票组合
     stock_today_trade_df = process_today_trades(Combination_ids, is_etf=False)
+    # print('股票组合今日调仓：\n')
+    # print(stock_today_trade_df)
     if stock_today_trade_df is not None:
         logger.info(f'股票组合今日调仓：\n {stock_today_trade_df}')
         try:
             existing_stock_df = pd.read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='股票组合最新调仓')
+            print('已存在数据股票：')
+            print(existing_stock_df)
         except FileNotFoundError:
-            existing_stock_df = pd.DataFrame()
+            existing_stock_df = pd.DataFrame(columns=stock_today_trade_df.columns)  # ✅ 带列名
             logger.info("股票组合 Excel文件不存在，创建新文件")
         except ValueError:
-            existing_stock_df = pd.DataFrame()
+            existing_stock_df = pd.DataFrame(columns=stock_today_trade_df.columns)  # ✅ 带列名
             logger.info("股票组合工作表不存在，创建新工作表")
 
-        check_new_data(existing_stock_df, stock_today_trade_df, sheet_name='股票组合最新调仓')
+        await check_new_data(existing_stock_df, stock_today_trade_df, sheet_name='股票组合最新调仓')
     else:
         logger.info("今天没有新的股票组合调仓操作")
 
-def check_new_data(existing_df, today_trade_df, sheet_name):
-    # 确保 '代码' 列的数据类型一致，并统一格式化为6位字符串
-    today_trade_df['代码'] = today_trade_df['代码'].astype(str).str.zfill(6)
-    if not existing_df.empty:
-        existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
 
-    # 确保 '时间' 列的数据类型一致
-    today_trade_df['时间'] = pd.to_datetime(today_trade_df['时间'])
-    if not existing_df.empty:
-        existing_df['时间'] = pd.to_datetime(existing_df['时间'])
-
-    # 确保 '组合名称' 列的数据类型一致
-    today_trade_df['组合名称'] = today_trade_df['组合名称'].astype(str)
-    if not existing_df.empty:
-        existing_df['组合名称'] = existing_df['组合名称'].astype(str)
-
-    # 合并数据并标记新增数据
-    if existing_df.empty:
-        new_data = today_trade_df.copy()
-    else:
-        # 使用 merge 和 indicator 来标记新增数据
-        merged_df = today_trade_df.merge(
-            existing_df,
-            on=['组合名称', '代码', '名称', '操作', '最新价', '当前比例%', '新比例%', '时间'],
-            how='left',
-            indicator=True
-        )
-        # 仅保留在 today_trade_df 中存在但不在 existing_df 中的数据
-        new_data = merged_df[merged_df['_merge'] == 'left_only'].drop(columns=['_merge'])
-
-    if not new_data.empty:
-        logger.info(f'已存在的数据：\n {existing_df}')
-        logger.info(f'新增调仓：\n {new_data}')
-        # 合并新旧数据并去重
-        combined_df = pd.concat([existing_df, new_data], ignore_index=True)
-        combined_df.drop_duplicates(
-            subset=['组合名称', '代码', '名称', '操作', '最新价', '当前比例%', '新比例%', '时间'],
-            keep='first',
-            inplace=True
-        )
-        combined_df['时间'] = pd.to_datetime(combined_df['时间'])
-        combined_df.sort_values(by='时间', ascending=True, inplace=True)
-        logger.info(f'合并新旧数据：\n {combined_df}')
-        save_to_excel(combined_df, ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name=sheet_name, index=False)
-
-        send_notification(f"今天有新调仓，{sheet_name}")
-        send_email(f'{sheet_name}策略调仓', combined_df.to_string(), '2695418206@qq.com')
-
-        create_flag_file(OPRATION_RECORD_DONE_FILE)
-    else:
-        logger.info("没有新增调仓数据")
 
 if __name__ == "__main__":
     asyncio.run(ETF_Combination_main())

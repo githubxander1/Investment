@@ -39,7 +39,7 @@ async def main():
         scheduler_strategy = Scheduler(
             interval=0.25,  # 0.25分钟 = 15秒
             callback=strategy_main_wrapper,
-            start_time=dt_time(9, 30),
+            start_time=dt_time(9, 00),
             end_time=dt_time(9, 33)
         )
         asyncio.create_task(scheduler_strategy.start())
@@ -49,7 +49,7 @@ async def main():
         scheduler_etf = Scheduler(
             interval=1,  # 1分钟 = 60秒
             callback=ETF_Combination_main_wrapper,
-            start_time=dt_time(9, 30),
+            start_time=dt_time(9, 00),
             end_time=dt_time(20, 30)
         )
         asyncio.create_task(scheduler_etf.start())
@@ -63,10 +63,19 @@ async def main():
         # asyncio.create_task(scheduler_auto.start())
         # logger.info("自动化交易调度器已启动")
 
+        # while True:
+        # current_time = datetime.now().time()
+        #     if current_time > dt_time(20, 0):  # 检查当前时间是否超过下午三点
+        #         logger.info("当前时间超过下午三点，停止任务执行")
+        #         self._done_event.set()
+        #         break
+        #     if self.start_time <= current_time <= self.end_time:
         # 运行事件循环
         await asyncio.gather(
-            scheduler_strategy.wait_until_done(),
-            scheduler_etf.wait_until_done(),
+            # scheduler_strategy.wait_until_done(),
+            # scheduler_etf.wait_until_done(),
+            scheduler_strategy.start(),
+            scheduler_etf.start(),
         )
 
         # 所有调度任务完成后，更新账户持仓信息

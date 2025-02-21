@@ -112,6 +112,74 @@ def clear_sheet(filename, sheet_name):
     except Exception as e:
         logger.error(f"清空表格失败: {e}")
 
+# def check_new_data(existing_df, today_trade_df, sheet_name):
+#     # 确保 '代码' 列的数据类型一致，并统一格式化为6位字符串
+#     today_trade_df['代码'] = today_trade_df['代码'].astype(str).str.zfill(6)
+#     if not existing_df.empty:
+#         existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+#
+#     # 确保 '时间' 列的数据类型一致
+#     today_trade_df['时间'] = pd.to_datetime(today_trade_df['时间'])
+#     if not existing_df.empty:
+#         existing_df['时间'] = pd.to_datetime(existing_df['时间'])
+#
+#     # 确保 '组合名称' 列的数据类型一致
+#     today_trade_df['组合名称'] = today_trade_df['组合名称'].astype(str)
+#     if not existing_df.empty:
+#         existing_df['组合名称'] = existing_df['组合名称'].astype(str)
+#
+#     # 合并数据并标记新增数据
+#     if existing_df.empty:
+#         new_data = today_trade_df.copy()
+#
+#     # 找出df1中与df2不同的行
+#     # merged = pd.merge(existing_df, today_trade_df, how='outer', indicator=True)
+#     # different_rows = merged[merged['_merge'] == 'left_only']
+#     #
+#     # # 去除_merge列
+#     # different_rows = different_rows.drop('_merge', axis=1)
+#
+#     # 将不同的行合并到df2中
+#     # today_trade_df = pd.concat([today_trade_df, different_rows], ignore_index=True)
+#
+#     else:
+#         # 使用 merge 和 indicator 来标记新增数据，找出不同行
+#         merged_df = today_trade_df.merge(
+#             existing_df,
+#             # today_trade_df,
+#             on=['组合名称', '代码', '名称', '操作', '最新价', '当前比例%', '新比例%', '时间'],
+#             how='left',
+#             indicator=True,
+#             suffixes=('_new', '_old') # 明确指定后缀
+#         )
+#         # 仅保留在 today_trade_df 中存在但不在 existing_df 中的数据
+#         new_data = merged_df[merged_df['_merge'] == 'left_only'].drop(columns=['_merge'])
+#
+#     if not new_data.empty:
+#         logger.info(f'已存在的数据：\n {existing_df}')
+#         logger.info(f'新增调仓：\n {new_data}')
+#         # 合并新旧数据并去重
+#         combined_df = pd.concat([existing_df, new_data], ignore_index=True)
+#         combined_df.drop_duplicates(
+#             # subset=['组合名称', '代码', '名称', '操作', '最新价', '当前比例%', '新比例%', '时间'],
+#             subset=['组合名称', '代码', '名称', '操作', '最新价', '当前比例%', '新比例%', '时间'],
+#             keep='first',
+#             inplace=True
+#         )
+#         combined_df['时间'] = pd.to_datetime(combined_df['时间'])
+#         combined_df.sort_values(by='时间', ascending=True, inplace=True)
+#         logger.info(f'合并新旧数据：\n {combined_df}')
+#
+#         # 清空昨天的数据
+#         clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name=sheet_name)  # 如果不需要清空，可以注释掉
+#         save_to_excel(today_trades_without_sc_df, ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name=sheet_name, index=False)
+#
+#         send_notification(f"今天有新调仓，{sheet_name}")
+#         send_email(f'{sheet_name}策略调仓', combined_df.to_string(), '2695418206@qq.com')
+#
+#         create_flag_file(OPRATION_RECORD_DONE_FILE)
+#     else:
+#         logger.info("没有新增调仓数据")
 async def strategy_main():
     strategy_id_to_name = Strategy_id_to_name
     strategy_ids = Strategy_ids
@@ -130,8 +198,8 @@ async def strategy_main():
     # 过滤掉创业板股票的交易信息
     all_latest_trade_info_without_sc = [trade for trade in all_latest_trade_info if trade['市场'] not in ['创业板', '科创板']]
     all_today_trades_info_without_sc = [trade for trade in all_today_trades_info if trade['市场'] not in ['创业板', '科创板']]
-    logger.info("去掉参考价大于30的")
-    all_today_trades_info_without_sc = [trade for trade in all_today_trades_info_without_sc if trade['参考价'] < 30]
+    # logger.info("去掉参考价大于30的")
+    # all_today_trades_info_without_sc = [trade for trade in all_today_trades_info_without_sc if trade['参考价'] < 30]
 
     today_trades_without_sc_df = pd.DataFrame(all_today_trades_info_without_sc)
 

@@ -36,7 +36,7 @@ class Scheduler:
         else:
             logger.info("今天不是交易日或为周末，跳过任务执行")
 
-    async def start(self):
+    # async def start(self):
         # schedule.every(self.interval).minutes.do(lambda: asyncio.create_task(self.job()))# 如果是秒要去掉
 
         # while True:
@@ -46,13 +46,18 @@ class Scheduler:
         #         self._done_event.set()
         #         break
         #     if self.start_time <= current_time <= self.end_time:
-        await self.job()
-        logger.info("定时任务已启动")
-        await asyncio.sleep(self.interval * 60)  # 将分钟转换为秒
+        # await self.job()
+        # logger.info("定时任务已启动")
+        # await asyncio.sleep(self.interval * 60)  # 将分钟转换为秒
             # else:
             #     logger.info(f"当前时间为{current_time},不在任务执行窗口内，等待...")
             #     await asyncio.sleep(60)  # 等待一分钟再检查
-
+    async def start(self):
+        while True:
+            current_time = datetime.now().time()
+            if self.start_time <= current_time <= self.end_time:
+                await self.callback()
+            await asyncio.sleep(self.interval * 60)  # 将分钟转换为秒
     async def get_next_run_time(self):
         now = datetime.now()
         next_run = now + timedelta(minutes=self.interval)  # 如果是秒就改为timedelta(seconds=self.interval)
