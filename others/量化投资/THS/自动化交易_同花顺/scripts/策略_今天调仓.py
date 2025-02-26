@@ -1,17 +1,15 @@
 # scripts/策略_今天调仓.py
 import datetime
 
+# import UserAgent
 import openpyxl
 import pandas as pd
 import requests
 from fake_useragent import UserAgent
 
-# from config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE
 from others.量化投资.THS.自动化交易_同花顺.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     STRATEGY_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Strategy_id_to_name, Strategy_ids
 from others.量化投资.THS.自动化交易_同花顺.utils.api_client import APIClient
-# from config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-#     STRATEGY_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Strategy_id_to_name, Strategy_ids
 # from others.量化投资.THS.自动化交易_同花顺.utils.api_client import APIClient
 # from utils.api_client import APIClient
 from others.量化投资.THS.自动化交易_同花顺.utils.determine_market import determine_market
@@ -215,7 +213,17 @@ async def strategy_main():
     if not today_trades_without_sc_df.empty:
         # 发送通知
         send_notification("今日有新的调仓操作！策略")
-        send_email('股票策略调仓', today_trades_without_sc_df.to_string(), '2695418206@qq.com')
+        # send_email('股票策略调仓', today_trades_without_sc_df.to_string(), '2695418206@qq.com')
+
+        # 原代码中的通知部分：
+        # send_notification(f"首次发现调仓，{sheet_name}")
+
+        # 修改为：
+        notification_msg = f"调仓操作\n" + "\n".join(
+            [f"{row['组合名称']} {row['操作']} {row['代码']}"
+             for _, row in today_trades_without_sc_df.iterrows()])
+        send_notification(notification_msg)
+
         # 创建标志文件
         with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
             f.write("策略调仓已完成")

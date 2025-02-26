@@ -1,13 +1,29 @@
 # main.py
 import asyncio
 from datetime import time as dt_time, datetime
+import sys
+import os
 
-from others.量化投资.THS.自动化交易_同花顺.scripts.etf和股票组合_今天调仓 import ETF_Combination_main
+# 获取当前文件所在的目录
+current_dir = os.path.dirname(os.path.abspath(__file__))
+print("当前文件所在目录:", current_dir)
+
+# 获取项目根目录（假设项目根目录为 'others' 目录）
+project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..'))
+print("项目根目录:", project_root)
+
+# 将项目根目录添加到系统路径
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+# 确认项目根目录已正确添加到 sys.path
+print("sys.path:", sys.path)
+
+# 使用绝对路径导入模块
+from others.量化投资.THS.自动化交易_同花顺.scripts.etf和股票组合_今天调仓 import ETF_Combination_main, logger
 from others.量化投资.THS.自动化交易_同花顺.scripts.策略_今天调仓 import strategy_main
-from others.量化投资.THS.自动化交易_同花顺.utils.scheduler import Scheduler, logger
+from others.量化投资.THS.自动化交易_同花顺.utils.scheduler import Scheduler
 
-
-# logger = setup_logger(SCHEDULER_LOG_FILE)
 async def strategy_main_wrapper():
     """策略任务的包装函数，执行策略逻辑"""
     logger.info("当前时间介于9:30 9:33，执行策略 today_trade")

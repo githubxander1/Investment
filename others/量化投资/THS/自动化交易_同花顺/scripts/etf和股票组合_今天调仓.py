@@ -205,7 +205,15 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             # 首次保存时添加时间排序
             sorted_df = today_trade_df.sort_values('时间', ascending=True)
             save_to_excel(sorted_df, ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name)
-            send_notification(f"首次发现调仓，{sheet_name}")
+            # # 原代码中的通知部分：
+            # send_notification(f"首次发现调仓，{sheet_name}")
+            #
+            # # 修改为：
+            # notification_msg = f"{sheet_name}调仓操作\n" + "\n".join(
+            #     [f"{row['组合名称']} {row['操作']} {row['代码']}"
+            #      for _, row in new_data.iterrows()])
+            # send_notification(notification_msg)
+
             return sorted_df
 
         # 标准化历史数据格式
@@ -228,6 +236,15 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             # 原子写入操作
             temp_file = ETF_Combination_TODAY_ADJUSTMENT_FILE.replace('.xlsx', '_temp.xlsx')
             save_to_excel(sorted_df, temp_file, sheet_name)
+            # send_notification(f"新调仓，{sheet_name}")
+            # # 原代码中的通知部分：
+            # send_notification(f"首次发现调仓，{sheet_name}")
+
+            # # 修改为：
+            notification_msg = f"{sheet_name}操作\n" + "\n".join(
+                [f"{row['组合名称']} {row['操作']} {row['名称']} {row['新比例%']}"
+                 for _, row in new_data.iterrows()])
+            send_notification(notification_msg)
 
             if os.path.exists(temp_file):
                 os.replace(temp_file, ETF_Combination_TODAY_ADJUSTMENT_FILE)
@@ -253,13 +270,13 @@ async def ETF_Combination_main():
     # 处理 ETF 组合
     etf_today_trade_df = process_today_trades(ETF_ids, is_etf=True)
     # print('ETF今日调仓：\n')
-    # print(etf_today_trade_df)
+    # logger.info(etf_today_trade_df)
     if etf_today_trade_df is not None:
         logger.info(f'ETF今日调仓：\n {etf_today_trade_df}')
         try:
             existing_etf_df = pd.read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='ETF最新调仓')
-            print('已存在数据ETF：')
-            print(existing_etf_df)
+            # print('已存在数据ETF：')
+            # print(existing_etf_df)
         except FileNotFoundError:
             existing_etf_df = pd.DataFrame()
             logger.info("ETF Excel文件不存在，创建新文件")
@@ -279,8 +296,8 @@ async def ETF_Combination_main():
         logger.info(f'股票组合今日调仓：\n {stock_today_trade_df}')
         try:
             existing_stock_df = pd.read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='股票组合最新调仓')
-            print('已存在数据股票：')
-            print(existing_stock_df)
+            # print('已存在数据股票：')
+            # print(existing_stock_df)
         except FileNotFoundError:
             existing_stock_df = pd.DataFrame(columns=stock_today_trade_df.columns)  # ✅ 带列名
             logger.info("股票组合 Excel文件不存在，创建新文件")

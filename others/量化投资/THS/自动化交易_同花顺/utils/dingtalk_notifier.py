@@ -4,7 +4,7 @@ import requests
 
 
 def send_dingtalk_notification(report_url):
-    webhook = "https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2"
+    webhook = "YOUR_DINGTALK_WEBHOOK_URL"
     headers = {
         "Content-Type": "application/json"
     }

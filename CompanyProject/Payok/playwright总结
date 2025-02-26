@@ -1,0 +1,79 @@
+
+
+playwright codegen -o ui_merchant.py http://payok-test.com/merchant/payok-register-register.html
+
+#pycharm终端输入下方命令启动电脑浏览器进行录制
+#playwright codegen -o main.py
+
+from playwright.sync_api import Playwright, sync_playwright, expect
+
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("https://www.baidu.com/")
+    page.locator("#kw").click()
+    page.locator("#kw").fill("美女")
+    page.locator("#kw").press("Enter")
+    with page.expect_popup() as page1_info:
+        page.get_by_label("古风美女雍容华贵").click()
+    page1 = page1_info.value
+    page1.close()
+    page.close()
+
+    # ---------------------
+    context.close()
+    browser.close()
+
+
+with sync_playwright() as playwright:
+    run(playwright)
+
+    #pycharm终端输入下方命令录制手机浏览器
+ #playwright codegen --device="iPhone 13" -o main.py
+
+#pycharm终端输入下方命令录制电脑浏览器登录17k后保存cookie到auth.json文件中
+# playwright codegen --save-storage=auth.json https://www.17k.com
+
+#pycharm终端输入下方命令携带着auth.json文件里的cookie登录17k不需要去登录输入密码
+#playwright codegen --load-storage=auth.json https://www.17k.com -o main.py
+
+
+通过命令行启动
+在 Playwright CLI中使用open或命令：codegen
+
+添加page.pause()方法方式启动
+在你的脚本中添加page.pause()方法，且是必须为有头模式启动浏览器，则会进入调试模式（也就是断点）
+
+
+2、减慢执行速度辅助调试
+Playwright 默认以无头模式运行浏览器。要更改此行为，请headless: false用作启动选项。您还可以使用该slowMo选项来减慢执行速度并在调试时跟进。
+
+
+Playwright是一个用于自动化浏览器操作的强大工具，在控制台运行时，它有许多常用参数，以下是一些常见参数及其解释：
+
+- **浏览器相关参数**
+    - `--browser`：指定要使用的浏览器，可选值有`chromium`、`firefox`和`webkit`，例如`--browser=chromium`表示使用Chromium浏览器。
+    - `--channel`：指定浏览器的渠道或版本，比如`chrome`、`msedge`等，用于特定浏览器版本的测试。
+    - `--headless`：以无头模式运行浏览器，即浏览器在后台运行，不会显示图形界面，可提高运行效率，适用于自动化测试等场景。若不想使用无头模式，可使用`--headed`。
+    - `--slowmo`：设置浏览器操作的延迟时间，单位为毫秒，用于调试或观察浏览器操作的过程，例如`--slowmo=500`会使每个操作都延迟500毫秒执行。
+
+- **测试运行相关参数**
+    - `--max-workers`：设置最大工作进程数，用于控制并行执行测试的数量，以提高测试效率，例如`--max-workers=4`表示最多同时运行4个测试进程。
+    - `--retries`：设置测试失败后的重试次数，例如`--retries=2`表示测试失败后会重试2次。
+    - `--timeout`：设置测试的超时时间，单位为毫秒，若测试在规定时间内未完成，将被视为失败，如`--timeout=30000`表示测试的超时时间为30秒。
+    - `--grep`：用于筛选要运行的测试用例，通过正则表达式匹配测试用例的名称或标签，例如`--grep=test_login`会只运行名称中包含`test_login`的测试用例。
+
+- **输出和报告相关参数**
+    - `--output`：指定测试结果的输出目录，例如`--output=test_results`会将测试结果输出到`test_results`目录下。
+    - `--list-tests`：列出所有可用的测试用例，而不实际运行测试，用于查看测试套件中的测试用例列表。
+    - `--json`：将测试结果以JSON格式输出，便于后续处理和分析，通常与`--output`参数一起使用，如`--output=report.json --json`会将测试结果以JSON格式保存到`report.json`文件中。
+    - `--html`：生成HTML格式的测试报告，例如`--html=report.html`会生成一个名为`report.html`的测试报告，可在浏览器中打开查看详细的测试结果。
+
+- **其他参数**
+    - `--debug`：启用调试模式，提供更多的调试信息，帮助排查问题。
+    - `--trace`：设置是否记录操作轨迹，可取值`on`、`off`或`retain-on-failure`。`on`表示始终记录操作轨迹；`off`表示不记录；`retain-on-failure`表示仅在测试失败时记录操作轨迹，用于调试失败的测试用例。
+
+
+

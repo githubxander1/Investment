@@ -23,7 +23,9 @@ def setup_logger(log_file, logger_name='THSLogger'):
         log_colors=log_colors
     )
 
-    file_handler = logging.FileHandler(os.path.join(LOGS_DIR, log_file), encoding='utf-8')
+    file_handler = logging.FileHandler(
+        str(os.path.join(LOGS_DIR, log_file)),  # 添加str()显式类型转换
+        encoding='utf-8')
     file_handler.setFormatter(formatter)
 
     console_handler = logging.StreamHandler()

@@ -2,6 +2,7 @@
 import logging
 import os
 import smtplib
+from datetime import datetime
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -9,6 +10,8 @@ from email.mime.text import MIMEText
 import requests
 from dotenv import load_dotenv
 from plyer import notification
+
+from others.量化投资.THS.自动化交易_同花顺.utils import logger
 
 # 加载 .env 文件
 load_dotenv()
@@ -23,6 +26,9 @@ def send_notification(message):
         app_name="THS 自动交易",
         timeout=10
     )
+
+    # 新增钉钉通知
+    # send_dingtalk_notification(message)
     logging.info(f'交易通知: {message}')
 
 def send_http_request(url, data):
@@ -30,14 +36,14 @@ def send_http_request(url, data):
     if response.status_code != 200:
         raise Exception(f"HTTP请求发送失败，状态码: {response.status_code}")
 
-def send_wechat_notification(message):
-    data = {
-        "msgtype": "text",
-        "text": {
-            "content": message
-        }
-    }
-    send_http_request(WECHAT_WEBHOOK_URL, data)
+# def send_wechat_notification(message):
+#     data = {
+#         "msgtype": "text",
+#         "text": {
+#             "content": message
+#         }
+#     }
+#     send_http_request(WECHAT_WEBHOOK_URL, data)
 
 def get_smtp_connection():
     smtp_server = os.getenv('SMTP_SERVER')
@@ -80,6 +86,47 @@ def send_email(subject, body, to_email, attachment_path=None):
     except Exception as e:
         logging.error(f"Failed to send email: {e}")
 
+# 发送钉钉通知
+def send_dingtalk_notification(message):
+    # DINGTALK_WEBHOOK = os.getenv('DINGTALK_WEBHOOK')
+    # KEYWORD = os.getenv('DINGTALK_KEYWORD', '交易通知')
+    DINGTALK_WEBHOOK = 'https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2'
+    KEYWORD =  '交易通知'
+
+    data = {
+        "msgtype": "markdown",
+        "markdown": {
+            "title": "调仓通知",
+            "text": f"**{KEYWORD}**\n{message}\n> 时间：{datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        }
+    }
+    try:
+        response = requests.post(DINGTALK_WEBHOOK, json=data)
+        response.raise_for_status()
+        logger.info('钉钉通知发送成功')
+    except Exception as e:
+        logger.error(f'钉钉通知发送失败: {str(e)}')
+
+
+# def send_dingtalk_notification():
+#     # project_name = test_script.split('.')[0]
+#     project_name = '交易通知'
+#     dingtalk_webhook = 'https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2'
+#     keyword = 'fastbull'
+#     message = {
+#         "msgtype": "text",
+#         "text": {
+#             "content": f"'{project_name}'调仓通知\n"
+#                        f"时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+#                        f"执行人：我是你华哥\n"
+#                        # f"{keyword}接口报告链接: {report_url}"
+#         }
+#     }
+#     response = requests.post(dingtalk_webhook, json=message)
+#     if response.status_code == 200:
+#         print("钉钉消息发送成功")
+#     else:
+#         print(f"钉钉消息发送失败：{response.text}")
 # if __name__ == '__main__':
 #     import asyncio
 #
