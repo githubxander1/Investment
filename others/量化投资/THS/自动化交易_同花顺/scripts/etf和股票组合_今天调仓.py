@@ -241,7 +241,7 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             # send_notification(f"首次发现调仓，{sheet_name}")
 
             # # 修改为：{sheet_name}操作
-            notification_msg = f"\n" + "\n".join(
+            notification_msg = f"\n> " + "\n".join(
                 [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['新比例%']} {row['最新价']}"
                  for _, row in new_data.iterrows()])
             send_notification(notification_msg)
