@@ -81,7 +81,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
                     newest_post = {
                         '组合名称': combination_name,
                         '代码':  str(code).zfill(6),  # 提前统一格式
-                        '名称': name,
+                        '股票名称': name,
                         '市场': market,
                         '操作': operation,
                         '最新价': infos.get('finalPrice'),
@@ -240,9 +240,9 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             # # 原代码中的通知部分：
             # send_notification(f"首次发现调仓，{sheet_name}")
 
-            # # 修改为：
-            notification_msg = f"{sheet_name}操作\n" + "\n".join(
-                [f"{row['组合名称']} {row['操作']} {row['名称']} {row['新比例%']}"
+            # # 修改为：{sheet_name}操作
+            notification_msg = f"\n" + "\n".join(
+                [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['新比例%']} {row['最新价']}"
                  for _, row in new_data.iterrows()])
             send_notification(notification_msg)
 

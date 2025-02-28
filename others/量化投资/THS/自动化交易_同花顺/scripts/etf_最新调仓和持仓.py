@@ -1,7 +1,8 @@
 import pandas as pd
 import requests
 
-from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, ETF_ids_to_name, ETF_info_file
+from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, ETF_ids_to_name, ETF_info_file, \
+    Combination_ids, Combination_ids_to_name
 
 
 def send_request(id):
@@ -68,7 +69,8 @@ def extract_result(data, id):
 
     if relocateInfo.get('code') is not None:
         relocate_Info.append({
-            'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
+            # 'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
+            'ETF组合': Combination_ids_to_name.get(id, '未知ETF'),
             '股票代码': relocateInfo.get('code'),
             # '市场': relocateInfo.get('marketCode'),
             '名称': relocateInfo.get('name'),
@@ -137,7 +139,8 @@ def save_results_to_xlsx(relocation_data, holding_data, filename):
 def main():
     all_relocation_data = []
     all_holding_data = []
-    for id in ETF_ids:
+    # for id in ETF_ids:
+    for id in Combination_ids:
         result = send_request(id)
         # pprint(result)
         if result:

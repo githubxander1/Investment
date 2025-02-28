@@ -220,7 +220,7 @@ async def strategy_main():
 
         # 修改为：
         notification_msg = f"调仓操作\n" + "\n".join(
-            [f"{row['组合名称']} {row['操作']} {row['代码']}"
+            [f"{row['策略名称']} {row['操作']} {row['股票名称']} {row['新比例%']} {row['最新价']}"
              for _, row in today_trades_without_sc_df.iterrows()])
         send_notification(notification_msg)
 

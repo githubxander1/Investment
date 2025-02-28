@@ -28,7 +28,7 @@ def send_notification(message):
     )
 
     # 新增钉钉通知
-    # send_dingtalk_notification(message)
+    send_dingtalk_notification(message)
     logging.info(f'交易通知: {message}')
 
 def send_http_request(url, data):
@@ -103,9 +103,9 @@ def send_dingtalk_notification(message):
     try:
         response = requests.post(DINGTALK_WEBHOOK, json=data)
         response.raise_for_status()
-        logger.info('钉钉通知发送成功')
+        # logger.info('钉钉通知发送成功')
     except Exception as e:
-        logger.error(f'钉钉通知发送失败: {str(e)}')
+        logging.error(f'钉钉通知发送失败: {str(e)}')
 
 
 # def send_dingtalk_notification():
