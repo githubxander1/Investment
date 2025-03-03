@@ -9,22 +9,10 @@ import requests
 #     ]
 # ids = ['7152']
 # ids = [6994, 18710,16281,13081, 14980,11094]
-from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, compare_ETF_info_file
+from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, compare_ETF_info_file, Combination_ids
 
-# ids = Combination_ids
-ids = ETF_ids
-# ids = [6994, 7152,18710, 16281, 19347, 13081, 14980,11094,20335,20245,20205]
-'''
-    13081 好赛道出牛股
-16281 每天进步一点点
-18565 龙头一年三倍
-
-7152 中线龙头
-6994 梦想一号  死群，调仓好久好久甚至半年
-11094 低位题材
-14980 波段突击
-19347 超短稳定复利
-18710 用收益率征服您'''
+ids = Combination_ids
+# ids = ETF_ids
 # 定义英文列名到中文列名的映射
 column_mapping = {
     "策略id": "策略id",
@@ -167,10 +155,22 @@ def get_package_feature_info(product_id):
         slogan = data['slogan']
         labels = data['labels']
 
-        return {
-            '累抓涨停次数': int(re.findall(r'\d+', slogan)[0]),
-            '标签': labels
-        }
+        matches = re.findall(r'\d+', slogan)
+        if matches:
+            return {
+                '累抓涨停次数': int(matches[0]),
+                '标签': labels
+            }
+        else:
+            return {
+                '累抓涨停次数': 0,
+                '标签': labels
+            }
+
+        # return {
+        #     '累抓涨停次数': int(re.findall(r'\d+', slogan)[0]),
+        #     '标签': labels
+        # }
         # return response.json()
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
@@ -335,46 +335,70 @@ def get_popular_advisors():
         return []
 
 
-# 循环请求每个id
-for id in ids:
-    product_info = get_product_info(id)
-    position_income_info = get_position_income_info(id)
-    relocate_data_summary = get_relocate_data_summary(id)
-    package_feature_info = get_package_feature_info(id)
-    industry_info = get_position_industry_info(id)
-    profitability_info = get_portfolio_profitability_period_win_hs300(id)
+def fetch_data(ids):
+    # 循环请求每个id
+    results = []
+    for id in ids:
+        product_info = get_product_info(id)
+        position_income_info = get_position_income_info(id)
+        relocate_data_summary = get_relocate_data_summary(id)
+        package_feature_info = get_package_feature_info(id)
+        industry_info = get_position_industry_info(id)
+        profitability_info = get_portfolio_profitability_period_win_hs300(id)
 
-    if profitability_info:
-        combined_info = {
-            **product_info,
-            **relocate_data_summary,
-            **position_income_info,
-            **package_feature_info,
-            **profitability_info
-        }
-        combined_info['持仓行业'] = industry_info
+        if profitability_info:
+            combined_info = {
+                **product_info,
+                **relocate_data_summary,
+                **position_income_info,
+                **package_feature_info,
+                **profitability_info,
+                # **industry_info,
+            }
+            combined_info['持仓行业'] = industry_info
 
-        # 获取人气投顾的 userId 列表
-        popular_advisors = get_popular_advisors()
-        if product_info and '主理人id' in product_info:
-            combined_info['是否人气投顾'] = product_info['主理人id'] in popular_advisors
+            # 获取人气投顾的 userId 列表
+            popular_advisors = get_popular_advisors()
+            if product_info and '主理人id' in product_info:
+                combined_info['是否人气投顾'] = product_info['主理人id'] in popular_advisors
+            else:
+                combined_info['是否人气投顾'] = False
+
+            all_results.append(combined_info)
         else:
-            combined_info['是否人气投顾'] = False
+            print(f"跳过，无法获取数据 (id={id})")
 
-        all_results.append(combined_info)
+
+# 获取 Combination_ids 的数据
+combination_results = fetch_data(Combination_ids)
+
+# 获取 ETF_ids 的数据
+etf_results = fetch_data(ETF_ids)
+
+# 将结果保存到 Excel 文件的不同工作表
+with pd.ExcelWriter(compare_ETF_info_file) as writer:
+    if combination_results:
+        combination_df = pd.DataFrame(combination_results)
+        combination_df.to_excel(writer, sheet_name='Combination', index=False)
     else:
-        print(f"跳过，无法获取数据 (id={id})")
+        print("Combination_ids 没有获取到任何数据")
 
+    if etf_results:
+        etf_df = pd.DataFrame(etf_results)
+        etf_df.to_excel(writer, sheet_name='ETF', index=False)
+    else:
+        print("ETF_ids 没有获取到任何数据")
 
-# 将所有结果转换为DataFrame
-if all_results:
-    df = pd.DataFrame(all_results)
-    #去掉收益比
-    # df_without_profitability = df.drop(columns=['收益比_-1', '收益比_7', '收益比_30', '收益比_90', '收益比_180', '持仓行业', '策略id' , '策略描述', '主理人id', '标签', ])
-    # print(df_without_profitability)
-    filepath = compare_ETF_info_file
-    # df.to_excel(r'D:\1document\1\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_对比.xlsx')
-    df.to_excel(filepath)
-    print("数据已成功保存到 '对比.xlsx'")
-else:
-    print("没有获取到任何数据")
+print(f"数据已成功保存到 {compare_ETF_info_file}")
+# # 将所有结果转换为DataFrame
+# if all_results:
+#     df = pd.DataFrame(all_results)
+#     #去掉收益比
+#     # df_without_profitability = df.drop(columns=['收益比_-1', '收益比_7', '收益比_30', '收益比_90', '收益比_180', '持仓行业', '策略id' , '策略描述', '主理人id', '标签', ])
+#     # print(df_without_profitability)
+#     filepath = compare_ETF_info_file
+#     # df.to_excel(r'D:\1document\1\PycharmProject_gitee\others\量化投资\THS\组合\保存的数据\组合_对比.xlsx')
+#     df.to_excel(filepath)
+#     print(f"数据已成功保存到 {filepath}")
+# else:
+#     print("没有获取到任何数据")

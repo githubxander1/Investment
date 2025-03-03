@@ -1,4 +1,4 @@
-# main.py
+# generate_test_case.py
 import json
 import os
 import zipfile

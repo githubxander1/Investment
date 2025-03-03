@@ -112,6 +112,7 @@ def process_and_save_data(file_path, list_types):
 # 示例调用
 if __name__ == '__main__':
     file_path = Combination_list_file
+    print(f'数据保存地址:{file_path}')
     list_types = {
         # 1: "日收益",
         # 2: "周收益",

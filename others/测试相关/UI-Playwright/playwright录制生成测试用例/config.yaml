@@ -1,0 +1,7 @@
+environments:
+  prod: "https://prod.example.com"
+  test: "https://test.example.com"
+browser:
+  default: "chromium"
+  headless: true
+timeout: 10000

@@ -1,4 +1,4 @@
-# main.py
+# generate_test_case.py
 import asyncio
 from datetime import time as dt_time, datetime
 import sys
