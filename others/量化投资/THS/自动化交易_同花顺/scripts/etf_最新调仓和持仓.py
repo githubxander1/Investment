@@ -3,8 +3,8 @@ from pprint import pprint
 import pandas as pd
 import requests
 
-from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, ETF_ids_to_name, ETF_info_file, \
-    Combination_ids, Combination_ids_to_name
+from others.量化投资.THS.自动化交易_同花顺.config.settings import ETF_ids, ETF_ids_to_name, \
+    Combination_ids, Combination_ids_to_name, ETF_adjustment_holding_file
 
 
 def send_request(id):
@@ -61,8 +61,8 @@ def extract_result(data, id):
         profitLossRate = relocateInfo.get('profitLossRate', 0) or 0
 
         relocate_Info.append({
-            'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
-            # 'ETF组合': Combination_ids_to_name.get(id, '未知ETF'),
+            # 'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
+            'ETF组合': Combination_ids_to_name.get(id, '未知ETF'),
             '股票代码': relocateInfo.get('code'),
             # '市场': relocateInfo.get('marketCode'),
             '名称': relocateInfo.get('name'),
@@ -132,8 +132,8 @@ def save_results_to_xlsx(relocation_data, holding_data, filename):
 def main():
     all_relocation_data = []
     all_holding_data = []
-    for id in ETF_ids:
-    # for id in Combination_ids:
+    # for id in ETF_ids:
+    for id in Combination_ids:
         result = send_request(id)
         # pprint(result)
         if not result or not result.get('result'):
@@ -146,9 +146,11 @@ def main():
             # print(holding_data)
             if relocation_data:
                 all_relocation_data.extend(relocation_data)
+                # pprint(all_relocation_data)
             if holding_data:
                 all_holding_data.extend(holding_data)
                 all_holding_data.extend(relocation_data)
+                # pprint(all_holding_data)
         except Exception as e:
             print(f"处理ID {id} 时发生异常: {str(e)}")
             continue
@@ -156,7 +158,7 @@ def main():
     df = pd.DataFrame(all_holding_data)
     print(df)
 
-    save_path = ETF_info_file
+    save_path = ETF_adjustment_holding_file
     save_results_to_xlsx(all_relocation_data, all_holding_data, save_path)
 
 if __name__ == "__main__":

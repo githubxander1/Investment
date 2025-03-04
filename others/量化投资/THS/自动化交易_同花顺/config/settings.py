@@ -28,7 +28,7 @@ COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.x
 ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和组合_今天调仓.xlsx')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.xlsx')
-ETF_info_file = os.path.join(DATA_DIR, 'ETF组合持仓_历史调仓_今天调仓.xlsx')
+ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'ETF和股票组合持仓.xlsx')
 Combination_info_file = os.path.join(DATA_DIR, '股票组合持仓_历史调仓_今天调仓.xlsx')
 
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
