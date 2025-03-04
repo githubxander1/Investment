@@ -1,13 +1,15 @@
+from pprint import pprint
+
 import pandas as pd
 import requests
 
 from others.量化投资.THS.自动化交易_同花顺.config.settings import Combination_list_file
 
 
-def get_all_portfolio_rank_data(list_type):
-    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/blockList"
-    url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/blockList"
-    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list?offset=0&page_size=8&block_id=0&list_type=4&match_id=14"
+def get_all_portfolio_rank_data():
+    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/subTab?match_id=0"
+    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list?offset=0&page_size=8&block_id=0&list_type=4&match_id=0" #股票
+    url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list"
 
     headers = {
         "Host": "t.10jqka.com.cn",
@@ -24,15 +26,14 @@ def get_all_portfolio_rank_data(list_type):
 
     params = {
         "offset": 0,
-        "pageSize": 20,
-        "matchId": 0,#0 为全国总榜
-        "blockId": 0,
-        "listType": list_type
+        "page_size": 20,
+        "match_id": 14,#0 为全国总榜 14为ETF
+        "block_id": 0,
+        "list_type": 4
     }
 
     # 发送GET请求
     response = requests.get(url, params=params, headers=headers)
-    # response = requests.get(url, headers=headers)
 
     # 检查响应状态码
     if response.status_code == 200:
@@ -42,7 +43,7 @@ def get_all_portfolio_rank_data(list_type):
         print(f"接口请求失败，状态码: {response.status_code}")
 
 def extract_data(data):
-    list_data = data["result"]["list"]
+    list_data = data["data"]["list"]
     # pprint(list_data)
 
     extract_data = []
@@ -87,7 +88,9 @@ def process_and_save_data(file_path, list_types):
     with pd.ExcelWriter(file_path) as writer:
         for list_type, sheet_name in list_types.items():
             # 获取并处理数据
-            raw_data = get_all_portfolio_rank_data(list_type)
+            raw_data = get_all_portfolio_rank_data()
+            pprint(raw_data)
+            # raw_data = get_all_portfolio_rank_data(list_type)
             out_put_data = extract_data(raw_data)
 
             if out_put_data:
@@ -121,6 +124,7 @@ if __name__ == '__main__':
     }
     process_and_save_data(file_path, list_types)
 
-    extract_da = extract_data(get_all_portfolio_rank_data(4))
+    extract_da = extract_data(get_all_portfolio_rank_data())
+    # pprint(extract_da)
     portfolio_ids = [item["组合id"] for item in extract_da][:20]
     print(portfolio_ids)

@@ -97,7 +97,8 @@ def send_dingtalk_notification(message):
         "msgtype": "markdown",
         "markdown": {
             "title": "调仓通知",
-            "text": f"**{KEYWORD}**\n {message}\n> 时间：{datetime.now().strftime('%Y-%m-%d %H:%M')}"
+            "text": f"**{KEYWORD}**\n {message}\n"
+            # "text": f"**{KEYWORD}**\n {message}\n 时间：{datetime.now().strftime('%Y-%m-%d %H:%M')}"
         }
     }
     try:

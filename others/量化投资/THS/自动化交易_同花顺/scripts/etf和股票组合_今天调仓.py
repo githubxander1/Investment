@@ -242,7 +242,7 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
 
             # # 修改为：{sheet_name}操作
             notification_msg = f"\n> " + "\n".join(
-                [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['新比例%']} {row['最新价']}"
+                [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
                  for _, row in new_data.iterrows()])
             send_notification(notification_msg)
 

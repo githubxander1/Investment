@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pandas as pd
 import requests
 
@@ -23,8 +25,8 @@ def send_request(id):
         'Referer': 'https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=29617',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-        # 'Cookie': 'user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM3MzM4ODA5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTJiMmY0NGE2ODgxYjg0Nzc1YzY2MzM2MGM2NGUxZjMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=ee119caec220dd3e984ad47c01216b5f; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; hxmPid=hqMarketPkgVersionControl; v=A9wZOK8t13tZQ6Mni-zpRystr_GOVYB9AvmUQ7bd6EeqAXMr3mVQD1IJZMIF'
-        "Cookie": "userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM5MTUxNjM1Ojo6MTY1ODE0Mjc4MDo2MDQ4MDA6MDoxMmIyZjQ0YTY4ODFiODQ3NzVjNjYzMzYwYzY0ZTFmMzA6OjA%3D; ticket=3420cf092830838b512cc96c07f9bd09; IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; hxmPid=sns_lungu_t_stock_2185680805; v=Axjd5MuZy1OaUOfTBDtls8cB602qAX2N3nJQD1IJZCEENbd3-hFMGy51ILKh"
+        "Cookie": 'userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQwNzA2ODQ0Ojo6MTY1ODE0Mjc4MDo2MDQ4MDA6MDoxOTMwZmRiNzY5ZDZlMTk5MjQxY2RhZWVkYThiYWJjMDk6OjA%3D; ticket=1cac108f03adacab2cb19bf208226df5; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; hxmPid=seq_666442234; v=A6RhQNdFn9G32-ud_WqRL5OFd6mWPcinimFc677FMG8yaUuT5k2YN9pxLGoN'
+
     }
 
     try:
@@ -36,64 +38,55 @@ def send_request(id):
         return None
 
 def extract_result(data, id):
-    result = data.get('result', None)
-    # pprint(result)
+    result = data.get('result', {})
     if not result:
-        print(f"ID: {id} 无数据")
+        print(f"ID: {id} 无有效结果数据")
         return None, None, None
 
+    # 安全获取嵌套数据
+    holdingInfo = result.get('holdingInfo', {}) or {}
+    relocateInfo = result.get('relocateInfo', {}) or {}
+
+    # 处理holding_count
     holding_count = result.get('holdingCount', 0)
-    print(f"{ETF_ids_to_name.get(id, '未知ETF')} 的持仓数量为: {holding_count}")
-    holdingInfo = result.get('holdingInfo', None)
-    relocateInfo = result.get('relocateInfo', None)
+    if holding_count is None:
+        holding_count = 0
+    print(f"{Combination_ids_to_name.get(id, ETF_ids_to_name.get(id, '未知ETF'))} 的持仓数量为: {holding_count}")
 
-    relocate_Info = []  # 最新调仓
+    # 处理调仓信息
+    relocate_Info = []
+    if relocateInfo.get('code'):
+        current_ratio = relocateInfo.get('currentRatio', 0) or 0
+        new_ratio = relocateInfo.get('newRatio', 0) or 0
+        profitLossRate = relocateInfo.get('profitLossRate', 0) or 0
 
-    current_ratio = relocateInfo.get('currentRatio', 0)  # 使用默认值避免 None
-    if current_ratio is None:
-        current_ratio = 0  # 再次确保不会是 None
-    else:
-        current_ratio = round(current_ratio * 100, 2)
-
-    new_ratio = relocateInfo.get('newRatio', 0)
-    if new_ratio is None:
-        new_ratio = 0
-    else:
-        new_ratio = round(new_ratio * 100, 2)
-
-    profitLossRate = relocateInfo.get('profitLossRate', 0)
-    if profitLossRate is None:
-        profitLossRate = 0
-    else:
-        profitLossRate = round(profitLossRate * 100, 2)
-
-    if relocateInfo.get('code') is not None:
         relocate_Info.append({
-            # 'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
-            'ETF组合': Combination_ids_to_name.get(id, '未知ETF'),
+            'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
+            # 'ETF组合': Combination_ids_to_name.get(id, '未知ETF'),
             '股票代码': relocateInfo.get('code'),
             # '市场': relocateInfo.get('marketCode'),
             '名称': relocateInfo.get('name'),
-            '当前比例%': current_ratio,
-            '新比例%': new_ratio,
+            '当前比例%': round(float(current_ratio) * 100, 2),
+            '新比例%': round(float(new_ratio) * 100, 2),
             '当前价': relocateInfo.get('finalPrice'),
-            '盈亏率%': profitLossRate,
+            '盈亏率%': round(float(profitLossRate) * 100, 2),
             '调仓时间': relocateInfo.get('relocateTime'),
         })
 
-    holding_Info = []  # 最新持仓
-    if holdingInfo.get('code') is not None:  # 检查是否有有效的持仓信息
+    # 处理持仓信息
+    holding_Info = []
+    if holdingInfo.get('code'):
         holding_Info.append({
             'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
             '股票代码': holdingInfo.get('code'),
             # '市场': holdingInfo.get('marketCode'),
             '名称': holdingInfo.get('name'),
-            '新比例%': round(holdingInfo.get('positionRealRatio') * 100, 2),
+            '新比例%': round(float(holdingInfo.get('positionRealRatio', 0)) * 100, 2),
             '当前价': holdingInfo.get('presentPrice'),
             '成本价': holdingInfo.get('costPrice'),
-            '盈亏率%': round(holdingInfo.get('profitLossRate') * 100, 2),
-            # '持仓数': holding_count
+            '盈亏率%': round(float(holdingInfo.get('profitLossRate', 0)) * 100, 2),
         })
+
     return relocate_Info, holding_Info, holding_count
 
 def save_results_to_xlsx(relocation_data, holding_data, filename):
@@ -139,11 +132,15 @@ def save_results_to_xlsx(relocation_data, holding_data, filename):
 def main():
     all_relocation_data = []
     all_holding_data = []
-    # for id in ETF_ids:
-    for id in Combination_ids:
+    for id in ETF_ids:
+    # for id in Combination_ids:
         result = send_request(id)
         # pprint(result)
-        if result:
+        if not result or not result.get('result'):
+            print(f"ID {id} 返回无效数据")
+            continue  # 跳过无效数据
+
+        try:
             relocation_data, holding_data, holding_count = extract_result(result, id)
             # print(relocation_data)
             # print(holding_data)
@@ -152,8 +149,9 @@ def main():
             if holding_data:
                 all_holding_data.extend(holding_data)
                 all_holding_data.extend(relocation_data)
-        else:
-            print(f"未获取到有效数据 (ID: {id})")
+        except Exception as e:
+            print(f"处理ID {id} 时发生异常: {str(e)}")
+            continue
 
     df = pd.DataFrame(all_holding_data)
     print(df)
