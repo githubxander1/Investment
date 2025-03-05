@@ -12,7 +12,7 @@ params = {
     "page_size": "20",
     "block_id": "0",
     "list_type": "4",
-    "match_id": "0" #14为etf
+    "match_id": "14" #14为etf
 }
 headers = {
     "Host": "t.10jqka.com.cn",
