@@ -13,7 +13,7 @@ from plyer import notification
 
 from others.量化投资.THS.自动化交易_同花顺.utils import logger
 
-# 加载 .env 文件
+# 加载 .venv 文件
 load_dotenv()
 
 # 设置日志记录

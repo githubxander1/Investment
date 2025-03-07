@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from others.测试相关.api_mind.utils.excel_handler import read_excel
 
-# 加载 .env 文件
+# 加载 .venv 文件
 load_dotenv()
 
 def attach_test_data(test_data_path):

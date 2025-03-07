@@ -7,7 +7,7 @@ import allure
 import pytest
 from dotenv import load_dotenv
 
-# 加载 .env 文件
+# 加载 .venv 文件
 load_dotenv()
 
 if __name__ == '__main__':

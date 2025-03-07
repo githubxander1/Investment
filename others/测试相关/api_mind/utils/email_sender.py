@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 
 from dotenv import load_dotenv
 
-# 加载 .env 文件
+# 加载 .venv 文件
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)

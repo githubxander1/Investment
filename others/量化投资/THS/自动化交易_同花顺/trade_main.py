@@ -1,4 +1,4 @@
-# D:\Xander\PycharmProject\others\量化投资\THS\自动化交易_同花顺\main.py
+# D:\Xander\PycharmProject\others\量化投资\THS\自动化交易_同花顺\trade_main.py
 import asyncio
 import sys
 import os

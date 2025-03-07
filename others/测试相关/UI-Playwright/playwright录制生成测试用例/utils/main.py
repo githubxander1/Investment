@@ -1,4 +1,4 @@
-# main.py
+# trade_main.py
 import argparse
 import subprocess
 import sys
