@@ -389,7 +389,10 @@ with pd.ExcelWriter(compare_ETF_info_file) as writer:
     else:
         print("ETF_ids 没有获取到任何数据")
 
-print(f"数据已成功保存到 {compare_ETF_info_file}")
+if combination_results or etf_results:
+    print(f"数据已成功保存到 {compare_ETF_info_file}")
+else:
+    print("没有获取到任何数据")
 # # 将所有结果转换为DataFrame
 # if all_results:
 #     df = pd.DataFrame(all_results)

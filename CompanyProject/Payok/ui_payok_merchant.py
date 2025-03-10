@@ -4,7 +4,7 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False,slow_mo=200,devtools=False)
+    browser = playwright.chromium.launch(headless=False, slow_mo=50, devtools=False)
     context = browser.new_context()
     page = context.new_page()
 
@@ -50,53 +50,81 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="保存").click()
 
     # 上传文件
-    # 定位所有文件输入框元素
-    # file_inputs = page.wait_for_selector('input[type="file"]').all()
-    # file_inputs = page.query_selector_all('input[type="file"]')
-    # #
-    # if file_inputs:
-    #     # 选择第一个文件输入框
-    #     file_input = file_inputs[0]
-    #     file_path = r"D:\Xander\测试\营业执照.doc"
-    #     if not os.path.exists(file_path):
-    #         print(f"文件不存在: {file_path}")
-    #     else:
-    #         print(f"文件存在: {file_path}")
-    #         file_input.set_input_files(file_path)
-    #         page.wait_for_load_state('networkidle')
-    # else:
-    #     print("没有找到文件输入框元素")
-    # #在字符串中使用了反斜杠 \ 作为路径分隔符，而 Python 将其解释为转义字符。例如，\X 被解释为无效的转义序列
-    # # 等待上传完成（可根据实际情况调整等待条件）
-    # page.wait_for_load_state('networkidle')
 
-    # page.locator("body").set_input_files(r"D:\Xander\测试\营业执照.doc")
-    page.get_by_text("营业执照 *请上传pdf|xls|doc文件(文件必须小于").click()
-    #等待3秒
-    page.wait_for_timeout(3000)
-    # page.locator("body").set_input_files("D:\\Xander\\测试\\营业执照.doc") #在字符串中使用了反斜杠 \ 作为路径分隔符，而 Python 将其解释为转义字符。例如，\X 被解释为无效的转义序列
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    page.get_by_text("纳税人号码（NPWP) *请上传pdf|xls|doc").click()
-    # page.locator("body").set_input_files(r"D:\Xander\测试\纳税人号码.doc")
-    page.wait_for_timeout(3000)
-    # page.locator("body").set_input_files("D:\\Xander\\测试\\纳税人号码.doc")
-    page.get_by_text("法人（责任人）护照").click()
-    # page.locator("body").set_input_files(r"D:\Xander\测试\法人护照.doc")
-    page.wait_for_timeout(3000)
-    # page.locator("body").set_input_files("D:\\Xander\\测试\\法人护照.doc")
+    # 文件路径配置
+    DATA_DIR = os.path.join(BASE_DIR, 'data')
+
+    # 日志文件路径
+    agreement = os.path.join(DATA_DIR, "合同.pdf")
+    npwp = os.path.join(DATA_DIR, "纳税人号码.doc")
+    passport = os.path.join(DATA_DIR, "法人护照.doc")
+
+    def upload_file(file_path, form_id):
+        if not os.path.exists(file_path):
+            print(f"文件不存在: {file_path}")
+            return
+
+        print(f"文件存在: {file_path}")
+
+        # 监听 file_chooser 事件
+        page.on('filechooser', lambda file_chooser: file_chooser.set_files(file_path))
+
+        # 触发文件选择弹窗
+        page.locator(f"#form{form_id} .dz-message").click()
+
+        # 等待文件上传完成（可根据实际情况调整等待条件）
+        page.wait_for_timeout(3000)
+
+    # 上传营业执照
+    upload_file(agreement, "1")
+
+    # 上传纳税人号码（NPWP）
+    upload_file(npwp, "2")
+
+    # 上传法人（责任人）护照
+    upload_file(passport, "3")
+
     page.get_by_role("textbox", name="业务归属地 * 邮箱 *").fill("1@linshiyou.com")
     page.get_by_role("button", name="发送验证码").click()
-    page.wait_for_timeout(3000)
 
-    page.pause()
+    # 等待滑动解锁弹窗出现
+    page.wait_for_selector("#mpanel4", state='visible')
 
-    # page.locator("#mpanel4 div").filter(has_text="向右滑动解锁").locator("i").click()
-    page.locator(".verify-move-block").click()
-    # page.locator("#mpanel4 div").filter(has_text="向右滑动解锁").locator("div").nth(1).click()
-    page.get_by_text("×").click()
+    def perform_slide_unlock(page):
+        for _ in range(3):  # 尝试3次
+            try:
+                slider = page.locator(".verify-move-block")
+                slider_box = slider.bounding_box()
+                target_x = slider_box['x'] + slider_box['width'] + 5  # 增加5像素的偏移量
+                target_y = slider_box['y'] + slider_box['height'] / 2
+
+                page.mouse.move(slider_box['x'], slider_box['y'] + slider_box['height'] / 2)
+                page.mouse.down()
+                page.mouse.move(target_x, target_y)
+                page.mouse.up()
+
+                # 等待滑动解锁成功后的页面变化
+                page.wait_for_selector(".success-message", state='visible', timeout=5000)
+                return True
+            except Exception as e:
+                print(f"滑动解锁失败，重试: {e}")
+                page.wait_for_timeout(1000)  # 等待1秒后重试
+        return False
+
+    if not perform_slide_unlock(page):
+        print("滑动解锁多次尝试后仍失败")
+        context.close()
+        browser.close()
+        return
+
+
     page.get_by_role("textbox", name="密码 *").fill("A123456@test")
     page.get_by_role("textbox", name="密码（确认） *").fill("A123456@test")
-    page.get_by_role("button", name="提交").click()
+    # page.get_by_role("button", name="提交").click()
+
+    page.wait_for_timeout(5000)
 
     # ---------------------
     context.close()
