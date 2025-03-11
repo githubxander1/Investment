@@ -22,7 +22,7 @@ class CrackSlider():
         self.opts = webdriver.ChromeOptions()
         self.opts.add_experimental_option('excludeSwitches', ['enable-logging'])
         # self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=self.opts)
-        chrome_path = r"C:\Users\11248\AppData\Local\Google\Chrome\Application\chromedriver.exe"
+        # chrome_path = r"C:\Users\11248\AppData\Local\Google\Chrome\Application\chromedriver.exe"
         self.driver = webdriver.Chrome()
 
         self.url = 'https://icas.jnu.edu.cn/cas/login'
@@ -90,4 +90,5 @@ distance = match(img_jpg_path, img_png_path)
 distance = distance / 480 * 345 + 12
 # 3. 移动
 cs.crack_slider(distance)
+time.sleep(10)
 

@@ -5,6 +5,9 @@ import hashlib
 import time
 import re
 
+from CompanyProject.Payok.utils.sql_handler import SQLHandler
+
+
 class CalGoogleCode():
     """计算谷歌验证码（16位谷歌秘钥，生成6位验证码）"""
 
@@ -38,15 +41,28 @@ class CalGoogleCode():
     def clean_secret_key(secret_key):
         """清理 secret_key，去除无效字符"""
         return re.sub(r'[^A-Z2-7=]', '', secret_key.upper())
+    def generate_google_code(self):
+        db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs')
+        db_handler.connect()
 
+        # secret_key = db_handler.get_google_secret_key('2695418206@qq.com')
+        secret_key = db_handler.get_google_secret_key('merchant_operator', 'paylabs2@test.com')
+        if secret_key:
+            print("Google Secret Key:", secret_key)
+
+        db_handler.disconnect()
+        try:
+            current_time = int(time.time()) // 30
+            print(f"Current Time: {current_time}")
+            generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
+            print(f"Generated Code: {generated_code}")
+            print(CalGoogleCode.cal_google_code(secret_key))  # 并未实例化CalGoogleCode，也可以调用它的方法
+            return generated_code
+        except ValueError as e:
+            print("错误:", e)
+
+# def genera_code
 if __name__ == '__main__':
     # secret_key = "tvxnmn522rd7gmag34m22iwvnvgerled"
-    secret_key = "q3woflszthh4wd5ek7euedblcppp2c53"
-    try:
-        current_time = int(time.time()) // 30
-        print(f"Current Time: {current_time}")
-        generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
-        print(f"Generated Code: {generated_code}")
-        print(CalGoogleCode.cal_google_code(secret_key))  # 并未实例化CalGoogleCode，也可以调用它的方法
-    except ValueError as e:
-        print("错误:", e)
+    # secret_key = "q3woflszthh4wd5ek7euedblcppp2c53"
+    CalGoogleCode().generate_google_code()

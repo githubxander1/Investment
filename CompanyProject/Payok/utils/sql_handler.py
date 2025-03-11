@@ -52,12 +52,12 @@ class SQLHandler:
 
 # 使用示例
 if __name__ == "__main__":
-    db_handler = SQLHandler('192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'aesygo_test')
-    # db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'aesygo_test')
+    # db_handler = SQLHandler('192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'aesygo_test')
+    db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs')
     db_handler.connect()
 
     # secret_key = db_handler.get_google_secret_key('2695418206@qq.com')
-    secret_key = db_handler.get_google_secret_key('merchant_operator','92d720ee5739@drmail.in')
+    secret_key = db_handler.get_google_secret_key('merchant_operator','paylabs2@test.com')
     if secret_key:
         print("Google Secret Key:", secret_key)
 

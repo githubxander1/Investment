@@ -1,6 +1,6 @@
 import pyotp
 import time
-from sql_handler import SQLHandler
+from CompanyProject.Payok.utils.sql_handler import SQLHandler
 
 # 存储账户信息的字典
 accounts = {}

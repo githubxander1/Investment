@@ -35,67 +35,58 @@ class Login(Base):
     def switch_to_iframe(self):
         self.d.switch.to_frame(self.security_verify_iframe)
 
-   # while True:
-        # 获取验证码图片
-        img_bj=self.d.find_element(By.XPATH,'//*[@id="app"]/main/div/div/div[2]')
-        img_hk=self.d.find_element(By.XPATH,'//*[@id="app"]/main/div/div/div[2]/i')
-        # 获取原图下载地址
-        src_bj=img_bj.get_attribute('src')
-        src_hk=img_hk.get_attribute('src')
-
-        # 通过reques下载图片的二进制码
-        content=requests.get(src_bj).content
-        f=open('bj.png','wb')
-        f.write(content)
-        f.close()
-
-        content=requests.get(src_hk).content
-        f=open('hk.png','wb')
-        f.write(content)
-        f.close()
-
-        def get_dis():
-            # 解析x距离
-            # 读取背景图片的rgb码
-            bj_rgb=cv2.imread('bj.png')
-            # 灰度处理
-            bj_gray=cv2.cvtColor(bj_rgb,cv2.COLOR_RGB2GRAY)
-            # 读取滑块的rgb码
-            hk_rgb=cv2.imread('hk.png')
-            # # 灰度处理
-            # hk_gray=cv2.cvtColor(hk_rgb,cv2.COLOR_RGB2GRAY)
-            # 匹配滑块在背景图的位置
-            res=cv2.matchTemplate(bj_gray,hk_rgb,cv2.TM_CCOEFF_NORMED)
-            # 获取位置
-            lo=cv2.minMaxLoc(res)
-            print(lo[2][0])
-            return lo[2][0]
-            # 计算缩放
-            x=int(x * 178/267)
-
-            # 开始拖动滑块
-            action = ActionChains(d)
-            action.click_and_hold(img_hk).perform()
-            action.move_by_offset(xoffset=x, yoffset=0)  # 拖动的距离可能需要根据实际滑块长度调整
-            action.release(img_hk).perform()
-            # action.perform()
-
-            slider = WebDriverWait(d, 10).until(
-                EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div/div/div[2]/i'))
-            )
-            # 获取滑块的初始位置
-            initial_slider_location = slider.location
-
-            # 获取滑块的父元素
-            slider_parent = slider.find_element(By.XPATH,"..")
-            # 等待验证成功的元素出现（这里假设验证成功后会显示一个隐藏的元素）
+    def perform_slide_unlock(self, driver):
+        while True:
             try:
-                WebDriverWait(d, 10).until(
+                # 获取验证码图片
+                img_bj = driver.find_element(By.XPATH, '//*[@id="app"]/main/div/div/div[2]')
+                img_hk = driver.find_element(By.XPATH, '//*[@id="app"]/main/div/div/div[2]/i')
+                # 获取原图下载地址
+                src_bj = img_bj.get_attribute('src')
+                src_hk = img_hk.get_attribute('src')
+
+                # 通过requests下载图片的二进制码
+                content = requests.get(src_bj).content
+                with open('bj.png', 'wb') as f:
+                    f.write(content)
+
+                content = requests.get(src_hk).content
+                with open('hk.png', 'wb') as f:
+                    f.write(content)
+
+                def get_dis():
+                    # 解析x距离
+                    # 读取背景图片的rgb码
+                    bj_rgb = cv2.imread('bj.png')
+                    # 灰度处理
+                    bj_gray = cv2.cvtColor(bj_rgb, cv2.COLOR_RGB2GRAY)
+                    # 读取滑块的rgb码
+                    hk_rgb = cv2.imread('hk.png')
+                    # 匹配滑块在背景图的位置
+                    res = cv2.matchTemplate(bj_gray, hk_rgb, cv2.TM_CCOEFF_NORMED)
+                    # 获取位置
+                    lo = cv2.minMaxLoc(res)
+                    print(lo[2][0])
+                    return lo[2][0]
+
+                x = get_dis()
+                slider = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, '//*[@id="app"]/main/div/div/div[2]/i'))
+                )
+                action = ActionChains(driver)
+                action.click_and_hold(slider).perform()
+                action.move_by_offset(xoffset=x, yoffset=0)  # 拖动的距离可能需要根据实际滑块长度调整
+                action.release(slider).perform()
+
+                # 等待验证成功的元素出现（这里假设验证成功后会显示一个隐藏的元素）
+                WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, "//div[@class='verification-success']"))
                 )
                 print("滑块验证成功")
+                break
             except TimeoutException:
-                print("滑块验证失败")
+                print("滑块验证失败，重试...")
+                continue
 
     phoneBtn=(By.ID,'phoneBtn')
     def click_phoneBtn(self):

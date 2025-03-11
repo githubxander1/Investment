@@ -1,10 +1,15 @@
 import os
 import re
+
+import cv2
+import requests
 from playwright.sync_api import Playwright, sync_playwright, expect
+
+from CompanyProject.Payok.utils.perform_slide_unlock import perform_slide_unlock
 
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False, slow_mo=50, devtools=False)
+    browser = playwright.chromium.launch(headless=False, slow_mo=10, devtools=False)
     context = browser.new_context()
     page = context.new_page()
 
@@ -54,7 +59,7 @@ def run(playwright: Playwright) -> None:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # 文件路径配置
-    DATA_DIR = os.path.join(BASE_DIR, 'data')
+    DATA_DIR = os.path.join(BASE_DIR, '..', 'data')  # 修正文件路径
 
     # 日志文件路径
     agreement = os.path.join(DATA_DIR, "合同.pdf")
@@ -92,33 +97,14 @@ def run(playwright: Playwright) -> None:
     # 等待滑动解锁弹窗出现
     page.wait_for_selector("#mpanel4", state='visible')
 
-    def perform_slide_unlock(page):
-        for _ in range(3):  # 尝试3次
-            try:
-                slider = page.locator(".verify-move-block")
-                slider_box = slider.bounding_box()
-                target_x = slider_box['x'] + slider_box['width'] + 5  # 增加5像素的偏移量
-                target_y = slider_box['y'] + slider_box['height'] / 2
 
-                page.mouse.move(slider_box['x'], slider_box['y'] + slider_box['height'] / 2)
-                page.mouse.down()
-                page.mouse.move(target_x, target_y)
-                page.mouse.up()
-
-                # 等待滑动解锁成功后的页面变化
-                page.wait_for_selector(".success-message", state='visible', timeout=5000)
-                return True
-            except Exception as e:
-                print(f"滑动解锁失败，重试: {e}")
-                page.wait_for_timeout(1000)  # 等待1秒后重试
-        return False
+    # return False
 
     if not perform_slide_unlock(page):
         print("滑动解锁多次尝试后仍失败")
         context.close()
         browser.close()
         return
-
 
     page.get_by_role("textbox", name="密码 *").fill("A123456@test")
     page.get_by_role("textbox", name="密码（确认） *").fill("A123456@test")

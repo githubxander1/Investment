@@ -24,3 +24,12 @@ def login_h5_get_token():
     return response.json()
 
 pprint(login_h5_get_token())
+
+customId = login_h5_get_token()["data"]["customId"]
+print(customId)
+openid = login_h5_get_token()["data"]["openid"]
+print(openid)
+phoneNumber = login_h5_get_token()["data"]["phoneNumber"]
+print(phoneNumber)
+token = login_h5_get_token()["data"]["token"]
+print(token)
