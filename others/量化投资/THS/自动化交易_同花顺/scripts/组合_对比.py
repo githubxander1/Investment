@@ -122,7 +122,6 @@ def get_position_income_info(portfolio_id):
         print(f"请求出现错误 (id={id}): {e}")
         return None
 
-
 def get_package_feature_info(product_id):
     """
     根据产品ID获取产品特性信息
@@ -364,9 +363,10 @@ def fetch_data(ids):
             else:
                 combined_info['是否人气投顾'] = False
 
-            all_results.append(combined_info)
+            results.append(combined_info)
         else:
-            print(f"跳过，无法获取数据 (id={id})")
+            print(f"跳过，无法获取完整数据 (id={id})")
+    return results
 
 
 # 获取 Combination_ids 的数据
@@ -375,19 +375,20 @@ combination_results = fetch_data(Combination_ids)
 # 获取 ETF_ids 的数据
 etf_results = fetch_data(ETF_ids)
 
-# 将结果保存到 Excel 文件的不同工作表
-with pd.ExcelWriter(compare_ETF_info_file) as writer:
-    if combination_results:
-        combination_df = pd.DataFrame(combination_results)
-        combination_df.to_excel(writer, sheet_name='Combination', index=False)
-    else:
-        print("Combination_ids 没有获取到任何数据")
+# 检查是否有数据再创建 Excel 文件
+if combination_results or etf_results:
+    with pd.ExcelWriter(compare_ETF_info_file) as writer:
+        if combination_results:
+            combination_df = pd.DataFrame(combination_results)
+            combination_df.to_excel(writer, sheet_name='Combination', index=False)
+        else:
+            print("Combination_ids 没有获取到任何数据")
 
-    if etf_results:
-        etf_df = pd.DataFrame(etf_results)
-        etf_df.to_excel(writer, sheet_name='ETF', index=False)
-    else:
-        print("ETF_ids 没有获取到任何数据")
+        if etf_results:
+            etf_df = pd.DataFrame(etf_results)
+            etf_df.to_excel(writer, sheet_name='ETF', index=False)
+        else:
+            print("ETF_ids 没有获取到任何数据")
 
 if combination_results or etf_results:
     print(f"数据已成功保存到 {compare_ETF_info_file}")
