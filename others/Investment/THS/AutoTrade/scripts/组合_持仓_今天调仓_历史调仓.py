@@ -7,8 +7,8 @@ import requests
 from plyer import notification
 
 # 设置日志记录
-from others.Investment.THS.AutoTrade.config.settings import ETF_ids, \
-    ETF_info_file
+from others.Investment.THS.AutoTrade.config.settings import ETF_ids
+    # ETF_info_file
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -344,7 +344,7 @@ def main():
 
     # file_path = "../../组合/组合_持仓_今天调仓_历史调仓.xlsx"
     # file_path = Combination_info_file
-    file_path = ETF_info_file
+    file_path = '组合持仓_历史调仓_今天调仓.xlsx'
     custom_sheet_names = {
         'summary_df': '持仓汇总表',
         'today_trade_df': '今天调仓',

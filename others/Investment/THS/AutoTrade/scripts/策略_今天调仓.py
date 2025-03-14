@@ -1,6 +1,7 @@
 # scripts/策略_今天调仓.py
 import datetime
 import os
+from pprint import pprint
 
 # import UserAgent
 import openpyxl
@@ -89,7 +90,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
             # 文件不存在，创建新文件
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
-        logger.info(f"成功保存数据到文件: {filename}, 表名称: {sheet_name}")
+        pprint(f"成功保存数据到文件: {filename}, 表名称: {sheet_name}")
     except Exception as e:
         logger.error(f"保存数据到文件失败: {e}")
 
@@ -104,7 +105,7 @@ def clear_sheet(filename, sheet_name):
                 # 删除所有行
                 ws.delete_rows(1, ws.max_row)
                 wb.save(filename)
-                logger.info(f"成功清空表格: {sheet_name} 文件: {filename}")
+                pprint(f"成功清空表格: {sheet_name} 文件: {filename}")
             else:
                 logger.warning(f"表格 {sheet_name} 不存在于文件: {filename}")
         except FileNotFoundError:
@@ -197,9 +198,9 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             if os.path.exists(temp_file):
                 os.replace(temp_file, ETF_Combination_TODAY_ADJUSTMENT_FILE)
 
-            logger.info(f"新增{len(new_data)}条唯一调仓记录")
+            pprint(f"新增{len(new_data)}条唯一调仓记录")
         else:
-            logger.info("没有新增调仓数据")
+            pprint("没有新增调仓数据")
             sorted_df = existing_df
 
         return sorted_df.drop(columns=['strict_id'], errors='ignore')
@@ -216,7 +217,7 @@ async def strategy_main():
     all_today_trades_info = []
     all_latest_trade_info = []
 
-    logger.info("开始处理策略调仓信息")
+    pprint("开始处理策略调仓信息")
     for strategy_id in strategy_ids:
         combination_name = Strategy_id_to_name.get(strategy_id, '未知策略')
         latest_trade_info, trade_date = get_latest_position_and_trade(strategy_id)
@@ -228,7 +229,7 @@ async def strategy_main():
     # 过滤掉创业板股票的交易信息
     all_latest_trade_info_without_sc = [trade for trade in all_latest_trade_info if trade['市场'] not in ['创业板', '科创板']]
     all_today_trades_info_without_sc = [trade for trade in all_today_trades_info if trade['市场'] not in ['创业板', '科创板']]
-    # logger.info("去掉参考价大于30的")
+    # pprint("去掉参考价大于30的")
     # all_today_trades_info_without_sc = [trade for trade in all_today_trades_info_without_sc if trade['参考价'] < 30]
 
     today_trades_without_sc_df = pd.DataFrame(all_today_trades_info_without_sc)
@@ -240,7 +241,7 @@ async def strategy_main():
 
     # 保存今天的数据，即使为空也会覆盖昨天的数据
     save_to_excel(today_trades_without_sc_df, file_path, sheet_name='策略今天调仓', index=False)
-    logger.info(f'今日调仓：\n {today_trades_without_sc_df}')
+    pprint(f'今日调仓：\n {today_trades_without_sc_df}')
 
     if not today_trades_without_sc_df.empty:
         # 发送通知
@@ -259,11 +260,11 @@ async def strategy_main():
         # 创建标志文件
         with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
             f.write("策略调仓已完成")
-            logger.info("创建标志文件成功")
+            pprint("创建标志文件成功")
     else:
-        logger.info("未发送通知: 策略今天有调仓，但是是非沪深股票或无新增调仓")
+        pprint("未发送通知: 策略今天有调仓，但是是非沪深股票或无新增调仓")
 
-    logger.info("策略调仓信息处理完成")
+    pprint("策略调仓信息处理完成")
 
 if __name__ == '__main__':
     strategy_id_to_name = Strategy_id_to_name

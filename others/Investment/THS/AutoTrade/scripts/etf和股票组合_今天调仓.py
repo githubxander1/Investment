@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import os
+from pprint import pprint
 
 import openpyxl
 import pandas as pd
@@ -45,12 +46,12 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
     newest_post_infos = []
 
     if data is None:
-        logger.info(f"ID: {portfolio_id} 无数据")
+        pprint(f"ID: {portfolio_id} 无数据")
         return newest_post_infos
 
     data = data.get('data', None)
     if data is None:
-        logger.info(f"ID: {portfolio_id} 无数据")
+        pprint(f"ID: {portfolio_id} 无数据")
         return newest_post_infos
         # 如果 data 是列表，遍历每个元素
     if isinstance(data, list):
@@ -120,7 +121,7 @@ def clear_sheet(filepath, sheet_name):
             ws = wb[sheet_name]
             ws.delete_rows(1, ws.max_row)
             wb.save(filepath)
-            logger.info(f"成功清空表格: {sheet_name}")
+            pprint(f"成功清空表格: {sheet_name}")
         else:
             logger.debug(f"表格 {sheet_name} 不存在，无需清空")  # 降低日志级别 ✅
     except FileNotFoundError:
@@ -133,7 +134,7 @@ def create_flag_file(flag_file):
     try:
         with open(flag_file, "w") as f:
             f.write("已创建标志文件")
-        logger.info(f"创建标志文件: {flag_file}")
+        pprint(f"创建标志文件: {flag_file}")
     except Exception as e:
         logger.error(f"创建标志文件失败: {e}")
 
@@ -151,7 +152,7 @@ def process_today_trades(ids, is_etf=True):
                 today_records.append(item)
 
     if not today_records:
-        logger.info(f"所选{'ETF' if is_etf else '股票组合'}今天无调仓")
+        pprint(f"所选{'ETF' if is_etf else '股票组合'}今天无调仓")
         return None
 
     today_trade_df = pd.DataFrame(today_records)
@@ -242,7 +243,7 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
 
             # # 修改为：{sheet_name}操作
             notification_msg = f"\n> " + "\n".join(
-                [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+                [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
                  for _, row in new_data.iterrows()])
             send_notification(notification_msg)
 
@@ -251,7 +252,7 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
 
             logger.info(f"新增{len(new_data)}条唯一调仓记录")
         else:
-            logger.info("没有新增调仓数据")
+            pprint("没有新增调仓数据")
             sorted_df = existing_df
 
         return sorted_df.drop(columns=['strict_id'], errors='ignore')
@@ -265,7 +266,7 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
 
 
 async def ETF_Combination_main():
-    logger.info("开始处理ETF和股票组合调仓信息")
+    pprint("开始处理ETF和股票组合调仓信息")
 
     # 处理 ETF 组合
     etf_today_trade_df = process_today_trades(ETF_ids, is_etf=True)
@@ -279,14 +280,14 @@ async def ETF_Combination_main():
             # print(existing_etf_df)
         except FileNotFoundError:
             existing_etf_df = pd.DataFrame()
-            logger.info("ETF Excel文件不存在，创建新文件")
+            pprint("ETF Excel文件不存在，创建新文件")
         except ValueError:
             existing_etf_df = pd.DataFrame()
-            logger.info("ETF工作表不存在，创建新工作表")
+            pprint("ETF工作表不存在，创建新工作表")
 
         await check_new_data(existing_etf_df, etf_today_trade_df, sheet_name='ETF最新调仓')
     else:
-        logger.info("今天没有新的ETF调仓操作")
+        pprint("今天没有新的ETF调仓操作")
 
     # 处理股票组合
     stock_today_trade_df = process_today_trades(Combination_ids, is_etf=False)
@@ -300,14 +301,14 @@ async def ETF_Combination_main():
             # print(existing_stock_df)
         except FileNotFoundError:
             existing_stock_df = pd.DataFrame(columns=stock_today_trade_df.columns)  # ✅ 带列名
-            logger.info("股票组合 Excel文件不存在，创建新文件")
+            pprint("股票组合 Excel文件不存在，创建新文件")
         except ValueError:
             existing_stock_df = pd.DataFrame(columns=stock_today_trade_df.columns)  # ✅ 带列名
-            logger.info("股票组合工作表不存在，创建新工作表")
+            pprint("股票组合工作表不存在，创建新工作表")
 
         await check_new_data(existing_stock_df, stock_today_trade_df, sheet_name='股票组合最新调仓')
     else:
-        logger.info("今天没有新的股票组合调仓操作")
+        pprint("今天没有新的股票组合调仓操作")
 
 
 

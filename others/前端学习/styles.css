@@ -1,0 +1,43 @@
+.carousel {
+    width: 100%; /* 根据需要调整宽度 */
+    height: 100%; /* 根据需要调整高度 */
+    display: flex;
+    transition: all 0.5s;
+    transform: translateX(0); /* 修正transform属性 */
+}
+
+/* 设置图片的尺寸 */
+.container > ul img {
+    width: 100%; /* 使用百分比 */
+    height: auto; /* 保持图片比例 */
+    max-width: 300px; /* 最大宽度 */
+    max-height: 500px; /* 最大高度 */
+}
+
+/* 设置底部按钮的样式 */
+.container_footer {
+    position: relative;
+    bottom: 10px;
+    display: flex;
+    /* outline: 1px solid red; */
+    left: 50%; /* 将按钮居中 */
+    transform: translateX(-50%); /* 使用translateX进行水平居中 */
+}
+
+.container_footer span {
+    display: inline-block; /* 使span元素变为行内块级元素 */
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.container_footer span:hover {
+    cursor: pointer; /* 鼠标悬停时显示为手形 */
+}
+
+.container_footer span.active {
+    background-color: #fff;
+    border-color: #fff;
+}

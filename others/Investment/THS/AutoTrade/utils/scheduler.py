@@ -1,6 +1,8 @@
 # D:\Xander\PycharmProject\others\Investment\THS\AutoTrade\utils\scheduler.py
 import asyncio
 from datetime import datetime, time as dt_time, timedelta
+from pprint import pprint
+
 import pandas_market_calendars as mcal
 
 from others.Investment.THS.AutoTrade.config import settings
@@ -45,7 +47,7 @@ class Scheduler:
 
     async def start(self):
         """启动调度器核心逻辑"""
-        logger.info(f"调度器启动 | 时间窗口: {self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}")
+        pprint(f"调度器启动 | 时间窗口: {self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}")
 
         while not self._shutdown.is_set():
             if self._within_time_window():
@@ -64,4 +66,4 @@ class Scheduler:
     async def stop(self):
         """优雅停止调度器"""
         self._shutdown.set()
-        logger.info("调度器已停止")
+        pprint("调度器已停止")
