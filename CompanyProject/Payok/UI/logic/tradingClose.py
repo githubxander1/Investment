@@ -29,15 +29,14 @@ def run(playwright: Playwright) -> None:
     # 断言第二个 #exeStatus 元素包含文本 "Success"
     # assert "Success" in page.locator("#exeStatus").nth(1).text_content()
 
-    page.wait_for_timeout(10000)
+    page.wait_for_timeout(15000)
     # 断言 #exeResult 元素包含文本 "Success"
     assert "Success" in page.locator("#exeResult").text_content()
     # if expect(page.locator("#exeResult")).to_contain_text("Success"):
 
     state = page.locator("#exeResult").text_content()
     if state == "Success":
-        print(state)
-        print("交易流程通畅")
+        print(f"{state} 交易流程通畅")
     else:
         print("交易流程异常")
     # expect(page.locator("#exeResult")).to_match_aria_snapshot("- text: Success")
