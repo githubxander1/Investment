@@ -275,9 +275,11 @@ async def ETF_Combination_main():
     if etf_today_trade_df is not None:
         logger.info(f'ETF今日调仓：\n {etf_today_trade_df}')
         try:
+            # 清空昨天的数据
+            clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, 'ETF最新调仓')  # 如果不需要清空，可以注释掉
             existing_etf_df = pd.read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='ETF最新调仓')
-            # print('已存在数据ETF：')
-            # print(existing_etf_df)
+            print('已存在数据ETF：')
+            print(existing_etf_df)
         except FileNotFoundError:
             existing_etf_df = pd.DataFrame()
             pprint("ETF Excel文件不存在，创建新文件")
@@ -296,6 +298,8 @@ async def ETF_Combination_main():
     if stock_today_trade_df is not None:
         logger.info(f'股票组合今日调仓：\n {stock_today_trade_df}')
         try:
+            # 清空昨天的数据
+            clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '股票组合最新调仓')  # 如果不需要清空，可以注释掉
             existing_stock_df = pd.read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='股票组合最新调仓')
             # print('已存在数据股票：')
             # print(existing_stock_df)
