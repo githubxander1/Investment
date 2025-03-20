@@ -37,6 +37,7 @@ compare_Combination_info_file = os.path.join(DATA_DIR, '股票组合对比.xlsx'
 
 Strategy_info_file = os.path.join(DATA_DIR, '策略信息.xlsx')
 Combination_list_file = os.path.join(DATA_DIR, '组合榜单列表.xlsx')
+Strategy_list_file = os.path.join(DATA_DIR, '策略列表.xlsx')
 
 Holding_Stockes_info_file = os.path.join(DATA_DIR, '账户持仓信息.xlsx')
 
@@ -81,14 +82,15 @@ Combination_ids_to_name = {
     # '18710': '用收益率征服您'
 }
 
-Strategy_ids = ['138006', '155259', '155270', '155680', '138036']
+Strategy_ids = ['155680', '137789', '138006', '155273']
 Strategy_id_to_name = {
-        '155259': 'TMT资金流入战法',
-        '155680': 'GPT定期精选',
+        '155680': 'GPT定期精选',#技术面
+        '137789': '高现金毛利战法',#基本面
+        '138006': '连续五年优质股战法',#基本面
+        '155273': '国资云概念',#消息面
+
         '138036': '低价小盘股战法',
         '155270': '中字头概念',
-        '137789': '高现金毛利战法',
-        '138006': '连续五年优质股战法',
         '136567': '净利润同比大增低估值战法',
         '138127': '归母净利润高战法',
         '118188': '均线粘合平台突破'

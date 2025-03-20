@@ -99,6 +99,7 @@ def run(playwright: Playwright) -> None:
     page1.get_by_role("textbox", name="CS Contact Number").fill("15318544154")
     page1.get_by_role("textbox", name="CS Contact Email").fill("1@qq.com")
 
+    page.pause()
     # 上传文件
     def upload_file(file_path, form_id):
         if not os.path.exists(file_path):
