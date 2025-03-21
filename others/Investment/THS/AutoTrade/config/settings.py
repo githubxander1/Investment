@@ -24,8 +24,8 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.xlsx')
 SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.xlsx')
 
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.xlsx')
-COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.xlsx')
 ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和组合_今天调仓.xlsx')
+# COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.xlsx')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.xlsx')
 ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'ETF和股票组合持仓.xlsx')
@@ -36,8 +36,9 @@ compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
 compare_Combination_info_file = os.path.join(DATA_DIR, '股票组合对比.xlsx')
 
 Strategy_info_file = os.path.join(DATA_DIR, '策略信息.xlsx')
-Combination_list_file = os.path.join(DATA_DIR, '组合榜单列表.xlsx')
+Combination_list_file = os.path.join(DATA_DIR, '组合列表.xlsx')
 Strategy_list_file = os.path.join(DATA_DIR, '策略列表.xlsx')
+Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.xlsx')
 
 Holding_Stockes_info_file = os.path.join(DATA_DIR, '账户持仓信息.xlsx')
 
@@ -87,7 +88,7 @@ Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
         '137789': '高现金毛利战法',#基本面
         '138006': '连续五年优质股战法',#基本面
-        '155273': '国资云概念',#消息面
+        '155273': '国资云概念',#消息面  两个创业板
 
         '138036': '低价小盘股战法',
         '155270': '中字头概念',

@@ -5,7 +5,7 @@ import requests
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
-from others.Investment.THS.AutoTrade.config.settings import Strategy_ids
+from others.Investment.THS.AutoTrade.config.settings import Strategy_ids, Strategy_metrics_file
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s-%(levername)s-%(message)s")
 
@@ -160,7 +160,7 @@ def main():
     # 打印到控制台
     if all_results:
         df_all = pd.DataFrame(all_results)
-        df_all.to_excel(r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\策略对比.xlsx", index=False)
+        df_all.to_excel(Strategy_metrics_file, index=False)
         print('保存成功')
     else:
         logging.info("No successful testdata retrieved for any strategies.")

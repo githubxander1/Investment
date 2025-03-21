@@ -1,14 +1,15 @@
 import os
 import sys
 import time
-
+import asyncio
 import uiautomator2 as u2
-
 from others.Investment.THS.AutoTrade.config.settings import (
     THS_AUTO_TRADE_LOG_FILE,
     OPERATION_HISTORY_FILE,
-    OPRATION_RECORD_DONE_FILE, STRATEGY_TODAY_ADJUSTMENT_FILE, COMBINATION_TODAY_ADJUSTMENT_FILE,
-    ETF_TODAY_ADJUSTMENT_FILE
+    OPRATION_RECORD_DONE_FILE,
+    STRATEGY_TODAY_ADJUSTMENT_FILE,
+    COMBINATION_TODAY_ADJUSTMENT_FILE,
+    ETF_Combination_TODAY_ADJUSTMENT_FILE,
 )
 from others.Investment.THS.AutoTrade.pages.ths_page2 import THSPage
 from others.Investment.THS.AutoTrade.scripts.数据处理 import process_excel_files
@@ -16,7 +17,7 @@ from others.Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE)
 
-def connect_to_device():
+async def connect_to_device():
     try:
         d = u2.connect()
         logger.info(f"连接设备: {d.serial}")
@@ -25,7 +26,7 @@ def connect_to_device():
         logger.error(f"连接设备失败: {e}", exc_info=True)
         return None
 
-def start_app(d, package_name):
+async def start_app(d, package_name):
     try:
         d.app_start(package_name, wait=True)
         logger.info(f"启动app: {package_name}")
@@ -34,20 +35,20 @@ def start_app(d, package_name):
         logger.error(f"启动app失败 {package_name}: {e}", exc_info=True)
         return False
 
-def initialize_device():
-    d = connect_to_device()
+async def initialize_device():
+    d = await connect_to_device()
     if d is None:
         logger.error("连接设备失败，退出程序")
         return None
-    if not start_app(d, 'com.hexin.plat.android'):
+    if not await start_app(d, 'com.hexin.plat.android'):
         logger.error("启动APP失败，退出程序")
         return None
     return d
 
-def wait_for_flag_file(flag_file):
+async def wait_for_flag_file(flag_file):
     while not os.path.exists(flag_file):
         logger.info("等待调仓操作记录完成的标志文件...")
-        time.sleep(15)
+        await asyncio.sleep(15)
     if os.path.exists(flag_file):
         logger.info("检测到标志文件，今日调仓操作已记录完成，开始自动化交易...")
         os.remove(flag_file)
@@ -63,35 +64,33 @@ def check_files_modified(file_paths, last_modification_times):
             return True
     return False
 
-
 async def auto_main():
     logger.info("自动化交易程序开始运行")
     file_paths = [
         STRATEGY_TODAY_ADJUSTMENT_FILE,
         COMBINATION_TODAY_ADJUSTMENT_FILE,
-        ETF_TODAY_ADJUSTMENT_FILE
+        ETF_Combination_TODAY_ADJUSTMENT_FILE
     ]
     operation_history_file = OPERATION_HISTORY_FILE
     last_modification_times = get_file_modification_times(operation_history_file)
     # 等待组合调仓完成的标志文件
     flag_file = OPRATION_RECORD_DONE_FILE
-    wait_for_flag_file(flag_file)
+    await wait_for_flag_file(flag_file)
 
     # 初始化设备和页面对象
-    d = initialize_device()
+    d = await initialize_device()
     if d is None:
         logger.error("初始化设备失败，退出程序")
         sys.exit(1)
     ths_page = THSPage(d)
 
-    # # 检查文件是否有更新
-    # if check_files_modified(file_paths, last_modification_times):
-    #     operation_history_file = OPERATION_HISTORY_FILE
-    process_excel_files(ths_page, file_paths, operation_history_file)
-    #     logger.info("文件处理完成")
-    #     last_modification_times.update(get_file_modification_times(file_paths))
-    # else:
-    #     logger.info("文件没有更新，跳过处理")
+    # 检查文件是否有更新
+    if check_files_modified(file_paths, last_modification_times):
+        process_excel_files(ths_page, file_paths, operation_history_file)
+        logger.info("文件处理完成")
+        last_modification_times.update(get_file_modification_times(file_paths))
+    else:
+        logger.info("文件没有更新，跳过处理")
 
 # if __name__ == '__main__':
 #     try:

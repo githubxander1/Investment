@@ -2,7 +2,7 @@
 import asyncio
 import sys
 import os
-from datetime import time as dt_time, datetime
+from datetime import time as dt_time
 from pprint import pprint
 from typing import Dict, Tuple
 
@@ -14,8 +14,8 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 # 模块导入 ========================================================
-from others.Investment.THS.AutoTrade.scripts.etf和股票组合_今天调仓 import ETF_Combination_main, logger
-from others.Investment.THS.AutoTrade.scripts.策略_今天调仓 import strategy_main
+from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main, logger
+from others.Investment.THS.AutoTrade.scripts.策略.策略_今天调仓 import strategy_main
 from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 
 # 调度器配置 ======================================================

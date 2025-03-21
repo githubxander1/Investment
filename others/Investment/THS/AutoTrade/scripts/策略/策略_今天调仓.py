@@ -31,30 +31,20 @@ api_client = APIClient()
 
 ua = UserAgent()
 
-# 手动创建策略ID到策略名称的映射
-
-
-def send_http_request(url, params, headers):
-    try:
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()  # 检查请求是否成功
-        return response.json()
-    except requests.RequestException as e:
-        logger.error(f"请求失败: {e}")
-        return None
 
 def get_latest_position_and_trade(strategy_id):
-    strategy_id_to_name = Strategy_id_to_name
+    # strategy_id_to_name = Strategy_id_to_name
     """获取策略的最新持仓和交易信息"""
-    url = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
-    params = {"strategyId": strategy_id}
+    url = f"https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit?strategyId={strategy_id}"
+    # params = {"strategyId": strategy_id}
 
     headers = {
         "User-Agent": ua.random
     }
 
-    data = send_http_request(url, params, headers)
-    # pprint(data)
+    data = requests.get(url, headers=headers)
+    data = data.json()
+    pprint(data)
     if data:
         latest_trade = data.get('result', {}).get('latestTrade', {})
         trade_date = latest_trade.get('tradeDate', 'N/A')
@@ -63,19 +53,18 @@ def get_latest_position_and_trade(strategy_id):
         latest_trade_info = []
         for trade_info in trade_stocks:
             code = trade_info.get('stkCode', 'N/A').split('.')[0]
-            trade_entry = {
-                '策略名称': strategy_id_to_name.get(strategy_id, '未知策略'),
-                '时间': trade_date,
+            latest_trade_info.append({
+                '策略名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
                 '操作': trade_info.get('operationType', 'N/A'),
-                '市场': determine_market(code),
                 '股票名称': trade_info.get('stkName', 'N/A'),
                 '最新价': trade_info.get('tradePrice', 'N/A'),
-                '新比例%': round(trade_info.get('position', 'N/A') * 100,2)
-            }
-            latest_trade_info.append(trade_entry)
-        return latest_trade_info, trade_date
-    else:
-        return [], 'N/A'
+                '新比例%': round(trade_info.get('position', 'N/A') * 100,2),
+                '市场': determine_market(code),
+                '时间': trade_date,#注意：有两个时间，格式不同
+            })
+            return latest_trade_info, trade_date
+        else:
+            return [], 'N/A'
 
 def save_to_excel(df, filename, sheet_name, index=False):
     """将DataFrame保存到Excel文件中"""
@@ -90,7 +79,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
             # 文件不存在，创建新文件
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
-        pprint(f"成功保存数据到文件: {filename}, 表名称: {sheet_name}")
+            pprint(f"成功保存数据到文件: {filename}, 表名称: {sheet_name}")
     except Exception as e:
         logger.error(f"保存数据到文件失败: {e}")
 
@@ -212,18 +201,18 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             logger.error(f"临时文件保留在: {temp_file}")
         return existing_df
 async def strategy_main():
-    strategy_id_to_name = Strategy_id_to_name
-    strategy_ids = Strategy_ids
+    # strategy_id_to_name = Strategy_id_to_name
+    # strategy_ids = Strategy_ids
     all_today_trades_info = []
     all_latest_trade_info = []
 
     pprint("开始处理策略调仓信息")
-    for strategy_id in strategy_ids:
-        combination_name = Strategy_id_to_name.get(strategy_id, '未知策略')
+    for strategy_id in Strategy_ids:
+        # combination_name = Strategy_id_to_name.get(strategy_id, '未知策略')
         latest_trade_info, trade_date = get_latest_position_and_trade(strategy_id)
         if latest_trade_info:
             all_latest_trade_info.extend(latest_trade_info)
-            today_trades = [trade for trade in latest_trade_info if trade['时间'] == datetime.datetime.now().date().strftime('%Y%m%d')]
+            today_trades = [trade for trade in latest_trade_info if trade['时间'] == datetime.datetime.now().date().strftime('%Y%m%d')] #筛选今天的调仓
             all_today_trades_info.extend(today_trades)
 
     # 过滤掉创业板股票的交易信息
