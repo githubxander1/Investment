@@ -1,0 +1,11 @@
+
+payok:
+    platform:'192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'payok', 'platform'
+    merchant:'192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'payok', 'merchant'
+    sales:'192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'payok', 'sales'
+
+paylabs:
+    operator:'192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'operator'
+    platform:'192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'operator'
+    merchant:'192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'merchant_operator'
+    sales:'192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'sales_operator'

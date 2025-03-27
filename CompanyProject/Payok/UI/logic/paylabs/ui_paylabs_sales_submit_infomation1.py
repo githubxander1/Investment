@@ -7,33 +7,12 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 from CompanyProject.Payok.UI.logic.paylabs.ui_paylabs_merchant_register import paylabs_merchant_register
 from CompanyProject.Payok.UI.utils.GoogleSecure import CalGoogleCode
 # from CompanyProject.Payok.UI.utils.get_email_code import cookies
-from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_slider_verification
+from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_block_slider_verification
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
+from CompanyProject.Payok.UI.utils.generate_google_code import generate_google_code
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '../..', 'data')
-pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
 
-def generate_google_code(host, port, user, password, database, table_name, login_name):
-    db_handler = SQLHandler(host, port, user, password, database)
-    db_handler.connect()
 
-    secret_key = db_handler.get_google_secret_key(table_name, login_name)
-    if secret_key:
-        print("谷歌私钥:", secret_key)
-    else:
-        print("未发现给定邮箱的记录")
-        return None
-
-    db_handler.disconnect()
-    try:
-        current_time = int(time.time()) // 30
-        generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
-        print(f"生成的谷歌验证码: {generated_code}")
-        return generated_code
-    except ValueError as e:
-        print("错误:", e)
-        return None
 
 def client_login(page , merchant_login_name):
     # 客户端登录
@@ -48,7 +27,8 @@ def client_login(page , merchant_login_name):
     page.get_by_role("textbox", name="Password").fill("A123456@test")
     # page.get_by_role("textbox", name="Password").fill("Abc@123456789")
 
-    perform_slider_verification(page)
+    perform_block_slider_verification(page)
+
     page.get_by_role("button", name="Login").click()
 
     paylabs_merchant_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'sales_operator', merchant_login_name)
@@ -432,5 +412,10 @@ def run(playwright: Playwright) -> None:
     context.close()
     browser.close()
 
-with sync_playwright() as playwright:
-    run(playwright)
+if __name__ == '__main__':
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATA_DIR = os.path.join(BASE_DIR, '../..', 'data')
+    pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
+
+    with sync_playwright() as playwright:
+        run(playwright)
