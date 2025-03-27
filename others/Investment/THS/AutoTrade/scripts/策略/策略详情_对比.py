@@ -161,7 +161,7 @@ def main():
     if all_results:
         df_all = pd.DataFrame(all_results)
         df_all.to_excel(Strategy_metrics_file, index=False)
-        print('保存成功')
+        print(f'保存成功到{Strategy_metrics_file}')
     else:
         logging.info("No successful testdata retrieved for any strategies.")
 

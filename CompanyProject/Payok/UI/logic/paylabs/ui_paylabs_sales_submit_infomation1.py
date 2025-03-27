@@ -35,7 +35,7 @@ def generate_google_code(host, port, user, password, database, table_name, login
         print("错误:", e)
         return None
 
-def client_login(page):
+def client_login(page , merchant_login_name):
     # 客户端登录
     page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
     # 切换语言
@@ -43,7 +43,7 @@ def client_login(page):
     page.get_by_role("link", name="English").click()
 
     # sales 端登录
-    merchant_login_name = '15318544153'
+    # merchant_login_name = '15318544153'
     page.get_by_role("textbox", name="Phone Number").fill(merchant_login_name)
     page.get_by_role("textbox", name="Password").fill("A123456@test")
     # page.get_by_role("textbox", name="Password").fill("Abc@123456789")
@@ -226,14 +226,14 @@ def client_submit_info(page,email):
     # page.wait_for_timeout(2000)
     # page.get_by_role("link", name="I got it").click()
 
-def platform_login(page):
+def platform_login(page ,paylabs_operator_login_name):
     # 平台登录
     page.goto("http://paylabs-test.com/platform/paylabs-user-login.html")
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
 
     # 登录
-    paylabs_operator_login_name = 'test001@qq.com'
+    # paylabs_operator_login_name = 'test001@qq.com'
     page.get_by_role("textbox", name="E-mail").fill(paylabs_operator_login_name)
     page.get_by_role("textbox", name="Password Verification Code").fill("Abc@123456789")
 
@@ -408,17 +408,20 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
 
     #商户注册
-    email = "paylabs8@test.com"
-    # paylabs_merchant_register(playwright, email)
+    register_email = "paylabs8@test.com"
+    # paylabs_merchant_register(playwright, register_email)
+
     # 客户端操作
+    merchant_login_name = '15318544153'
     page = context.new_page()
-    client_login(page)
+    client_login(page, merchant_login_name)
     client_setting_sales(page)
-    client_submit_info(page,email)
+    client_submit_info(page,register_email)
 
     # 平台操作
+    paylabs_operator_login_name = 'test001@qq.com'
     page2 = context.new_page()
-    platform_login(page2)
+    platform_login(page2, paylabs_operator_login_name)
     platform_risk_audit(page2)# 风控审核
     page2.wait_for_timeout(3000)
     platform_legal_risk_audit(page2)#法律风控审核

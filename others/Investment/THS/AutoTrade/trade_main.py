@@ -1,10 +1,15 @@
 # D:\Xander\PycharmProject\others\Investment\THS\AutoTrade\trade_main.py
 import asyncio
+import logging
 import sys
 import os
 from datetime import time as dt_time
 from pprint import pprint
 from typing import Dict, Tuple
+
+from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODAY_ADJUSTMENT_FILE, \
+    STRATEGY_TODAY_ADJUSTMENT_FILE
+from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
 
 # 路径初始化 ======================================================
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,7 +19,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 # 模块导入 ========================================================
-from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main, logger
+from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main
 from others.Investment.THS.AutoTrade.scripts.策略.策略_今天调仓 import strategy_main
 from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 
@@ -41,24 +46,24 @@ def create_scheduler(name: str, config: tuple, callback) -> Scheduler:
 async def strategy_wrapper():
     """策略任务执行包装"""
     if not strategy_main:
-        logger.error("策略模块加载失败: strategy_main 为 None")
+        print("策略模块加载失败: strategy_main 为 None")
         return
 
-    pprint("[策略任务] 开始执行...")
+    pprint("\n[策略任务] 开始执行...")
     try:
         await strategy_main()
-        pprint("[策略任务] 执行完成")
+        pprint("[策略任务] 执行完成----------------------------------------------------\n")
     except Exception as e:
-        logger.error(f"[策略任务] 执行异常: {str(e)}", exc_info=True)
+        print(f"[策略任务] 执行异常: {str(e)}", exc_info=True)
 
 async def etf_combo_wrapper():
     """组合任务执行包装"""
-    pprint("[ETF组合] 开始执行...")
+    pprint("\n[ETF组合] 开始执行...")
     try:
         await ETF_Combination_main()
-        pprint("[ETF组合] 执行完成")
+        pprint("[ETF组合] 执行完成----------------------------------------------------\n")
     except Exception as e:
-        logger.error(f"[ETF组合] 执行异常: {str(e)}", exc_info=True)
+        logging.warn(f"[ETF组合] 执行异常: {str(e)}", exc_info=True)
 
 # 主程序 =========================================================
 async def main():
@@ -84,13 +89,17 @@ async def main():
         )
 
     except Exception as e:
-        logger.critical(f"主程序异常终止: {str(e)}", exc_info=True)
+        logging.warn(f"主程序异常终止: {str(e)}", exc_info=True)
         raise
 
 if __name__ == "__main__":
     try:
+        # 清空上一次的数据
+        clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
+        clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
+        print('\n---------------------------------------------------------------------------')
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.warning("用户主动终止程序")
+        print("用户主动终止程序")
     except Exception as e:
-        logger.error(f"程序启动失败: {str(e)}", exc_info=True)
+        logging.warn(f"程序启动失败: {str(e)}", exc_info=True)

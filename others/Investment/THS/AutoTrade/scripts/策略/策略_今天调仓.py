@@ -4,13 +4,12 @@ import os
 from pprint import pprint
 
 # import UserAgent
-import openpyxl
 import pandas as pd
 import requests
 from fake_useragent import UserAgent
 
 from others.Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    STRATEGY_TODAY_ADJUSTMENT_FILE, OPRATION_RECORD_DONE_FILE, Strategy_id_to_name, Strategy_ids, \
+    STRATEGY_TODAY_ADJUSTMENT_FILE, Strategy_id_to_name, Strategy_ids, \
     ETF_Combination_TODAY_ADJUSTMENT_FILE
 from others.Investment.THS.AutoTrade.utils.api_client import APIClient
 # from others.Investment.THS.AutoTrade.utils.api_client import APIClient
@@ -41,7 +40,7 @@ def get_latest_position_and_trade(strategy_id):
 
     data = requests.get(url, headers=headers)
     data = data.json()
-    pprint(data)
+    # pprint(data)
     if data:
         latest_trade = data.get('result', {}).get('latestTrade', {})
         trade_date = latest_trade.get('tradeDate', 'N/A')
@@ -162,14 +161,11 @@ async def check_new_data(existing_df, today_trade_df, sheet_name):
             logger.error(f"临时文件保留在: {temp_file}")
         return existing_df
 async def strategy_main():
-    # strategy_id_to_name = Strategy_id_to_name
-    # strategy_ids = Strategy_ids
     all_today_trades_info = []
     all_latest_trade_info = []
 
     pprint("开始处理策略调仓信息")
     for strategy_id in Strategy_ids:
-        # combination_name = Strategy_id_to_name.get(strategy_id, '未知策略')
         latest_trade_info, trade_date = get_latest_position_and_trade(strategy_id)
         if latest_trade_info:
             all_latest_trade_info.extend(latest_trade_info)
@@ -177,7 +173,6 @@ async def strategy_main():
             all_today_trades_info.extend(today_trades)
 
     # 过滤掉创业板股票的交易信息
-    all_latest_trade_info_without_sc = [trade for trade in all_latest_trade_info if trade['市场'] not in ['创业板', '科创板']]
     all_today_trades_info_without_sc = [trade for trade in all_today_trades_info if trade['市场'] not in ['创业板', '科创板']]
     # pprint("去掉参考价大于30的")
     # all_today_trades_info_without_sc = [trade for trade in all_today_trades_info_without_sc if trade['参考价'] < 30]
@@ -208,16 +203,16 @@ async def strategy_main():
         send_notification(notification_msg)
 
         # 创建标志文件
-        with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
-            f.write("策略调仓已完成")
-            pprint("创建标志文件成功")
+        # with open(f"{OPRATION_RECORD_DONE_FILE}", "w") as f:
+        #     f.write("策略调仓已完成")
+        #     pprint("创建标志文件成功")
     else:
         pprint("未发送通知: 策略今天有调仓，但是是非沪深股票或无新增调仓")
 
     pprint("策略调仓信息处理完成")
 
 if __name__ == '__main__':
-    strategy_id_to_name = Strategy_id_to_name
+    # strategy_id_to_name = Strategy_id_to_name
     import asyncio
 
     asyncio.run(strategy_main())
