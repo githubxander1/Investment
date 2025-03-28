@@ -11,7 +11,7 @@ def read_excel(file_path, sheet_name):
         # 读取Excel文件
         if os.path.exists(file_path):
             df = pd.read_excel(file_path, sheet_name=sheet_name)
-            pprint(f"成功读取文件: {file_path}, 表名称: {sheet_name}")
+            # pprint(f"成功读取文件: {file_path}, 表名称: {sheet_name}")
             return df
         else:
             logger.warning(f"文件 {file_path} 不存在，返回空DataFrame")
@@ -28,7 +28,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
             # 文件存在，追加模式
             with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
-                pprint(f"成功保存数据到文件: {filename}, 表名称: {sheet_name}")
+                pprint(f"{df}  成功保存数据到文件: {filename}, 表名称: {sheet_name}")
         else:
             # 文件不存在，创建新文件
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:

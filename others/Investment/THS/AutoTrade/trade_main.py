@@ -49,19 +49,20 @@ async def strategy_wrapper():
         print("策略模块加载失败: strategy_main 为 None")
         return
 
-    pprint("\n[策略任务] 开始执行...")
+    print("[策略任务] 开始执行...")
     try:
         await strategy_main()
-        pprint("[策略任务] 执行完成----------------------------------------------------\n")
+        print("\n[策略任务] 执行完成----------------------------------------------------")
     except Exception as e:
         print(f"[策略任务] 执行异常: {str(e)}", exc_info=True)
 
 async def etf_combo_wrapper():
     """组合任务执行包装"""
-    pprint("\n[ETF组合] 开始执行...")
+    print("\n[ETF组合] 开始执行...")
     try:
         await ETF_Combination_main()
-        pprint("[ETF组合] 执行完成----------------------------------------------------\n")
+        print("\n[ETF组合] 执行完成----------------------------------------------------")
+        # print(f"下一次运行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
     except Exception as e:
         logging.warn(f"[ETF组合] 执行异常: {str(e)}", exc_info=True)
 
@@ -95,8 +96,8 @@ async def main():
 if __name__ == "__main__":
     try:
         # 清空上一次的数据
-        clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
-        clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
+        # clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
+        # clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
         print('\n---------------------------------------------------------------------------')
         asyncio.run(main())
     except KeyboardInterrupt:

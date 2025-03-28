@@ -125,8 +125,6 @@ async def ETF_Combination_main():
         etf_today_trades = fetch_and_extract_data(etf_id, is_etf=True)
         etf_today_trades_all.extend(etf_today_trades)
 
-    # pprint(f'ETF的今日调仓：\n {etf_today_trades_all}')
-
     # 处理股票组合
     stock_today_trades_all = []
     for stock_id in Combination_ids:
@@ -135,48 +133,51 @@ async def ETF_Combination_main():
     # pprint(f'股票组合的今日调仓：\n {stock_today_trades_all}')
 
     all_today_trades = etf_today_trades_all + stock_today_trades_all
+
     # 倒序排序
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)
+
     # 合并两个表数据
     all_today_trades_df = pd.DataFrame(all_today_trades)
-    # all_today_trades_df.to_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, sheet_name='所有今天调仓', index=False)
-    print(f'所有今天调仓：\n {all_today_trades_df}')
-    print(f'今天总共有{len(all_today_trades_df)}条调仓数据')
+    all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1)
+    #索引倒序，比如5,4,3,2,1
+    # all_today_trades_df = all_today_trades_df[::-1]
+    print(f'{len(all_today_trades_df)} 条今天调仓数据, 如下：\n {all_today_trades_df}\n')
 
-    # 倒序排序并重置索引
+    # 读取历史数据
+    exists_data = read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
+    if exists_data is not None:
+        exists_data = exists_data.reset_index(drop=True).set_index(exists_data.index + 1)
+    print(f'{len(exists_data)} 条历史数据数量：, 如下：\n {exists_data}\n')
+
+    if exists_data is None or exists_data.empty:
+        new_data = all_today_trades_df
+        print('历史数据为空，新增所有今天调仓数据')
+        # save_to_excel(new_data, ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
+    else:
+        # 确保 '代码' 列数据类型一致
+        exists_data['代码'] = exists_data['代码'].astype(str).str.zfill(6)
+
+        # 找出新增数据
+        combined_df = pd.concat([all_today_trades_df, exists_data], ignore_index=True)
+        new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
+
+    # 检查数据
     if not all_today_trades_df.empty:
-        exists_data = read_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
-        exists_data['代码'] = all_today_trades_df['代码'].astype(str).str.zfill(6)
-        print(f'历史数据：\n {exists_data}')
-
-        exists_data_count = len(exists_data)
-        print(f'历史数据的数量：{exists_data_count}')
-
-        #如果所有今天调仓的数据数量大于历史数据的数据，则附加新数据到Excel中，并通知
-        if exists_data_count < len(all_today_trades_df):
-            # 找出新增数据
-            # new_data1 = all_today_trades_df[~all_today_trades_df['strict_id'].isin(exists_data['strict_id'])]
-            new_data = all_today_trades_df[~all_today_trades_df].isin(exists_data)# 解释：找出all_today_trades_df中，不在exists_data中的数据
-
+        if not new_data.empty:
+            new_data = new_data.reset_index(drop=True).set_index(new_data.index + 1)
             save_to_excel(new_data, ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
-            # new_data = all_today_trades_df.iloc[-1]
-            print(f'新增数据：\n {new_data}')
+            print(f'{len(new_data)} 条新增数据，如下：\n {new_data}')
 
-            #通知
-            send_notification(f"新调仓，{new_data['组合名称']} {new_data['操作']} {new_data['股票名称']} {new_data['代码']} {new_data['新比例%']}% {new_data['最新价']} \n{new_data['时间']}")
-            # return new_data
+            # 生成通知消息
+            notification_msg = f"\n> " + "\n".join(
+                [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+                 for _, row in new_data.iterrows()])
+            send_notification(notification_msg)
         else:
             print('没有新增数据')
-            # return exists_data
-    # else:
-    #     print('今天没有ETF和股票组合调仓数据')
+    else:
+        print('今天没有ETF和股票组合调仓数据')
 
-        # 检查并保存数据
-    #     await check_data(all_today_trades_df)
-    #     save_to_excel(all_today_trades_df, ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
-    # else:
-    #     print('今天没有ETF和股票组合调仓数据')
-
-if __name__ == "__main__":
-    # clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
+if __name__ == '__main__':
     asyncio.run(ETF_Combination_main())
