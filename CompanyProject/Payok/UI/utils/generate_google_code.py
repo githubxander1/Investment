@@ -29,17 +29,17 @@ def generate_google_code(host, port, user, password, database, table_name, login
     db_handler.connect()
 
     secret_key = db_handler.get_google_secret_key(table_name, login_name)
-    if secret_key:
-        print("谷歌私钥:", secret_key)
-    else:
-        print("未发现给定邮箱的记录")
-        return None
+    # if secret_key:
+    #     print("谷歌私钥:", secret_key)
+    # else:
+    #     print("未发现给定邮箱的记录")
+    #     return None
 
     db_handler.disconnect()
     try:
         current_time = int(time.time()) // 30
         generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
-        print(f"生成的谷歌验证码: {generated_code}")
+        # print(f"生成的谷歌验证码: {generated_code}")
         return generated_code
     except ValueError as e:
         print("错误:", e)

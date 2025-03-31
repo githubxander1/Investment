@@ -23,7 +23,7 @@ class SQLHandler:
     def disconnect(self):
         if self.connection:
             self.connection.close()
-            print("数据库连接已关闭")
+            # print("数据库连接已关闭")
 
     def get_google_secret_key(self, table_name, login_name):
         if not self.connection:

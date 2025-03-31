@@ -7,17 +7,28 @@ from datetime import time as dt_time
 from pprint import pprint
 from typing import Dict, Tuple
 
-from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODAY_ADJUSTMENT_FILE, \
-    STRATEGY_TODAY_ADJUSTMENT_FILE
-from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
 
 # 路径初始化 ======================================================
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..'))
+print(f"当前目录: {current_dir}")
+project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..', '..'))
+print(f"项目根目录: {project_root}")
 
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
+    print(f"已将项目根目录添加到 sys.path: {project_root}")
+else:
+    print(f"项目根目录已在 sys.path 中: {project_root}"
+    )
+from pathlib import Path  
+sys.path.append(Path(__file__).parent.as_posix())  
+sys.path.append(Path(__file__).parent.parent.as_posix())  
+sys.path.append(Path(__file__).parent.parent.parent.as_posix())  
+print(sys.path)  
 
+from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODAY_ADJUSTMENT_FILE, \
+    STRATEGY_TODAY_ADJUSTMENT_FILE
+from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
 # 模块导入 ========================================================
 from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main
 from others.Investment.THS.AutoTrade.scripts.策略.策略_今天调仓 import strategy_main

@@ -46,15 +46,15 @@ class CalGoogleCode():
 
         # secret_key = db_handler.get_google_secret_key('2695418206@qq.com')
         secret_key = db_handler.get_google_secret_key('merchant_operator', 'paylabs2@test.com')
-        if secret_key:
-            print("Google Secret Key:", secret_key)
+        # if secret_key:
+        #     print("Google Secret Key:", secret_key)
 
         db_handler.disconnect()
         try:
             current_time = int(time.time()) // 30
             # print(f"Current Time: {current_time}")
             generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
-            print(f"Generated Code: {generated_code}")
+            # print(f"Generated Code: {generated_code}")
             print(CalGoogleCode.cal_google_code(secret_key))  # 并未实例化CalGoogleCode，也可以调用它的方法
             return generated_code
         except ValueError as e:

@@ -26,15 +26,28 @@ def paylabs_merchant_register(playwright: Playwright, email) -> None:
     page.get_by_role("textbox", name="Confirm password *", exact=True).fill("A123456@test")
     page.locator("#invitation_code").fill("123456")
     page.get_by_role("button", name="Register").click()
+
     page.get_by_role("button", name="I have read and agree to the").click()#同意
+    gologin = page.locator("#gologin")
+    # page.pause()
+    
+    try:
+        # 检查邮箱是否已注册
+        expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered")
+        print("邮箱已注册！")
+    except AssertionError:  # 捕获 Assertion 错误
+        # 检查 gologin 元素是否存在且可见
+        page.wait_for_timeout(6000)
+        if gologin.is_visible():
+            gologin.click()
+            print("注册成功")
+            print("点击去登录")
+        else:
+            print("未找到 'gologin' 元素或其不可见")
+    except Exception as e:  # 捕获其他未知异常
+        print(f"发生未知错误: {e}")
 
-    #点击去登录
-    # page.get_by_role("link", name="去登录").click()
-
-    # page.get_by_role("button", name="I have read and agree to the").click()#去登录
-
-    page.wait_for_timeout(5000)
-    # has_register = page.locator("#inputEmail").text_content("The E-mail has been registered")
+    # page.wait_for_timeout(10000)
     # if has_register.is_exist():
     #     print("注册失败：邮箱已被注册")
 
@@ -46,13 +59,26 @@ def paylabs_merchant_register(playwright: Playwright, email) -> None:
     # element = page.query_selector('#inputEmail')
     # expect(element).to_have_text(expect.string_contains('The E-mail has been registered'))
 
-    if not expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered"):
-        print("注册失败：邮箱已被注册")
-    else:
-        print("注册成功")
+    # if not expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered"):
+    #     print("注册失败：邮箱已被注册")
+    # else:
+
+    # has_register = page.locator("#inputEmail").to_contain_text("The E-mail has been registered")
+    # print(type(has_register))
+
+    # if gologin.is_visible():
+    #     gologin.click()
+    #     print("注册成功")
+    #     print("点击去登录")
+    # # elif has_register.is_visible():
+    # elif expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered"):
+    #     # print(type(expect(page.locator("#inputEmail").to_contain_text("The E-mail has been registered"))))
+    #     print("注册失败：邮箱已被注册")
+    # else:
+    #     print("注册失败")
 
 
-    page.locator("#gologin").click()
+    # page.locator("#gologin").click()
 
     #绑定谷歌验证码
     # page.get_by_role("link", name="Masuk").click()
@@ -117,7 +143,7 @@ def generate_google_code():
     except ValueError as e:
         print("错误:", e)
 if __name__ == '__main__':
-    email = "paylabs4@test.com"
+    email = "paylabs20@test.com"
     generate_google_code()
 
     with sync_playwright() as playwright:
