@@ -3,6 +3,7 @@ import asyncio
 import logging
 import sys
 import os
+import datetime
 from datetime import time as dt_time
 from pprint import pprint
 from typing import Dict, Tuple
@@ -63,19 +64,22 @@ async def strategy_wrapper():
     print("[策略任务] 开始执行...")
     try:
         await strategy_main()
-        print("\n[策略任务] 执行完成----------------------------------------------------")
+        next_run = datetime.datetime.now() + datetime.timedelta(seconds=15)
+        print(f"\n[策略组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+        print("--------------------------------------------------------------")
     except Exception as e:
-        print(f"[策略任务] 执行异常: {str(e)}", exc_info=True)
+        print(f"[策略任务] 执行异常: {str(e)}")
 
 async def etf_combo_wrapper():
     """组合任务执行包装"""
     print("\n[ETF组合] 开始执行...")
     try:
         await ETF_Combination_main()
-        print("\n[ETF组合] 执行完成----------------------------------------------------")
-        # print(f"下一次运行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+        next_run = datetime.datetime.now() + datetime.timedelta(seconds=15)
+        print(f"\n[ETF组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+        print("----------------------------------------------------")
     except Exception as e:
-        logging.warn(f"[ETF组合] 执行异常: {str(e)}", exc_info=True)
+        print(f"[ETF组合] 执行异常: {str(e)}")
 
 # 主程序 =========================================================
 async def main():

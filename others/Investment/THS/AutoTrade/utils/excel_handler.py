@@ -6,6 +6,12 @@ import pandas as pd
 
 from others.Investment.THS.AutoTrade.utils.scheduler import logger
 
+def create_empty_excel(file_path, sheet_name):
+    if not os.path.exists(file_path):
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+            pd.DataFrame(columns=['组合名称', '代码', '操作', '新比例%', '时间']).to_excel(writer, sheet_name=sheet_name, index=False)
+            logger.info(f"创建空Excel文件: {file_path}, 表名称: {sheet_name}")
+
 def read_excel(file_path, sheet_name):
     try:
         # 读取Excel文件
@@ -20,22 +26,23 @@ def read_excel(file_path, sheet_name):
         logger.error(f"读取文件失败: {e}")
         return pd.DataFrame()
 
-def save_to_excel(df, filename, sheet_name, index=False):
-    """将DataFrame保存到Excel文件中"""
-    try:
-        # 检查文件是否存在
-        if os.path.exists(filename):
-            # 文件存在，追加模式
-            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-                df.to_excel(writer, sheet_name=sheet_name, index=index)
-                pprint(f"{df}  成功保存数据到文件: {filename}, 表名称: {sheet_name}")
+def save_to_excel(df, filename, sheet_name, mode='w', index=True):
+    """增强版保存函数，支持索引持久化"""
+    if mode == 'a' and os.path.exists(filename):
+        book = openpyxl.load_workbook(filename)
+        if sheet_name in book.sheetnames:
+            start_idx = book[sheet_name].max_row
         else:
-            # 文件不存在，创建新文件
-            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-                df.to_excel(writer, sheet_name=sheet_name, index=index)
-                pprint(f"文件不存在，新建文件成功: {filename}, 表名称: {sheet_name}")
-    except Exception as e:
-        logger.error(f"保存数据到文件失败: {e}")
+            start_idx = 0
+            
+        # 保留DataFrame索引
+        df.index += start_idx
+        with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+            writer.book = book  # 保留现有工作簿
+            writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+            df.to_excel(writer, sheet_name=sheet_name, startrow=start_idx, index=index, header=False)
+    else:
+        df.to_excel(filename, sheet_name=sheet_name, index=index)
 
 def clear_sheet(filename, sheet_name):
     """清空指定Excel文件中的指定表格"""

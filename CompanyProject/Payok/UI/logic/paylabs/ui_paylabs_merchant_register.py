@@ -37,11 +37,11 @@ def paylabs_merchant_register(playwright: Playwright, email) -> None:
         print("邮箱已注册！")
     except AssertionError:  # 捕获 Assertion 错误
         # 检查 gologin 元素是否存在且可见
-        page.wait_for_timeout(6000)
+        # page.wait_for_timeout(3000)
+        gologin.wait_for(state='visible',timeout=5000)
         if gologin.is_visible():
-            gologin.click()
+            # gologin.click()
             print("注册成功")
-            print("点击去登录")
         else:
             print("未找到 'gologin' 元素或其不可见")
     except Exception as e:  # 捕获其他未知异常
@@ -143,7 +143,7 @@ def generate_google_code():
     except ValueError as e:
         print("错误:", e)
 if __name__ == '__main__':
-    email = "paylabs20@test.com"
+    email = "paylabs22@test.com"
     generate_google_code()
 
     with sync_playwright() as playwright:

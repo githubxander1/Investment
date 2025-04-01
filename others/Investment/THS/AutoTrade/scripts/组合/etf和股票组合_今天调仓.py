@@ -12,21 +12,24 @@ import os
 
 
 # 获取当前文件所在的目录
-current_dir = os.path.dirname(os.path.abspath(__file__))
-print(f'当前目录:{current_dir}')
-# 获取根目录
-others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))
-print(f'根目录:{others_dir}')
-# 将others目录添加到模块搜索路径中
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# print(f'当前目录:{current_dir}')
+# # 获取根目录
+others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))))
+# print(f'根目录:{others_dir}')
+# # 将others目录添加到模块搜索路径中
 sys.path.append(others_dir)
-print(f'包路径：{sys.path}')
+# print(f'包路径：{sys.path}')
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
     ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
     Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
-from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel
+from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
+    create_empty_excel
+
+
 # from others.Investment.THS.AutoTrade.zothers.tes import exists_data
 
 
@@ -53,7 +56,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         response_json = response.json()
-        pprint(response_json)
+        # pprint(response_json)
     except requests.RequestException as e:
         print(f"请求出错 (ID: {portfolio_id}): {e}")
         return []
@@ -106,29 +109,29 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
 
 async def check_data(today_trade_df, file_path, sheet_name):
     existing_df = read_excel(file_path, sheet_name)
-    if existing_df is None:
-        existing_df = pd.DataFrame(columns=today_trade_df.columns)
+    print(existing_df)
+    if existing_df is not None and not existing_df.empty:
+        print(f'{len(existing_df)} 条历史数据：\n {existing_df}')
     else:
-        # 保留历史索引格式
-        existing_df = existing_df.reset_index(drop=True).set_index(existing_df.index + 1)
+        existing_df = pd.DataFrame(columns=['组合名称', '代码', '操作', '新比例%', '时间'])
+        print("历史数据为空")
 
-    print(f'{len(existing_df)} 条历史数据：\n {existing_df}')
+    # 复合键生成逻辑保持不变...
+    existing_df = existing_df.reset_index(drop=True)
 
-# 新增去重逻辑（考虑所有关键字段）
-    compare_columns = ['组合名称', '代码', '操作', '新比例%', '时间']
-    new_data = today_trade_df[~today_trade_df[compare_columns].apply(
-        lambda row: '_'.join(row.values.astype(str)), axis=1
-    ).isin(existing_df[compare_columns].apply(
-        lambda row: '_'.join(row.values.astype(str)), axis=1
-    ))]
-    # 找出新增数据
-    # new_data = today_trade_df[~today_trade_df[['代码', '时间']].apply(tuple, axis=1).isin(existing_df[['代码', '时间']].apply(tuple, axis=1))]
+    # 新增去重逻辑（考虑所有关键字段）
+    compare_columns = ['代码', '时间']
+    if not existing_df.empty:
+        new_data = today_trade_df[~today_trade_df[compare_columns].apply(tuple, axis=1).isin(existing_df[compare_columns].apply(tuple, axis=1))]
+    else:
+        new_data = today_trade_df
 
     if not new_data.empty:
         print(f'{len(new_data)} 条新增数据，如下：\n {new_data}')
 
-        combined_df = pd.concat([existing_df, new_data], ignore_index=False)
-        combined_df = combined_df.reset_index(drop=True).set_index(combined_df.index + 1)
+        # 重置索引以确保唯一性
+        new_data = new_data.reset_index(drop=True)
+
         # 生成通知消息
         notification_msg = f"\n> " + "\n".join(
             [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
@@ -136,12 +139,14 @@ async def check_data(today_trade_df, file_path, sheet_name):
         send_notification(notification_msg)
         print(f"新增{len(new_data)}条唯一调仓记录")
         # 保存新增数据到文件
-        save_to_excel(combined_df, file_path, sheet_name)
+        save_to_excel(new_data, file_path, sheet_name, mode='a')
     else:
         pprint("没有新增调仓数据")
 
 async def ETF_Combination_main():
     # clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
+    # 创建空Excel文件（如果不存在）
+    create_empty_excel(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')
 
     # 处理 ETF 组合
     etf_today_trades_all = []

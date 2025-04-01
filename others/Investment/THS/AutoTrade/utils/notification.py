@@ -20,6 +20,8 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 def send_notification(message):
+    if len(message) > 256:
+        message = message[:256 - 3] + '...'
     notification.notify(
         title="交易通知",
         message=message,
