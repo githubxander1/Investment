@@ -17,7 +17,7 @@ project_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(cu
 print(f'项目根目录:{project_dir}')
 sys.path.append(project_dir)
 
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.GoogleSecure import CalGoogleCode
+from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_slider_verification
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 

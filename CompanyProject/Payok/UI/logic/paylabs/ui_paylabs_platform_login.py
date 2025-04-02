@@ -2,7 +2,7 @@ import time
 
 from playwright.sync_api import Playwright, sync_playwright
 
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.GoogleSecure import CalGoogleCode
+from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_slider_verification
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 

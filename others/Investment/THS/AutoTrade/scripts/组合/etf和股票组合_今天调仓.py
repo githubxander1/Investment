@@ -30,8 +30,6 @@ from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, c
     create_empty_excel
 
 
-# from others.Investment.THS.AutoTrade.zothers.tes import exists_data
-
 
 # print = setup_print(ETF_ADJUSTMENT_LOG_FILE)
 
@@ -72,6 +70,8 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
         for infos in relocateList:
             name = infos.get('name', None)
             code = infos.get('code', None)
+            # code = int(code)
+            # print(type(code))
             if '***' in name:
                 print(f"未订阅或股票名称显示异常 -组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
                 continue
@@ -115,6 +115,7 @@ async def check_data(today_trade_df, file_path, sheet_name):
     附加到历史数据中
     通知
     '''
+    # existing_df = f"history_data.csv"
     existing_df = read_excel(file_path, sheet_name)
     print(existing_df)
     if existing_df is not None and not existing_df.empty:
@@ -140,13 +141,23 @@ async def check_data(today_trade_df, file_path, sheet_name):
         new_data = new_data.reset_index(drop=True)
 
         # 生成通知消息
-        notification_msg = f"\n> " + "\n".join(
-            [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
-             for _, row in new_data.iterrows()])
-        send_notification(notification_msg)
-        print(f"新增{len(new_data)}条唯一调仓记录")
+        # notification_msg = f"\n> " + "\n".join(
+        #     [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+        #      for _, row in new_data.iterrows()])
+        # send_notification(notification_msg)
+        # print(f"新增{len(new_data)}条唯一调仓记录")
+
         # 保存新增数据到文件
-        save_to_excel(new_data, file_path, sheet_name, mode='a')
+        existing_df = f"history_data.csv"
+        if not os.path.exists(existing_df):
+            with open(f"{existing_df}", "w", encoding="utf-8") as f:
+                f.write(f"{new_data.to_csv(index=False)}\n")
+        else:
+            with open(f"{existing_df}", "a", encoding="utf-8") as f:
+                f.write(f"{new_data.to_csv(index=False)}\n")
+                print(f"新增{len(new_data)}条唯一调仓记录")
+                # send_notification(f"没有新增调仓数据")
+        # save_to_excel(new_data, file_path, sheet_name, mode='a')
     else:
         pprint("没有新增调仓数据")
 
@@ -225,4 +236,25 @@ async def ETF_Combination_main():
     #     print('今天没有ETF和股票组合调仓数据')
 
 if __name__ == '__main__':
-    asyncio.run(ETF_Combination_main())
+    # asyncio.run(ETF_Combination_main())
+    existing_data_file = "history_data.csv"
+    with open(existing_data_file, 'r', encoding="utf-8") as f:
+        existing_df = pd.read_csv(f)
+        existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+        print(f'历史数据：\n{existing_df}')
+
+    today_trade_data_file = "history_data001.csv"
+    with open(today_trade_data_file, "r", encoding="utf-8") as f:
+        today_trade_df = pd.read_csv(f)
+        today_trade_df['代码'] = today_trade_df['代码'].astype(str).str.zfill(6)
+        print(f'今天调仓数据：\n{today_trade_df}')
+
+    def check_new_data(existing_df, today_trade_df):
+        combined_df = pd.concat([today_trade_df, existing_df], ignore_index=True)
+        new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
+        if not new_data.empty:
+            new_data = new_data.reset_index(drop=True).set_index(new_data.index + 1)
+            print(f'{len(new_data)} 条新增数据，如下：\n {new_data}')
+    check_new_data(today_trade_df, existing_df)
+
+    # asyncio.run(check_data(today_trade_df, existing_df, '所有今天调仓'))

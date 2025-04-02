@@ -17,36 +17,10 @@ def get_email_code(playwright: Playwright, username, password) -> None:
     # page.get_by_role("textbox", name="Captcha *").fill("0")
     # page.pause()
 
-    from playwright.sync_api import sync_playwright
-    # import pytesseract
-    from PIL import Image
-    import requests
-    from io import BytesIO
-    def solve_captcha(page):
-        # 定位验证码图片元素
-
-        captcha_img = page.locator('.captcha')
-        # 获取验证码图片的src属性
-        captcha_img_url = captcha_img.get_attribute('src')
-        captcha_img_url = 'http://192.168.0.228'+captcha_img_url
-        # 发送请求获取图片内容
-        response = requests.get(captcha_img_url)
-        img = Image.open(BytesIO(response.content))
-        captcha_text = pytesseract.image_to_string(img).strip()
-        print(captcha_text)
-        # 定位隐藏输入框和验证码输入框
-        captcha_0_input = page.locator('#id_captcha_0')
-        captcha_1_input = page.locator('#id_captcha_1')
-        # 获取隐藏输入框的值
-        captcha_0_value = captcha_0_input.input_value()
-        print(f"captcha_0_value: {captcha_0_value}")
-        page.pause()
-        # 将识别的验证码填入输入框
-        captcha_1_input.fill(captcha_text)
 
     page.get_by_role("button", name="登录").click()
     page.pause()
-    page.get_by_title("Default (41)").click()
+    page.get_by_title("Default (43)").click()
     page.wait_for_timeout(1000)
     page.get_by_title("test (21)").click()
     page.wait_for_timeout(1000)

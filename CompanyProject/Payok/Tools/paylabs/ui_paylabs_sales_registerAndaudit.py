@@ -1,9 +1,9 @@
 #paylabs商户注册和审核全流程
 import os
 from playwright.sync_api import Playwright, sync_playwright
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.ui_paylabs_merchant_register import paylabs_merchant_register
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.GoogleSecure import CalGoogleCode
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.perform_slider_unlock import perform_block_slider_verification
+from CompanyProject.Payok.交付.paylabs.ui_paylabs_merchant_register import paylabs_merchant_register
+from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
+from CompanyProject.Payok.交付.paylabs.perform_slider_unlock import perform_block_slider_verification
 
 def sales_login(page , sales_login_name):
     page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")

@@ -6,7 +6,7 @@ import hashlib
 import time
 import re
 
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.sql_handler import SQLHandler
+from CompanyProject.Payok.交付.paylabs.sql_handler import SQLHandler
 
 
 class CalGoogleCode:
