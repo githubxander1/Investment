@@ -59,7 +59,7 @@ params = {
 headers=headers1(nonce)
 
 # 动态生成页码
-# pages = [i for i in range(实例25_批量生成PPT版荣誉证书, 452)]
+# payok_official_website = [i for i in range(实例25_批量生成PPT版荣誉证书, 452)]
 pages = [i for i in range(1, 10)]
 
 

@@ -1,13 +1,9 @@
 import os
-import re
-import time
 
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import Playwright, sync_playwright
 
-from CompanyProject.Payok.UI.utils.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.utils.generate_google_code import generate_google_code
 from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_block_slider_verification
-from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 
 
 # def generate_google_code(host, port, user, password, database, table_name, login_name):

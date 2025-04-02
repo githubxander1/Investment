@@ -1,0 +1,22 @@
+
+payok:
+  ip: '192.168.0.227',
+  port: 3306,
+  user: 'WAYANGPAY',
+  password: 'Z43@Mon88',
+  db_name: 'payok',
+  tables:
+    platform: 'platform',
+    merchant: 'merchant',
+    sales: 'sales'
+
+paylabs:
+  ip: '192.168.0.233',
+  port: 3306,
+  user: 'paylabs_payapi',
+  password: 'SharkZ@DBA666',
+  db_name: 'paylabs',
+  tables:
+    platform: 'platform',
+    merchant: 'merchant',
+    sales: 'sales_operator'

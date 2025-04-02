@@ -1,14 +1,9 @@
 import os
-import re
-import time
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-from CompanyProject.Payok.UI.logic.paylabs.ui_paylabs_merchant_register import paylabs_merchant_register
-from CompanyProject.Payok.UI.utils.GoogleSecure import CalGoogleCode
 # from CompanyProject.Payok.UI.utils.get_email_code import cookies
 from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_block_slider_verification
-from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 from CompanyProject.Payok.UI.utils.generate_google_code import generate_google_code
 
 

@@ -108,19 +108,26 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
     return today_trades
 
 async def check_data(today_trade_df, file_path, sheet_name):
+    '''
+    读取历史数据
+    对比历史数据和所有今天调仓数据
+    找出新增
+    附加到历史数据中
+    通知
+    '''
     existing_df = read_excel(file_path, sheet_name)
     print(existing_df)
     if existing_df is not None and not existing_df.empty:
         print(f'{len(existing_df)} 条历史数据：\n {existing_df}')
     else:
-        existing_df = pd.DataFrame(columns=['组合名称', '代码', '操作', '新比例%', '时间'])
+        existing_df = pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '新比例%', '时间'])
         print("历史数据为空")
 
     # 复合键生成逻辑保持不变...
     existing_df = existing_df.reset_index(drop=True)
 
     # 新增去重逻辑（考虑所有关键字段）
-    compare_columns = ['代码', '时间']
+    compare_columns = ['代码', '新比例%']
     if not existing_df.empty:
         new_data = today_trade_df[~today_trade_df[compare_columns].apply(tuple, axis=1).isin(existing_df[compare_columns].apply(tuple, axis=1))]
     else:

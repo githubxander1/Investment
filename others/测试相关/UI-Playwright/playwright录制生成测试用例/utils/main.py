@@ -11,7 +11,7 @@ from generate_test_case import generate_test_case
 # from utils.ai_generator import generate_test_data
 
 # 确保目录存在
-Path("pages").mkdir(exist_ok=True)
+Path("payok_official_website").mkdir(exist_ok=True)
 Path("data").mkdir(exist_ok=True)
 Path("reports/allure-results").mkdir(parents=True, exist_ok=True)
 
@@ -25,7 +25,7 @@ def generate_page(url: str, page_name: str):
         print(f"⚙️ 正在生成页面对象: {page_name}Page")
         page_class = generate_page_object(page_name)
 
-        output_path = f"pages/{page_name.lower()}_page.py"
+        output_path = f"payok_official_website/{page_name.lower()}_page.py"
         with open(output_path, "w") as f:
             f.write(page_class)
         print(f"✅ 页面对象已保存至: {output_path}")

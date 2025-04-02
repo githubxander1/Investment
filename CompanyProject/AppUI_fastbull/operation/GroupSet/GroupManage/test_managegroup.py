@@ -11,7 +11,7 @@ from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupSet import GroupSet
 from CompanyProject.AppUI_fastbull.operation.op_Home import Home
 from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupManage.ForbidFriendAdd import ForbidFriendAdd
 from CompanyProject.AppUI_fastbull.operation.GroupSet.GroupManage.GroupAddSet import  GroupAdd
-# from CompanyProject.AppUI_fastbull.pages.GroupSet.GroupManage.GroupManage import GroupManage
+# from CompanyProject.AppUI_fastbull.payok_official_website.GroupSet.GroupManage.GroupManage import GroupManage
 
 # 设置日志格式
 logging.basicConfig(level=logging.INFO,

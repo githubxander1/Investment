@@ -1,3 +1,4 @@
+# GoogleSecure1.py
 import hmac
 import base64
 import struct
@@ -6,6 +7,7 @@ import time
 import re
 
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
+from CompanyProject.Payok.UI.utils.yaml_handler import get_db_config
 
 class CalGoogleCode():
     """计算谷歌验证码（16位谷歌秘钥，生成6位验证码）"""
@@ -40,28 +42,42 @@ class CalGoogleCode():
     def clean_secret_key(secret_key):
         """清理 secret_key，去除无效字符"""
         return re.sub(r'[^A-Z2-7=]', '', secret_key.upper())
-    def generate_google_code(self):
-        db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs')
+
+    def generate_google_code(self, db_name, user_type, login_name):
+        yaml_file = 'sql.yaml'
+        db_config = get_db_config(yaml_file, db_name, user_type)
+
+        if not db_config:
+            print(f"未找到数据库配置：{db_name}, {user_type}")
+            return None
+
+        host = db_config.get('host')
+        port = db_config.get('port')
+        user = db_config.get('user')
+        password = db_config.get('password')
+        db_name = db_config.get('db_name')
+        table_name = db_config.get('table_name')
+
+        db_handler = SQLHandler(host, port, user, password, db_name)
         db_handler.connect()
 
-        # secret_key = db_handler.get_google_secret_key('2695418206@qq.com')
-        secret_key = db_handler.get_google_secret_key('merchant_operator', 'paylabs2@test.com')
-        # if secret_key:
-        #     print("Google Secret Key:", secret_key)
-
+        secret_key = db_handler.get_google_secret_key(table_name, login_name)
         db_handler.disconnect()
+
+        if not secret_key:
+            print("未发现给定登录名的记录")
+            return None
+
         try:
             current_time = int(time.time()) // 30
-            # print(f"Current Time: {current_time}")
             generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
-            # print(f"Generated Code: {generated_code}")
-            print(CalGoogleCode.cal_google_code(secret_key))  # 并未实例化CalGoogleCode，也可以调用它的方法
             return generated_code
         except ValueError as e:
-            print("错误:", e)
+            print(f"错误: {e}")
+            return None
 
-# def genera_code
-# if __name__ == '__main__':
-#     # secret_key = "tvxnmn522rd7gmag34m22iwvnvgerled"
-#     # secret_key = "q3woflszthh4wd5ek7euedblcppp2c53"
-#     CalGoogleCode().generate_google_code()
+if __name__ == '__main__':
+    # secret_key = "tvxnmn522rd7gmag34m22iwvnvgerled"
+    # secret_key = "q3woflszthh4wd5ek7euedblcppp2c53"
+    sales_login_name='15318544153'
+    print(CalGoogleCode().generate_google_code('paylabs', 'sales_operator', sales_login_name))

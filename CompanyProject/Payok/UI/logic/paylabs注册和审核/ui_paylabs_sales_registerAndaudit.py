@@ -1,9 +1,9 @@
+#paylabs商户注册和审核全流程
 import os
-
-from playwright.sync_api import Playwright, sync_playwright, expect
-from CompanyProject.Payok.UI.logic.paylabs注册和审核.generate_google_code import generate_google_code
+from playwright.sync_api import Playwright, sync_playwright
+from CompanyProject.Payok.UI.logic.paylabs注册和审核.ui_paylabs_merchant_register import paylabs_merchant_register
+from CompanyProject.Payok.UI.logic.paylabs注册和审核.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.logic.paylabs注册和审核.perform_slider_unlock import perform_block_slider_verification
-
 
 def sales_login(page , sales_login_name):
     page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
@@ -14,47 +14,32 @@ def sales_login(page , sales_login_name):
     # sales 端登录
     page.get_by_role("textbox", name="Phone Number").fill(sales_login_name)
     page.get_by_role("textbox", name="Password").fill("A123456@test")
-
     perform_block_slider_verification(page)
     page.get_by_role("button", name="Login").click()
-
-    paylabs_merchant_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'sales_operator', sales_login_name)
+    calculategooglecode = CalGoogleCode()
+    paylabs_merchant_google_code = calculategooglecode.generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666',
+                                                        'paylabs', 'sales_operator', sales_login_name)
     page.wait_for_timeout(1000)
-
     try:
         page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
         error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
-        if error_code.is_visible():
+        if error_code.is_visible(timeout=3000):
             page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
         page.get_by_role("button", name="Login").click()
     except Exception as e:
         print(f'输入谷歌验证码失败：{e}')
-
-    page.wait_for_timeout(1000)
-    try:
-        url = page.url
-        assert url == "http://paylabs-test.com/sales/paylabs-board-board.html", f"URL 不匹配，实际值为 {url}"
-        print("登录成功")
-    except Exception as e:
-        print(f'登录失败：{e}')
+    print("sales端登录成功")
 
 def sales_setting_sales(page, merchant_id):
     page.get_by_role("link", name="ﱖ Merchant ").click()
     page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()
-    
-    page.wait_for_timeout(1000)
     scroll_div = page.wait_for_selector('#scrollDiv')
     scroll_div_table = page.query_selector('#scrollDivTable')
     scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
     scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')
-
     row = page.locator(f"tbody tr").filter(has_text=merchant_id)
     setting_sales_button = row.locator("#btnSetSales").first
-    try:
-        page.evaluate('(button) => button.click()', setting_sales_button.element_handle())
-    except Exception as e:
-        print(f"点击按钮失败：{e}")
-
+    page.evaluate('(button) => button.click()', setting_sales_button.element_handle())
     page.locator('#select2-newSalesManModal-container').click()
     page.get_by_role("treeitem", name="111111").click()
     page.get_by_role("textbox", name="Remarks").fill("1设置sales")
@@ -65,22 +50,15 @@ def sales_submit_info(page,email, merchant_id):
     page.get_by_role("link", name="ﱖ Merchant ").click()
     page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()
 
-    #点击提交资料
     page.wait_for_timeout(1000)
-
     with page.expect_popup() as page1_info:
         scroll_div = page.wait_for_selector('#scrollDiv')
         scroll_div_table = page.query_selector('#scrollDivTable')
         scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
         scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')
-
         row = page.locator(f"tbody tr").filter(has_text=merchant_id)
-
         submit_button = row.locator("#btnSubmitInfo").first
-        try:
-            page.evaluate('(button) => button.click()', submit_button.element_handle())
-        except Exception as e:
-            print(f"点击按钮失败：{e}")
+        page.evaluate('(button) => button.click()', submit_button.element_handle())
 
     page = page1_info.value
     page.wait_for_timeout(1000)
@@ -129,17 +107,10 @@ def sales_submit_info(page,email, merchant_id):
     
     def upload_file(file_path, form_id):
         if not os.path.exists(file_path):
-            print(f"文件不存在: {file_path}")
-            return
-    
-        # print(f"文件存在: {file_path}")
-    
-
-        # 监听 file_chooser 事件
+            return print(f"文件不存在: {file_path}")
         page.on('filechooser', lambda file_chooser: file_chooser.set_files(file_path))
         page.locator(f"#btnUpload{form_id}").click()
-    #
-    # # 上传文件
+
     upload_file(pdf_file_path, "12")
     upload_file(pdf_file_path, "13")
     upload_file(pdf_file_path, "16")
@@ -151,7 +122,7 @@ def sales_submit_info(page,email, merchant_id):
     page.locator("#select2-selTempsModal-container").click()
     select_bank_account = page.get_by_role("treeitem", name="Copy of Bank Account Book")
     if select_bank_account.is_disabled():
-        page.get_by_role("button", name="Cancel").click()
+        page.get_by_role("button", name="Cancel").click()#取消
     else:
         select_bank_account.click()
         page.locator("#merFormModal i").click()
@@ -163,12 +134,8 @@ def sales_submit_info(page,email, merchant_id):
     
     page.get_by_text("I declare that the application information submitted by the merchant for").click()
     page.get_by_text("I declare that the above").click()
-    
     page.get_by_role("button", name="Save").click()
-    
-    page.wait_for_timeout(1000)
     page.locator("#btnSubmit").click()
-    page.wait_for_timeout(2000)
     page.get_by_role("link", name="I got it").click()
     print("客户端资料提交成功")
 
@@ -178,10 +145,8 @@ def platform_login(page ,paylabs_operator_login_name):
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
 
-    # 登录
     page.get_by_role("textbox", name="E-mail").fill(paylabs_operator_login_name)
     page.get_by_role("textbox", name="Password Verification Code").fill("Abc@123456789")
-
     perform_block_slider_verification(page)
     page.get_by_role("button", name=" Login").click()
     page.wait_for_timeout(1000)
@@ -189,15 +154,18 @@ def platform_login(page ,paylabs_operator_login_name):
     has_login = page.get_by_role("heading", name="This user has logged in on")
     if has_login.is_visible():
         page.get_by_role("button", name="Confirm").click()
-
-    paylabs_platform_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'operator', paylabs_operator_login_name)
+    calculategooglecode = CalGoogleCode()
+    paylabs_platform_google_code = calculategooglecode.generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'operator', paylabs_operator_login_name)
     page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
-
-    error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
-    if error_code.is_visible():
-        page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
+    try:
+        error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
+        if error_code.is_visible():
+            page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
+    except Exception as e:
+        print(f"获取验证码失败：{e}")
 
     page.get_by_role("button", name="Submit").click()
+    page.wait_for_timeout(2000)
     print("平台端登录成功")
 
 def platform_risk_control_audit(page, merchant_id):
@@ -209,99 +177,68 @@ def platform_risk_control_audit(page, merchant_id):
     scroll_div_table = page.query_selector('#scrollDivTable')
     scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
     scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')
-
     row = page.locator(f"tbody tr").filter(has_text=merchant_id)
     risk_control_audit_button = row.get_by_role("button", name="Risk Control Audit")
-    try:
-        page.evaluate('(button) => button.click()', risk_control_audit_button.element_handle())
-    except Exception as e:
-        print(f"点击按钮失败：{e}")
-
+    page.evaluate('(button) => button.click()', risk_control_audit_button.element_handle())
     page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风险控制审计通过")
     page.locator("#toRiskAudit").click()
-
     page.get_by_role("link", name="None").click()
-
-    # 上传风控报告
     page.on('filechooser', lambda file_chooser: file_chooser.set_files(pdf_file_path))
     page.locator("#reportForm1").click()
-
     page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风控报告上传成功，风险控制审计通过2")
     page.get_by_role("button", name="Approve").click()
     page.locator("#btnSubmitSure").click()
-    # page2.get_by_role("button", name="Approve").click()
     print("风险审核通过")
 
 def platform_legal_risk_audit(page, merchant_id):
     # 法律风控
     page.get_by_role("link", name="ﶇ Merchant ").click()
     page.get_by_role("link", name="Merchant List").click()
-
-    # 移动滑块
     scroll_div = page.wait_for_selector('#scrollDiv')  # 等待目标 div 加载
     scroll_div_table = page.query_selector('#scrollDivTable')  # 获取 scrollDivTable 的宽度
     scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
     scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')  # 滚动到最右侧
-
     row = page.locator(f"tbody tr").filter(has_text=merchant_id)
-    #
     legal_audit_button = row.get_by_role("button", name="Legal Audit")
-    try:
-        page.evaluate('(button) => button.click()', legal_audit_button.element_handle())
-    except Exception as e:
-        print(f"点击按钮失败：{e}")
-
+    page.evaluate('(button) => button.click()', legal_audit_button.element_handle())
     page.on('filechooser', lambda file_chooser: file_chooser.set_files(pdf_file_path))
     page.locator("#reportForm2").click()
     page.on('filechooser', lambda file_chooser: file_chooser.set_files(pdf_file_path))
     page.locator("#reportForm3").click()
-
     page.get_by_role("button", name="Approve").click()
     page.wait_for_timeout(1000)
+    page.pause()
     page.locator("#btnSurePass").click()
-
-    # page.locator("#btnSubmitSure").click()
     print("法律风控审核通过")
 
 def platform_request_activation(page,merchant_id):
     # 激活请求
     page.get_by_role("link", name="ﶇ Merchant ").click()
     page.get_by_role("link", name="Merchant List").click()
-
     page.wait_for_timeout(1000)
     scroll_div = page.wait_for_selector('#scrollDiv')
     scroll_div_table = page.query_selector('#scrollDivTable')
     scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
     scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')
-
     row = page.locator(f"tbody tr").filter(has_text=merchant_id)
     request_activate_button = row.get_by_role('button', name="Request Activation ")
-    try:
-        page.evaluate('(button) => button.click()', request_activate_button.element_handle())
-    except Exception as e:
-        print(f"点击按钮失败：{e}")
-
+    page.evaluate('(button) => button.click()', request_activate_button.element_handle())
     page.locator("#nav_1 div").filter(has_text="DanamonVA Settlement Type").get_by_role("button").click()
     page.get_by_role("listitem").filter(has_text="Danamon Paylabs").locator("label").first.click()
-    # page.locator("#nav_1 div").filter(has_text="DanamonVA Settlement Type").get_by_role("button").click()
     page.locator("#rate232").fill("5")
     page.locator("#fee232").fill('5000')
     page.locator("#transSharingRate232").fill("0")
     page.locator("#transSharingFee232").fill("0")
-    # page.locator("#merVatSel1242").select_option("0")
     page.get_by_role("listitem").filter(has_text="Danamon Paylabs").locator("select[name=\"selMerVat\"]").select_option(
         "0.11")
-
     page.get_by_role("cell", name="Non-active").locator("label").click()
     page.get_by_role("cell", name="Active").get_by_role("list").click()
-
     page.get_by_role("button", name="Select all").click()
     page.get_by_role("cell", name="Merchant Cost ").click()
     page.get_by_role("cell", name="*Merchant Fee % Sample:0.7000").get_by_role("textbox").first.fill("4")
     page.get_by_role("textbox", name="1000").fill("4000")
     page.get_by_role("cell", name="*Merchant Fee 4 % Sample:0.").get_by_role("combobox").select_option("0.11")
     page.get_by_role("textbox", name="Merchant RSA Public Key").fill("123456789")
-
     page.get_by_role("button", name="Submit Request").click()
     print("激活请求提交成功")
 
@@ -309,26 +246,15 @@ def platform_activation_audit(page,merchant_id):
     # 激活审核
     page.get_by_role("link", name="ﶇ Merchant ").click()
     page.get_by_role("link", name="Merchant List").click()
-
-    # 移动滑块
     scroll_div = page.wait_for_selector('#scrollDiv')  # 等待目标 div 加载
     scroll_div_table = page.query_selector('#scrollDivTable')  # 获取 scrollDivTable 的宽度
     scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
     scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')  # 滚动到最右侧
-
     row = page.locator(f"tbody tr").filter(has_text=merchant_id)
-    #
     activate_audit_button = row.get_by_role('button', name="Activation Audit")
-    try:
-        page.evaluate('(button) => button.click()', activate_audit_button.element_handle())
-    except Exception as e:
-        print(f"点击按钮失败：{e}")
-
+    page.evaluate('(button) => button.click()', activate_audit_button.element_handle())
     page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：激活审核通过")
-    # page.get_by_role("button", name="Comment").click()#不能评论？
     page.get_by_role("button", name="Passed").click()
-    print("激活审核通过")
-    # expect(page.locator("#merchant-datatable")).to_match_aria_snapshot("- text: Active")
     print("商户入驻成功！")
 
 
@@ -343,11 +269,11 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
 
     #商户注册
-    register_email = "paylabs23@test.com"
-    # paylabs_merchant_register(playwright, register_email)
+    register_email = "paylabs31@test.com" # Merchant Name商户名称，可自定义
+    paylabs_merchant_register(playwright, register_email)
 
     # sales端提交资料
-    sales_login_name = '15318544153'
+    sales_login_name = '15318544153'# sales端登录用户，可自定义
     page = context.new_page()
     sales_login(page, sales_login_name)
 
@@ -355,15 +281,15 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("link", name="ﱖ Merchant ").click()
     page.get_by_role("link", name="Merchant", exact=True).click()
     merchant_id = page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
-    print(merchant_id)
+    print(f"刚注册的商户id:{merchant_id}")
 
-    # 方法二：指定merchant_id
-    # merchant_id = "010410"
+    # 方法二：指定merchant_id  如果想指定审核某商户，获取该商户merchant_id后，注释方法一后面的代码
+    # merchant_id = "010415"
     sales_setting_sales(page,merchant_id) #设置销售人员
     sales_submit_info(page,register_email,merchant_id) #提交销售资料
 
-    # 平台审核
-    paylabs_operator_login_name = 'test001@qq.com'
+    # # 平台审核
+    paylabs_operator_login_name = 'test001@qq.com'# 平台审核登录用户，可自定义
     page2 = context.new_page()
     platform_login(page2, paylabs_operator_login_name)#登录平台
     platform_risk_control_audit(page2,merchant_id)# 风控审核

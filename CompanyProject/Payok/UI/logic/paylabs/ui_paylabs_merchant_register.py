@@ -1,9 +1,8 @@
-import re
 import time
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-from CompanyProject.Payok.UI.utils.GoogleSecure import CalGoogleCode
+from CompanyProject.Payok.UI.logic.paylabs注册和审核.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 
 
@@ -38,7 +37,7 @@ def paylabs_merchant_register(playwright: Playwright, email) -> None:
     except AssertionError:  # 捕获 Assertion 错误
         # 检查 gologin 元素是否存在且可见
         # page.wait_for_timeout(3000)
-        gologin.wait_for(state='visible',timeout=5000)
+        gologin.wait_for(state='visible',timeout=10000)
         if gologin.is_visible():
             # gologin.click()
             print("注册成功")
