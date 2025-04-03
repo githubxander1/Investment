@@ -111,10 +111,15 @@ async def main():
 if __name__ == "__main__":
     try:
         # 清空上一次的数据
-        # clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
-        # clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
         print('\n---------------------------------------------------------------------------')
         asyncio.run(main())
+        now_time = datetime.datetime.now()
+        if now_time.hour == 15 and now_time.minute >= 30:
+            print("当前时间是下午3点，程序将自动退出。")
+            clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
+            clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
+
+            sys.exit(0)
     except KeyboardInterrupt:
         print("用户主动终止程序")
     except Exception as e:

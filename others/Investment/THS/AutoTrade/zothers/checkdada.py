@@ -1,4 +1,3 @@
-import os
 from pprint import pprint
 
 import pandas as pd
@@ -67,8 +66,7 @@ if __name__ == '__main__':
     final_df = pd.concat(all_dfs, ignore_index=True)
 
     # 保存为CSV文件
-    # file_path = ETF_adjustment_holding_file.replace('.xlsx', '.csv')
-    file_path = ETF_adjustment_holding_file
+    file_path = ETF_adjustment_holding_file.replace('.xlsx', '.csv')
     save_results_to_csv(final_df, file_path, mode='w', header=True)
 
     # 处理股票组合持仓数据

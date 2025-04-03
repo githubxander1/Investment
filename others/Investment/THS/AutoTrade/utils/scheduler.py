@@ -44,20 +44,20 @@ class Scheduler:
         except Exception as e:
             logger.error(f"任务执行异常: {str(e)}", exc_info=True)
 
-    async def _calculate_next_run(self) -> datetime:
-        """计算下一次运行时间"""
-        now = datetime.now()
-        start_datetime = datetime(now.year, now.month, now.day, self.start_time.hour, self.start_time.minute, self.start_time.second)
-
-        # 如果当前时间已经过了开始时间，则从下一个间隔开始计算
-        if now.time() > self.start_time:
-            start_datetime += timedelta(minutes=self.interval)
-
-        # 确保下一次运行时间在调度时段内
-        while start_datetime.time() < self.start_time or start_datetime.time() > self.end_time:
-            start_datetime += timedelta(minutes=self.interval)
-
-        return start_datetime
+    # async def _calculate_next_run(self) -> datetime:
+    #     """计算下一次运行时间"""
+    #     now = datetime.now()
+    #     start_datetime = datetime(now.year, now.month, now.day, self.start_time.hour, self.start_time.minute, self.start_time.second)
+    #
+    #     # 如果当前时间已经过了开始时间，则从下一个间隔开始计算
+    #     if now.time() > self.start_time:
+    #         start_datetime += timedelta(minutes=self.interval)
+    #
+    #     # 确保下一次运行时间在调度时段内
+    #     while start_datetime.time() < self.start_time or start_datetime.time() > self.end_time:
+    #         start_datetime += timedelta(minutes=self.interval)
+    #
+    #     return start_datetime
 
     async def start(self):
         """启动调度器核心逻辑"""
@@ -66,7 +66,7 @@ class Scheduler:
         while not self._shutdown.is_set():
             if self._within_time_window():
                 next_run = await self._calculate_next_run()
-                print(f"下一次运行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+                # print(f"下一次运行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
                 await self._execute_task()
 
             # 动态计算休眠时间
