@@ -12,3 +12,6 @@ cmd：services.msc
 
 pip安装失败：
 用具体的pip路径安装：D:\Application\Python311\python.exe -m pip install pyinstaller
+
+卸载微软商店自带的Python
+winget uninstall Python
