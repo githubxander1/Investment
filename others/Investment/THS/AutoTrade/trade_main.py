@@ -8,7 +8,6 @@ from datetime import time as dt_time
 from pprint import pprint
 from typing import Dict, Tuple
 
-
 # 路径初始化 ======================================================
 current_dir = os.path.dirname(os.path.abspath(__file__))
 print(f"当前目录: {current_dir}")
@@ -19,8 +18,8 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
     print(f"已将项目根目录添加到 sys.path: {project_root}")
 else:
-    print(f"项目根目录已在 sys.path 中: {project_root}"
-    )
+    print(f"项目根目录已在 sys.path 中: {project_root}")
+
 from pathlib import Path  
 sys.path.append(Path(__file__).parent.as_posix())  
 sys.path.append(Path(__file__).parent.parent.as_posix())  
@@ -105,13 +104,15 @@ async def main():
         )
 
     except Exception as e:
-        logging.warn(f"主程序异常终止: {str(e)}", exc_info=True)
+        logging.warning(f"主程序异常终止: {str(e)}", exc_info=True)
         raise
 
 if __name__ == "__main__":
     try:
         # 清空上一次的数据
         print('\n---------------------------------------------------------------------------')
+        # clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
+        # clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
         asyncio.run(main())
         now_time = datetime.datetime.now()
         if now_time.hour == 15 and now_time.minute >= 30:
@@ -123,4 +124,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("用户主动终止程序")
     except Exception as e:
-        logging.warn(f"程序启动失败: {str(e)}", exc_info=True)
+        logging.warning(f"程序启动失败: {str(e)}", exc_info=True)

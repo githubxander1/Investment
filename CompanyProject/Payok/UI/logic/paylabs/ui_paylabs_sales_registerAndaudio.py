@@ -2,6 +2,7 @@ import os
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 
+from CompanyProject.Payok.UI.logic.paylabs.ui_paylabs_merchant_register import paylabs_merchant_register
 # from CompanyProject.Payok.UI.utils.get_email_code import cookies
 from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_block_slider_verification
 from CompanyProject.Payok.UI.utils.generate_google_code import generate_google_code
@@ -45,10 +46,10 @@ def sales_login(page , sales_login_name):
         expect(page).to_have_url("http://paylabs-test.com/sales/paylabs-board-board.html", timeout=5000)
 
         # expect(page.get_by_role("heading", name="Merchant Information")).to_be_visible()
-        page.pause()
+        # page.pause()
     except Exception as e:
         print(f'登录失败：{e}')
-        page.pause()
+        # page.pause()
 
 def sales_setting_sales(page, merchant_id):
     page.get_by_role("link", name="ﱖ Merchant ").click()
@@ -536,7 +537,6 @@ def platform_activation_audit(page,merchant_id):
     activate_audit_button = row.get_by_role('button', name="Activation Audit")
     try:
         # 等待按钮可点击
-        # page.pause()
         # 尝试直接使用 JavaScript 点击按钮
         page.evaluate('(button) => button.click()', activate_audit_button.element_handle())
     except Exception as e:
@@ -544,7 +544,6 @@ def platform_activation_audit(page,merchant_id):
 
     # page.locator("tr").filter(has_text=re.compile(r"^DataActivation AuditSystem Configuration$")).locator("button[name=\"btnOnlineApply\"]").click()
     page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：激活审核通过")
-    # page.pause()
     # page.get_by_role("button", name="Comment").click()#不能评论？
     page.get_by_role("button", name="Passed").click()
     print("激活审核通过")
@@ -563,31 +562,31 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
 
     #商户注册
-    register_email = "paylabs23@test.com"
+    register_email = "paylabsmerchant1@test.com"
     # paylabs_merchant_register(playwright, register_email)
-
-
-    # sales端提交资料
+    #
+    #
+    # # sales端提交资料
     sales_login_name = '15318544153'
-    # merchant_id = "010410"
+    # # merchant_id = "010410"
     page = context.new_page()
     sales_login(page, sales_login_name)
-
-    # 获取第一条商户id
+    #
+    # # 获取第一条商户id
     page.get_by_role("link", name="ﱖ Merchant ").click()
     page.get_by_role("link", name="Merchant", exact=True).click()
     # 通过xpath获取元素的text值  //*[@id="merchant-datatable"]/tbody/tr[1]/td[1]
     merchant_id = page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
-    print(merchant_id)
+    # print(merchant_id)
+    #
+    # sales_setting_sales(page,merchant_id) #设置销售人员
+    # sales_submit_info(page,register_email,merchant_id) #提交销售资料
 
-    sales_setting_sales(page,merchant_id) #设置销售人员
-    sales_submit_info(page,register_email,merchant_id) #提交销售资料
-
-    # # # # 平台审核
+    # 平台审核
     paylabs_operator_login_name = 'test001@qq.com'
     page2 = context.new_page()
     platform_login(page2, paylabs_operator_login_name)#登录平台
-    # # #
+
     platform_risk_control_audit(page2,merchant_id)# 风控审核
     page2.wait_for_timeout(3000)
     platform_legal_risk_audit(page2,merchant_id)#法律审核

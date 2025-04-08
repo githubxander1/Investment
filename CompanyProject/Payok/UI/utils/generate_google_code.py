@@ -1,6 +1,7 @@
 import time
 
-from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
+from CompanyProject.Payok.Tools.paylabs.GoogleSecure import CalGoogleCode
+# from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 
 

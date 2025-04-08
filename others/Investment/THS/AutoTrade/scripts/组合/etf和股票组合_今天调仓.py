@@ -18,7 +18,7 @@ sys.path.append(others_dir)
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
     ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
-    Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE
+    Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE, Combination_headers
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
 from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
@@ -30,20 +30,7 @@ from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, c
 
 def fetch_and_extract_data(portfolio_id, is_etf=True):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
-    headers = {
-        "Host": "t.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": "IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQxMzEyNzkzOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWRlZGQ2ZWU3MDFlOGM0YWM0MWM3ZWYyOGVkNTM5OTZjOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=5fc67f8e0b1358794365b561cebf49ab; user_status=0; hxmPid=sns_topic_T0xv0pp.vote.show; v=A2KnimVLcWWWZ205M4HOL2F3sePEs2bNGLda8az7jlWAfw1ZlEO23ehHqgV_; hxmPid=sns_live_p_435998200; v=A98ascgcxE1b9cBRFbcb1BSobDhpRDPmTZg32nEsew7VAPAieRTDNl1oxzqC"
-    }
+    headers = Combination_headers
     params = {"id": portfolio_id, "dynamic_id": 0}
     try:
         response = requests.get(url, params=params, headers=headers)
@@ -186,11 +173,18 @@ async def ETF_Combination_main():
     if os.path.exists(existing_data_file) and os.path.getsize(existing_data_file) > 0:
         with open(existing_data_file, 'r', encoding="utf-8") as f:
             existing_df = pd.read_csv(f)
+            # 去重操作
+            existing_df = existing_df.drop_duplicates()
             existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
             print(f'{len(existing_df)} 历史数据：\n{existing_df}')
     else:
-        existing_df = pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '新比例%', '时间'])
-        print("历史数据文件不存在或为空，创建新的历史数据文件。")
+        # 创建一个包含列名的空 DataFrame
+        existing_df = pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价', '当前比例%', '新比例%', '时间'])
+        with open(existing_data_file, 'w', encoding="utf-8") as f:
+            # 去重操作
+            existing_df = existing_df.drop_duplicates()
+            existing_df.to_csv(f, index=False)
+            print("历史数据文件不存在或为空，创建新的历史数据文件。")
 
     def check_new_data(all_today_trades_df, existing_df, file_path):
         if existing_df.empty:

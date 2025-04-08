@@ -65,7 +65,7 @@ class Scheduler:
 
         while not self._shutdown.is_set():
             if self._within_time_window():
-                next_run = await self._calculate_next_run()
+                # next_run = await self._calculate_next_run()
                 # print(f"下一次运行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
                 await self._execute_task()
 

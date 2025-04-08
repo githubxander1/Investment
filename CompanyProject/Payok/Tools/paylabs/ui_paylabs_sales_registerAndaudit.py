@@ -207,7 +207,6 @@ def platform_legal_risk_audit(page, merchant_id):
     page.locator("#reportForm3").click()
     page.get_by_role("button", name="Approve").click()
     page.wait_for_timeout(1000)
-    page.pause()
     page.locator("#btnSurePass").click()
     print("法律风控审核通过")
 

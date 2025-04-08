@@ -61,6 +61,29 @@ def get_latest_position_and_trade(strategy_id):
         else:
             return [], 'N/A'
 
+# def check_new_data(all_today_trades_df, existing_df, file_path):
+#     if existing_df.empty:  # 如果历史数据为空
+#         combined_df = all_today_trades_df  # 新增数据即为所有今日调仓数据
+#         combined_df.to_csv(file_path, index=False)  # 直接保存到文件
+#     else:
+#         combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)  # 合并新旧数据
+#         new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)  # 去重，找出新增数据
+#
+#     if not new_data.empty:  # 如果存在新增数据
+#         print(f'\n{len(new_data)} 条新增数据，如下：\n {new_data}')  # 打印新增数据
+#         file_exists = os.path.isfile(file_path)  # 检查文件是否存在
+#         with open(file_path, "a", encoding="utf-8") as f:  # 追加模式打开文件
+#             new_data.to_csv(f, index=False, header=not file_exists)  # 写入新增数据
+#             print(f"新增{len(new_data)}条唯一调仓记录成功，\n{len(existing_df)} 条新历史数据 \n{existing_df}")
+#
+#         # 生成通知消息
+#         notification_msg = f"\n> " + "\n".join(
+#             [
+#                 f"\n{row['策略名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+#                 for _, row in new_data.iterrows()
+#             ]
+#         )
+#         send_notification(notification_msg)  # 发送通知
 async def strategy_main():
     all_today_trades_info = []
     all_latest_trade_info = []
@@ -79,7 +102,7 @@ async def strategy_main():
     # all_today_trades_info_without_sc = [trade for trade in all_today_trades_info_without_sc if trade['参考价'] < 30]
 
     today_trades_without_sc_df = pd.DataFrame(all_today_trades_info_without_sc)
-    print(f'{len(all_today_trades_info_without_sc)} 策略今日调仓：\n {all_today_trades_info_without_sc}')
+    print(f'{len(today_trades_without_sc_df)}条 策略今日调仓：\n {today_trades_without_sc_df}')
 
 
     # 检查新增流程
@@ -97,6 +120,7 @@ async def strategy_main():
     def check_new_data(all_today_trades_df, existing_df, file_path):
         if existing_df.empty:
             combined_df = all_today_trades_df
+            combined_df = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
             combined_df.to_csv(file_path, index=False)
         else:
             combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
