@@ -28,7 +28,7 @@ api_client = APIClient()
 ua = UserAgent()
 
 
-def get_latest_position_and_trade(strategy_id):
+async def get_latest_position_and_trade(strategy_id):
     """获取策略的最新持仓和交易信息"""
     url = f"https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit?strategyId={strategy_id}"
     # params = {"strategyId": strategy_id}
@@ -61,40 +61,43 @@ def get_latest_position_and_trade(strategy_id):
         else:
             return [], 'N/A'
 
-# def check_new_data(all_today_trades_df, existing_df, file_path):
-#     if existing_df.empty:  # 如果历史数据为空
-#         combined_df = all_today_trades_df  # 新增数据即为所有今日调仓数据
-#         combined_df.to_csv(file_path, index=False)  # 直接保存到文件
-#     else:
-#         combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)  # 合并新旧数据
-#         new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)  # 去重，找出新增数据
-#
-#     if not new_data.empty:  # 如果存在新增数据
-#         print(f'\n{len(new_data)} 条新增数据，如下：\n {new_data}')  # 打印新增数据
-#         file_exists = os.path.isfile(file_path)  # 检查文件是否存在
-#         with open(file_path, "a", encoding="utf-8") as f:  # 追加模式打开文件
-#             new_data.to_csv(f, index=False, header=not file_exists)  # 写入新增数据
-#             print(f"新增{len(new_data)}条唯一调仓记录成功，\n{len(existing_df)} 条新历史数据 \n{existing_df}")
-#
-#         # 生成通知消息
-#         notification_msg = f"\n> " + "\n".join(
-#             [
-#                 f"\n{row['策略名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
-#                 for _, row in new_data.iterrows()
-#             ]
-#         )
-#         send_notification(notification_msg)  # 发送通知
+async def read_existing_data(file_path):
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        try:
+            existing_df = pd.read_csv(file_path)
+            # existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+            return existing_df
+        except pd.errors.EmptyDataError:
+            print("文件为空，创建一个空的DataFrame")
+            return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价',  '新比例%', '时间'])
+    else:
+        print("历史数据文件不存在或为空，创建新的历史数据文件。")
+        return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价', '新比例%', '时间'])
+
+async def save_new_data(new_data, file_path):
+    if not new_data.empty:
+        file_exists = os.path.isfile(file_path)
+        with open(file_path, "a", encoding="utf-8") as f:
+            new_data.to_csv(f, index=False, header=not file_exists)
+        print(f"新增{len(new_data)}条唯一调仓记录")
+        notification_msg = f"\n> " + "\n".join(
+            [f"\n{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+             for _, row in new_data.iterrows()])
+        send_notification(notification_msg)
+    else:
+        print("没有新增调仓数据")
 async def strategy_main():
     all_today_trades_info = []
     all_latest_trade_info = []
 
     pprint("开始处理策略调仓信息")
     for strategy_id in Strategy_ids:
-        latest_trade_info, trade_date = get_latest_position_and_trade(strategy_id)
+        latest_trade_info, trade_date = await get_latest_position_and_trade(strategy_id)
         if latest_trade_info:
             all_latest_trade_info.extend(latest_trade_info)
             today_trades = [trade for trade in latest_trade_info if trade['时间'] == datetime.datetime.now().date().strftime('%Y%m%d')] #筛选今天的调仓
             all_today_trades_info.extend(today_trades)
+            # print(all_today_trades_info)
 
     # 过滤掉创业板股票的交易信息
     all_today_trades_info_without_sc = [trade for trade in all_today_trades_info if trade['市场'] not in ['创业板', '科创板']]
@@ -107,40 +110,52 @@ async def strategy_main():
 
     # 检查新增流程
     existing_data_file = STRATEGY_TODAY_ADJUSTMENT_FILE
-    # 检查文件是否存在且不为空
-    if os.path.exists(existing_data_file) and os.path.getsize(existing_data_file) > 0:
-        with open(existing_data_file, 'r', encoding="utf-8") as f:
-            existing_df = pd.read_csv(f)
-            existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
-            print(f'{len(existing_df)} 历史数据：\n{existing_df}')
-    else:
-        existing_df = pd.DataFrame(columns=['策略名称', '股票名称', '代码', '操作', '新比例%', '时间'])
-        print("历史数据文件不存在或为空，创建新的历史数据文件。")
+    existing_df = await read_existing_data(existing_data_file)
 
-    def check_new_data(all_today_trades_df, existing_df, file_path):
-        if existing_df.empty:
-            combined_df = all_today_trades_df
-            combined_df = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
-            combined_df.to_csv(file_path, index=False)
-        else:
-            combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
-        new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
-        if not new_data.empty:
-            print(f'\n{len(new_data)} 条新增数据，如下：\n {new_data}')
-            # 检查文件是否已经存在
-            file_exists = os.path.isfile(file_path)
-            with open(file_path, "a", encoding="utf-8") as f:
-                new_data.to_csv(f, index=False, header=not file_exists)
-                print(f"新增{len(new_data)}条唯一调仓记录成功，\n{len(existing_df)} 条新历史数据 \n{existing_df}")
+    # 确保两个DataFrame的列一致
+    if existing_df.empty:
+        existing_df = pd.DataFrame(columns=today_trades_without_sc_df.columns)
 
-            # 生成通知消息
-            notification_msg = f"\n> " + "\n".join(
-                [
-                    f"\n{row['策略名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
-                    for _, row in new_data.iterrows()])
-            send_notification(notification_msg)
+    combined_df = pd.concat([today_trades_without_sc_df, existing_df], ignore_index=True)
+    combined_df.drop_duplicates(subset=['代码', '时间'], inplace=True)
 
-    check_new_data(today_trades_without_sc_df, existing_df, existing_data_file)
+    new_data = combined_df[~combined_df.index.isin(existing_df.index)]
+    await save_new_data(new_data, existing_data_file)
+
+    # # 检查文件是否存在且不为空
+    # if os.path.exists(existing_data_file) and os.path.getsize(existing_data_file) > 0:
+    #     with open(existing_data_file, 'r', encoding="utf-8") as f:
+    #         existing_df = pd.read_csv(f)
+    #         existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+    #         print(f'{len(existing_df)} 历史数据：\n{existing_df}')
+    # else:
+    #     existing_df = pd.DataFrame(columns=['策略名称', '股票名称', '代码', '操作', '新比例%', '时间'])
+    #     print("历史数据文件不存在或为空，创建新的历史数据文件。")
+    #
+    # def check_new_data(all_today_trades_df, existing_df, file_path):
+    #     if existing_df.empty:
+    #         combined_df = all_today_trades_df
+    #         combined_df = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
+    #         combined_df.to_csv(file_path, index=False)
+    #     else:
+    #         combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
+    #     new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
+    #     if not new_data.empty:
+    #         print(f'\n{len(new_data)} 条新增数据，如下：\n {new_data}')
+    #         # 检查文件是否已经存在
+    #         file_exists = os.path.isfile(file_path)
+    #         with open(file_path, "a", encoding="utf-8") as f:
+    #             new_data.to_csv(f, index=False, header=not file_exists)
+    #             print(f"新增{len(new_data)}条唯一调仓记录成功，\n{len(existing_df)} 条新历史数据 \n{existing_df}")
+    #
+    #         # 生成通知消息
+    #         notification_msg = f"\n> " + "\n".join(
+    #             [
+    #                 f"\n{row['策略名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+    #                 for _, row in new_data.iterrows()])
+    #         send_notification(notification_msg)
+
+    # save_new_data(today_trades_without_sc_df, existing_df, existing_data_file)
 
     pprint("策略调仓信息处理完成")
 

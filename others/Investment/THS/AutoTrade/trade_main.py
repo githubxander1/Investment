@@ -29,6 +29,7 @@ print(sys.path)
 from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODAY_ADJUSTMENT_FILE, \
     STRATEGY_TODAY_ADJUSTMENT_FILE
 from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
+
 # 模块导入 ========================================================
 from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main
 from others.Investment.THS.AutoTrade.scripts.策略.策略_今天调仓 import strategy_main
@@ -67,7 +68,7 @@ async def strategy_wrapper():
         print(f"\n[策略组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("--------------------------------------------------------------")
     except Exception as e:
-        print(f"[策略任务] 执行异常: {str(e)}")
+        print(f"[策略任务] 执行异常: {e}")
 
 async def etf_combo_wrapper():
     """组合任务执行包装"""
@@ -78,7 +79,7 @@ async def etf_combo_wrapper():
         print(f"\n[ETF组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("----------------------------------------------------")
     except Exception as e:
-        print(f"[ETF组合] 执行异常: {str(e)}")
+        print(f"[ETF组合] 执行异常: {e}")
 
 # 主程序 =========================================================
 async def main():

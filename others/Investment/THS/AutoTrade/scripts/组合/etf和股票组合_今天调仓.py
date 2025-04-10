@@ -42,6 +42,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
         return []
 
     today_trades = []
+    today = datetime.date.today().strftime('%Y-%m-%d')
 
     data = response_json.get('data', [])
     for item in data:
@@ -87,59 +88,31 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
 
     return today_trades
 
-async def check_data(today_trade_df, file_path, sheet_name):
-    '''
-    读取历史数据
-    对比历史数据和所有今天调仓数据
-    找出新增
-    附加到历史数据中
-    通知
-    '''
-    # existing_df = f"ETF和组合_今天调仓.csv"
-    existing_df = read_excel(file_path, sheet_name)
-    print(existing_df)
-    if existing_df is not None and not existing_df.empty:
-        print(f'{len(existing_df)} 条历史数据：\n {existing_df}')
+async def read_existing_data(file_path):
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        try:
+            existing_df = pd.read_csv(file_path)
+            # existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+            return existing_df
+        except pd.errors.EmptyDataError:
+            print("文件为空，创建一个空的DataFrame")
+            return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价',  '新比例%', '时间'])
     else:
-        existing_df = pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '新比例%', '时间'])
-        print("历史数据为空")
+        print("历史数据文件不存在或为空，创建新的历史数据文件。")
+        return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价', '新比例%', '时间'])
 
-    # 复合键生成逻辑保持不变...
-    existing_df = existing_df.reset_index(drop=True)
-
-    # 新增去重逻辑（考虑所有关键字段）
-    compare_columns = ['代码', '新比例%']
-    if not existing_df.empty:
-        new_data = today_trade_df[~today_trade_df[compare_columns].apply(tuple, axis=1).isin(existing_df[compare_columns].apply(tuple, axis=1))]
-    else:
-        new_data = today_trade_df
-
+async def save_new_data(new_data, file_path):
     if not new_data.empty:
-        print(f'{len(new_data)} 条新增数据，如下：\n {new_data}')
-
-        # 重置索引以确保唯一性
-        new_data = new_data.reset_index(drop=True)
-
-        # 生成通知消息
-        # notification_msg = f"\n> " + "\n".join(
-        #     [f"{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
-        #      for _, row in new_data.iterrows()])
-        # send_notification(notification_msg)
-        # print(f"新增{len(new_data)}条唯一调仓记录")
-
-        # 保存新增数据到文件
-        existing_df = f"ETF和组合_今天调仓.csv"
-        if not os.path.exists(existing_df):
-            with open(f"{existing_df}", "w", encoding="utf-8") as f:
-                f.write(f"{new_data.to_csv(index=False)}\n")
-        else:
-            with open(f"{existing_df}", "a", encoding="utf-8") as f:
-                f.write(f"{new_data.to_csv(index=False)}\n")
-                print(f"新增{len(new_data)}条唯一调仓记录")
-                # send_notification(f"没有新增调仓数据")
-        # save_to_excel(new_data, file_path, sheet_name, mode='a')
+        file_exists = os.path.isfile(file_path)
+        with open(file_path, "a", encoding="utf-8") as f:
+            new_data.to_csv(f, index=False, header=not file_exists)
+        print(f"新增{len(new_data)}条唯一调仓记录")
+        notification_msg = f"\n> " + "\n".join(
+            [f"\n{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
+             for _, row in new_data.iterrows()])
+        send_notification(notification_msg)
     else:
-        pprint("没有新增调仓数据")
+        print("没有新增调仓数据")
 
 async def ETF_Combination_main():
     # 处理 ETF 组合
@@ -163,51 +136,23 @@ async def ETF_Combination_main():
     # 合并两个表数据
     all_today_trades_df = pd.DataFrame(all_today_trades)
     all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1)
+    # all_today_trades_df['代码'] = all_today_trades_df['代码'].astype(str).str.zfill(6)
     #索引倒序，比如5,4,3,2,1
     # all_today_trades_df = all_today_trades_df[::-1]
     print(f'{len(all_today_trades_df)} 条今天调仓数据, 如下：\n {all_today_trades_df}\n')
 
     existing_data_file = ETF_Combination_TODAY_ADJUSTMENT_FILE
+    existing_df = await read_existing_data(existing_data_file)
 
-    # 检查文件是否存在且不为空
-    if os.path.exists(existing_data_file) and os.path.getsize(existing_data_file) > 0:
-        with open(existing_data_file, 'r', encoding="utf-8") as f:
-            existing_df = pd.read_csv(f)
-            # 去重操作
-            existing_df = existing_df.drop_duplicates()
-            existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
-            print(f'{len(existing_df)} 历史数据：\n{existing_df}')
-    else:
-        # 创建一个包含列名的空 DataFrame
-        existing_df = pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价', '当前比例%', '新比例%', '时间'])
-        with open(existing_data_file, 'w', encoding="utf-8") as f:
-            # 去重操作
-            existing_df = existing_df.drop_duplicates()
-            existing_df.to_csv(f, index=False)
-            print("历史数据文件不存在或为空，创建新的历史数据文件。")
+    # 确保两个DataFrame的列一致
+    if existing_df.empty:
+        existing_df = pd.DataFrame(columns=all_today_trades_df.columns)
 
-    def check_new_data(all_today_trades_df, existing_df, file_path):
-        if existing_df.empty:
-            combined_df = all_today_trades_df
-            combined_df.to_csv(file_path, index=False)
-        else:
-            combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
-        new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
-        if not new_data.empty:
-            print(f'\n{len(new_data)} 条新增数据，如下：\n {new_data}')
-            # 检查文件是否已经存在
-            file_exists = os.path.isfile(file_path)
-            with open(file_path, "a", encoding="utf-8") as f:
-                new_data.to_csv(f, index=False, header=not file_exists)
-                print(f"新增{len(new_data)}条唯一调仓记录成功，\n{len(existing_df)} 条新历史数据 \n{existing_df}")
+    combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
+    combined_df.drop_duplicates(subset=['代码', '时间'], inplace=True)
 
-            # 生成通知消息
-            notification_msg = f"\n> " + "\n".join(
-                [f"\n{row['组合名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['新比例%']}% {row['最新价']} \n{row['时间']}"
-                 for _, row in new_data.iterrows()])
-            send_notification(notification_msg)
-
-    check_new_data(all_today_trades_df, existing_df, existing_data_file)
+    new_data = combined_df[~combined_df.index.isin(existing_df.index)]
+    await save_new_data(new_data, existing_data_file)
 
 if __name__ == '__main__':
     asyncio.run(ETF_Combination_main())
