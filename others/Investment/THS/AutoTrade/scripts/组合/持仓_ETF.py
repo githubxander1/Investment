@@ -65,7 +65,7 @@ if __name__ == '__main__':
     final_df = pd.concat(all_dfs, ignore_index=True)
 
     # 保存为Excel文件
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\持仓ETF.xlsx"
+    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\持仓ETF.csv"
     final_df.to_excel(file_path, index=False)
     print("数据已保存到Excel文件：", file_path)
 

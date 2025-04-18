@@ -11,7 +11,8 @@ def paylabs_merchant_register(playwright: Playwright, email) -> None:
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
-    page.goto("http://paylabs-test.com/merchant/paylabs-register-register.html#")
+    # page.goto("http://paylabs-test.com/merchant/paylabs-register-register.html#")
+    page.goto("https://sitch-merchant.paylabs.co.id/paylabs-register-register.html")
     page.locator("span").filter(has_text="id").first.click()
     page.get_by_role("link", name="EN", exact=True).click()
 

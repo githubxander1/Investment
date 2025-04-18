@@ -3,7 +3,6 @@ import datetime
 import os
 from pprint import pprint
 
-import openpyxl
 import pandas as pd
 import requests
 
@@ -23,8 +22,6 @@ from others.Investment.THS.AutoTrade.utils.determine_market import determine_mar
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
 from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
     create_empty_excel
-
-
 
 # logger = setup_print(ETF_ADJUSTMENT_LOG_FILE)
 
@@ -89,22 +86,27 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
     return today_trades
 
 async def read_existing_data(file_path):
+    expected_columns = ['组合名称', '代码', '股票名称', '市场', '操作', '最新价', '当前比例%', '新比例%', '时间']
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         try:
-            existing_df = pd.read_csv(file_path)
-            # existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+            existing_df = pd.read_csv(file_path, on_bad_lines='skip')
+            # 确保列名一致
+            if not all(column in existing_df.columns for column in expected_columns):
+                print("文件列名不匹配，创建一个空的DataFrame")
+                return pd.DataFrame(columns=expected_columns)
             return existing_df
         except pd.errors.EmptyDataError:
             print("文件为空，创建一个空的DataFrame")
-            return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价',  '新比例%', '时间'])
+            return pd.DataFrame(columns=expected_columns)
     else:
         print("历史数据文件不存在或为空，创建新的历史数据文件。")
-        return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价', '新比例%', '时间'])
+        # return pd.DataFrame(columns=expected_columns)
+        return pd.DataFrame()
 
 async def save_new_data(new_data, file_path):
     if not new_data.empty:
         file_exists = os.path.isfile(file_path)
-        with open(file_path, "a", encoding="utf-8") as f:
+        with open(file_path, "a", encoding="utf-8", newline='') as f:
             new_data.to_csv(f, index=False, header=not file_exists)
         print(f"新增{len(new_data)}条唯一调仓记录")
         notification_msg = f"\n> " + "\n".join(
@@ -128,6 +130,8 @@ async def ETF_Combination_main():
         stock_today_trades_all.extend(stock_today_trades)
     # pprint(f'股票组合的今日调仓：\n {stock_today_trades_all}')
 
+
+    # 整合两个表数据
     all_today_trades = etf_today_trades_all + stock_today_trades_all
 
     # 倒序排序
@@ -136,9 +140,7 @@ async def ETF_Combination_main():
     # 合并两个表数据
     all_today_trades_df = pd.DataFrame(all_today_trades)
     all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1)
-    # all_today_trades_df['代码'] = all_today_trades_df['代码'].astype(str).str.zfill(6)
-    #索引倒序，比如5,4,3,2,1
-    # all_today_trades_df = all_today_trades_df[::-1]
+
     print(f'{len(all_today_trades_df)} 条今天调仓数据, 如下：\n {all_today_trades_df}\n')
 
     existing_data_file = ETF_Combination_TODAY_ADJUSTMENT_FILE
@@ -147,10 +149,12 @@ async def ETF_Combination_main():
     # 确保两个DataFrame的列一致
     if existing_df.empty:
         existing_df = pd.DataFrame(columns=all_today_trades_df.columns)
+        print(existing_df)
 
     combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
     combined_df.drop_duplicates(subset=['代码', '时间'], inplace=True)
-
+    # combined_df = combined_df.reset_index(drop=True).set_index(combined_df.index + 1)
+    print(combined_df)
     new_data = combined_df[~combined_df.index.isin(existing_df.index)]
     await save_new_data(new_data, existing_data_file)
 

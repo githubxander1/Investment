@@ -64,20 +64,24 @@ async def get_latest_position_and_trade(strategy_id):
 async def read_existing_data(file_path):
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         try:
-            existing_df = pd.read_csv(file_path)
-            # existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
+            existing_df = pd.read_csv(file_path, on_bad_lines='skip')
+            # 确保列名一致
+            expected_columns = ['组合名称',  '股票名称', '市场', '操作', '最新价', '当前比例%', '新比例%', '时间']
+            if not all(column in existing_df.columns for column in expected_columns):
+                print("文件列名不匹配，创建一个空的DataFrame")
+                return pd.DataFrame(columns=expected_columns)
             return existing_df
         except pd.errors.EmptyDataError:
             print("文件为空，创建一个空的DataFrame")
-            return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价',  '新比例%', '时间'])
+            return pd.DataFrame(columns=['组合名称',  '股票名称', '市场', '操作', '最新价', '当前比例%', '新比例%', '时间'])
     else:
         print("历史数据文件不存在或为空，创建新的历史数据文件。")
-        return pd.DataFrame(columns=['组合名称', '股票名称', '代码', '操作', '最新价', '新比例%', '时间'])
+        return pd.DataFrame(columns=['组合名称',  '股票名称', '市场', '操作', '最新价', '当前比例%', '新比例%', '时间'])
 
 async def save_new_data(new_data, file_path):
     if not new_data.empty:
         file_exists = os.path.isfile(file_path)
-        with open(file_path, "a", encoding="utf-8") as f:
+        with open(file_path, "a", encoding="utf-8", newline='') as f:
             new_data.to_csv(f, index=False, header=not file_exists)
         print(f"新增{len(new_data)}条唯一调仓记录")
         notification_msg = f"\n> " + "\n".join(
@@ -86,6 +90,7 @@ async def save_new_data(new_data, file_path):
         send_notification(notification_msg)
     else:
         print("没有新增调仓数据")
+
 async def strategy_main():
     all_today_trades_info = []
     all_latest_trade_info = []
@@ -117,7 +122,7 @@ async def strategy_main():
         existing_df = pd.DataFrame(columns=today_trades_without_sc_df.columns)
 
     combined_df = pd.concat([today_trades_without_sc_df, existing_df], ignore_index=True)
-    combined_df.drop_duplicates(subset=['代码', '时间'], inplace=True)
+    combined_df.drop_duplicates(subset=['时间'], inplace=True)
 
     new_data = combined_df[~combined_df.index.isin(existing_df.index)]
     await save_new_data(new_data, existing_data_file)
@@ -129,17 +134,17 @@ async def strategy_main():
     #         existing_df['代码'] = existing_df['代码'].astype(str).str.zfill(6)
     #         print(f'{len(existing_df)} 历史数据：\n{existing_df}')
     # else:
-    #     existing_df = pd.DataFrame(columns=['策略名称', '股票名称', '代码', '操作', '新比例%', '时间'])
+    #     existing_df = pd.DataFrame(columns=['策略名称', '股票名称',  '操作', '新比例%', '时间'])
     #     print("历史数据文件不存在或为空，创建新的历史数据文件。")
     #
     # def check_new_data(all_today_trades_df, existing_df, file_path):
     #     if existing_df.empty:
     #         combined_df = all_today_trades_df
-    #         combined_df = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
+    #         combined_df = combined_df.drop_duplicates(subset=[ '时间'], keep=False)
     #         combined_df.to_csv(file_path, index=False)
     #     else:
     #         combined_df = pd.concat([all_today_trades_df, existing_df], ignore_index=True)
-    #     new_data = combined_df.drop_duplicates(subset=['代码', '时间'], keep=False)
+    #     new_data = combined_df.drop_duplicates(subset=[ '时间'], keep=False)
     #     if not new_data.empty:
     #         print(f'\n{len(new_data)} 条新增数据，如下：\n {new_data}')
     #         # 检查文件是否已经存在

@@ -9,7 +9,8 @@ from CompanyProject.Payok.UI.utils.generate_google_code import generate_google_c
 
 
 def sales_login(page , sales_login_name):
-    page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
+    # page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
+    page.goto("https://sitch-sales.paylabs.co.id/paylabs-user-login.html")
     # 切换语言
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
@@ -23,16 +24,16 @@ def sales_login(page , sales_login_name):
 
     paylabs_merchant_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'sales_operator', sales_login_name)
     page.wait_for_timeout(1000)
-
-    try:
-        page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
-
-        error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
-        if error_code.is_visible():
-            page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
-        page.get_by_role("button", name="Login").click()
-    except Exception as e:
-        print(f'输入谷歌验证码失败：{e}')
+    # page.pause()
+    # try:
+    #     page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
+    #
+    #     error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
+    #     if error_code.is_visible():
+    #         page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
+    page.get_by_role("button", name="Login").click()
+    # except Exception as e:
+    #     print(f'输入谷歌验证码失败：{e}')
 
     page.wait_for_timeout(1000)
     try:
@@ -105,7 +106,8 @@ def sales_setting_sales(page, merchant_id):
     #     print(f"点击设置sales按钮失败：{e}")
 
     page.locator('#select2-newSalesManModal-container').click()
-    page.get_by_role("treeitem", name="111111").click()
+    # page.pause()
+    page.get_by_role("treeitem", name="luokai").click() #优化
     page.get_by_role("textbox", name="Remarks").fill("1设置sales")
     page.locator("#btnSureSaleModal").click()
     print("销售设置成功")
@@ -243,17 +245,23 @@ def sales_submit_info(page,email, merchant_id):
         page.locator(f"#btnUpload{form_id}").click()
     #
     # # 上传文件
+    upload_file(pdf_file_path, "11")
     upload_file(pdf_file_path, "12")
     upload_file(pdf_file_path, "13")
-    upload_file(pdf_file_path, "16")
-    upload_file(pdf_file_path, "18")
-    upload_file(pdf_file_path, "24")
+    upload_file(pdf_file_path, "14")
     upload_file(pdf_file_path, "15")
-    
+    upload_file(pdf_file_path, "16")
+    upload_file(pdf_file_path, "17")
+    upload_file(pdf_file_path, "18")
+    upload_file(pdf_file_path, "22")#
+    upload_file(pdf_file_path, "24")
+
     page.get_by_role("heading", name="").locator("i").click()
     # page.pause()
     page.locator("#select2-selTempsModal-container").click()
-    select_bank_account = page.get_by_role("treeitem", name="Copy of Bank Account Book")
+    # page.get_by_role("treeitem", name="Power of Attorney").click()
+    # select_bank_account = page.get_by_role("treeitem", name="Copy of Bank Account Book")
+    select_bank_account = page.get_by_role("treeitem", name="Power of Attorney")
     # aria - disabled = "true" 如果select_bank_account元素的aria-disabled属性为true，则表示该元素被禁用，无法被点击。点击cancel按钮
     if select_bank_account.is_disabled():
         page.get_by_role("button", name="Cancel").click()
@@ -281,14 +289,16 @@ def sales_submit_info(page,email, merchant_id):
 
 def platform_login(page ,paylabs_operator_login_name):
     # 平台登录
-    page.goto("http://paylabs-test.com/platform/paylabs-user-login.html")
+    # page.goto("http://paylabs-test.com/platform/paylabs-user-login.html")
+    page.goto("https://sitch-admin.paylabs.co.id/paylabs-user-login.html")
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
 
     # page.pause()
     # 登录
     page.get_by_role("textbox", name="E-mail").fill(paylabs_operator_login_name)
-    page.get_by_role("textbox", name="Password Verification Code").fill("Abc@123456789")
+    # page.get_by_role("textbox", name="Password Verification Code").fill("Abc@123456789")
+    page.get_by_role("textbox", name="Password Verification Code").fill("A123456@test")
 
     perform_block_slider_verification(page)
     page.get_by_role("button", name=" Login").click()
@@ -299,12 +309,13 @@ def platform_login(page ,paylabs_operator_login_name):
     if has_login.is_visible():
         page.get_by_role("button", name="Confirm").click()
 
-    paylabs_platform_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'operator', paylabs_operator_login_name)
-    page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
+    # paylabs_platform_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs', 'operator', paylabs_operator_login_name)
+    page.pause()
+    # page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
 
-    error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
-    if error_code.is_visible():
-        page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
+    # error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
+    # if error_code.is_visible():
+    #     page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
 
     page.get_by_role("button", name="Submit").click()
     print("平台端登录成功")
@@ -451,13 +462,14 @@ def platform_request_activation(page,merchant_id):
     page.locator("#nav_1 div").filter(has_text="DanamonVA Settlement Type").get_by_role("button").click()
     page.get_by_role("listitem").filter(has_text="Danamon Paylabs").locator("label").first.click()
     # page.locator("#nav_1 div").filter(has_text="DanamonVA Settlement Type").get_by_role("button").click()
-    page.locator("#rate232").fill("5")
-    page.locator("#fee232").fill('5000')
+    page.locator("#rate232").fill("99")
+    page.locator("#fee232").fill('10000')
     page.locator("#transSharingRate232").fill("0")
     page.locator("#transSharingFee232").fill("0")
+    page.pause()
     # page.locator("#merVatSel1242").select_option("0")
-    page.get_by_role("listitem").filter(has_text="Danamon Paylabs").locator("select[name=\"selMerVat\"]").select_option(
-        "0.11")
+    # page.get_by_role("listitem").filter(has_text="Danamon Paylabs").locator("select[name=\"selMerVat\"]").select_option(
+    #     "0.11")
 
     page.get_by_role("cell", name="Non-active").locator("label").click()
     page.get_by_role("cell", name="Active").get_by_role("list").click()
@@ -467,9 +479,10 @@ def platform_request_activation(page,merchant_id):
     # page.pause()
     page.get_by_role("cell", name="Merchant Cost ").click()
     # page.locator("button[name=\"btnSelectCancel\"]").click()
-    page.get_by_role("cell", name="*Merchant Fee % Sample:0.7000").get_by_role("textbox").first.fill("4")
-    page.get_by_role("textbox", name="1000").fill("4000")
-    page.get_by_role("cell", name="*Merchant Fee 4 % Sample:0.").get_by_role("combobox").select_option("0.11")
+    page.get_by_role("cell", name="*Merchant Fee % Sample:0.7000").get_by_role("textbox").first.fill("99")
+    page.get_by_role("textbox", name="1000").fill("10000")
+    # page.get_by_role("cell", name="*Merchant Fee 4 % Sample:0.").get_by_role("combobox").select_option("0.11")
+    page.get_by_role("cell", name="*Merchant Fee 99 % Sample:0.").get_by_role("combobox").select_option("0.11")
     page.get_by_role("textbox", name="Merchant RSA Public Key").fill("123456789")
 
     # page.get_by_role("listitem").filter(has_text="Danamon Paylabs").locator("select[name=\"selMerVat\"]").select_option("0.11")
@@ -562,34 +575,35 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
 
     #商户注册
-    register_email = "paylabsmerchant1@test.com"
+    register_email = "1@linshiyou.com"
     # paylabs_merchant_register(playwright, register_email)
     #
     #
     # # sales端提交资料
     sales_login_name = '15318544153'
-    # # merchant_id = "010410"
-    page = context.new_page()
-    sales_login(page, sales_login_name)
-    #
+    merchant_id = "010325"
+    # page = context.new_page()
+    # sales_login(page, sales_login_name)
+    # # #
     # # 获取第一条商户id
-    page.get_by_role("link", name="ﱖ Merchant ").click()
-    page.get_by_role("link", name="Merchant", exact=True).click()
-    # 通过xpath获取元素的text值  //*[@id="merchant-datatable"]/tbody/tr[1]/td[1]
-    merchant_id = page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
+    # page.get_by_role("link", name="ﱖ Merchant ").click()
+    # page.get_by_role("link", name="Merchant", exact=True).click()
+    # # # 通过xpath获取元素的text值  //*[@id="merchant-datatable"]/tbody/tr[1]/td[1]
+    # merchant_id = page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
     # print(merchant_id)
-    #
+    # #
     # sales_setting_sales(page,merchant_id) #设置销售人员
     # sales_submit_info(page,register_email,merchant_id) #提交销售资料
-
-    # 平台审核
-    paylabs_operator_login_name = 'test001@qq.com'
+    # #
+    # # 平台审核
+    # paylabs_operator_login_name = 'test001@qq.com'
+    paylabs_operator_login_name = 'Xander@sitch.paylabs.co.id'
     page2 = context.new_page()
     platform_login(page2, paylabs_operator_login_name)#登录平台
 
-    platform_risk_control_audit(page2,merchant_id)# 风控审核
-    page2.wait_for_timeout(3000)
-    platform_legal_risk_audit(page2,merchant_id)#法律审核
+    # platform_risk_control_audit(page2,merchant_id)# 风控审核
+    # page2.wait_for_timeout(3000)
+    # platform_legal_risk_audit(page2,merchant_id)#法律审核
     platform_request_activation(page2,merchant_id)# 激活请求审核
     platform_activation_audit(page2,merchant_id)# 激活审核
 
