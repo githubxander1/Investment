@@ -45,13 +45,14 @@ def get_email_code(playwright: Playwright, username, password) -> None:
         captcha_1_input.fill(captcha_text)
 
     page.get_by_role("button", name="登录").click()
-    page.pause()
-    page.get_by_title("Default (41)").click()
-    page.wait_for_timeout(1000)
-    page.get_by_title("test (21)").click()
-    page.wait_for_timeout(1000)
-    page.get_by_title("192.168.0.224").click()
-    page.wait_for_timeout(1000)
+    # page.pause()
+    # page.wait_for_timeout(1000)
+    # page.get_by_title("Default (41)").click()
+    # page.wait_for_timeout(1000)
+    # page.get_by_title("test (21)").click()
+    # page.wait_for_timeout(1000)
+    # page.get_by_title("192.168.0.224").click()
+    # page.wait_for_timeout(1000)
     page.pause()
     '''复制粘贴：
     cd /data/logs/tomcat/merchart

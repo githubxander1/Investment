@@ -46,9 +46,9 @@ def get_email_code(playwright: Playwright, username, password) -> None:
 
     page.get_by_role("button", name="登录").click()
     page.pause()
-    page.get_by_title("Default (41)").click()
+    page.get_by_title("Default (46)").click()
     page.wait_for_timeout(1000)
-    page.get_by_title("test (21)").click()
+    page.get_by_title("test (23)").click()
     page.wait_for_timeout(1000)
     page.get_by_title("192.168.0.224").click()
     page.wait_for_timeout(1000)
@@ -62,5 +62,9 @@ def get_email_code(playwright: Playwright, username, password) -> None:
     # browser.close()
 
 
-# with sync_playwright() as playwright:
-#     get_email_code(playwright)
+with sync_playwright() as playwright:
+    '''复制粘贴：
+            cd /data/logs/tomcat/merchart
+            grep "发邮件结束 getVerificationCode 登录邮箱" *
+            '''
+    get_email_code(playwright, 'xiaozehua', '8qudcQifW7cjydglydm{')
