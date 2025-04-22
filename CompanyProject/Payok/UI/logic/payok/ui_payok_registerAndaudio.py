@@ -81,7 +81,7 @@ def run(playwright: Playwright) -> None:
     #商户注册
     register_email = "12@linshiyou.com"
     merchant_name = register_email
-    # merchant_name = 'Payok公司名称'
+    merchant_name = 'Payok公司名称'
     payok_register(playwright, register_email, merchant_name)
 
     payok_operator_login_name = 'Xander@test.com'
