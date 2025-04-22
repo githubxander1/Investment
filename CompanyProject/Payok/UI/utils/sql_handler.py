@@ -23,7 +23,7 @@ class SQLHandler:
     def disconnect(self):
         if self.connection:
             self.connection.close()
-            # print("数据库连接已关闭")
+            print("数据库连接已关闭")
 
     def get_google_secret_key(self, table_name, login_name):
         if not self.connection:
@@ -44,21 +44,21 @@ class SQLHandler:
                 if result:
                     return result[0]
                 else:
-                    print("未查找到记录.")
+                    print("数据库未查找到记录.")
                     return None
         except pymysql.MySQLError as e:
             print(f"执行SQL查询时出错: {e}")
             return None
 
 # 使用示例
-# if __name__ == "__main__":
-#     # db_handler = SQLHandler('192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'aesygo_test')
-#     db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs')
-#     db_handler.connect()
-#
-#     # secret_key = db_handler.get_google_secret_key('2695418206@qq.com')
-#     secret_key = db_handler.get_google_secret_key('merchant_operator','paylabs2@test.com')
-#     if secret_key:
-#         print("Google Secret Key:", secret_key)
-#
-#     db_handler.disconnect()
+if __name__ == "__main__":
+    db_handler = SQLHandler('192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'aesygo_test')
+    # db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'paylabs')
+    db_handler.connect()
+
+    # secret_key = db_handler.get_google_secret_key('2695418206@qq.com')
+    secret_key = db_handler.get_google_secret_key('operator','Xander@test.com')
+    if secret_key:
+        print("Google Secret Key:", secret_key)
+
+    db_handler.disconnect()

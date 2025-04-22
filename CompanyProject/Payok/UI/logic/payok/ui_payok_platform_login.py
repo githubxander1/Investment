@@ -97,7 +97,7 @@ def payok_merchant_audio(playwright: Playwright, login_email, merchant_name) -> 
     browser.close()
 
 if __name__ == '__main__':
-    login_email = "2695418206@qq.com"
+    login_email = "Xander@test.com"
     merchant_name = "公司001"
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
