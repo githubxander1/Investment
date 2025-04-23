@@ -4,34 +4,36 @@ from os.path import exists
 from playwright.sync_api import Playwright, sync_playwright, expect
 
 from CompanyProject.Payok.UI.logic.paylabs.ui_paylabs_merchant_register import paylabs_merchant_register
-from CompanyProject.Payok.UI.logic.payok.payok_register import payok_register
+from CompanyProject.Payok.UI.logic.payok.merchant_login import merchant_login
+from CompanyProject.Payok.UI.logic.payok.merchant_register import payok_register
+from CompanyProject.Payok.UI.logic.payok.platform_login import platform_login
 # from CompanyProject.Payok.UI.utils.get_email_code import cookies
 from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_block_slider_verification
 from CompanyProject.Payok.UI.utils.generate_google_code import generate_google_code
 
-def platform_login(page ,payok_operator_login_name, password):
-    # 平台登录
-    page.goto("http://payok-test.com/platform/payok-user-login.html")
-    page.get_by_text("Bahasa").click()
-    page.get_by_role("link", name="中文").click()
-
-    page.get_by_role("textbox", name="邮箱").fill(payok_operator_login_name)
-    page.get_by_placeholder("请输入密码").fill(password)
-    perform_block_slider_verification(page)
-
-    page.get_by_role("button", name=" 登录").click()
-    google_code = generate_google_code('192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'aesygo_test', 'operator',
-                                       payok_operator_login_name)
-    page.get_by_role("textbox", name="谷歌验证码").fill(google_code)
-    page.get_by_role("button", name="确认").click()
-    url ='http://payok-test.com/platform/payok-trans-trans.html'
-    #断言是否进入这个url，如果不是这个url，就报错
-    try:
-        expect(page).to_have_url(url)
-        print("平台端登录成功")
-    except:
-        print("平台端登录失败")
-        page.pause()
+# def platform_login(page ,payok_operator_login_name, password):
+#     # 平台登录
+#     page.goto("http://payok-test.com/platform/payok-user-login.html")
+#     page.get_by_text("Bahasa").click()
+#     page.get_by_role("link", name="中文").click()
+#
+#     page.get_by_role("textbox", name="邮箱").fill(payok_operator_login_name)
+#     page.get_by_placeholder("请输入密码").fill(password)
+#     perform_block_slider_verification(page)
+#
+#     page.get_by_role("button", name=" 登录").click()
+#     google_code = generate_google_code('192.168.0.227', 3306, 'WAYANGPAY', 'Z43@Mon88', 'aesygo_test', 'operator',
+#                                        payok_operator_login_name)
+#     page.get_by_role("textbox", name="谷歌验证码").fill(google_code)
+#     page.get_by_role("button", name="确认").click()
+#     url ='http://payok-test.com/platform/payok-trans-trans.html'
+#     #断言是否进入这个url，如果不是这个url，就报错
+#     try:
+#         expect(page).to_have_url(url)
+#         print("平台端登录成功")
+#     except:
+#         print("平台端登录失败")
+#         page.pause()
 
 def platform_merchant_go_live(page, merchant_name):
     # 开始审核,上线
@@ -53,6 +55,7 @@ def platform_merchant_go_live(page, merchant_name):
     page.get_by_text("确定切换").click()
     page.get_by_role("dialog", name="商户信息").locator("b").nth(3).click()
     page.get_by_role("treeitem", name="-日出东方-[120200916152641588]").click()
+    page.pause()
     page.get_by_label("商户信息").get_by_role("combobox", name="选择").locator("b").click()
     page.get_by_role("treeitem").filter(has_text="hfdgd -").click()
     # page.locator('//*[@id="select2-agentProfitRules-result-n0uk-1116423140388933632"]').click()
@@ -74,22 +77,29 @@ def platform_merchant_go_live(page, merchant_name):
 
 
 def run(playwright: Playwright) -> None:
+    # browser = playwright.chromium.launch(headless=False,args=["--start-maximized"])
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
+    page.set_viewport_size({"width": 1920, "height": 1040})
+    # next_button = page.locator("text=Next")
+    # page.wait_for_selector("text=Next", state="visible")
 
     #商户注册
     register_email = "12@linshiyou.com"
+    merchant_password = "A123456@test"
     merchant_name = register_email
-    merchant_name = 'Payok公司名称'
+    # merchant_name = '1'
     payok_register(playwright, register_email, merchant_name)
 
-    payok_operator_login_name = 'Xander@test.com'
-    password = 'QWEqwe@123456'
-    # platform_login(page,payok_operator_login_name, password) #登录平台
+    operator_login_name = 'Xander@test.com'
+    operator_password = 'QWEqwe@123456'
+    # platform_login(playwright,operator_login_name, operator_password) #登录平台
     # page.pause()
 
     # platform_merchant_go_live(page,merchant_name) # 上线
+
+    # merchant_login(playwright, merchant_name, merchant_password)
 
     context.close()
     browser.close()

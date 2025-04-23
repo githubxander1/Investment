@@ -576,7 +576,7 @@ def run(playwright: Playwright) -> None:
 
     #商户注册
     register_email = "1@linshiyou.com"
-    # paylabs_merchant_register(playwright, register_email)
+    paylabs_merchant_register(playwright, register_email)
     #
     #
     # # sales端提交资料

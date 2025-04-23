@@ -24,11 +24,11 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.csv')
 SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
 
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.csv')
-ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和组合_今天调仓.csv')
+ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和stock_portfolio_today.csv')
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.csv')
-ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'ETF和股票组合持仓.csv')
+ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'etf_stock_position.csv')
 Combination_info_file = os.path.join(DATA_DIR, '股票组合持仓_历史调仓_今天调仓.csv')
 
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.csv')

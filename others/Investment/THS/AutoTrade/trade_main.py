@@ -31,8 +31,8 @@ from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODA
 from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
 
 # 模块导入 ========================================================
-from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main
-from others.Investment.THS.AutoTrade.scripts.策略.策略_今天调仓 import strategy_main
+from others.Investment.THS.AutoTrade.scripts.组合.Etf_stock_portfolio_today import ETF_Combination_main
+from others.Investment.THS.AutoTrade.scripts.策略.strategy_portfolio_today import strategy_main
 from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 
 # 调度器配置 ======================================================

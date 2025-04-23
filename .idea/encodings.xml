@@ -2,10 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$USER_HOME$/Downloads/邢不行技术指标回测代码大全/邢不行技术指标回测代码大全/策略回测/股票数据/bj430017.csv" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/others/Investment/THS/AutoTrade/data/ETF和组合_今天调仓.csv" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/others/Investment/THS/AutoTrade/data/ETF和组合_今天调仓.csv" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/others/Investment/THS/AutoTrade/data/history_data001.csv" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/others/Investment/THS/AutoTrade/data/history_data001.csv" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/others/Investment/THS/AutoTrade/data/ETF和stock_portfolio_today.csv" charset="GBK" />
     <file url="file://$PROJECT_DIR$/others/Investment/THS/AutoTrade/data/history_data001.csv" charset="GBK" />
     <file url="file://$PROJECT_DIR$/others/Investment/baostock回测/bao_history_k_data.csv" charset="GBK" />
     <file url="file://$PROJECT_DIR$/others/Investment/策略回测/股票数据/bj430017.csv" charset="GBK" />

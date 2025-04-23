@@ -7,13 +7,36 @@ from CompanyProject.Payok.UI.utils.get_email_code import get_email_code
 
 
 def payok_register(playwright: Playwright, register_email, merchant_name) -> None:
-    browser = playwright.chromium.launch(headless=False, args=["--start-maximized"])
-    context = browser.new_context(no_viewport=True)
-    # context = browser.new_context(viewport={"width": 1920, "height": 1080})
+    # browser = playwright.chromium.launch(headless=False, args=["--start-maximized"])
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context(viewport={"width": 1920, "height": 1040})
+    #窗口放大
     page = context.new_page()
-    page.set_viewport_size({"width": 1920, "height": 1080})
+    # page.set_viewport_size({"width": 1920, "height": 1040})
+    # context = browser.new_context(no_viewport=True)
+    # context = browser.new_context(viewport={"width": 1920, "height": 1080})
     page.goto("http://payok-test.com/merchant/payok-register-register.html")
     # page.evaluate("() => { document.documentElement.requestFullscreen(); }")
+    next_button = page.locator("text=Next")
+    page.wait_for_selector("text=Next", state="visible")
+
+    # 获取所有 "Next" 按钮
+    # next_buttons = page.locator("text=Next").all()
+    #
+    # for button in next_buttons:
+    #     try:
+    #         # 检查按钮是否可见
+    #         if button.is_visible():
+    #             print(button.evaluate("node => node.style.display"))  # 检查 display 属性
+    #             print(button.evaluate("node => node.style.visibility"))  # 检查 visibility 属性
+    #
+    #             # 点击按钮
+    #             button.click()
+    #             break
+    #     except Exception as e:
+    #         print(f"Button not clickable: {e}")
+
+    page.wait_for_load_state("networkidle")  # 等待网络空闲状态
 
     #第一页
     page.get_by_role("textbox", name="Company Name *").fill(merchant_name)
@@ -31,11 +54,12 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     page.get_by_role("textbox", name="Choose").click()
     page.get_by_role("treeitem", name="Live Streaming").click()
     page.get_by_role("textbox", name="Please enter").fill("直播")
+    # page.pause()
     page.get_by_role("textbox", name="Amount Range *").fill("1")
-    page.get_by_role("textbox", name="The Maximum Amount Per").fill("6")
+    page.get_by_role("textbox", name="Maximum Amount").fill("6")
     page.get_by_role("button", name="Next").click()
     #第二页
-    # page.pause()
+    page.pause()
     page.get_by_role("textbox", name="Business Contact *").fill("15318544154")
     page.get_by_role("textbox", name="Business Contact Number *").fill("15318544154")
     page.get_by_role("textbox", name="Business Contact Email *").fill("1@linshiyou.com")
@@ -45,7 +69,7 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     page.get_by_role("textbox", name="Technical Contact Number *").fill("15318544154")
     page.get_by_role("button", name="Next").click()
     #第三页
-    # page.pause()
+    page.pause()
     page.get_by_role("textbox", name="Account Number *").fill("1531854415415318544154")
     page.get_by_role("textbox", name="Account Name *").fill("15318544154")
     page.get_by_role("textbox", name="Bank Name *").fill("中国人民银行")
@@ -55,6 +79,7 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     page.get_by_role("textbox", name="Secure Email for fund account").fill("1@linshiyou.com")
     page.get_by_role("button", name="Next").click()
     # 第四页
+    page.pause()
     filepath = "../../data/合同.pdf"
     if filepath is None or not exists(filepath):
         print("文件不存在")
@@ -66,15 +91,11 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     set_files("2",filepath)
     set_files("3",filepath)
     page.get_by_role("button", name=" Add a row").click()
-    page.pause()
     page.get_by_role("combobox", name="Please Choose").locator("span").nth(1).click()
     page.get_by_role("treeitem", name="H5").click()
     page.locator("input[name=\"txtMdRegisterAddress\"]").fill("www.baidu.com")
     page.locator("input[name=\"txtMdTestAccount\"]").fill("托尔斯泰")
     page.locator("input[name=\"txtMdTestPassword\"]").fill("1")
-    # page.get_by_role("textbox", name="Registration Address").fill("www.baidu.com")
-    # page.get_by_role("textbox", name="Test Account", exact=True).fill("托尔斯泰")
-    # page.get_by_role("textbox", name="Test Account Password").fill("A123456@test")
     page.get_by_role("button", name="Next").click()
     #第五页
     page.pause()
@@ -96,6 +117,13 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     page.get_by_role("textbox", name="Password*").fill("A123456@test")
     page.get_by_role("textbox", name="Comfirm Password *").fill("A123456@test")
     page.get_by_role("button", name="Submit").click()
+    continue_register = page.get_by_role("button", name="Continue Registration")
+    continue_register.click()
+    # 断言如果继续注册存在，则打印注册成功
+    if continue_register.is_visible():
+        print("注册成功")
+    else:
+        print("注册失败")
     page.pause()
 
     # ---------------------
@@ -106,4 +134,5 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
 if __name__ == '__main__':
     with sync_playwright() as playwright:
         register_email = "12@linshiyou.com"
-        payok_register(playwright, register_email)
+        merchant_name =  register_email
+        payok_register(playwright, register_email, merchant_name)
