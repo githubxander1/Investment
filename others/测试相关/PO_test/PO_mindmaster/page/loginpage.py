@@ -28,8 +28,8 @@ class LoginPage(BasePage):
     # account_or_password_error_loc=(By.CSS_SELECTOR,'#pane-account > div > div.el-row.is-justify-space-around.el-row--flex > form > div.el-form-item.is-error.is-required.is-no-asterisk > div > div.el-form-item__error')
     account_or_password_error_loc=(By.XPATH,'//*[@id="pane-account"]/div/div[实例25_批量生成PPT版荣誉证书]/form/div[2]/div/div[2]')
 
-    # def __init__(self):
-    #     super().__init__()
+    # def __init__.py(self):
+    #     super().__init__.py()
         # self.dr.get(self.url)
 
     # 打开网站，切换到登录表单

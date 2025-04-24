@@ -54,7 +54,7 @@ class Test_group_nickname():
             #     print('文件夹存在，跳过')
             # else:
             #     os.makedirs(f'./result_screenshots/{file_without_prefixAndextension}')
-            #     os.path.join(f'./result_screenshots/{file_without_prefixAndextension}', '__init__.py')# 创建__init__.py文件
+            #     os.path.join(f'./result_screenshots/{file_without_prefixAndextension}', '__init__.py.py')# 创建__init__.py文件
             # timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             # # filename = f'./result_screenshots/{file_without_prefixAndextension}/{text}_{timestamp}.png'
             # filename = f'./result_screenshots/group_nickname/{text}_{timestamp}.png'

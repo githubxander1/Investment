@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 
 class Ui_widget(object):
-    # def __init__(self):
+    # def __init__.py(self):
     #     # 从 UI 定义中动态 创建一个相应的窗口对象
     #     # 注意：里面的控件对象也成为窗口对象的属性了
     #     # 比如 self.ui.button , self.ui.textEdit

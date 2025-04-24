@@ -14,7 +14,7 @@ filename=os.path.basename(__file__).split('.')[0]
 logger=LoggerHandler(name='root',level='WARNING',file=f'../log/{filename}_log.log',format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 class TestAddAsk:
-    # def __init__(self):
+    # def __init__.py(self):
     # added_ask_id = None
     def setup(self):
         self.client = MongoDBHandler(
