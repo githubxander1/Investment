@@ -142,7 +142,7 @@ def merchant_register(playwright: Playwright, register_email) -> None:
 
 if __name__ == '__main__':
     # merchant_register_email = "12i_ynhx5b51i2@dingtalk.com"
-    merchant_register_email = "4@qq.com"
+    merchant_register_email = "5@qq.com"
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_DIR = os.path.join(BASE_DIR, '../..', 'data')
