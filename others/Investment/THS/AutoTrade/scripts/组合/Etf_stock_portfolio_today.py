@@ -43,6 +43,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
     today = datetime.date.today().strftime('%Y-%m-%d')
 
     data = response_json.get('data', [])
+    # pprint(data)
     for item in data:
         createAt = item.get('createAt', None)
         content = item.get('content', '')
@@ -52,7 +53,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
             name = infos.get('name', None)
             code = infos.get('code', None)
             if '***' in name:
-                print(f"未订阅或股票名称显示异常 -组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                print(f"未订阅或标的名称显示异常 -组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
                 continue
 
             # 计算操作类型
@@ -70,51 +71,44 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
             history_post = {
                 '名称': combination_name,
                 '操作': operation,
-                '股票名称': name,
+                '标的名称': name,
                 '代码': str(code).zfill(6),  # 提前统一格式
                 '最新价': infos.get('finalPrice'),
                 # '当前比例%': round(current_ratio * 100, 2),
                 '新比例%': round(new_ratio * 100, 2),
                 '市场': market,
                 '时间': createAt,
-                # '理由': content
+                '理由': content
             }
-            # 今天调仓的
+            # 今天更新的
             today = datetime.date.today().strftime('%Y-%m-%d')
             if today == createAt.split()[0]:
                 today_trades.append(history_post)
 
     return today_trades
 
-async def read_existing_data(file_path):
-    expected_columns = ['名称', '操作', '股票名称', '代码',  '最新价', '新比例%', '市场', '时间']
-    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-        existing_df = pd.read_csv(file_path)#, on_bad_lines='skip'
-        print(f'{len(existing_df)} 条历史数据：\n{existing_df}')
-        # 确保列名一致
-        # if not all(column in existing_df.columns for column in expected_columns):
-        #     print("文件列名不匹配，创建一个空的DataFrame")
+# async def read_existing_data(file_path):
+#     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
+#
+#     # try:
+#     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+#         # 添加dtype参数强制代码列为字符串
+#         existing_df = pd.read_csv(file_path, dtype={'代码': str})
+#         print(f'{len(existing_df)} 条历史更新数据, 如下：\n {existing_df}')
+#         # # 检查列名是否匹配
+#         # if not set(expected_columns).issubset(existing_df.columns):
+#         #     print("列名不匹配，创建新文件")
+#         #     return pd.DataFrame(columns=expected_columns)
+#         return existing_df
+        # else:
+        #     # 创建带有正确列名的空文件
+        #     pd.DataFrame(columns=expected_columns).to_csv(file_path, index=False)
+        #     print("创建新的历史数据文件")
         #     return pd.DataFrame(columns=expected_columns)
-        return existing_df
-    else:
-        print("历史数据文件不存在或为空，创建新的历史数据文件。")
-        return pd.DataFrame(columns=expected_columns)
-    # if not existing_df.empty:
-    #     return existing_df.reindex(columns=expected_columns)
-    # return existing_df
-
-async def save_new_data(new_data, file_path):
-    if not new_data.empty:
-        file_exists = os.path.isfile(file_path)
-        with open(file_path, "a", encoding="utf-8", newline='') as f:
-            new_data.to_csv(f, index=False, header=not file_exists)
-        print(f"新增{len(new_data)}条唯一调仓记录")
-        notification_msg = f"\n> " + "\n".join(
-            [f"\n{row['名称']} {row['操作']} {row['股票名称']} {row['代码']} {row['最新价']} {row['新比例%']}% {row['市场']} \n{row['时间']}"
-             for _, row in new_data.iterrows()])
-        send_notification(notification_msg)
-    else:
-        print("没有新增调仓数据")
+    # except pd.errors.EmptyDataError:
+    #     print("历史数据为空")
+        # pd.DataFrame(columns=expected_columns).to_csv(file_path, index=False)
+        # return pd.DataFrame(columns=expected_columns)
 
 async def ETF_Combination_main():
     # 处理 ETF 组合
@@ -129,115 +123,33 @@ async def ETF_Combination_main():
         stock_today_trades = fetch_and_extract_data(stock_id, is_etf=False)
         stock_today_trades_all.extend(stock_today_trades)
 
-    # 整合两个表数据
-    all_today_trades = etf_today_trades_all + stock_today_trades_all
+    all_today_trades = etf_today_trades_all + stock_today_trades_all # 整合两个表数据
+    all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True) # 倒序排序
 
-    # 倒序排序
-    all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)
-
-    # 合并两个表数据
+    # 转换成pd表格样式
     all_today_trades_df = pd.DataFrame(all_today_trades)
-    all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1)
+    all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1) #从1开始
+    #去掉‘理由’列
+    all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'])
     if not all_today_trades_df.empty:
-        # print(f"新增{len(all_today_trades_df)}条调仓记录")
-        notification_msg = f"\n> " + "\n".join(
-            []
-        )
+        print(f'{len(all_today_trades_df)} 条今天更新数据, 如下：\n {all_today_trades_df_without_content}\n')
 
-        print(f'{len(all_today_trades_df)} 条今天调仓数据, 如下：\n {all_today_trades_df}\n')
-
-    def read_csv(file_path):
-        try:
-            data = []
-            with open(file_path, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    data.append(row)
-            return pd.DataFrame(data)
-        except FileNotFoundError:
-            print(f"错误: 文件 {file_path} 未找到。")
-            return []
-        except Exception as e:
-            print(f"错误: 读取文件时发生未知错误: {e}")
-            return []
-
-    def find_new_data(csv_data, new_data):
-        new_records = []
-        csv_keys = [tuple(record.values()) for record in csv_data]
-        for record in new_data:
-            record_tuple = tuple(record.values())
-            if record_tuple not in csv_keys:
-                new_records.append(record)
-        return new_records
-
-    def delete_csv(file_path):
-        try:
-            if os.path.exists(file_path):
-                os.remove(file_path)
-                print(f"文件 {file_path} 已删除。")
-            else:
-                print(f"错误: 文件 {file_path} 不存在。")
-        except Exception as e:
-            print(f"错误: 删除文件时发生未知错误: {e}")
-
-    # 读取历史数据（增加列顺序强制对齐）
+    #读取历史数据
     existing_data_file = ETF_Combination_TODAY_ADJUSTMENT_FILE
+    existing_data = pd.read_csv(existing_data_file) if os.path.exists(existing_data_file) else pd.DataFrame()
 
-    # all_today_trades_df.to_csv(existing_data_file, mode='a', header=False, index=False)
-    existing_data_df = await read_existing_data(existing_data_file)
+    if not existing_data.empty:
+        #找出新增的更新数据
+        mask = ~all_today_trades_df['时间'].isin(existing_data['时间'])
+        new_data = all_today_trades_df[mask].copy()
+        if not new_data.empty:
+            print(f'{len(new_data)} 条新增数据, 如下：\n {new_data}')
+            pd.DataFrame(new_data).to_csv(existing_data_file, mode='a', header=False, index=False)
+        else:
+            print("没有新增数据")
+    else:
+        print("没有历史数据")
 
-    # existing_data_df =read_csv(existing_data_file)
-    # print(f"{len(existing_data_df)} 条历史数据：\n{existing_data_df}")
-
-    # 列顺序强制对齐（解决列顺序不一致导致的误判）
-    # expected_columns = ['名称', '操作', '股票名称', '代码', '最新价', '新比例%', '市场', '时间']
-    # all_today_trades_df = all_today_trades_df[expected_columns]
-    # existing_df = existing_df[expected_columns] if not existing_df.empty else existing_df
-
-    # 标识新增数据（使用复合键判断）
-    # merged = all_today_trades_df.merge(
-    #     existing_df,
-    #     on=['代码', '时间'],
-    #     how='left',
-    #     indicator=True
-    # )
-    # new_data = merged[merged['_merge'] == 'left_only'][expected_columns]
-    #
-    # # 保存新增数据
-    # if not new_data.empty:
-    #     file_exists = os.path.isfile(existing_data_file)
-    #     with open(existing_data_file, "a", encoding="utf-8", newline='') as f:
-    #         new_data.to_csv(f, index=False, header=not file_exists)
-    #
-    #     print(f"{len(new_data)}  条新增调仓记录\n{new_data}")
-    #     # [原有通知代码保持不变...]
-    # else:
-    #     print("今日无新增调仓数据")
-
-    # 确保两个DataFr# 列顺序强制对齐（解决列顺序不一致导致的误判）
-    #     expected_columns = ['名称', '操作', '股票名称', '代码', '最新价', '新比例%', '市场', '时间']
-    #     all_today_trades_df = all_today_trades_df[expected_columns]
-    #     existing_df = existing_df[expected_columns] if not existing_df.empty else existing_df
-    #
-    #     # 标识新增数据（使用复合键判断）
-    #     merged = all_today_trades_df.merge(
-    #         existing_df,
-    #         on=['代码', '时间'],
-    #         how='left',
-    #         indicator=True
-    #     )
-    #     new_data = merged[merged['_merge'] == 'left_only'][expected_columns]
-    #
-    #     # 保存新增数据
-    #     if not new_data.empty:
-    #         file_exists = os.path.isfile(existing_data_file)
-    #         with open(existing_data_file, "a", encoding="utf-8", newline='') as f:
-    #             new_data.to_csv(f, index=False, header=not file_exists)
-    #
-    #         print(f"新增{len(new_data)}条唯一调仓记录")
-    #         # [原有通知代码保持不变...]
-    #     else:
-    #         print("今日无新增调仓数据")new_data, existing_data_file)
 
 if __name__ == '__main__':
     asyncio.run(ETF_Combination_main())

@@ -1,6 +1,7 @@
 import os
 import re
 from PIL import Image
+# from numpy import error_message
 from playwright.sync_api import Playwright, sync_playwright, expect
 import random
 import pytesseract
@@ -89,6 +90,7 @@ def merchant_register(playwright: Playwright, register_email) -> None:
     page.get_by_role("textbox", name="Admin Email *").fill(register_email)
     page.get_by_role("button", name="Send Verification Code").click()
 
+    page.pause()
     # 捕获并识别验证码
     captcha_img_path = "captcha.png"
     page.locator("#imgCode").screenshot(path=captcha_img_path)
@@ -105,6 +107,9 @@ def merchant_register(playwright: Playwright, register_email) -> None:
     try:
         expect(page.locator(".verification")).to_have_class("text-red verification d-none", timeout=2000)
     except AssertionError:
+        # error_message = expect(page.locator("#verification")).to_contain_text("Incorrect CAPTCHA, please try again")
+        # if error_message.is_visible():
+            # raise ValueError("验证码输入错误")
         print("验证码输入错误，正在重新尝试...")
         # 如果验证码错误，清空输入框并重新识别
         page.locator("#txtVerificationCode").clear()
@@ -115,9 +120,19 @@ def merchant_register(playwright: Playwright, register_email) -> None:
         page.locator("#txtVerificationCode").fill(captcha_text)
         page.locator("#submitBtn").click()
 
-    page.get_by_role("textbox", name="Email Verification Code *").fill("547099")
+    page.pause()
+    # page.get_by_role("textbox", name="Email Verification Code *").fill("547099")
     page.get_by_role("textbox", name="Password *", exact=True).fill("A123456@test")
     page.get_by_role("textbox", name="Confirm Password *").fill("A123456@test")
+    # page.locator('//*[@id="customCheck2"]').click()
+
+    # 使用id定位复选框元素并点击
+    checkbox = page.query_selector('#customCheck2')
+    if checkbox:
+        page.evaluate('(element) => element.click()', checkbox)
+    else:
+        print("元素未找到")
+
     page.get_by_role("button", name="Confirm").click()
 
 
@@ -126,7 +141,8 @@ def merchant_register(playwright: Playwright, register_email) -> None:
     browser.close()
 
 if __name__ == '__main__':
-    merchant_register_email = "2@tax.com"
+    # merchant_register_email = "12i_ynhx5b51i2@dingtalk.com"
+    merchant_register_email = "4@qq.com"
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_DIR = os.path.join(BASE_DIR, '../..', 'data')

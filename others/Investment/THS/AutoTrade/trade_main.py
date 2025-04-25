@@ -37,8 +37,8 @@ from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 
 # 调度器配置 ======================================================
 SCHEDULE_CONFIG: Dict[str, Tuple[float, Tuple[int, int], Tuple[int, int]]] = {
-    "strategy": (0.25, (9, 29), (9, 33)),
-    "etf_combo": (0.25, (9, 15), (15, 00))
+    "strategy": (1, (9, 29), (9, 33)),
+    "etf_combo": (1, (9, 15), (15, 00))
 }
 
 # 公共方法 ========================================================
@@ -64,7 +64,7 @@ async def strategy_wrapper():
     print("[策略任务] 开始执行...")
     try:
         await strategy_main()
-        next_run = datetime.datetime.now() + datetime.timedelta(seconds=15)
+        next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
         print(f"\n[策略组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("--------------------------------------------------------------")
     except Exception as e:
@@ -75,7 +75,7 @@ async def etf_combo_wrapper():
     print("\n[ETF组合] 开始执行...")
     try:
         await ETF_Combination_main()
-        next_run = datetime.datetime.now() + datetime.timedelta(seconds=15)
+        next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
         print(f"\n[ETF组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("----------------------------------------------------")
     except Exception as e:
