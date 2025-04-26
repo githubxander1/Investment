@@ -1,6 +1,7 @@
 import time
 
-from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
+from CompanyProject.Payok.Tools.paylabs.GoogleSecure import CalGoogleCode
+# from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 
 
@@ -29,11 +30,11 @@ def generate_google_code(host, port, user, password, database, table_name, login
     db_handler.connect()
 
     secret_key = db_handler.get_google_secret_key(table_name, login_name)
-    # if secret_key:
-    #     print("谷歌私钥:", secret_key)
-    # else:
-    #     print("未发现给定邮箱的记录")
-    #     return None
+    if secret_key:
+        print("谷歌私钥:", secret_key)
+    else:
+        print(f"未发现给定邮箱:{login_name} 的记录")
+        return None
 
     db_handler.disconnect()
     try:

@@ -24,7 +24,7 @@ class B:
         print('B10000')
 class C(A,B):
     a1=100
-    # def __init__(self):
+    # def __init__.py(self):
     #     print(2222222222222)
     def f1(self):
         print('C123')

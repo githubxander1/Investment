@@ -17,7 +17,7 @@ class common:
             pass
         else:
             os.makedirs(f'./result_screenshots/{file_without_prefixAndextension}')
-            os.path.join(f'./result_screenshots/{file_without_prefixAndextension}', '__init__.py')  # 创建__init__.py文件
+            os.path.join(f'./result_screenshots/{file_without_prefixAndextension}', '__init__.py.py')  # 创建__init__.py文件
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f'./result_screenshots/{file_without_prefixAndextension}/{sc_name}_{timestamp}.png'
         time.sleep(4)

@@ -24,11 +24,11 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.csv')
 SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
 
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.csv')
-ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和组合_今天调仓.csv')
+ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和stock_portfolio_today.csv')
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.csv')
-ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'ETF和股票组合持仓.csv')
+ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'etf_stock_position.csv')
 Combination_info_file = os.path.join(DATA_DIR, '股票组合持仓_历史调仓_今天调仓.csv')
 
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.csv')
@@ -53,18 +53,21 @@ WATCHED_FOLDER = os.path.join(DATA_DIR)
 
 # API配置
 API_URL = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-    "Accept": "*/*",
-    "Origin": "https://bowerbird.10jqka.com.cn",
-    "X-Requested-With": "com.hexin.plat.android",
-    "Sec-Fetch-Site": "same-site",
-    "Sec-Fetch-Mode": "cors",
-    "Sec-Fetch-Dest": "empty",
-    "Referer": "https://bowerbird.10jqka.com.cn/thsic/editor/view/15f2E0a579?strategyId={strategy_id}",
-    "Accept-Encoding": "gzip, deflate",
-    "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
-}
+Combination_headers = {
+        "Host": "t.10jqka.com.cn",
+        "Connection": "keep-alive",
+        "Accept": "application/json, text/plain, */*",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "com.hexin.plat.android",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        # "Cookie": "uid=CvRZCmYY8EVWW6iOCFHxAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQzOTkyMDA3Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWJhMmJjYmFjMmVlZTA5MTkwYmNjMTA3ZGJjMmE5MDA4Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=8a77719029a419a5579e6d690d4d6910; user_status=0; v=Az77FiGH1RrgQAE-LFj60x1njV-AfwLwlEa23ehHq199itHFUA9SCWTTBuO7"
+        "Cookie": "uid=CvRZCmYY8EVWW6iOCFHxAg==; user_status=0; hxmPid=sns_live_p_440232505; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ0MDc2NDg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTI5MTNkMzI4N2JkMTY0Y2M1OWVkMDdiMDk2NzY3NjVlOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=565e4b7134d3c0f99e205592734c2926; v=A9IX2nU74Zm9iR1lR0AO1xGDIZO049Z9COfKoZwr_gVwr30JhHMmjdh3GrVv"
+    }
 
 Strategy_ids = ['155680', '137789', '138006', '155273']
 Strategy_id_to_name = {

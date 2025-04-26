@@ -2,13 +2,13 @@
 import requests
 
 # from config.settings import API_URL, HEADERS
-from others.Investment.THS.AutoTrade.config.settings import API_URL, HEADERS
+from others.Investment.THS.AutoTrade.config.settings import API_URL, Combination_headers
 
 
 class APIClient:
     def __init__(self):
         self.base_url = API_URL
-        self.headers = HEADERS
+        self.headers = Combination_headers
 
     def get(self, endpoint, params=None):
         try:

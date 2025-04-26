@@ -18,7 +18,7 @@ print(f'项目根目录:{project_dir}')
 sys.path.append(project_dir)
 
 from CompanyProject.Payok.交付.paylabs.GoogleSecure import CalGoogleCode
-from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_slider_verification
+from CompanyProject.Payok.UI.utils.perform_slider_unlock import perform_block_slider_verification
 from CompanyProject.Payok.UI.utils.sql_handler import SQLHandler
 
 from playwright.sync_api import Playwright, sync_playwright
@@ -32,7 +32,7 @@ def payok_merchant_login(playwright: Playwright, email) -> None:
     page.get_by_role("textbox", name="Password").fill("Test001@test")
     page.wait_for_timeout(3000)
 
-    perform_slider_verification(page)
+    perform_block_slider_verification(page)
 
     page.get_by_role("button", name="Login").click()
 

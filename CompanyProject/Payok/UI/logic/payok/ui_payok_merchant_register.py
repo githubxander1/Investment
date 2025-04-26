@@ -2,7 +2,7 @@ import os
 from playwright.sync_api import Playwright, sync_playwright, expect
 
 from CompanyProject.Payok.UI.logic.get_email_code import get_email_code
-def run(playwright: Playwright) -> None:
+def run(playwright: Playwright, email) -> None:
     browser = playwright.chromium.launch(headless=False,devtools=False) #slow_mo=10
     context = browser.new_context()
     page = context.new_page()
@@ -13,10 +13,10 @@ def run(playwright: Playwright) -> None:
     page.locator("span").filter(has_text="English").first.click()
     page.get_by_role("link", name="中文").click()
 
-    page.get_by_role("textbox", name="公司名称 *").fill("公司001")
+    page.get_by_role("textbox", name="公司名称 *").fill(email)
     page.get_by_role("textbox", name="纳税人号 *").fill("002")
     page.get_by_role("textbox", name="公司品牌名").fill("公司品牌名001")
-    page.get_by_role("textbox", name="公司简称").fill("公司简称001")
+    page.get_by_role("textbox", name="公司简称").fill(f"公司简称{email}")
 
     '''公司类型：印尼本地公司，越南本地公司，巴西本地公司，泰国本地公司，士耳其本地公司，哥伦比亚本地公司，印度本地公司，孟加拉国本地公司，中国本地公司，其他海外公司
     100印尼 106越南 107巴西 108泰国 109土耳其 110哥伦比亚 111印度 112孟加拉 101中国 105其他海外'''
@@ -92,7 +92,7 @@ def run(playwright: Playwright) -> None:
     # 国家
     '''Indonesia,Vietnam,Brazil,Thailand,Turkey,Colombia,India,Bangladesh'''
     page.get_by_role("link", name="Indonesia").click()
-    page.get_by_role("textbox", name="业务归属地 * 邮箱 *").fill("5@qq.com")
+    page.get_by_role("textbox", name="业务归属地 * 邮箱 *").fill(email)
     page.get_by_role("button", name="发送验证码").click()
 
     # 等待滑动解锁弹窗出现
@@ -143,6 +143,7 @@ def run(playwright: Playwright) -> None:
     context.close()
     browser.close()
 
-
-with sync_playwright() as playwright:
-    run(playwright)
+if __name__ == '__main__':
+    email = '1@qq.com'
+    with sync_playwright() as playwright:
+        run(playwright, email)

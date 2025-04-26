@@ -24,7 +24,7 @@ class BasePage:
 
     def click(self,loc):
         self.locator(loc).click()
-    # def __init__(self):
+    # def __init__.py(self):
     #     self.dr=webdriver.Edge()
     #     self.url = 'https://mm.edrawsoft.cn/files'
     # def locator(self,*loc):

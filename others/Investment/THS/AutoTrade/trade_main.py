@@ -8,7 +8,6 @@ from datetime import time as dt_time
 from pprint import pprint
 from typing import Dict, Tuple
 
-
 # 路径初始化 ======================================================
 current_dir = os.path.dirname(os.path.abspath(__file__))
 print(f"当前目录: {current_dir}")
@@ -19,8 +18,8 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
     print(f"已将项目根目录添加到 sys.path: {project_root}")
 else:
-    print(f"项目根目录已在 sys.path 中: {project_root}"
-    )
+    print(f"项目根目录已在 sys.path 中: {project_root}")
+
 from pathlib import Path  
 sys.path.append(Path(__file__).parent.as_posix())  
 sys.path.append(Path(__file__).parent.parent.as_posix())  
@@ -30,15 +29,16 @@ print(sys.path)
 from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODAY_ADJUSTMENT_FILE, \
     STRATEGY_TODAY_ADJUSTMENT_FILE
 from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
+
 # 模块导入 ========================================================
-from others.Investment.THS.AutoTrade.scripts.组合.etf和股票组合_今天调仓 import ETF_Combination_main
-from others.Investment.THS.AutoTrade.scripts.策略.策略_今天调仓 import strategy_main
+from others.Investment.THS.AutoTrade.scripts.组合.Etf_stock_portfolio_today import ETF_Combination_main
+from others.Investment.THS.AutoTrade.scripts.策略.strategy_portfolio_today import strategy_main
 from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 
 # 调度器配置 ======================================================
 SCHEDULE_CONFIG: Dict[str, Tuple[float, Tuple[int, int], Tuple[int, int]]] = {
-    "strategy": (0.25, (9, 29), (9, 33)),
-    "etf_combo": (0.25, (9, 15), (15, 00))
+    "strategy": (1, (9, 29), (9, 33)),
+    "etf_combo": (1, (9, 15), (15, 00))
 }
 
 # 公共方法 ========================================================
@@ -64,22 +64,22 @@ async def strategy_wrapper():
     print("[策略任务] 开始执行...")
     try:
         await strategy_main()
-        next_run = datetime.datetime.now() + datetime.timedelta(seconds=15)
+        next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
         print(f"\n[策略组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("--------------------------------------------------------------")
     except Exception as e:
-        print(f"[策略任务] 执行异常: {str(e)}")
+        print(f"[策略任务] 执行异常: {e}")
 
 async def etf_combo_wrapper():
     """组合任务执行包装"""
     print("\n[ETF组合] 开始执行...")
     try:
         await ETF_Combination_main()
-        next_run = datetime.datetime.now() + datetime.timedelta(seconds=15)
+        next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
         print(f"\n[ETF组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("----------------------------------------------------")
     except Exception as e:
-        print(f"[ETF组合] 执行异常: {str(e)}")
+        print(f"[ETF组合] 执行异常: {e}")
 
 # 主程序 =========================================================
 async def main():
@@ -105,13 +105,15 @@ async def main():
         )
 
     except Exception as e:
-        logging.warn(f"主程序异常终止: {str(e)}", exc_info=True)
+        logging.warning(f"主程序异常终止: {str(e)}", exc_info=True)
         raise
 
 if __name__ == "__main__":
     try:
         # 清空上一次的数据
         print('\n---------------------------------------------------------------------------')
+        # clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
+        # clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
         asyncio.run(main())
         now_time = datetime.datetime.now()
         if now_time.hour == 15 and now_time.minute >= 30:
@@ -123,4 +125,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("用户主动终止程序")
     except Exception as e:
-        logging.warn(f"程序启动失败: {str(e)}", exc_info=True)
+        logging.warning(f"程序启动失败: {str(e)}", exc_info=True)
