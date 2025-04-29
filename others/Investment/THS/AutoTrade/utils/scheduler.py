@@ -1,4 +1,4 @@
-# D:\Xander\PycharmProject\others\Investment\THS\AutoTrade\utils\scheduler.py
+# D:\Xander\PycharmProject\z_others\Investment\THS\AutoTrade\utils\scheduler.py
 import asyncio
 from datetime import datetime, time as dt_time, timedelta
 from pprint import pprint

@@ -1,0 +1,32 @@
+# databases.yaml
+environments:
+  test:
+    payok:
+        host: 192.168.0.227
+        port: 3306
+        user: WAYANGPAY
+        password: Z43@Mon88
+        database: aesygo_test
+#        schema: platform
+    paylabs:
+        host: 192.168.0.233
+        port: 3306
+        user: paylabs_payapi
+        password: SharkZ@DBA666
+        database: paylabs
+        schema: paylabs
+    tax:
+        host: 192.168.0.50
+        port: 3306
+        user: belitax_test
+        password: VSwE8zVrfuUP#HN
+        database: tax_operator
+
+  stich:
+    paylabs:
+      operator:
+        host: 192.168.0.233
+        port: 3306
+        user: paylabs_payapi
+        database: paylabs
+        schema: operator

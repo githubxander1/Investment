@@ -6,7 +6,7 @@ from others.测试相关.api_mind.utils.yaml_handler import read_yaml
 
 # TOKEN = login()[1]
 # print(TOKEN)
-logout_data = read_yaml(r"/others/测试相关/api_mind\config\Api.yaml")["logout"]
+logout_data = read_yaml(r"/z_others/测试相关/api_mind\config\Api.yaml")["logout"]
 def logout(token):
     # headers = {
     #     "accept": "application/json, text/plain, */*",

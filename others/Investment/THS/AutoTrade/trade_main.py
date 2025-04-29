@@ -1,4 +1,4 @@
-# D:\Xander\PycharmProject\others\Investment\THS\AutoTrade\trade_main.py
+# D:\Xander\PycharmProject\z_others\Investment\THS\AutoTrade\trade_main.py
 import asyncio
 import logging
 import sys

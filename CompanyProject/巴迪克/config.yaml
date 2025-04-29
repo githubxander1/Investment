@@ -1,0 +1,17 @@
+databases:
+  payok:
+    platform:
+      host: 192.168.0.227
+      port: 3306
+      user: WAYANGPAY
+      password: Z43@Mon88
+      database: logic
+      schema: platform
+  paylabs:
+    operator:
+      host: 192.168.0.233
+      port: 3306
+      user: paylabs_payapi
+      password: SharkZ@DBA666
+      database: logic
+      schema: operator

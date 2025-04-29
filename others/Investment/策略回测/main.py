@@ -181,7 +181,7 @@ def main(strategy_file):
 if __name__ == "__main__":
     # 自定义要测试的策略文件路径
     strategy_file = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\策略回测\策略\双均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
-    # strategy_file = r'D:\1document\1test\PycharmProject_gitee\others\Investment\策略回测\策略\5日优化1.py'  # 这里可以修改为你想要测试的策略文件路径
-    # strategy_file = r'D:\1document\1test\PycharmProject_gitee\others\Investment\策略回测\策略\五日均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
+    # strategy_file = r'D:\1document\1test\PycharmProject_gitee\z_others\Investment\策略回测\策略\5日优化1.py'  # 这里可以修改为你想要测试的策略文件路径
+    # strategy_file = r'D:\1document\1test\PycharmProject_gitee\z_others\Investment\策略回测\策略\五日均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
 
     main(strategy_file)

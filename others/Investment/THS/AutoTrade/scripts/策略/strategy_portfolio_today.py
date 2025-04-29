@@ -12,7 +12,7 @@ from others.Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUS
     STRATEGY_TODAY_ADJUSTMENT_FILE, Strategy_id_to_name, Strategy_ids, \
     ETF_Combination_TODAY_ADJUSTMENT_FILE
 from others.Investment.THS.AutoTrade.utils.api_client import APIClient
-# from others.Investment.THS.AutoTrade.utils.api_client import APIClient
+# from z_others.Investment.THS.AutoTrade.utils.api_client import APIClient
 # from utils.api_client import APIClient
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 # from utils.determine_market import determine_market

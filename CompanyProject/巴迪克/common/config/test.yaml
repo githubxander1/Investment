@@ -1,0 +1,13 @@
+# config/test.yaml
+extends: base.yaml
+
+ui:
+  headless: false
+  slow_mo: 100
+  viewport:
+    width: 1920
+    height: 1080
+
+test_data:
+  contract_pdf: "${base_dir}/data/合同.pdf"
+  default_password: "A123456@test"

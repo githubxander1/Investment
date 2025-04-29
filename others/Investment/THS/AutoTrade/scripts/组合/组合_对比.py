@@ -401,7 +401,7 @@ else:
 #     # df_without_profitability = df.drop(columns=['收益比_-1', '收益比_7', '收益比_30', '收益比_90', '收益比_180', '持仓行业', '策略id' , '策略描述', '主理人id', '标签', ])
 #     # print(df_without_profitability)
 #     filepath = compare_ETF_info_file
-#     # df.to_excel(r'D:\1document\1\PycharmProject_gitee\others\Investment\THS\组合\保存的数据\组合_对比.xlsx')
+#     # df.to_excel(r'D:\1document\1\PycharmProject_gitee\z_others\Investment\THS\组合\保存的数据\组合_对比.xlsx')
 #     df.to_excel(filepath)
 #     print(f"数据已成功保存到 {filepath}")
 # else:
