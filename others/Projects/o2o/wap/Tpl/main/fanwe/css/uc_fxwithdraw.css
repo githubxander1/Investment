@@ -1,0 +1,102 @@
+/*列表*/
+.add {
+	padding: 15px 10px;
+	text-align:center;
+}
+
+.address_list{
+	padding:0 10px 10px;
+}
+.address_list ul{
+	margin-top:15px;
+}
+.address_list ul li {
+	border-bottom: 1px @border_main solid;
+	line-height: 30px;
+	height: 30px;
+	padding-left: 10px;
+}
+
+/*添加*/
+.address_input{
+	padding:10px;
+}
+.address_input dt{
+	float: left;
+	width: 80px;
+	line-height: 38px;
+	clear: both;
+	text-align:right;
+	padding-right:10px;
+}
+.address_input dd {
+  overflow: hidden;
+  line-height: 38px;
+  margin-bottom: 8px;
+}
+.address_input dd input{
+  width: 90%;
+  padding: 0 10px;
+  height: 44px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px #ccc solid;
+  background: #fff;
+}
+.p_c_r{
+	width: 50%;
+  	float: left;
+}
+.region_select {
+  width: 90%;
+  padding: 0 10px;
+  height: 40px;
+  font-size: 12px;
+  border-radius: 5px;
+  border: 1px #ccc solid;
+  background: #fff;
+}
+
+
+
+.bank{
+	display:none;
+}
+.address_list table {
+width: 100%;
+border: 1px solid #E5E5E5;
+text-align: center;
+}
+.address_list table th {
+padding: 10px 2px;
+border-bottom: 1px dotted #E5E5E5;
+font-size: 14px;
+font-weight: 700;
+text-align: center;
+background: #F7F7F7;
+nowrap：true;
+}
+.address_list table td {
+background: #FFF;
+padding: 10px 2px;
+border-bottom: 1px dotted #E5E5E5;
+}
+
+.address_input dd input.ph_verify{
+	width: 40%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

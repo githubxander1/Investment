@@ -1,0 +1,66 @@
+.h_search #header_back_btn{
+	color: @font_style;
+}
+.buy-btn{
+	-webkit-appearance:none;
+	text-align: center;
+		-webkit-flex:1;
+		flex:1;
+	/* 	for  uc */
+		-webkit-box-flex:1;      
+	display: block;
+	background: #d01e41;
+	color: #fff;
+	margin:0.2rem;
+	height: 1.2rem;
+	border-radius: .3rem;
+	margin-top: .4rem;
+	font-size: .6rem;
+	line-height: 1.2rem;
+	
+}
+.null_data .money{
+	color:#333;
+	font-size: 20px;
+}
+.null_data .message{
+	padding:5px 0;
+	color:#333;
+}
+
+.pay-record li{
+	padding: .4rem .35rem;
+	background: #fff;
+	position: relative;
+}
+.pay-record li::after{
+	content: '';
+	border-bottom: 1px solid #e8e8e8;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	-webkit-transform-origin:0 100%;
+	-webkit-transform:scaleY(0.5);
+	transform-origin:0 100%;
+	transform:scaleY(0.5);
+}
+.pay-record li span{
+	line-height: 2.3rem;
+	color: #df5667;
+	font-size: .6rem;
+	display: inline-block;
+}
+.pay-record li .pay-way{
+	font-size: .6rem;
+	line-height: .88rem;
+	color: #555;
+}
+.pay-record li time,.pay-record li .payed{
+	display: block;
+	line-height: .68rem;
+	color: #8e8e8e;
+}
+.fr {
+  float: right;
+}

@@ -1,0 +1,134 @@
+<?php
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/weebox.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/fanweUI.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/style.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/color.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/uc_fx.css";
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/uc_my_fx.css";	
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery-1.6.2.min.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.bgiframe.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.timer.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.weebox.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.touchwipe.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx_my_fx.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx_my_fx.js";
+
+
+?>
+{include file="inc/header.html"}
+<script>
+var ajax_url = '{$ajax_url}';
+var fx_ajax_url = '{$ajax_url}';
+</script>
+<div class="wrap">
+	<div class="content">
+		<div class="my_fx_head">
+			<div class="bg_img_box"><img src="{$data.user_data.fx_mall_bg}"/></div>
+			<div class="u_info">
+				<div class="u_avater">
+					<img src="{$data.user_data.user_avatar}"/>
+				</div>
+				<div class="u_sub_info">
+					<p class="u_name">{$data.user_data.user_name}</p>
+					<p class="u_money">当前佣金：<span>{$data.user_data.fx_money}</span>元</p>
+					<div class="my_mall" init="0"><i class="iconfont fs20">&#xe650;</i>我的小店<i class="iconfont">&#xe653;</i></div>
+					<div class="my_mall_qrcode">
+						<div class="blank"></div>
+						<div>点击二维码分享给好友</div>
+						<div class="qrcode_btn" data-url="{$data.user_data.share_mall_url}" data-name="{$data.user_data.user_name}的小店" data-img="{$data.user_data.share_mall_qrcode}"><img src="{$data.user_data.share_mall_qrcode}"/></div>
+						<a href="{url r="index" b="uc_fx#mall" p="r=$r"}">点击查看</a>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+
+		<div class="list_box">
+			<ul>
+			{foreach from=$data.item item=row}
+				<li class="item">
+					<div class="item_box">
+						<div class="item_icon">
+							<a href="{url r="index" b="deal#index" p="data_id=$row.id"}" {if $row.end_status eq 0} class="gray_icon" {/if}>
+								<img src="{$row.icon}"/>
+							</a>
+							{if $row.end_status neq 1}
+							<div class="i-filter">{if $row.end_status eq 0}已过期{else if $row.end_status eq 2 }预告中{/if}</div>
+							{/if}
+						</div>
+						<div class="item_info">
+							<p>
+								<a href="{url r="index" b="deal#index" p="data_id=$row.id"}" class="i_name">{$row.name}</a>
+							</p>
+							<p class="i_price">
+							<span class="i_salary">佣金:{$row.sale_balance}元</span>&nbsp;<span class="i_grey">销量:{$row.sale_count}&nbsp;|&nbsp;{$row.sale_total}元</span>	
+							</p>
+							<p class="i_btn">
+								{if $row.ud_is_effect eq 1}
+									{if $row.ud_type eq 0}
+									<a class="btn_box grey_btn mr_15" href="javascript:void(0)" onclick="do_is_effect({$row.id},this)">取消分销</a>&nbsp;&nbsp;
+									{else}
+									<a class="btn_box  mr_15" href="javascript:void(0)">系统分配</a>&nbsp;&nbsp;
+									{/if}
+								<a href="javascript:void(0)"  class="btn_box red_btn share_btn" data-url="{$row.share_url}" data-name="{$row.sub_name}" data-img="{$row.icon}">分享</a>
+								{else}
+								<a class="btn_box blue_btn mr_15" href="javascript:void(0)" onclick="do_is_effect({$row.id},this)">重新上架</a>&nbsp;&nbsp;
+								<a href="javascript:void(0)"  class="btn_box grey_btn" onclick="del_user_deal({$row.id},this)">删除</a>
+								{/if}
+								
+							</p>
+						</div>
+						<div class="del_box"><i class="iconfont"></i></div>
+					</div>
+				</li>
+				{/foreach}
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+
+
+{if $pages}
+		<div class="blank"></div>
+		<div class="fy">
+			{$pages}
+		</div>
+	{/if}
+	<div class="blank50"></div>
+	<div class="box_share" id="box_share">
+        <div class="box_content">
+
+
+                        <div class="social_share">
+		                    <ul>
+		                    	<!-- JiaThis Button BEGIN -->
+								<div class="jiathis_style_32x32">
+									<a class="jiathis_button_weixin"></a>
+									<a class="jiathis_button_tsina"></a>
+									<a class="jiathis_button_qzone"></a>
+									<a class="jiathis_button_tqq"></a>
+									<a class="jiathis_button_renren"></a>
+								</div>
+								<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+								<!-- JiaThis Button END -->
+							</ul>
+						</div>
+						            
+	                <a class="box_close" id="boxclose_share">关闭</a>
+	                <div class="clear"></div>
+           </div>
+        </div>
+{include file="inc/uc_fx_nav.html"}	

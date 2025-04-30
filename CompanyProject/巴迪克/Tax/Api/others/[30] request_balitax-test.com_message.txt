@@ -1,0 +1,23 @@
+POST /declaration-api/v1.0/declaration/create HTTP/1.1
+Content-Type: application/json;charset=utf-8
+X-AGENT-ID: 600005
+X-SIGNATURE: b0d32a6e8c5d4fbac2e8d0e152f27276bef0cd64dcb4760268cb4c5cda08d2ba
+X-TIMESTAMP: 2025-04-25T19:23:16+08:00
+User-Agent: PostmanRuntime/7.26.8
+Accept: */*
+Postman-Token: 94565f37-c943-437c-b425-7016b6081252
+Host: balitax-test.com
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Length: 276
+
+{
+    "merchantId": "600005M0000001",
+    "paymentType": "CASH",
+    "amount": "100000000000.12",
+    "agentOrderNo": "AGENT20250421001",
+    "payOrderNo": "PAY20250421001",
+    "sourceAgentOrderNo": "",
+    "productName": "Ther Product Name",
+    "requestId": "12"
+}

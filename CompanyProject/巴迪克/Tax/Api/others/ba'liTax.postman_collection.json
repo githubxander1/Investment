@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "82b590a5-da4d-4a2b-bad0-09c8dad2b013",
+		"name": "ba'liTax",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"companyName\": \"companyName\",\r\n  \"companyBrandName\": \"companyBrandName\",\r\n  \"companyType\": 1,\r\n  \"npwp\": \"12.321.265.1-156.3688\",\r\n  \"officialWebsite\": \"http://baidu.com\",\r\n  \"companyAddress\": \"companyAddress\",\r\n  \"legalPerson\": \"persona\",\r\n  \"legalPersonPhone\": \"12345678987\",\r\n  \"legalPersonAddress\": \"legalPersonAddress\",\r\n  \"contactPerson\": \"persona\",\r\n  \"contactPersonPhone\": \"12345678998\",\r\n  \"bidNumberFile\": \"6bec6aa3ebb728de2911ea7fa023d6066bb0d00af47907f98913925e769532da.png\",\r\n  \"taxNumberFile\": \"6bec6aa3ebb728de2911ea7fa023d6066bb0d00af47907f98913925e769532da.png\",\r\n  \"passportFile\": \"6bec6aa3ebb728de2911ea7fa023d6066bb0d00af47907f98913925e769532da.png\",\r\n  \"loginName\": \"test@agent.com\",\r\n  \"password\": \"123456789\",\r\n  \"verifyCode\": \"yW31PY\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:17605/declaration-admin/agent/operator/registerAgent",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "17605",
+					"path": [
+						"declaration-admin",
+						"agent",
+						"operator",
+						"registerAgent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/aaa/Documents/QR.png"
+						},
+						{
+							"key": "fileType",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:17605/declaration-admin/oss/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "17605",
+					"path": [
+						"declaration-admin",
+						"oss",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orderList",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6ImRldjAxQHRheC5jb20ifQ.M8inSCs57MchHFlYvBRsCeb-UnJRDyhbqyYc02krYo8",
+						"type": "text"
+					},
+					{
+						"key": "langKey",
+						"value": "en",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pageSize\": 10,\r\n    \"pageNum\": 1,\r\n    \"agent\": null,\r\n    \"merchantNo\": null,\r\n    \"merchantType\": null,\r\n    \"merchantStatus\": null,\r\n    \"npwp\": \"11.111.111.1-111.1111\",\r\n    \"createTimeStart\": null,\r\n    \"createTimeEnd\": null,\r\n    \"updateTimeStart\": null,\r\n    \"updateTimeEnd\": null,\r\n    \"email\": \"wrj1272@163.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:17607/tax-center/merchant/exportToEmail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "17607",
+					"path": [
+						"tax-center",
+						"merchant",
+						"exportToEmail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createOrder",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const crypto = require(\"crypto-js\");\r",
+							"\r",
+							"function main() {\r",
+							"    const SECRET_KEY = \"a25b99d6c752dcce426a3452da2fcbee19daba1eb1b17109275dc41c3f63ddf7\";\r",
+							"    const AGENT_ID = \"600009\";\r",
+							"    const endpoint = \"/v1.0/declaration/create\";\r",
+							"    const date = getDate();\r",
+							"\r",
+							"    // ************* Step 1: Concatenate the CanonicalRequest string *************\r",
+							"    // 3.重要：payload 替换为自己真实的业务接口请求参数！\r",
+							"    // const payload =\r",
+							"    //     '{\\\"Filters\\\":[{\\\"Name\\\":\\\"instance-charge-type\\\",\\\"Values\\\":[\\\"PREPAID\\\"]}]}';\r",
+							"    const payload = pm.request.body.raw;\r",
+							"    console.log(\"payload: \"+ payload)\r",
+							"    const httpRequestMethod = pm.request.method;\r",
+							"    const url = pm.request.url;\r",
+							"    // 处理特殊字符\r",
+							"    const minifyString = minify(payload);\r",
+							"    console.log(\"minifyString: \" + minifyString);\r",
+							"    // 拼接明文 POST:/v1.0/declaration/create:Lowercase(SHA256Hex(minifyString)):2025-03-28T14:40:02.756T+0800\r",
+							"    const stringContent = httpRequestMethod +\":\"+endpoint +\":\"+getHash(minifyString).toString(crypto.enc.Hex)+\":\"+date;\r",
+							"    console.log(\"stringContent: \"+stringContent);\r",
+							"    //   X-SIGNATURE = hex(hmacsha256(stringContent, privateKey))\r",
+							"    const signature = sha256(stringContent, SECRET_KEY, 'hex').toString(crypto.enc.Hex);\r",
+							"    // Content-Type:application/json;charset=utf-8\r",
+							"    // X-AGENT-ID:600009\r",
+							"    // X-SIGNATURE:a2d797ced6165647ea9055525b6cc5d6b8d1f683015d8d22996778735fd84f72\r",
+							"    // X-TIMESTAMP:2025-04-21T11:44:15.616T+0800\r",
+							"\r",
+							"    const Call_Information =\r",
+							"        \"curl -X POST \" +\r",
+							"        \"https://\" + url +\r",
+							"        ' -H \"X-AGENT-ID: ' +  AGENT_ID +'\"' +\r",
+							"        ' -H \"Content-Type: application/json; charset=utf-8\"' +\r",
+							"        ' -H \"Host: ' + endpoint + '\"' +\r",
+							"        ' -H \"X-TIMESTAMP: ' + date + '\"' +\r",
+							"        ' -H \"X-SIGNATURE: ' + signature + '\"' +\r",
+							"        \" -d '\" +\r",
+							"        payload +\r",
+							"        \"'\";\r",
+							"    console.log(\"----------------------------Call_Information\");\r",
+							"    console.log(Call_Information);\r",
+							"    console.log(\"----------------------------Call_Information\");\r",
+							"\r",
+							"    // 注入Postman全局变量\r",
+							"    pm.globals.set(\"host\", endpoint)\r",
+							"    pm.globals.set(\"X-TIMESTAMP\", date)\r",
+							"    pm.globals.set(\"X-SIGNATURE\", signature)\r",
+							"    pm.globals.set(\"X-AGENT-ID\", AGENT_ID)\r",
+							"\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"function sha256(message, secret = \"\", encoding) {\r",
+							"    const hmac = crypto.HmacSHA256(message, secret);\r",
+							"    // return hmac.toString(crypto.enc.Hex);\r",
+							"    return hmac;\r",
+							"}\r",
+							"\r",
+							"function getHash(message, encoding = \"hex\") {\r",
+							"    const hash = crypto.SHA256(message);\r",
+							"    // return hash.toString(crypto.enc.Hex);\r",
+							"    return hash;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"// 将数字填充为2位数\r",
+							"function pad(n) {\r",
+							"    return `${Math.floor(Math.abs(n))}`.padStart(2, '0');\r",
+							"}\r",
+							"\r",
+							"// 获取ISO格式的时区偏移量（+hh:mm 或 -hh:mm）\r",
+							"function getTimezoneOffset( date ) {\r",
+							"  const tzOffset = -date.getTimezoneOffset();\r",
+							"  const diff = tzOffset >= 0 ? '+' : '-';\r",
+							"  return diff + pad(tzOffset / 60) + ':' + pad(tzOffset % 60);\r",
+							"};\r",
+							"\r",
+							"function getDate() {\r",
+							"  const date = new Date();\r",
+							"  return date.getFullYear() +\r",
+							"    '-' + pad(date.getMonth() + 1) +\r",
+							"    '-' + pad(date.getDate()) +\r",
+							"    'T' + pad(date.getHours()) +\r",
+							"    ':' + pad(date.getMinutes()) +\r",
+							"    ':' + pad(date.getSeconds()) +\r",
+							"    getTimezoneOffset(date);\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function minify(payload) {\r",
+							"    return payload.replace(/↵\\s*/g, '').replace(/^{\\s*/g, '{').replace(/:\\s*/g, ':').replace(/^\\s+|\\s+$/gm, '');\r",
+							"}\r",
+							"\r",
+							"main();"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json;charset=utf-8",
+						"type": "text"
+					},
+					{
+						"key": "X-AGENT-ID",
+						"value": "{{X-AGENT-ID}}",
+						"type": "text"
+					},
+					{
+						"key": "X-SIGNATURE",
+						"value": "{{X-SIGNATURE}}",
+						"type": "text"
+					},
+					{
+						"key": "X-TIMESTAMP",
+						"value": "{{X-TIMESTAMP}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"merchantId\": \"600009M3004\",\r\n    \"paymentType\": \"7311\",\r\n    \"amount\": \"100000000000.12\",\r\n    \"agentOrderNo\": \"AGENT20250421001\",\r\n    \"payOrderNo\": \"PAY20250421001\",\r\n    \"sourceAgentOrderNo\": \"\",\r\n    \"productName\": \"Ther Product Name\",\r\n    \"requestId\": \"12\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:17606/declaration-api/v1.0/declaration/create",
+					"host": [
+						"localhost"
+					],
+					"port": "17606",
+					"path": [
+						"declaration-api",
+						"v1.0",
+						"declaration",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancelOrder",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const crypto = require(\"crypto-js\");\r",
+							"\r",
+							"main();\r",
+							"\r",
+							"function main() {\r",
+							"    const SECRET_KEY = \"a25b99d6c752dcce426a3452da2fcbee19daba1eb1b17109275dc41c3f63ddf7\";\r",
+							"    const AGENT_ID = \"600009\";\r",
+							"    const endpoint = \"/v1.0/declaration/cancel\";\r",
+							"    const date = getDate();\r",
+							"\r",
+							"    // ************* Step 1: Concatenate the CanonicalRequest string *************\r",
+							"    // 3.重要：payload 替换为自己真实的业务接口请求参数！\r",
+							"    // const payload =\r",
+							"    //     '{\\\"Filters\\\":[{\\\"Name\\\":\\\"instance-charge-type\\\",\\\"Values\\\":[\\\"PREPAID\\\"]}]}';\r",
+							"    const payload = pm.request.body.raw;\r",
+							"    console.log(\"payload: \"+ payload)\r",
+							"    const httpRequestMethod = pm.request.method;\r",
+							"    const url = pm.request.url;\r",
+							"    // 处理特殊字符\r",
+							"    const minifyString = minify(payload);\r",
+							"    console.log(\"minifyString: \" + minifyString);\r",
+							"    // 拼接明文 POST:/v1.0/declaration/create:Lowercase(SHA256Hex(minifyString)):2025-03-28T14:40:02.756T+0800\r",
+							"    const stringContent = httpRequestMethod +\":\"+endpoint +\":\"+getHash(minifyString).toString(crypto.enc.Hex)+\":\"+date;\r",
+							"    console.log(\"stringContent: \"+stringContent);\r",
+							"    //   X-SIGNATURE = hex(hmacsha256(stringContent, privateKey))\r",
+							"    const signature = sha256(stringContent, SECRET_KEY, 'hex').toString(crypto.enc.Hex);\r",
+							"    // Content-Type:application/json;charset=utf-8\r",
+							"    // X-AGENT-ID:600009\r",
+							"    // X-SIGNATURE:a2d797ced6165647ea9055525b6cc5d6b8d1f683015d8d22996778735fd84f72\r",
+							"    // X-TIMESTAMP:2025-04-21T11:44:15.616T+0800\r",
+							"\r",
+							"    const Call_Information =\r",
+							"        \"curl -X POST \" +\r",
+							"        \"https://\" + url +\r",
+							"        ' -H \"X-AGENT-ID: ' +  AGENT_ID +'\"' +\r",
+							"        ' -H \"Content-Type: application/json; charset=utf-8\"' +\r",
+							"        ' -H \"Host: ' + endpoint + '\"' +\r",
+							"        ' -H \"X-TIMESTAMP: ' + date + '\"' +\r",
+							"        ' -H \"X-SIGNATURE: ' + signature + '\"' +\r",
+							"        \" -d '\" +\r",
+							"        payload +\r",
+							"        \"'\";\r",
+							"    console.log(\"----------------------------Call_Information\");\r",
+							"    console.log(Call_Information);\r",
+							"    console.log(\"----------------------------Call_Information\");\r",
+							"\r",
+							"    // 注入Postman全局变量\r",
+							"    pm.globals.set(\"host\", endpoint)\r",
+							"    pm.globals.set(\"X-TIMESTAMP\", date)\r",
+							"    pm.globals.set(\"X-SIGNATURE\", signature)\r",
+							"    pm.globals.set(\"X-AGENT-ID\", AGENT_ID)\r",
+							"\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"function sha256(message, secret = \"\", encoding) {\r",
+							"    const hmac = crypto.HmacSHA256(message, secret);\r",
+							"    // return hmac.toString(crypto.enc.Hex);\r",
+							"    return hmac;\r",
+							"}\r",
+							"\r",
+							"function getHash(message, encoding = \"hex\") {\r",
+							"    const hash = crypto.SHA256(message);\r",
+							"    // return hash.toString(crypto.enc.Hex);\r",
+							"    return hash;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"// 将数字填充为2位数\r",
+							"function pad(n) {\r",
+							"    return `${Math.floor(Math.abs(n))}`.padStart(2, '0');\r",
+							"}\r",
+							"\r",
+							"// 获取ISO格式的时区偏移量（+hh:mm 或 -hh:mm）\r",
+							"function getTimezoneOffset( date ) {\r",
+							"  const tzOffset = -date.getTimezoneOffset();\r",
+							"  const diff = tzOffset >= 0 ? '+' : '-';\r",
+							"  return diff + pad(tzOffset / 60) + ':' + pad(tzOffset % 60);\r",
+							"};\r",
+							"\r",
+							"function getDate() {\r",
+							"  const date = new Date();\r",
+							"  return date.getFullYear() +\r",
+							"    '-' + pad(date.getMonth() + 1) +\r",
+							"    '-' + pad(date.getDate()) +\r",
+							"    'T' + pad(date.getHours()) +\r",
+							"    ':' + pad(date.getMinutes()) +\r",
+							"    ':' + pad(date.getSeconds()) +\r",
+							"    getTimezoneOffset(date);\r",
+							"}\r",
+							"\r",
+							"function minify(payload) {\r",
+							"    return payload.replace(/↵\\s*/g, '').replace(/^{\\s*/g, '{').replace(/:\\s*/g, ':').replace(/^\\s+|\\s+$/gm, '');\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json;charset=utf-8",
+						"type": "text"
+					},
+					{
+						"key": "X-AGENT-ID",
+						"value": "{{X-AGENT-ID}}",
+						"type": "text"
+					},
+					{
+						"key": "X-SIGNATURE",
+						"value": "{{X-SIGNATURE}}",
+						"type": "text"
+					},
+					{
+						"key": "X-TIMESTAMP",
+						"value": "{{X-TIMESTAMP}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"agentOrderNo\": \"AGENT20250421001\",\r\n    \"requestId\": \"12\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:17606/declaration-api/v1.0/declaration/cancel",
+					"host": [
+						"localhost"
+					],
+					"port": "17606",
+					"path": [
+						"declaration-api",
+						"v1.0",
+						"declaration",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -133,7 +133,7 @@ async def ETF_Combination_main():
     all_today_trades_df = pd.DataFrame(all_today_trades)
     all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1) #从1开始
     # 打印时去掉‘理由’列
-    all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'])
+    all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
     print(all_today_trades_df_without_content)
     #去掉‘理由’列
 

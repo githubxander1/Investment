@@ -1,0 +1,615 @@
+p {
+    margin: 0;
+}
+
+.pros-top-box .top {
+    text-align: center;
+}
+
+.pros-top-box .top h2{
+    margin-bottom: 52px;
+}
+
+.pros-top-box{
+    margin-top: 165px;
+}
+.pros-top-box {
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.pros-desc{
+    font-size: 24px;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 43px;
+    letter-spacing: 0px;
+    color: #22284d;
+}
+
+#about-top {
+    /*padding-top: 167px;*/
+    padding-top: 2em;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+#about-top .top-img {
+    height: 151px;
+    margin-bottom: 77px;
+    background: url(../images/ab-logo.png) no-repeat center;
+    background-size: auto 100%;
+}
+
+#about-top .banner-info {
+    text-align: left;
+}
+
+#about-top .banner-desc {
+    font-family: Poppins-Regular;
+    font-size: 20px;
+    line-height: 41px;
+    letter-spacing: 0px;
+    color: #000000;
+}
+
+#about-superCharge {
+    margin-top: 165px;
+}
+
+#about-superCharge .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#about-superCharge .left-img{
+    width: 580px;
+    height: 521px;
+    /* margin: 0 auto; */
+    /*margin-left: 30px;*/
+    background: url(../images/ab-card1.png) no-repeat center;
+    background-size: 100%;
+}
+
+#about-superCharge .container-right {
+    text-align: right;
+}
+
+#about-superCharge .right-title {
+    /*margin-bottom: 133px;*/
+    margin-bottom: 10px;
+}
+
+#about-superCharge ul {
+    padding-left: 0;
+    /*padding-right: 30px;*/
+}
+
+#about-superCharge ul li {
+    position: relative;
+    font-size: 22px;
+    line-height: 43px;
+    letter-spacing: 0px;
+    color: #22284d;
+}
+
+#crossBorder {
+    margin-top: 165px;
+    text-align: center;
+}
+
+/* Features */
+#Features {
+  margin-top: 165px;
+}
+
+#Features .feature-title,#crossBorder .crossTitle {
+    max-width: 716px;
+    margin: 0 auto;
+    letter-spacing: 0px;
+    color: #000d3b;
+}
+#Features .feature-title2{
+    text-align: center;
+    letter-spacing: 0px;
+    color: #000d3b;
+    margin-bottom: 52px;
+}
+#Features .item-card-box{
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+}
+#Features .des-box{
+    margin-top: 96px;
+}
+#Features .item-card{
+    width: 560px;
+    background-color: #ffffff;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    margin-bottom: 32px;
+}
+
+#Features .item-card img{
+    /*width: 97px;*/
+    height: 96px;
+}
+
+#Features .item-card-des{
+    margin-left: 40px;
+}
+
+#Features .item-card-title{
+    font-size: 22px;
+    line-height: 11px;
+    letter-spacing: 0px;
+    color: #000d3b;
+    margin-bottom: 22px;
+}
+
+#Features ul{
+    padding-left: 0;
+}
+
+#Features ul li {
+    position: relative;
+    list-style-type: none;
+    font-size: 18px;
+    line-height: 41px;
+    letter-spacing: 0px;
+    color: #22284d;
+}
+
+#Features .item2-card-box{
+    margin-top: 133px;
+}
+#Features .index-item,
+#wideVariety .index-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    text-align: left;
+    margin-bottom: 50px;  /*29*/
+}
+
+#Features .index-item{
+    /*margin-bottom: 50px;*/
+}
+
+#Features .ab-icon-8 img{
+    height: 42px;
+}
+
+#Features .index-item-des,
+#wideVariety .index-item-des {
+    width: 620px;
+    margin-left: 47px;
+}
+
+#Features .index-item .title{
+    margin-top: 0;
+    font-size: 24px;
+    letter-spacing: 0px;
+    color: #000d3b;
+    margin-bottom: 5px;
+}
+
+#Features .index-item .detail,
+#wideVariety .index-item .detail {
+    font-size: 20px;
+    line-height: 41px;
+    letter-spacing: 0px;
+    color: #000000;
+}
+
+#Features .item-btn-box{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+#Features .index-item .item-btn{
+    background-color: #ffffff;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+    border-radius: 38px;
+    padding: 28px;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    line-height: 11px;
+    letter-spacing: 0px;
+    color: #000d3b;
+}
+
+/* Features */
+
+/*  */
+
+#wideVariety {
+ margin-top: 115px;
+}
+
+#wideVariety .index-item{
+    flex-direction: row-reverse;
+}
+
+#wideVariety .index-item-des {
+    margin-left: 0;
+    margin-right: 47px;
+}
+#wideVariety .wide2-item-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 115px;
+}
+#wideVariety .wide2-item-box .item-des-box p{
+    font-size: 30px;
+    line-height: 50px;
+    letter-spacing: 0px;
+    color: #000000;
+}
+#wideVariety .right-img {
+    width: 541px;
+    height: 439px;
+    /* margin: 0 auto; */
+    /*margin-left: 30px;*/
+    background: url(../images/ab-card2.png) no-repeat center;
+    background-size: cover;
+}
+
+/* fraudDetection */
+#fraudDetection .main {
+    /*margin-top: 139px;*/
+    display: flex;
+    justify-content: center;
+}
+
+#fraudDetection .item {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 55px;
+}
+
+#fraudDetection .item:nth-of-type(even){
+    flex-direction: row-reverse;
+}
+
+#fraudDetection .item span {
+    display: inline-block;
+    width: 115px;
+    height: 115px;
+    margin-right:51px;
+    background-size: 80%;
+    background-position: center;
+}
+#fraudDetection .item:nth-child(even) span{
+    margin-right:0px;
+    margin-left: 51px;
+}
+
+#fraudDetection .item p {
+    font-size: 20px;
+    line-height: 41px;
+    letter-spacing: 0px;
+    color: #000000;
+    flex: 1;
+    text-align: justify;
+}
+
+#fraudDetection .icon-1 {
+    background: url(/images/ab-icon13.png) no-repeat;
+    border-radius: 100%;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+}
+#fraudDetection .icon-2 {
+    background: url(/images/ab-icon4.png) no-repeat;
+    border-radius: 100%;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+}
+#fraudDetection .icon-3 {
+    background: url(/images/ab-icon15.png) no-repeat;
+    border-radius: 100%;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+}
+#fraudDetection .icon-4 {
+    background: url(/images/ab-icon16.png) no-repeat;
+    border-radius: 100%;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+    /*background-size: 48px auto !important;*/
+    /*background-position: center;*/
+}
+#fraudDetection .icon-5 {
+    background: url(/images/ab-icon17.png) no-repeat;
+    border-radius: 100%;
+    box-shadow: 4px 5px 24px 0px #dde6ff;
+}
+
+/* get onboard now */
+#getOnboard {
+    margin-top: 100px;
+    margin-bottom: 120px;
+    text-align: center;
+}
+
+#getOnboard .container .row {
+    height: 180px;
+    display: flex;
+    align-items: center;
+}
+
+#getOnboard .title {
+    text-align: center;
+    font-family: Poppins-Bold;
+    font-size: 22px;
+    line-height: 57px;
+    letter-spacing: 0px;
+    color: #000d3b;
+}
+
+#getOnboard .division {
+    display: inline-block;
+    width: 2px;
+    height: 100%;
+    background-color: #3471de;
+    opacity: 0.5;
+}
+
+#getOnboard .btn {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 17px 24px;
+    background: #0096f7;
+    border-radius: 37px;
+    color: #feffff;
+    font-size: 21px;
+}
+
+@media screen and (max-width:1199px) {
+    h2{
+        font-size: 35px;
+    }
+    #Features .item-card{
+        width: auto;
+    }
+    #about-superCharge .left-img{
+        width: 470px;
+        height: 410px;
+    }
+
+    #wideVariety .right-img {
+        width: 440px;
+        height: 350px;
+    }
+}
+
+@media screen and (max-width:991px) {
+    .pros-top-box .top h2{
+        margin-bottom: 22px;
+        font-size: 26px;
+        line-height: 42px;
+    }
+    .pros-desc {
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .index-item .icon img{
+        height: 90px;
+    }
+
+    #about-top {
+        padding-top: 9em;
+        margin: 0 auto;
+    }
+    #about-top .top-img {
+        height: 74px;
+        margin-bottom: 22px;
+    }
+    #about-top .banner-desc{
+        font-size: 13px;
+        line-height: 24px;
+        margin: 0 auto;
+    }
+
+    #about-superCharge {
+        margin-top: 65px;
+    }
+    #about-superCharge .row {
+        flex-direction: column-reverse;
+
+    }
+    #about-superCharge .left-img {
+        width: 380px;
+        /*width: auto;*/
+        height: 300px;
+        /*margin-left: 0;*/
+        margin: 0 auto;
+    }
+
+    #about-superCharge .right-title{
+        font-size: 24px;
+        line-height: 42px;
+        letter-spacing: 1px;
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    #about-superCharge ul{
+        margin: 35px auto;
+        padding:0 10px;
+    }
+
+    #about-superCharge ul li{
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0px;
+        text-align: center;
+    }
+
+    #crossBorder {
+        margin-top: 50px;
+    }
+
+    #Features .index-item, #wideVariety .index-item{
+        margin-bottom: 29px;
+    }
+
+    #Features{
+        margin-top: 65px;
+    }
+
+    #Features .feature-title {
+        max-width: 430px;
+        /*font-size: 26px;*/
+    }
+    #Features .feature-title2{
+        font-size: 26px;
+        margin-bottom: 22px;
+    }
+
+    #Features .item-card-box{
+        justify-content: center;
+    }
+
+    #Features .item-card img{
+        /*width: 38px;*/
+        /*height: 38px;*/
+        height: 60px;
+    }
+
+    #Features .item-card-title{
+        font-size: 14px;
+        line-height: normal;
+        color: #000d3b;
+        margin-bottom: 8px;
+    }
+
+    #Features ul{
+        margin-bottom: 0;
+    }
+
+    #Features ul li{
+        font-size: 13px;
+        line-height: 24px;
+    }
+
+    #Features .item-card{
+        border-radius: 15px;
+        padding: 15px;
+        width: 95%;
+    }
+
+    #Features .des-box{
+        margin-top: 58px;
+        /*margin: 0 auto;*/
+    }
+
+    #Features .item2-card-box{
+      margin-top: 54px;
+    }
+
+    #Features .index-item .icon{
+        width: 119px;
+        height: 108px;
+        border-radius: 25px;
+    }
+
+    #Features .ab-icon-8 img{
+        height: 21px;
+    }
+
+    #Features .index-item .title{
+        font-size: 14px;
+        line-height: 10px;
+    }
+
+    #Features .index-item .detail, #wideVariety .index-item .detail{
+        font-size: 13px;
+        line-height: 21px;
+    }
+
+    #Features .index-item-des{
+        width: 60%;
+        margin-left: 20px;
+    }
+
+    #Features .index-item .item-btn{
+        border-radius: 19px;
+        font-size: 10px;
+        line-height: 6px;
+        padding: 12px 10px;
+    }
+
+    #Features .item-card-des{
+        margin-left: 38px;
+    }
+
+    #wideVariety{
+        margin-top: 65px;
+    }
+
+    #wideVariety .index-item-des{
+        width: 60%;
+        margin-right: 20px;
+    }
+
+    #wideVariety .wide2-item-box{
+        margin-top: 36px;
+    }
+
+    #wideVariety .index-item .icon{
+        width: 113px;
+        height: 103px;
+        border-radius: 25px;
+    }
+
+    #wideVariety .wide2-item-box .item-des-box p{
+        font-size: 13px;
+        line-height: 25px;
+    }
+
+    #wideVariety .right-img {
+        width: 180px;
+        height: 150px;
+        margin-left: 0;
+    }
+
+    #fraudDetection{
+        margin-top: 65px;
+    }
+
+    #fraudDetection .item span{
+        width: 72px;
+        height: 72px;
+        margin-right: 31px;
+    }
+
+    #fraudDetection .item p{
+        font-size: 13px;
+        line-height: 21px;
+    }
+
+    #fraudDetection .item {
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 0 10px;
+    }
+    #fraudDetection .main{
+        margin-top: 4px;
+    }
+}

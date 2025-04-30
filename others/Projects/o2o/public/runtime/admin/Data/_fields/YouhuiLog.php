@@ -1,0 +1,25 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'youhui_id',
+  2 => 'youhui_sn',
+  3 => 'user_id',
+  4 => 'order_count',
+  5 => 'is_private_room',
+  6 => 'mobile',
+  7 => 'date_time',
+  8 => 'confirm_id',
+  9 => 'total_fee',
+  10 => 'create_time',
+  11 => 'confirm_time',
+  12 => 'dp_id',
+  13 => 'location_id',
+  14 => 'return_money',
+  15 => 'return_score',
+  16 => 'return_point',
+  17 => 'expire_time',
+  18 => 'sms_count',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

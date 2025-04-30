@@ -1,0 +1,151 @@
+<?php
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/weebox.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/fanweUI.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/style.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/color.css";		
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/uc_fxwithdraw.css";	
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery-1.6.2.min.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.bgiframe.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.timer.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.weebox.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.touchwipe.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx_withdraw.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx_withdraw.js";
+
+?>
+{include file="inc/header.html"}
+
+
+<div class="wrap">
+	<div class="content">
+		<h2 class="add">当前分销收益：{$data.fxmoney}</h2>
+	 	<div class="blank"></div>
+	 	
+	 	
+	 	
+	 	
+	 	<div id="withdraw">
+					<form name="withdraw_form" method="post" action="{url x="index" r="uc_fxwithdraw#save"}">
+									
+						
+						<dl class="address_input">
+							<dt>提现金额</dt>
+							<dd>
+								<input class="ui-textbox" value="" name="money" holder="请输入提现金额（元）" />								
+							</dd>
+
+							<dt>提现至</dt>
+							<dd>
+
+								<div class="p_c_r">				
+									<select name="type" class="region_select" >
+									<option value="0">账户余额</option>
+									<option value="1">银行卡</option>
+									  </select>
+								  </div>
+							</dd>
+
+							<dt class="bank">开户行名称</dt>
+							<dd class="bank">
+								<input  name="bank_name" value="" class="ui-textbox" holder="请输入开户行名称" />
+								
+							</dd>							
+							
+							<dt class="bank">开户行账号</dt>
+							<dd class="bank">
+								<input  name="bank_account" value="" class="ui-textbox" holder="请输入银行卡号" />
+								
+							</dd>
+
+							<dt class="bank">真实姓名</dt>
+							<dd class="bank">
+								<input  name="bank_user" value="" class="ui-textbox" holder="请输入姓名" />
+								
+							</dd>
+							
+							
+							{if app_conf("SMS_ON") eq 1}
+							
+							<dt>手机验证码</dt>
+							<dd>
+								<input class="ui-textbox f_l ph_verify" id="sms_verify" name="sms_verify" holder="请输入验证码" />
+								<button class="ui-button f_l light ph_verify_btn" rel="light" lesstime="{$sms_lesstime}" type="button">发送验证码</button>
+							</dd>							
+							
+							
+
+							{/if}							
+							
+							
+							<div class="blank"></div>
+							<dt>&nbsp</dt>
+							<dd>
+							<button type="button" value="确定"  rel="orange" name="commit"  id="sub_address" class="ui-button noform"  >确定</button>
+							</dd>
+						</dl>	
+							
+					
+
+
+
+				</form>	 	
+	 	</div>
+	 	
+	 	
+	 	
+	 	<div class="address_list">
+					<table>
+						<tbody>
+							<tr>
+								<th>申请时间</th>
+								<th>金额</th>
+								<th>详情</th>
+								<th>状态</th>
+
+							</tr>
+							
+							{foreach from=$data.list item=row}
+							<tr class="alt">
+                                <td>
+								{$row.create_time}
+								</td>
+                                <td>
+                                	<h1>{$row.money}</h1>
+                                </td>
+                                <td class="detail">
+                                	{if $row.type eq 1}
+									提现至银行卡
+									{else}
+									提现至账户余额
+									{/if}
+                                </td>
+								<td>									
+									{if $row.is_paid eq 0}
+									<h1>审核中</h1>
+									{else}
+									<h1>{function name="to_date" value=$row.pay_time}</h1> 已支付
+									{/if}
+								</td>
+
+                            </tr>
+                            {/foreach}
+                           
+                            <tr >
+                            	{if $data.list}
+                                <td colspan="4"><div class="pages">{$pages}</div></td>
+                                {else}
+                                <td colspan="4"><span>暂时没有提现记录</span></td>
+                                {/if}
+                            </tr>
+						</tbody>
+					</table>
+	 	</div>
+	</div>
+</div>
+{include file="inc/uc_fx_nav.html"}	
