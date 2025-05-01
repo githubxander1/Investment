@@ -33,6 +33,7 @@ def deepseekR1(content):
     if response.status_code == 200:
         try:
             data = response.json()
+            pprint(data)
             choices = data.get('choices', [])
             if choices:
                 content_result = choices[0]['message']['content']
@@ -49,7 +50,7 @@ def deepseekR1(content):
             return {'content': '', 'reasoning_content': ''}
     else:
         print(f"请求失败，状态码：{response.status_code}")
-        print("响应内容：", response.text)
+        print("响应内容：", response.json())
         return {'content': '', 'reasoning_content': ''}
 
 if __name__ == '__main__':
