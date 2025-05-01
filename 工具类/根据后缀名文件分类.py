@@ -50,5 +50,5 @@ def move_office_docs_to_folder(path, target_foldler_name='办公文档'):
                 print(f'处理文件{f}时异常{e}')
 
 # 示例调用
-move_files_by_extension(r'C:\Users\Administrator\Downloads')
+move_files_by_extension(r'D:\手机文件')
 # move_office_docs_to_folder(r'C:/Users/Administrator/Downloads/文档')
