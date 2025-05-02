@@ -15,10 +15,10 @@ def deepseekR1(content):
     payload = json.dumps({
         "model": "deepseek-r1",
         "messages": [
-            {
-                "role": "system",  # AI的角色
-                "content": "斯诺克高手台球专家"
-            },
+            # {
+            #     "role": "system",  # AI的角色
+            #     "content": "斯诺克高手台球专家"
+            # },
             {
                 "role": "user",  # 用户角色
                 "content": content
@@ -33,11 +33,11 @@ def deepseekR1(content):
     if response.status_code == 200:
         try:
             data = response.json()
-            pprint(data)
+            # pprint(data)
             choices = data.get('choices', [])
             if choices:
                 content_result = choices[0]['message']['content']
-                reasoning_content = choices[0].get('reasoning_content', '')
+                reasoning_content = choices[0]['message']['reasoning_content']
                 return {
                     'content': content_result,
                     'reasoning_content': reasoning_content
@@ -54,7 +54,7 @@ def deepseekR1(content):
         return {'content': '', 'reasoning_content': ''}
 
 if __name__ == '__main__':
-    content = "请给出一个关于斯诺克的入门到放弃的全教程，含练习"
+    content = "请给出一个有技巧，有条理，系统的，可复制的，关于管理类联考逻辑，数学的入门到放弃的全教程，含重难点，练习，记忆等"
     result = deepseekR1(content)
     print("\nAI 推理过程：\n", result['reasoning_content'])
     print("AI 回答内容：\n", result['content'])

@@ -1,4 +1,5 @@
 import textwrap
+from pprint import pprint
 
 from zhipuai import ZhipuAI
 
@@ -39,12 +40,13 @@ def AIchat(content):
     wrapped_content = textwrap.fill(generated_content, width=80)
     return wrapped_content
 
+if __name__ == '__main__':
 
-# content = "怎么成为系统学习网络安全"
-# # 打印生成的内容
-# response_content = AIchat(content)
-# pprint(response_content)
+    content = "怎么成为系统学习网络安全"
+    # 打印生成的内容
+    response_content = AIchat(content)
+    pprint(response_content)
 
-# # 使用 textwrap 模块美化输出
-# wrapped_content = textwrap.fill(response_content, width=80)
-# print(wrapped_content)
+    # 使用 textwrap 模块美化输出
+    wrapped_content = textwrap.fill(response_content, width=80)
+    print(wrapped_content)

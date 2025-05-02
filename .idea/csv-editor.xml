@@ -31,6 +31,34 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\others\Projects\pythonProject250225\report\html\data\categories.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject250225\report\html\data\suites.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject5\report\html\data\categories.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject5\report\html\data\suites.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\others\测试相关\api_mind\reports\allure-report\data\categories.csv">
           <value>
             <Attribute>
