@@ -1,0 +1,8 @@
+.money_div{
+	
+	border-bottom:none; padding: 0 10px !important;height: 40px;line-height: 40px;
+}
+
+input[name='money']{    height: 40px;  line-height: 40px; width: 100%;}
+
+ 

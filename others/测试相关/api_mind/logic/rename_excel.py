@@ -1,10 +1,10 @@
-# others.测试相关.ApiTest_mindmaster.api_mind.logic.rename.py
+# z_others.测试相关.ApiTest_mindmaster.api_mind.logic.rename.py
 import os
 
 from others.测试相关.api_mind.utils.requests_handler import RequestsHandler
 from others.测试相关.api_mind.utils.yaml_handler import read_yaml
 
-# rename_data = read_yaml(r'/others/测试相关/api_mind\config\Api.yaml')
+# rename_data = read_yaml(r'/z_others/测试相关/api_mind\config\Api.yaml')
 test_data_path = os.path.join(os.path.dirname(__file__), "..", "config", "Api.yaml")
 rename_data = read_yaml(test_data_path)["rename"]
 def rename(body, token):

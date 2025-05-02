@@ -1,0 +1,693 @@
+.pl-0 {
+  padding-left: 0;
+}
+.pr-0 {
+  padding-right: 0;
+}
+@media (min-width: 1280px) {
+    .container {
+        width: 1280px !important;
+    }
+}
+#pg-top {
+    height: 704px;
+    background: linear-gradient(181.92deg, #DCE9FF 1.5%, #F3F8FF 98.26%);
+    padding: 80px 0 0 0;
+    overflow: hidden;
+    position: relative;
+}
+#pg-top .top-container {
+    height: 100%;
+    margin-left: calc(50% - 640px);
+}
+
+#pg-top .payment-title {
+    margin-top: 86px;
+    margin-bottom: 24px;
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 55px;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+#pg-top .payment-title .highlight {
+  color: #00B3FF;
+}
+
+#pg-top .payment-description {
+  color: #666;
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+#pg-top .enquire-btn {
+  background: #1A1A1A;
+  color: #fff;
+  padding: 0 32px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+  transition: all 0.3s;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 40px;
+}
+
+#pg-top .enquire-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+#pg-top .content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  height: 100%;
+}
+
+#pg-top .content-left {
+  width: 594px;
+}
+
+#pg-top .globe-section {
+  flex: 1;
+  position: relative;
+  margin-top: 0;
+  background: url(../images/security/img_secrety.png) no-repeat center;
+  background-size: 100% 100%;
+  height: 100%;
+}
+
+#pg-top .globe-img {
+  width: 334px;
+  height: 334px;
+  margin-top: 85px;
+  margin-left: 228px;
+  display: block;
+}
+
+#pg-top .payment-method {
+  height: 60px;
+  position: absolute;
+  padding: 12px 24px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #E5F3FF 0%, #FEFFFF 100%);
+  box-shadow: 8px 12px 30px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 0px 0px rgba(255, 255, 255, 1) inset;
+}
+
+#pg-top .payment-method img {
+  width: 36px;
+  height: 36px;
+}
+
+#pg-top .payment-method span {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.9);
+  font-family: Rubik;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+#payout-second {
+  padding: 120px 0px 120px;
+  background: linear-gradient(180deg, #FFFFFF 12.57%, #F5F5F5 54.11%);
+}
+
+#payout-second .connect-title {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+    text-align: center;
+    max-width: 877px;
+    margin: 0 auto;
+}
+
+#payout-second .connect-title h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+    text-align: center;
+}
+
+#payout-second .second-description {
+  max-width: 1062px;
+  margin: 0 auto;
+}
+
+#payout-second .second-description p {
+  font-family: Rubik;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+}
+
+#payout-second .second-content {
+  margin-top: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  left: 40px;
+}
+
+#payout-second .content-left {
+  height: 494px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+#payout-second .content-left-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 100px;
+  width: 330px;
+  height: 100px;
+}
+
+#payout-second .content-left-item:nth-child(2) {
+  margin-left: -80px;
+}
+
+#payout-second .content-left-item-icon {
+  width: 84px;
+  height: 84px;
+}
+
+#payout-second .content-left-item-icon img {
+  width: 100%;
+  height: 100%;
+}
+
+#payout-second .content-left-item-content {
+  padding: 20px 0 20px 29px;
+  flex: 1;
+}
+
+#payout-second .content-left-item-content h3{
+  font-family: Rubik;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: right;
+  vertical-align: middle;
+  margin-top: 0;
+}
+
+#payout-second .content-center {
+  width: 494px;
+  height: 494px;
+}
+
+#payout-second .content-center img {
+  width: 100%;
+  height: 100%;
+}
+
+#payout-second .content-right {
+  height: 494px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+#payout-second .content-right-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 100px;
+  width: 330px;
+  height: 100px;
+}
+
+#payout-second .content-right-item:nth-child(2) {
+  margin-left: 80px;
+}
+
+#payout-second .content-right-item-icon {
+  width: 84px;
+  height: 84px;
+}
+
+#payout-second .content-right-item-icon img {
+  width: 100%;
+  height: 100%;
+}
+
+#payout-second .content-right-item-content {
+  padding: 20px 29px 20px 0;
+  flex: 1;
+}
+
+#payout-second .content-right-item-content h3{
+  font-family: Rubik;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: left;
+  vertical-align: middle;
+  margin-top: 0;
+}
+
+#payout-third {
+  height: 700px;
+  background: url(../images/security/img_farud.png) no-repeat rgba(0, 21, 40, 1);
+  ;
+  background-size: 100% 100%;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+#payout-third .container {
+  margin-top: 9%;
+}
+
+#payout-third .third-content {
+  max-width: 932px;
+  margin: 0 auto;
+}
+
+#payout-third .third-content h2 {
+  font-family: Rubik;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 58px;
+  text-align: center;
+  color: #fff;
+}
+
+#payout-third .third-description {
+  font-family: Rubik;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+#payout-fourth {
+  padding: 80px 0;
+}
+
+#payout-fourth .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0 auto;
+}
+
+#payout-fourth .fourth-left {
+    max-width: 574px;
+    margin-right: auto;
+}
+
+#payout-fourth .fourth-right {
+    width: 554px;
+    margin-left: auto;
+}
+
+#payout-fourth .fourth-right img {
+  width: 100%;
+  height: 100%;
+}
+
+
+#payout-fifth {
+  padding: 80px 160px;
+  background: rgba(239, 245, 255, 1);
+}
+
+#payout-fifth .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#payout-fifth .fifth-left {
+  flex: 1;
+}
+
+#payout-fifth .fifth-left img {
+  max-width: 554px;
+  width: 100%;
+  height: 100%;
+}
+
+#payout-fifth .fifth-right {
+    max-width: 574px;
+
+}
+
+@media (max-width: 992px) {
+  .content-wrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .globe-section {
+    margin-top: 60px;
+  }
+
+}
+
+@media (max-width: 768px) {
+  #pg-top {
+    height: auto;
+  }
+
+  #pg-top .top-container {
+    margin-left: 0;
+  }
+
+  #pg-top .content-left {
+    width: 100%;
+    padding: 0 20px;
+    text-align: left;
+  }
+
+  #pg-top .payment-title {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 36px;
+    text-align: left;
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+
+  #pg-top .globe-section {
+    height: 387px;
+    flex: none;
+    background: url(../images/security/img_secrety.png) no-repeat -35px center;
+    background-size: 660px 387px;
+    margin-top: -23px;
+  }
+
+  #pg-top .content-wrapper {
+    gap: 0;
+  }
+  
+  #pg-top .payment-description {
+    font-size: 17px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  
+  #pg-top .qr-payment {
+    right: 0;
+  }
+
+  #pg-top .globe-img {
+    width: 183px;
+    height: 183px;
+    margin-left: calc(50% - 91.5px);
+    margin-top: 40px;
+  }
+  
+  #pg-top .payment-method {
+    padding: 6px 8px;
+    height: 33px;
+    border-radius: 8.8px;
+  }
+  
+  #pg-top .payment-method img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  #pg-top .payment-method span {
+    font-size: 9px;
+  }
+  
+  #payout-second {
+    height: auto;
+    padding: 72px 20px;
+  }
+
+  #payout-second .connect-title h2 {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 100%;
+    text-align: center;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+
+  #payout-second .second-content {
+    margin-top: 48px;
+  }
+
+  #payout-second .second-description p {
+    font-size: 17px;
+    line-height: 24px;
+  }
+
+  #payout-second .connect-img {     
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    position: relative;
+    padding-bottom: 211%;
+    height: 0;
+    background: url(../images/payin/payin_second_m.png) no-repeat center;
+    background-size: 100% auto;
+  }
+
+  #payout-second .second-content {
+    align-items: center;
+    margin-top: 48px;
+    overflow: hidden;
+    left: 0;
+  }
+
+  #payout-second .content-left {
+    width: 132px;
+    height: 200px;
+    position: absolute;
+    left: 0;
+    justify-content: space-between;
+  }
+
+  #payout-second .content-right {
+    width: 132px;
+    height: 200px;
+    position: absolute;
+    right: 0;
+    justify-content: space-between;
+  }
+
+  #payout-second .content-left-item,
+  #payout-second .content-right-item {
+    width: 100%;
+    height: 40px;
+    gap: 8px;
+  }
+
+  #payout-second .content-left-item:nth-child(1),
+  #payout-second .content-left-item:nth-child(3) {
+    margin-left: 33px;
+  }
+
+  #payout-second .content-left-item:nth-child(2)  {
+    margin-left: 0;
+  }
+
+  #payout-second .content-right-item:nth-child(2) {
+    margin-left: 0;
+  }
+
+  #payout-second .content-right-item:nth-child(1),
+  #payout-second .content-right-item:nth-child(3) {
+    margin-left: -33px;
+  }
+
+  #payout-second .content-left-item-content,
+  #payout-second .content-right-item-content {
+    padding: 0;
+  }
+
+  #payout-second .content-left-item-content h3,
+  #payout-second .content-right-item-content h3 {
+    font-size: 7.2px;
+    line-height: 8.8px;
+  }
+
+  #payout-second .content-left-item-icon,
+  #payout-second .content-right-item-icon {
+    width: 33.6px;
+    height: 33.6px;
+  }
+
+  #payout-second .content-center {
+    width: 200px;
+    height: 200px;
+  }
+
+  #payout-second .content-center img {
+    width: 200px;
+    height: 200px;
+  }
+
+  #payout-second .second-card {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  #payout-second .card-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 21px;
+  }
+  
+  #payout-second .card-title {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 25px;
+  }
+
+  #payout-third {
+    height: 466px;
+    background: url(../images/security/img_farud.png) no-repeat top rgba(0, 21, 40, 1);
+    background-size: auto 62%;
+    align-items: normal;
+  }
+
+  #payout-third .third-content {
+    padding: 125px 20px 0;
+  }
+
+  #payout-third .third-content h2 {
+    margin-bottom: 16px;
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 100%;
+    text-align: center;
+  }
+
+  #payout-third .third-description {
+    font-size: 17px;
+    line-height: 24px;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  #payout-fourth {
+    padding: 72px 20px;
+  }
+
+  #payout-fourth .container {
+    flex-direction: column;
+  }
+
+  #payout-fourth .fourth-left h2 {
+    margin-bottom: 16px;
+    margin-top: 0;
+    font-size: 32px;
+    line-height: 100%;
+  }
+
+  #payout-fourth .fourth-left p {
+    font-size: 17px;
+    line-height: 24px;
+  }
+
+  #payout-fourth .cases-wrapper {
+    gap: 24px;
+  }
+
+  #payout-fourth .case-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  #payout-fourth .case-content h3 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  #payout-fourth .case-content p {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  #payout-fourth .fourth-right {
+    width: 100%;
+  }
+
+  #payout-fourth .cards-stack {
+    height: auto;
+    transform: none;
+  }
+
+  #payout-fourth .stack-card {
+    position: relative;
+    top: 0 !important;
+    left: 0 !important;
+    margin-bottom: 16px;
+    padding: 24px;
+    transform: none;
+  }
+
+  #payout-fourth .stack-card .card-icon,
+  #payout-fourth .stack-card h3 {
+    transform: none;
+  }
+
+  #payout-fifth {
+    padding: 72px 20px;
+  }
+
+  #payout-fifth .container {
+    flex-direction: column-reverse;
+  }
+
+  #payout-fifth .fifth-left {
+    width: 100%;
+  }
+
+  #payout-fifth .fifth-right {
+    max-width: 100%;
+  }
+  
+  #payout-fifth .fifth-right h2 {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 100%;
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+
+  #payout-fifth .fifth-right p {
+    font-family: Rubik;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 24px;
+  }
+  
+}

@@ -1,0 +1,48 @@
+<?php
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/weebox.css";
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/fanweUI.css";
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/style.css";
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/color.css";
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/public.css";
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/uc_money_index.css";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery-1.6.2.min.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.bgiframe.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.timer.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.weebox.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.touchwipe.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/fastclick.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+
+?>
+{include file="inc/header.html"}
+
+<ul class="pay-record">
+	{if $data.data}
+		{foreach from=$data.data item=row}
+		<li>
+                    <span class="fr">&yen;{$row.money}</span>
+			<p class="pay-way">{$row.bank_name}</p>
+			<time>状态：{if $row.is_paid eq 1}已打款{else}审核中{/if}</time>
+			<p class="payed">{$row.create_time}</p>
+			<div class="clear"></div>
+		</li>
+		{/foreach}	
+	{else}
+		<div class="null_data">
+		<p class="icon"><i class="iconfont">&#xe61e;</i></p>
+		<p class="message">暂无数据</p>
+		</div>
+	{/if}	
+</ul>	
+{if $pages}
+	<div class="fy">
+		{$pages}
+	</div>
+{/if}
+{include file="inc/no_footer.html"}

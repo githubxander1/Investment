@@ -55,7 +55,7 @@ def start_flask_app():
 # 启动前端 HTTP 服务器
 def start_http_server():
     # 确保切换到正确的目录
-    os.chdir('/others/Projects/通过链接获取ip')
+    os.chdir('/z_others/Projects/通过链接获取ip')
     print(f"当前目录: {os.getcwd()}")  # 调试信息：当前目录
     # 使用 subprocess.Popen 启动 HTTP 服务器
     subprocess.Popen(['python', '-m', 'http.server', '8000'])

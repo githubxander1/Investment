@@ -1,0 +1,59 @@
+{if $PAGE_TYPE eq 'app'}
+{else}
+{if $is_show_down}
+<div class="Client">
+	<div class="Client_de">
+		<a href="javascript:void(0);" class="close_but">
+			<i class="iconfont">&#xe608;</i>
+		</a><!--关闭扭-->
+		<div class="transcript">
+			<div class="index_footer_logo"></div>
+			积分能当钱花<br/>
+			仅限手机客户端使用
+		</div>
+		<a href="{$data.mobile_btns_download}" class="go_download">
+			立即下载
+		</a>
+	</div>
+</div>
+{/if}
+<div class="gotop" data-com="gotop">
+	<a href="#">
+		<i class="iconfont">&#xe609;</i>
+	</a>
+</div>
+	<div class="footer-menu-box">
+		<div class="f_menu split-line-top">
+			<ul class="menu_box">
+				<li class="menu_item">
+					<a class="{if $data.ctl eq 'index' && $data.act eq 'wap'}current_menu_item{/if}" href="{url r="index" b="index#wap"}">
+						<p><i class="iconfont">&#xe60d;</i></p>
+						<p class="item_txt">首页</p>
+					</a>
+				</li>
+				<li class="menu_item">
+					<a class="{if $data.ctl eq 'tuan'}current_menu_item{/if}" href="{url r="index" b="tuan"}">
+						<p><i class="iconfont">&#xe611;</i></p>
+						<p class="item_txt">附近</p>
+					</a>
+				</li>
+				<li class="menu_item">
+					<a class="{if $data.ctl eq 'stores' && $data.act eq 'index'}current_menu_item{/if}" href="{url r="index" b="stores#index"}">
+						<p><i class="iconfont">&#xe602;</i></p>
+						<p class="item_txt">商家</p>
+					</a>
+				</li>
+				<li  class="menu_item">
+					<a class="{if $data.ctl eq 'cart' && $data.act eq 'index'}current_menu_item{/if}" href="{url r="index" b="cart#index"}">
+						<p><i class="iconfont">&#xe67d;</i></p>
+						<p class="item_txt">购物车</p>
+					</a>
+				</li>
+			</ul>
+		
+		</div>
+	</div>
+{/if}
+{include file="inc/sms_verify_code.html"}
+	</body>
+<html>

@@ -1,0 +1,5 @@
+.pull-right .score_left{
+	-webkit-align-items:flex-start !important;
+	align-items:flex-start !important;
+	-webkit-box-align:start !important;
+}

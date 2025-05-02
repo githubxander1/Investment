@@ -1,0 +1,671 @@
+.pl-0 {
+  padding-left: 0;
+}
+.pr-0 {
+  padding-right: 0;
+}
+@media (min-width: 1280px) {
+    .container {
+        width: 1280px !important;
+    }
+}
+#pg-top {
+    height: 704px;
+    background: url(../images/payout/img_payout.png) no-repeat center right,linear-gradient(181.92deg, #DCE9FF 1.5%, #F3F8FF 98.26%);
+    background-size: 1100px 104%;
+    padding: 80px 0 0 0;
+    /* position: relative; */
+}
+#pg-top .top-container {
+    /* height: 100%; */
+    margin-left: calc(50% - 640px);
+}
+
+#pg-top .payment-title {
+    margin-top: 125px;
+    margin-bottom: 24px;
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 55px;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+#pg-top .payment-title .highlight {
+  color: #00B3FF;
+}
+
+#pg-top .payment-description {
+  color: #666;
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+#pg-top .enquire-btn {
+  background: #1A1A1A;
+  color: #fff;
+  padding: 0 32px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+  transition: all 0.3s;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 40px;
+}
+
+#pg-top .enquire-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+#pg-top .content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  height: 100%;
+}
+
+#pg-top .content-left {
+  width: 594px;
+}
+
+#pg-top .globe-section {
+  flex: 1;
+  position: relative;
+  margin-top: 0;
+  /* background: url(../images/payout/img_payout.png) no-repeat center;
+  background-size: 1100px 100%; */
+  height: 100%;
+}
+
+#pg-top .globe-img {
+  width: 334px;
+  height: 334px;
+  margin-top: 85px;
+  margin-left: 228px;
+  display: block;
+}
+
+#pg-top .payment-method {
+  height: 60px;
+  position: absolute;
+  padding: 12px 24px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #E5F3FF 0%, #FEFFFF 100%);
+  box-shadow: 8px 12px 30px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 0px 0px rgba(255, 255, 255, 1) inset;
+}
+
+#pg-top .payment-method img {
+  width: 36px;
+  height: 36px;
+}
+
+#pg-top .payment-method span {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.9);
+  font-family: Rubik;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+#payout-second {
+  padding: 120px 0px 120px;
+}
+
+#payout-second .connect-title {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+    text-align: center;
+    max-width: 877px;
+    margin: 0 auto;
+}
+
+#payout-second .connect-title h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+    text-align: center;
+}
+
+#payout-second .second-description {
+  max-width: 1062px;
+  margin: 0 auto;
+}
+
+#payout-second .second-description p {
+  font-family: Rubik;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+}
+
+#payout-second .second-content {
+  margin-top: 64px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#payout-second .second-card {
+  width: calc(33% - 102px);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+#payout-second .card-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 32px;
+}
+
+#payout-second .card-icon img {
+  width: 100%;
+  height: 100%;
+}
+
+#payout-second .card-title {
+  font-family: Rubik;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 35px;
+}
+
+#payout-second .card-description {
+  margin-top: 14px;
+  font-family: Rubik;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+#payout-third {
+  height: 700px;
+  background: url(../images/payout/payout_third.jpg) no-repeat;
+  background-size: 100% 100%;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+#payout-third .third-content {
+  max-width: 816px;
+  margin: 0 auto;
+}
+
+#payout-third .third-content h2 {
+  font-family: Rubik;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 58px;
+  text-align: center;
+  color: #fff;
+}
+
+#payout-third .line {
+  width: 60px;
+  height: 2px;
+  background: #fff;
+  margin: 24px auto;
+}
+
+#payout-third .third-description {
+  font-family: Rubik;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: rgba(255, 255, 255, 0.65);
+  text-align: center;
+}
+
+#payout-fourth {
+  /* padding: 120px 160px; */
+  padding-top: 70px;
+}
+
+#payout-fourth .container {
+    display: flex;
+    width: 100% !important;
+    margin-left: calc(50% - 640px);
+}
+
+#payout-fourth .fourth-left {
+    flex: 1;
+    max-width: 532px;
+}
+
+#payout-fourth .fourth-left h2 {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+    margin-bottom: 64px;
+}
+
+#payout-fourth .cases-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+#payout-fourth .case-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+#payout-fourth .case-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+#payout-fourth .case-icon img {
+    width: 100%;
+    height: 100%;
+}
+
+#payout-fourth .case-content h3 {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 30px;
+    color: rgba(0, 0, 0, 0.85);
+    margin: 0 0 4px 0;
+    font-family: Rubik;
+}
+
+#payout-fourth .case-content p {
+    font-family: Rubik;
+    font-size: 16px;
+    line-height: 24px;
+    color: rgba(0, 0, 0, 0.65);
+    margin: 0;
+}
+
+#payout-fourth .fourth-right {
+    flex: 1;
+    position: relative;
+    margin-left: -150px;
+    background: url(../images/payout/rightbg.png) no-repeat;
+    background-size: auto 100%;
+}
+
+#payout-fourth .cards-stack {
+  height: 800px;
+  width: 400px;
+  padding-left: 530px;
+}
+
+#payout-fourth .stack-card {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    padding: 24px 32px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    transform: rotateZ(45deg) skew(-10deg, -10deg);
+    transform-origin: center;
+}
+
+
+
+#payout-fourth .stack-card .card-content {
+    position: absolute;
+    width: 80%;
+    transform: skew(10deg, 10deg) rotateZ(-45deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#payout-fourth .stack-card .card-icon {
+    width: 36px;
+    height: 36px;
+    margin-top: 60px;
+    margin-bottom: 4px;
+}
+
+#payout-fourth .stack-card .card-icon img {
+    width: 100%;
+    height: 100%;
+}
+
+#payout-fourth .stack-card h3 {
+    margin: 0;
+    font-family: Rubik;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+}
+
+#payout-fourth .card1 {
+    z-index: 4;
+    color: #fff;
+    opacity: 0.65;
+    border: 1px solid #fff;
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.08);
+    /* backdrop-filter: blur(20px); */
+}
+
+#payout-fourth .card1 h3 {
+    color: #000;
+}
+
+#payout-fourth .card2 {
+    top: 141px;
+    z-index: 3;
+    background: linear-gradient(103.46deg, #009BFB -3.23%, #1FC3FF 99.86%);
+    box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 0.15);
+    outline: 2px dashed rgba(190, 202, 212, 1);
+    outline-offset: 13px;
+}
+
+#payout-fourth .card2 h3 {
+    color: #fff;
+}
+
+#payout-fourth .card3 {
+    top: 282px;
+    z-index: 2;
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.08);
+    /* backdrop-filter: blur(20px); */
+}
+
+#payout-fourth .card4 {
+    top: 423px;
+    z-index: 1;
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 992px) {
+  .content-wrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .globe-section {
+    margin-top: 60px;
+  }
+
+}
+
+@media (max-width: 768px) {
+  #pg-top {
+    height: auto;
+    background: linear-gradient(181.92deg, #DCE9FF 1.5%, #F3F8FF 98.26%);
+  }
+
+  #pg-top .top-container {
+    margin-left: 0;
+  }
+
+  #pg-top .content-left {
+    width: 100%;
+    padding: 0 20px;
+    text-align: left;
+  }
+
+  #pg-top .payment-title {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 36px;
+    text-align: left;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    padding-right: 20px;
+  }
+
+  #pg-top .globe-section {
+    height: 387px;
+    flex: none;
+    background: url(../images/payout/img_payout.png) no-repeat -90px center;
+    background-size: 660px 387px;
+  }
+
+  #pg-top .content-wrapper {
+    gap: 0;
+  }
+  
+  #pg-top .payment-description {
+    font-size: 16px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  
+  #pg-top .qr-payment {
+    right: 0;
+  }
+
+  #pg-top .globe-img {
+    width: 183px;
+    height: 183px;
+    margin-left: calc(50% - 91.5px);
+    margin-top: 40px;
+  }
+  
+  #pg-top .payment-method {
+    padding: 6px 8px;
+    height: 33px;
+    border-radius: 8.8px;
+  }
+  
+  #pg-top .payment-method img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  #pg-top .payment-method span {
+    font-size: 9px;
+  }
+  
+  #payout-second {
+    height: auto;
+    padding: 72px 20px;
+  }
+
+  #payout-second .connect-title h2 {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 100%;
+    text-align: center;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  #payout-second .second-description p {
+    font-family: Rubik;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 24px;
+  }
+
+  #payout-second .second-content {
+    margin-top: 48px;
+  }
+
+  #payout-second .connect-img {     
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    position: relative;
+    padding-bottom: 211%;
+    height: 0;
+    background: url(../images/payin/payin_second_m.png) no-repeat center;
+    background-size: 100% auto;
+  }
+
+  #payout-second .second-content {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 48px;
+  }
+
+  #payout-second .second-card {
+    width: 100%;
+    margin-bottom: 36px;
+  }
+
+  #payout-second .second-card:last-child {
+    margin-bottom: 0;
+  }
+
+  #payout-second .card-description {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  #payout-second .card-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 20px;
+  }
+  
+  #payout-second .card-title {
+    font-family: Rubik;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 25px;
+  }
+
+  #payout-third {
+    height: 545px;
+    background: url(../images/payout/payout_third.jpg) no-repeat center;
+    background-size: auto 100%;
+  }
+
+  #payout-third .third-content {
+    padding: 0 40px;
+  }
+
+  #payout-third .third-content h2 {
+    font-size: 32px;
+    line-height: 100%;
+  }
+
+  #payout-third .line {
+    margin: 20px auto;
+  }
+
+  #payout-third .third-description {
+    font-size: 17px;
+    line-height: 22px;
+  }
+
+  #payout-fourth {
+    padding: 72px 20px 0px;
+  }
+
+  #payout-fourth .container {
+    flex-direction: column;
+    /* gap: 40px; */
+    margin-left: 0;
+  }
+
+  #payout-fourth .fourth-left {
+    margin-bottom: 40px;
+  }
+
+  #payout-fourth .fourth-left h2 {
+    font-size: 32px;
+    line-height: 38px;
+    margin-bottom: 36px;
+    margin-top: 0;
+  }
+
+  #payout-fourth .cases-wrapper {
+    gap: 32px;
+  }
+
+  #payout-fourth .case-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  #payout-fourth .case-content h3 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  #payout-fourth .case-content p {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  #payout-fourth .fourth-right {
+    padding-left: 0;
+    margin-left: 0;
+    background: none;
+  }
+
+  #payout-fourth .cards-stack {
+    height: auto;
+    transform: none;
+    padding-left: 110px;
+    width: 100%;
+  }
+
+  #payout-fourth .stack-card {
+    position: relative;
+    left: 0 !important;
+    margin-bottom: 16px;
+    padding: 24px;
+    width: 150px;
+    height: 150px;
+  }
+
+  #payout-fourth .stack-card .card-icon,
+  #payout-fourth .stack-card h3 {
+    transform: none;
+  }
+
+  #payout-fourth .card2 {
+    top: -46px;
+  }
+
+  #payout-fourth .card3 {
+    top: -92px;
+  }
+
+  #payout-fourth .card4 {
+    top: -136px;
+  }
+
+  #payout-fourth .stack-card h3 {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  #payout-fourth .stack-card .card-icon {
+    margin-top: 33px;
+  }
+  
+}

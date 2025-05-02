@@ -1,4 +1,4 @@
-# from CompanyProject.Payok import ui_payok_merchant
+# from CompanyProject.巴迪克 import ui_payok_merchant
 
 
 def convert_to_pytest(recorded_script, page_objects):

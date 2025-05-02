@@ -1,0 +1,88 @@
+<?php
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/weebox.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/fanweUI.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/style.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/color.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/uc_fx.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/uc_fx_deal_fx.css";	
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery-1.6.2.min.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.bgiframe.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.timer.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.weebox.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.touchwipe.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/uc_fx.js";
+
+
+?>
+{include file="inc/header.html"}
+<script>
+var fx_ajax_url = '{$ajax_url}';
+</script>
+<div class="wrap">
+	<div class="content">
+		<div class="deal_fx_head">
+			<form class="fx_search_form" action="{url r="index" p="uc_fx#deal_fx"}" method="post">
+				<div class="fx_search_box">
+				<i class="iconfont" >&#xe600;</i>
+					<input class="fx_s_txt" name="fx_seach_key" placeholder="请输入您想搜索的商品名"/>
+					
+				</div>
+				<button type="submit" class="fx_search_btn"  id="search-submit">搜索</button>
+			</form>
+		</div>
+
+		<div class="list_box">
+			<ul>
+			{foreach from=$data.item item=row}
+				<li class="item">
+					<div class="item_box">
+						<div class="item_icon">
+							<a href="{url r="index" b="deal#index" p="data_id=$row.id"}" {if $row.end_status eq 0} class="gray_icon" {/if}>
+								<img src="{$row.icon}"/>
+							</a>
+							{if $row.end_status neq 1}
+							<div class="i-filter">{if $row.end_status eq 0}已过期{else if $row.end_status eq 2 }预告中{/if}</div>
+							{/if}
+						</div>
+						<div class="item_info">
+							<p>
+								<a href="{url r="index" b="deal#index" p="data_id=$row.id"}" class="i_name">{$row.name}</a>
+							</p>
+							<p class="i_price">
+							<span class="i_salary">佣金:{$row.fx_salary_money}元</span>&nbsp;&nbsp;<span class="i_curr_price">现价:{$row.current_price}元</span>	
+							</p>
+							<p class="i_btn">
+								<a class="btn_box grey_btn mr_15" href="{url r="index" p="deal" d="data_id=$row.id"}">查看详情</a>&nbsp;&nbsp;
+								<a href="javascript:void(0)"  class="btn_box red_btn" onclick="add_user_fx_deal({$row.id},this)">我要分销</a>
+								
+							</p>
+						</div>
+						<div class="del_box"><i class="iconfont"></i></div>
+					</div>
+				</li>
+				{/foreach}
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+
+
+{if $pages}
+		<div class="blank"></div>
+		<div class="fy">
+			{$pages}
+		</div>
+	{/if}
+	<div class="blank50"></div>
+{include file="inc/uc_fx_nav.html"}	

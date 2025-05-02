@@ -1,0 +1,17 @@
+
+# payok:
+    platform:'platform'
+    merchant:'merchant'
+    sales:'sales'
+
+paylabs:
+    operator: 'operator'
+    platform: 'operator'
+    merchant: 'merchant_operator'
+    sales: 'sales_operator'
+
+
+# .env
+PAYOK_PASSWORD="Z43@Mon88"
+PAYLABS_PASSWORD="SharkZ@DBA666"
+TAX_PASSWORD="VSwE8zVrfuUP#HN"

@@ -53,7 +53,7 @@ def analyze_image(image_source, question, image_path=None, image_url=None, ):
 
 # 示例调用：使用本地图片
 # question = "请分析图片内容，并给出分析结果"
-# local_image_path = r"D:\1document\1test\PycharmProject_gitee\others\Investment\Quicker_20231015_132533.jpg"
+# local_image_path = r"D:\1document\1test\PycharmProject_gitee\z_others\Investment\Quicker_20231015_132533.jpg"
 # 由于 glm-4v-flash 不支持 base64 编码，需要上传到服务器并获取 URL
 # 这里假设你已经有一个图片的 URL
 image_url = "https://example.com/path/to/your/image.jpg"

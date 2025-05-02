@@ -1,0 +1,98 @@
+<?php
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/weebox.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/fanweUI.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/style.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/color.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/cart_index.css";	
+$this->_var['pagecss'][] = $this->_var['TMPL_REAL']."/css/user_login.css";	
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery-1.6.2.min.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.bgiframe.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.timer.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.weebox.js";
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/utils/jquery.touchwipe.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/fanwe_utils/fanweUI.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/script.js";
+
+$this->_var['pagejs'][] = $this->_var['TMPL_REAL']."/js/store_pay_check.js";
+$this->_var['cpagejs'][] = $this->_var['TMPL_REAL']."/js/store_pay_check.js";
+
+
+?>
+{include file="inc/header.html"}
+<script type="text/javascript">
+    var ajaxing = false; //ajax计算中，true是不允许提交订单
+    var order_id = '{$data.order_id}';  //订单号
+    var custom_ajax_url = "{$ajax_url}";
+    var login_url='{url x="index" r="user#login"}';
+</script>
+<div class="wrap">
+
+    
+    <form  action="{url x="index" r="store_pay#done"}" method="POST"  id="pay-form" class="pay-form">
+    
+           <input name="order_id" type="hidden" value="{$data.order_id}" />
+ 
+               <div class="back-white">
+
+
+				<div class="pay_info">
+				{include file="inc/store_pay.html"}
+				</div>
+                
+
+
+                <!--支付方式-->	
+                {if $data.show_payment}
+                <div id="normal-fieldset" class="normal-fieldset">
+                    <h4 class="mj-title m-t10">选择支付方式</h4>
+                    <section class="items-common common-radio-box">
+                        {foreach from=$data.payment_list item=payment name=payment} 
+                        <div class="item-common" {if $smarty.foreach.payment.last }style="border-bottom:none;"{/if}>               
+                             <label>
+                                {if $payment.logo}<img src="{$payment.logo}" class="payment_logo" />{/if} {$payment.name} <input type="radio" {if $payment.logo}class="payment_rdo"{/if} value="{$payment.id}" name="payment" />
+                            </label>
+                        </div>
+                        {/foreach}
+                    </section>
+                </div>
+                {/if}
+                <!--end 支付方式-->	
+
+
+                <!--余额-->
+                {if $data.has_account }
+                <div id="normal-fieldset" class="normal-fieldset">
+                    <h4 class="mj-title m-t10">余额支付</h4>
+                    <section class="items-common common-radio-box">           
+                        <div class="item-common" style="border-bottom:none;">
+                            <label>
+                                当前账户余额：{$account_amount}元， 使用余额支付 <input type="checkbox" value="1" name="all_account_money" />
+                            </label>
+                        </div>
+                    </section>
+                </div>
+                {/if}
+                <!--end 余额-->
+
+                <!--总计-->
+                <div id="pay_total"></div>
+                <!--end总计-->
+
+                
+                    <div class="btn_login ">
+                        <input class="pay_btn" type="button" value="确认支付" style="background: none;">
+                    </div>
+               
+            </div>		
+        
+ </form>
+
+
+</div>				
+
+{include file="inc/no_footer.html"}	

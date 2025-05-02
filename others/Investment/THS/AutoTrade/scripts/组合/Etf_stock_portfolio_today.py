@@ -2,6 +2,7 @@ import asyncio
 import csv
 import datetime
 import os
+import re
 from pprint import pprint
 
 import pandas as pd
@@ -40,14 +41,39 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
         return []
 
     today_trades = []
-    today = datetime.date.today().strftime('%Y-%m-%d')
-
     data = response_json.get('data', [])
     # pprint(data)
     for item in data:
-        createAt = item.get('createAt', None)
-        content = item.get('content', '')
+        createAt = item.get('createAt', '') or '' # 防止空值
+        raw_content = item.get('content', '') or '' #防止空值
         relocateList = item.get('relocateList', [])
+
+        # 优化内容提取逻辑
+        def clean_content(text):
+            """清洗HTML内容并提取关键信息"""
+            # 移除HTML标签
+            clean_text = re.sub(r'<[^>]+>', '', text)
+            # 提取调仓理由模式
+            # 增加空值检查
+            if not isinstance(text, str):
+                return '无'
+
+            # 预处理内容
+            text = text.replace('\n', ' ').replace('\r', ' ')
+            # 提取结构化理由
+            reasons = re.findall(
+                r'<div class="change_reason">([^<]*)</div>\s*<div class="change_content">([^<]*)</div>',
+                text
+            )
+            # 合并多个理由
+            if reasons:
+                return '\n'.join([f"{title.strip()}：{content.strip()}"
+                                for title, content in reasons])
+            # 降级处理：移除所有HTML标签
+            return re.sub(r'<[^>]+>', '', text).strip() or '无'
+
+        # 使用安全的内容清洗
+        clean_reason = clean_content(raw_content)
 
         for infos in relocateList:
             name = infos.get('name', None)
@@ -78,7 +104,7 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
                 '新比例%': round(new_ratio * 100, 2),
                 '市场': market,
                 '时间': createAt,
-                '理由': content
+                '理由': clean_reason
             }
             # 今天更新的
             today = datetime.date.today().strftime('%Y-%m-%d')
@@ -86,29 +112,6 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
                 today_trades.append(history_post)
 
     return today_trades
-
-# async def read_existing_data(file_path):
-#     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
-#
-#     # try:
-#     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-#         # 添加dtype参数强制代码列为字符串
-#         existing_df = pd.read_csv(file_path, dtype={'代码': str})
-#         print(f'{len(existing_df)} 条历史更新数据, 如下：\n {existing_df}')
-#         # # 检查列名是否匹配
-#         # if not set(expected_columns).issubset(existing_df.columns):
-#         #     print("列名不匹配，创建新文件")
-#         #     return pd.DataFrame(columns=expected_columns)
-#         return existing_df
-        # else:
-        #     # 创建带有正确列名的空文件
-        #     pd.DataFrame(columns=expected_columns).to_csv(file_path, index=False)
-        #     print("创建新的历史数据文件")
-        #     return pd.DataFrame(columns=expected_columns)
-    # except pd.errors.EmptyDataError:
-    #     print("历史数据为空")
-        # pd.DataFrame(columns=expected_columns).to_csv(file_path, index=False)
-        # return pd.DataFrame(columns=expected_columns)
 
 async def ETF_Combination_main():
     # 处理 ETF 组合
@@ -129,26 +132,63 @@ async def ETF_Combination_main():
     # 转换成pd表格样式
     all_today_trades_df = pd.DataFrame(all_today_trades)
     all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1) #从1开始
+    # 打印时去掉‘理由’列
+    all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
+    print(all_today_trades_df_without_content)
     #去掉‘理由’列
-    all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'])
-    if not all_today_trades_df.empty:
-        print(f'{len(all_today_trades_df)} 条今天更新数据, 如下：\n {all_today_trades_df_without_content}\n')
+
+    # all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'])
+    # if not all_today_trades_df.empty:
+    #     print(f'{len(all_today_trades_df)} 条今天更新数据, 如下：\n {all_today_trades_df_without_content}\n')
 
     #读取历史数据
     existing_data_file = ETF_Combination_TODAY_ADJUSTMENT_FILE
-    existing_data = pd.read_csv(existing_data_file) if os.path.exists(existing_data_file) else pd.DataFrame()
+    expected_columns = ['名称','操作','标的名称','代码','最新价','新比例%','市场','时间','理由']
 
-    if not existing_data.empty:
-        #找出新增的更新数据
-        mask = ~all_today_trades_df['时间'].isin(existing_data['时间'])
-        new_data = all_today_trades_df[mask].copy()
-        if not new_data.empty:
-            print(f'{len(new_data)} 条新增数据, 如下：\n {new_data}')
-            pd.DataFrame(new_data).to_csv(existing_data_file, mode='a', header=False, index=False)
+    try:
+        existing_data = pd.read_csv(existing_data_file)
+    except (FileNotFoundError, pd.errors.EmptyDataError):
+        # 显式创建带列名的空DataFrame
+        existing_data = pd.DataFrame(columns=expected_columns)
+        # 保存文件并保持existing_data为DataFrame
+        existing_data.to_csv(existing_data_file, index=False)
+        print(f'初始化历史记录文件: {existing_data_file}')
+
+    # 确保列结构一致（关键修复）
+    existing_data = existing_data.reindex(columns=expected_columns, fill_value=None)
+
+
+    if not isinstance(existing_data, pd.DataFrame):
+        existing_data = pd.DataFrame(columns=all_today_trades_df.columns).to_csv(existing_data_file, index=False)
+
+    #新增数据筛选逻辑
+    if not all_today_trades_df.empty:
+        # 生成唯一标识：时间+代码
+        all_today_trades_df['_id'] = all_today_trades_df['时间'] + '_' + all_today_trades_df['代码']
+
+        # 历史数据存在时的处理
+        if not existing_data.empty:
+            existing_data['_id'] = existing_data['时间'] + '_' + existing_data['代码']
+            new_mask = ~all_today_trades_df['_id'].isin(existing_data['_id'])
+            new_data = all_today_trades_df[new_mask].copy().drop(columns=['_id'])
         else:
-            print("没有新增数据")
+            new_data = all_today_trades_df.copy().drop(columns=['_id'])
+
+        # 保存新增数据
+        if not new_data.empty:
+            print(f'发现{len(new_data)}条新增交易:')
+            #打印时，new_data去掉‘理由’列
+            new_data_without_content = new_data.drop(columns=['理由'])
+            print(new_data_without_content)
+            # 智能添加header
+            header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
+            new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
+            #发送系统和钉钉通知
+            send_notification(f"{len(new_data)} 条新增交易，\n{new_data_without_content}")
+        else:
+            print("今日无新增交易数据")
     else:
-        print("没有历史数据")
+        print("今日无任何交易更新")
 
 
 if __name__ == '__main__':

@@ -109,7 +109,7 @@ def main():
 
     # 检查是否有数据并保存
     if not last_positions_df.empty:
-        # positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\Investment\THS\AutoTrade\data\策略最新持仓_所有.xlsx'
+        # positions_file_path = r'D:\1document\1test\PycharmProject_gitee\z_others\Investment\THS\AutoTrade\data\策略最新持仓_所有.xlsx'
         # positions_file_path = Strategy_info_file
         save_to_excel(last_positions_df, Strategy_info_file, '策略最新持仓')
     else:

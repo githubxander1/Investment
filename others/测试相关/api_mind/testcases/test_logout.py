@@ -1,7 +1,7 @@
 # testcases/test_logout.py
 
 # 读取测试数据
-# test_data = read_yaml(r'D:\1document\1test\PycharmProject_gitee\others\测试相关\ApiTest_mindmaster\api_mind\testdata\test_data_rename.yaml')['rename']
+# test_data = read_yaml(r'D:\1document\1test\PycharmProject_gitee\z_others\测试相关\ApiTest_mindmaster\api_mind\testdata\test_data_rename.yaml')['rename']
 
 # @pytest.mark.parametrize('test_case', test_data,
 #                          ids=[case['test_name'] for case in test_data])

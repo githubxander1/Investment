@@ -1,0 +1,83 @@
+<section id="contact" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row">
+            <!--class="col-md-6 col-sm-12 col-md-offset-3"-->
+            <div class="col-sm-12">
+                   <!--<h2 class="text-center">Contact Our Sales Team</h2>-->
+                    <!-- CONTACT FORM HERE -->
+                <title>Contact</title>
+                    <form id="contact-form" role="form" action="#" method="post">
+                        <!-- 添加关闭按钮 -->
+                        <button type="button" class="close-btn" 
+                            onclick="event.preventDefault(); event.stopPropagation(); closeContactForm()" 
+                            ontouchend="event.preventDefault(); event.stopPropagation(); closeContactForm()">&times;</button>
+                        <div class="col-md-12">
+                            <h3 data-locale="ContactUs">Contact Us</h3>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <label for="" data-locale="name*">Name*</label>
+                            <input type="text" class="form-control require i18n-input" selectname="pleaseInput" selectattr="placeholder" placeholder="Full Name" id="name" name="cf-name" required>
+                            <!--  oninvalid="setCustomValidity('Please fill in this field!');" -->
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <label for="" data-locale="emailAddr">Email Address*</label>
+                            <input type="email" class="form-control require i18n-input" selectname="pleaseInput" selectattr="placeholder" placeholder="Your Email" id="email" name="cf-email" required>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <label for="" data-locale="phoneNumber">Phone Number*</label>
+                            <!-- <input type="tel" class="form-control require i18n-input" selectname="pleaseInput" selectattr="placeholder" placeholder="Your Phone" id="phone" name="cf-number" required οninput="setCustomValidity('');"> -->
+                            <br>
+                            <input type="tel" class="form-control require" id="phone" required>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <label for="" data-locale="formMessage">Message*</label>
+                            <textarea class="form-control require i18n-input" selectname="pleaseInput" selectattr="placeholder" rows="3" placeholder="Your requirements" id="message" name="cf-message" required style="resize: vertical;"></textarea>
+                        </div>
+
+
+                        
+                        <!-- <div class="form-group">
+                            <label for="name" langkey="code">Kode Verifikasi</label>
+                            <div class="mb-4">
+                            <div class="col-sm-12 pl-0 pr-0" id="mpanel2">
+
+                            </div>
+                            </div>
+                        </div> -->
+
+                        <div class="col-md-12 col-sm-12 checkbox-wrapper">
+                            <input id="byEmail" class="prefer" type="checkbox" name="prefer" value="1">
+                            <label for="byEmail" class="checkbox-desc nowrap" data-locale="formp1">Prefer to be contacted by E-Mail</label>
+                        </div>
+                        <div class="col-md-12 col-sm-12 checkbox-wrapper">
+                            <input id="byPhone" class="prefer" type="checkbox" name="prefer" value="2">
+                            <label for="byPhone" class="checkbox-desc nowrap" data-locale="formp2">Prefer to be contacted by Phone Call / Whatsapp</label>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <label for="" class="checkbox-tips" data-locale="formp3">** tick one or both option</label>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <label for="name" langkey="code" style="margin-top: 10px;" data-locale="verifyCode">Verification Code</label>
+                            <!-- <div class="mb-4"> -->
+                                <div class="col-sm-12" id="mpanel2" style="padding:0;">
+                                </div>
+                            <!-- </div> -->
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <!-- <input type="submit" class="form-control" name="submit" value="Submit" id=""> -->
+                            <button class="form-control" id="btnSubmit" disabled data-locale="submit">Submit</button>
+                        </div>
+
+                        <div class=""></div>
+
+                    </form>
+            </div>
+        </div>
+    </div>
+</section>

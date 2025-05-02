@@ -1,0 +1,51 @@
+{if $data.order_info.total_price gt 0}
+      <div id="normal-fieldset" class="normal-fieldset">
+          
+          <section class="items-common common-radio-box" style="margin-bottom:0px;">           
+              <div class="item-common" style="border-bottom:none;">
+                  <label>
+            			     总计: {function name="format_price" v=$data.order_info.total_price}
+                  </label>
+              </div>
+          </section>
+      </div>
+      {/if}
+
+      {if $data.order_info.pay_amount gt 0}
+      <div id="normal-fieldset" class="normal-fieldset">
+          
+          <section class="items-common common-radio-box" style="margin-bottom:0px;">           
+              <div class="item-common" style="border-bottom:none;">
+                  <label>
+                		 已付款:   -  {function name="format_price" v=$data.order_info.pay_amount}
+                  </label>
+              </div>
+          </section>
+      </div>
+      {/if}
+      
+      {if $data.order_info.discount_price gt 0}
+      <div id="normal-fieldset" class="normal-fieldset">
+         
+          <section class="items-common common-radio-box" style="margin-bottom:0px;">           
+              <div class="item-common" style="border-bottom:none;">
+                  <label>
+                    		已优惠:  - {function name="format_price" v=$data.order_info.discount_price}
+                  </label>
+              </div>
+          </section>
+      </div>
+      {/if}
+      
+      {if $data.payment_fee gt 0}
+      <div id="normal-fieldset" class="normal-fieldset" style="margin-bottom:0px;">
+         
+          <section class="items-common common-radio-box" style="margin-bottom:0px;">           
+              <div class="item-common" style="border-bottom:none;">
+                  <label>
+                    		手续费:  + {function name="format_price" v=$data.payment_fee}
+                  </label>
+              </div>
+          </section>
+      </div>
+      {/if}
