@@ -1,0 +1,217 @@
+{
+  "bc8603345aa35a0198b46e11d1135eb7" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "f244f4ea6a42897b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744639379925,
+        "stop" : 1744639379938,
+        "duration" : 13
+      }
+    } ]
+  },
+  "9d2101c860bd95802ad46f9eb601050f" : {
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "55370603d22f01f7",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc...larmSum\": 0}}' == \"{'msg': 'Suc...larmSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\n  + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^",
+      "time" : {
+        "start" : 1744637716390,
+        "stop" : 1744637716397,
+        "duration" : 7
+      }
+    } ]
+  },
+  "ca1aca55176f4def92e009d46dc32bf3" : {
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "3e15ecab446a9929",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc...sferSum\": 0}}' == \"{'msg': 'Suc...sferSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'transferSum': 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^           ^\n  + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"transferSum\": 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^           ^",
+      "time" : {
+        "start" : 1744637716372,
+        "stop" : 1744637716384,
+        "duration" : 12
+      }
+    } ]
+  },
+  "12e7df47fd97906fd5113cb26a243404" : {
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "6ee27e633cbe9fe3",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc..., \"id\": 9485}' == '{\"msg\": \"Suc..., \"id\": 9484}'\n  - {\"msg\": \"Success\", \"code\": 0, \"id\": 9484}\n  ?                                        ^\n  + {\"msg\": \"Success\", \"code\": 0, \"id\": 9485}\n  ?                                        ^",
+      "time" : {
+        "start" : 1744642432609,
+        "stop" : 1744642434648,
+        "duration" : 2039
+      }
+    } ]
+  },
+  "58698f2c2635d68a0f17a03ca3258dca" : {
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "57cd538093266f80",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc..., \"id\": 9483}' == '{\"msg\": \"Suc..., \"id\": 9479}'\n  - {\"msg\": \"Success\", \"code\": 0, \"id\": 9479}\n  ?                                       ^^\n  + {\"msg\": \"Success\", \"code\": 0, \"id\": 9483}\n  ?                                       ^^",
+      "time" : {
+        "start" : 1744642340138,
+        "stop" : 1744642342176,
+        "duration" : 2038
+      }
+    } ]
+  },
+  "3e54244095598d7de9825ddc9faff28e" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "fdef8d22b110d13",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744642470751,
+        "stop" : 1744642472795,
+        "duration" : 2044
+      }
+    } ]
+  },
+  "3d331b44ed4cef63d74acc9b39760ca9" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "ff109a227821f8e1",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744639379942,
+        "stop" : 1744639379949,
+        "duration" : 7
+      }
+    } ]
+  },
+  "85ce6a354337dae64a2c0b9ecf225f79" : {
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "f34e351679bea46d",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc...larmSum\": 0}}' == \"{'msg': 'Suc...larmSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\n  + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^",
+      "time" : {
+        "start" : 1744637716329,
+        "stop" : 1744637716343,
+        "duration" : 14
+      }
+    } ]
+  },
+  "49c88ce7db17bf3a3e9e4b03fffeb4d2" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "2bb618d610a646b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744642472801,
+        "stop" : 1744642474836,
+        "duration" : 2035
+      }
+    } ]
+  },
+  "70e5b31f62aa119d82479732a3b1c79c" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "4f7e5e7c3ebec986",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744639379896,
+        "stop" : 1744639379921,
+        "duration" : 25
+      }
+    } ]
+  },
+  "dc6f548e4fe84baad5537d5f4a716d19" : {
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "abd5dc5ecd6a557d",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert 500 == 200\n +  where 500 = <Response [500]>.status_code",
+      "time" : {
+        "start" : 1744637202509,
+        "stop" : 1744637202514,
+        "duration" : 5
+      }
+    } ]
+  }
+}
