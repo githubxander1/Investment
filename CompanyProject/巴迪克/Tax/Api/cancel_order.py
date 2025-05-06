@@ -106,16 +106,20 @@ if __name__ == "__main__":
     # 示例使用
     api_client = TaxAPI(company_name="1627670595@qq.com")
 
+    # request_payload = {
+    #     "merchantId": "600005M0000001",
+    #     "paymentType": "CASH",
+    #     "amount": "100.12",
+    #     "agentOrderNo": "AGENT20250506006",
+    #     "payOrderNo": "PAY20250506006",
+    #     "sourceAgentOrderNo": "",
+    #     "productName": "私人飞机",
+    #     "requestId": "12"
+    # }
     request_payload = {
-        "merchantId": "600005M0000001",
-        "paymentType": "CASH",
-        "amount": "100.12",
-        "agentOrderNo": "AGENT20250506006",
-        "payOrderNo": "PAY20250506006",
-        "sourceAgentOrderNo": "",
-        "productName": "私人飞机",
-        "requestId": "12"
-    }
+            "agentOrderNo": "AGENT20250421006",
+            "requestId": "12"
+            }
 
     print("发送申报请求...")
     result = api_client.send_declaration(request_payload)
