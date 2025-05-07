@@ -14,7 +14,8 @@ from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 # 配置常量
 CONFIG = {
     "BASE_URL": "http://balitax-test.com/declaration-api",
-    "ENDPOINT_PATH": "/v1.0/declaration/create",
+    # "ENDPOINT_PATH": "/v1.0/declaration/create",
+    "ENDPOINT_PATH": "/v1.0/declaration/cancel",
     "YAML_PATH": os.path.normpath(os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         "../../common/sql_config.yaml"
@@ -40,7 +41,7 @@ class TaxAPI:
             with SQLHandler(CONFIG['YAML_PATH'], self.environment, 'tax') as handler:
                 sql = f"SELECT agent_no, sign_key FROM {handler.get_table('agent_base_info')} WHERE company_name = %s"
                 result = handler.query_one(sql, (self.company_name,))
-                print(f'agent_no: {result[0]}, secret_key: {result[1]}')
+                print(f'agent_no: {result[0]}, company_name: {self.company_name}, secret_key: {result[1]}')
 
             if not result:
                 raise ValueError(f"未找到公司 {self.company_name} 的信息")
@@ -104,9 +105,10 @@ class TaxAPI:
 
 if __name__ == "__main__":
     # 示例使用
-    api_client = TaxAPI(company_name="1627670595@qq.com")
+    # api_client = TaxAPI(company_name="1627670595@qq.com")
+    api_client = TaxAPI(company_name="tax_agent001@linshiyou.com")
 
-    # request_payload = {
+    # cancel_request_payload = {
     #     "merchantId": "600005M0000001",
     #     "paymentType": "CASH",
     #     "amount": "100.12",
@@ -116,11 +118,12 @@ if __name__ == "__main__":
     #     "productName": "私人飞机",
     #     "requestId": "12"
     # }
-    request_payload = {
-            "agentOrderNo": "AGENT20250421006",
-            "requestId": "12"
+    cancel_request_payload = {
+            "agentOrderNo": "2",
+            "requestId": "19999999999999999999"
             }
 
-    print("发送申报请求...")
-    result = api_client.send_declaration(request_payload)
+    print("撤销申报中...")
+    result = api_client.send_declaration(cancel_request_payload)
     pprint(result)
+

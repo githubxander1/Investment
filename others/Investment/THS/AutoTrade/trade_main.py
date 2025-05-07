@@ -38,7 +38,7 @@ from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 # 调度器配置 ======================================================
 SCHEDULE_CONFIG: Dict[str, Tuple[float, Tuple[int, int], Tuple[int, int]]] = {
     "strategy": (1, (9, 29), (9, 33)),
-    "etf_combo": (1, (9, 15), (15, 00))
+    "etf_combo": (1, (9, 15), (16, 00))
 }
 
 # 公共方法 ========================================================

@@ -4,10 +4,13 @@ import hmac
 import json
 import hashlib
 import datetime
+
 import requests
 from urllib.parse import urlparse
 from typing import Dict, Tuple, Optional
 from pprint import pprint
+
+from faker import Faker
 
 from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
@@ -40,7 +43,7 @@ class TaxAPI:
             with SQLHandler(CONFIG['YAML_PATH'], self.environment, 'tax') as handler:
                 sql = f"SELECT agent_no, sign_key FROM {handler.get_table('agent_base_info')} WHERE company_name = %s"
                 result = handler.query_one(sql, (self.company_name,))
-                print(f'agent_no: {result[0]}, secret_key: {result[1]}')
+                print(f'agent_no: {result[0]}, company_name:  {self.company_name}, secret_key: {result[1]}')
 
             if not result:
                 raise ValueError(f"未找到公司 {self.company_name} 的信息")
@@ -103,20 +106,45 @@ class TaxAPI:
             return {"error": "Internal error"}
 
 if __name__ == "__main__":
-    # 示例使用
-    api_client = TaxAPI(company_name="1627670595@qq.com")
+    # amount_test_data = {
+    #     'max_xiaoshu':'123456789012.99',
+    #     'max_fu':'-123456789012.99',
+    #     'threexiaoshu':'123456789012.123',
+    #     'float_zero':'123456789012.00',
+    #     'init_14':'1234567890123.12',
+    # }
+    faker  = Faker()
+    api_client = TaxAPI(company_name="tax_agent001@linshiyou.com")
+    #每一种类型都请求
+    paymentType =["CASH", "CreditCard", "DebitCard", "DANABALANCE", "SHOPEEBALANCE", "LINKAJABALANCE", "OVOBALANCE", "GOPAYBALANCE", "SinarmasVA", "MaybankVA", "DanamonVA", "BNCVA", "BCAVA", "INAVA", "BNIVA", "PermataVA", "MuamalatVA", "BSIVA", "BRIVA", "MandiriVA", "CIMBVA", "StaticMandiriVA", "StaticBCAVA", "QRIS", "Indodana", "Atome", "Kredivo", "Indomaret", "Alfarmart", "POS"]
+    today = datetime.datetime.now().strftime("%Y%m%d")
 
-    request_payload = {
-        "merchantId": "600005M0000001",
-        "paymentType": "CASH",
-        "amount": "100.12",
-        "agentOrderNo": "AGENT20250506006",
-        "payOrderNo": "PAY20250506006",
-        "sourceAgentOrderNo": "",
-        "productName": "私人飞机",
-        "requestId": "12"
+    #批量生成
+    n = 1
+    amount = "0.01"
+    # for paymentType in paymentType:
+        # for n in range(1, requests_pre_type +1):
+    order_suffix = f"{n:03d}"
+    agentOrderNo = f"AgentOrderNo{today}-{paymentType}-{n}"
+    payOrderNo = f"PayOrder{today}-{paymentType}-{n}"
+    productName = faker.company()
+    # productName = '的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈哈嗝嗝哈哈哈更回复二哥给狗狗狗法国嗝哈哈哈哈哈哈哈哈哈哈哈狗狗狗狗狗狗个我是通过好好谷歌官方的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈一百'
+
+    creat_request_payload = {
+        "merchantId": "600008M0000002",
+        # "paymentType": paymentType,
+        "paymentType": "StaticMandiriVA",
+        # "paymentType": "INVALIDTYPE",
+        "amount": amount,
+        "agentOrderNo": agentOrderNo,
+        "payOrderNo": payOrderNo,
+        "sourceAgentOrderNo": "AGENT2025",
+        "productName": productName,
+        "requestId": "1"
     }
 
-    print("发送申报请求...")
-    result = api_client.send_declaration(request_payload)
+    result = api_client.send_declaration(creat_request_payload)
     pprint(result)
+        # print(f"{n},正在处理{paymentType}，{agentOrderNo}, {payOrderNo}, {productName}")
+    print(f"\n{n},已完成：amount: {amount}, agentOrderNo：{agentOrderNo}, payOrderNo：{payOrderNo}, productName：{productName}")
+        # n += 1
