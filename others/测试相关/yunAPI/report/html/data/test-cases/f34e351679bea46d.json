@@ -1,0 +1,175 @@
+{
+  "uid" : "f34e351679bea46d",
+  "name" : "test_getMsgSum1[1-1-{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}]",
+  "fullName" : "test_case.Test_getMsg#test_getMsgSum1",
+  "historyId" : "85ce6a354337dae64a2c0b9ecf225f79",
+  "time" : {
+    "start" : 1744637716329,
+    "stop" : 1744637716343,
+    "duration" : 14
+  },
+  "status" : "failed",
+  "statusMessage" : "AssertionError: assert '{\"msg\": \"Suc...larmSum\": 0}}' == \"{'msg': 'Suc...larmSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\n  + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^",
+  "statusTrace" : "self = <test_case.Test_getMsg object at 0x0000019134358A90>, id = 1, col = 1\nresult = \"{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\"\n\n    @allure.story(\"通知消息数统计用例\")\n    @pytest.mark.parametrize(\"id,col,result\",lst)\n    def test_getMsgSum1(self,id,col,result):\n        req=getMsgSum(id,col)\n        assert  req.status_code ==200\n        print(req.text)\n        print(type(req.text))\n        print(result)\n        print(type(result))\n>       assert   req.text==result\nE       assert '{\"msg\": \"Suc...larmSum\": 0}}' == \"{'msg': 'Suc...larmSum': 0}}\"\nE         - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\nE         ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\nE         + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}\nE         ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\n\ntest_case.py:18: AssertionError",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "feature",
+    "value" : "消息统计模块"
+  }, {
+    "name" : "story",
+    "value" : "通知消息数统计用例"
+  }, {
+    "name" : "suite",
+    "value" : "test_case"
+  }, {
+    "name" : "subSuite",
+    "value" : "Test_getMsg"
+  }, {
+    "name" : "host",
+    "value" : "LX-20231129PGQI"
+  }, {
+    "name" : "thread",
+    "value" : "9416-MainThread"
+  }, {
+    "name" : "framework",
+    "value" : "pytest"
+  }, {
+    "name" : "language",
+    "value" : "cpython3"
+  }, {
+    "name" : "package",
+    "value" : "test_case"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ {
+    "name" : "col",
+    "value" : "1"
+  }, {
+    "name" : "id",
+    "value" : "1"
+  }, {
+    "name" : "result",
+    "value" : "'{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}'"
+  } ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ {
+      "uid" : "933114ddbbdadca",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637682480,
+        "stop" : 1744637682493,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "91f73c7ca4e09f48",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637645054,
+        "stop" : 1744637645067,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "1afe01c30fcd487c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637590831,
+        "stop" : 1744637590846,
+        "duration" : 15
+      }
+    }, {
+      "uid" : "4d9cc1df17397110",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637488041,
+        "stop" : 1744637488056,
+        "duration" : 15
+      }
+    }, {
+      "uid" : "ef79993dd7c3d63f",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637316505,
+        "stop" : 1744637316519,
+        "duration" : 14
+      }
+    }, {
+      "uid" : "479b234e0be34dbd",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert {'code': 0, 'data': {'alarmSum': 0}, 'msg': 'Success'} == \"{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\"\n +  where {'code': 0, 'data': {'alarmSum': 0}, 'msg': 'Success'} = eval('{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}')\n +    where '{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}' = <Response [200]>.text",
+      "time" : {
+        "start" : 1744637283491,
+        "stop" : 1744637283505,
+        "duration" : 14
+      }
+    }, {
+      "uid" : "f0231cf1788cf418",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc...larmSum\": 0}}' == \"{'msg': 'Suc...larmSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\n  + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^",
+      "time" : {
+        "start" : 1744637259641,
+        "stop" : 1744637259654,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "76ed8ebac6d09b46",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637241859,
+        "stop" : 1744637241874,
+        "duration" : 15
+      }
+    }, {
+      "uid" : "1b5fa308aefbf517",
+      "status" : "passed",
+      "time" : {
+        "start" : 1744637202541,
+        "stop" : 1744637202554,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "bd6e1eb897fdf0ad",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert '{\"msg\": \"Suc...larmSum\": 0}}' == \"{'msg': 'Suc...larmSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^\n  + {\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}\n  ?  ^   ^  ^       ^  ^    ^     ^    ^   ^        ^",
+      "time" : {
+        "start" : 1744637152217,
+        "stop" : 1744637152230,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "84390321cefe1b90",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert {'code': 0, 'data': {'alarmSum': 0}, 'msg': 'Success'} == \"{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\"\n +  where {'code': 0, 'data': {'alarmSum': 0}, 'msg': 'Success'} = eval('{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}')\n +    where '{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}' = <Response [200]>.text",
+      "time" : {
+        "start" : 1744637038923,
+        "stop" : 1744637038936,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "9d48c3f3b61f3cb7",
+      "status" : "failed",
+      "statusDetails" : "AssertionError: assert 'Success' == \"{'msg': 'Suc...larmSum': 0}}\"\n  - {'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}\n  + Success",
+      "time" : {
+        "start" : 1744636870991,
+        "stop" : 1744636871006,
+        "duration" : 15
+      }
+    } ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "f34e351679bea46d.json",
+  "parameterValues" : [ "1", "1", "'{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}'" ]
+}

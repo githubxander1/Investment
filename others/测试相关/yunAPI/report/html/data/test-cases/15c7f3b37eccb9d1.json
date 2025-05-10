@@ -1,0 +1,66 @@
+{
+  "uid" : "15c7f3b37eccb9d1",
+  "name" : "test_getMsgSum1[1-2-{'msg': 'Success', 'code': 0, 'data': {'transferSum': 0}}]",
+  "fullName" : "test_case.Test_getMsg#test_getMsgSum1",
+  "historyId" : "ca1aca55176f4def92e009d46dc32bf3",
+  "time" : {
+    "start" : 1744637645071,
+    "stop" : 1744637645083,
+    "duration" : 12
+  },
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "story",
+    "value" : "通知消息数统计用例"
+  }, {
+    "name" : "feature",
+    "value" : "消息统计模块"
+  }, {
+    "name" : "suite",
+    "value" : "test_case"
+  }, {
+    "name" : "subSuite",
+    "value" : "Test_getMsg"
+  }, {
+    "name" : "host",
+    "value" : "LX-20231129PGQI"
+  }, {
+    "name" : "thread",
+    "value" : "16352-MainThread"
+  }, {
+    "name" : "framework",
+    "value" : "pytest"
+  }, {
+    "name" : "language",
+    "value" : "cpython3"
+  }, {
+    "name" : "package",
+    "value" : "test_case"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ {
+    "name" : "col",
+    "value" : "2"
+  }, {
+    "name" : "id",
+    "value" : "1"
+  }, {
+    "name" : "result",
+    "value" : "'{'msg': 'Success', 'code': 0, 'data': {'transferSum': 0}}'"
+  } ],
+  "links" : [ ],
+  "hidden" : true,
+  "retry" : true,
+  "extra" : {
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "15c7f3b37eccb9d1.json",
+  "parameterValues" : [ "2", "1", "'{'msg': 'Success', 'code': 0, 'data': {'transferSum': 0}}'" ]
+}

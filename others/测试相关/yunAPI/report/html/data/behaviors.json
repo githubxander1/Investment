@@ -1,0 +1,164 @@
+{
+  "uid" : "b1a8273437954620fa374b796ffaacdd",
+  "name" : "behaviors",
+  "children" : [ {
+    "name" : "消息统计模块",
+    "children" : [ {
+      "name" : "通知消息数统计用例",
+      "children" : [ {
+        "name" : "test_getMsgSum1[agencyID-colFlag-\\u9884\\u671f\\u7ed3\\u679c]",
+        "uid" : "abd5dc5ecd6a557d",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1744637202509,
+          "stop" : 1744637202514,
+          "duration" : 5
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "'colFlag'", "'agencyID'", "'预期结果'" ]
+      }, {
+        "name" : "test_getMsgSum1[1-1-{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}]",
+        "uid" : "f34e351679bea46d",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1744637716329,
+          "stop" : 1744637716343,
+          "duration" : 14
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "1", "1", "'{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}'" ]
+      }, {
+        "name" : "test_getMsgSum1[1-2-{'msg': 'Success', 'code': 0, 'data': {'transferSum': 0}}]",
+        "uid" : "3e15ecab446a9929",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1744637716372,
+          "stop" : 1744637716384,
+          "duration" : 12
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "2", "1", "'{'msg': 'Success', 'code': 0, 'data': {'transferSum': 0}}'" ]
+      }, {
+        "name" : "test_getMsgSum1[3-1-{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}]",
+        "uid" : "55370603d22f01f7",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1744637716390,
+          "stop" : 1744637716397,
+          "duration" : 7
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "1", "3", "'{'msg': 'Success', 'code': 0, 'data': {'alarmSum': 0}}'" ]
+      }, {
+        "name" : "test_getMsgSum1[1-1-{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}]",
+        "uid" : "4f7e5e7c3ebec986",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1744639379896,
+          "stop" : 1744639379921,
+          "duration" : 25
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "1", "1", "'{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}'" ]
+      }, {
+        "name" : "test_getMsgSum1[1-2-{\"msg\": \"Success\", \"code\": 0, \"data\": {\"transferSum\": 0}}]",
+        "uid" : "f244f4ea6a42897b",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1744639379925,
+          "stop" : 1744639379938,
+          "duration" : 13
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "2", "1", "'{\"msg\": \"Success\", \"code\": 0, \"data\": {\"transferSum\": 0}}'" ]
+      }, {
+        "name" : "test_getMsgSum1[3-1-{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}]",
+        "uid" : "ff109a227821f8e1",
+        "parentUid" : "a055ced7b4ad2dd5c803acef70beb1d5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1744639379942,
+          "stop" : 1744639379949,
+          "duration" : 7
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "1", "3", "'{\"msg\": \"Success\", \"code\": 0, \"data\": {\"alarmSum\": 0}}'" ]
+      } ],
+      "uid" : "a055ced7b4ad2dd5c803acef70beb1d5"
+    } ],
+    "uid" : "da727ea1248b20ce5e87adc82195707f"
+  }, {
+    "name" : "代理模块",
+    "children" : [ {
+      "name" : "新建代理用例",
+      "children" : [ {
+        "name" : "test_createAgency[\\u6d4b\\u8bd5\\u5f20\\u4e09-13512345678]",
+        "uid" : "57cd538093266f80",
+        "parentUid" : "9e2a1ec2f1a5b8a1c141c1ab2dfbf620",
+        "status" : "failed",
+        "time" : {
+          "start" : 1744642340138,
+          "stop" : 1744642342176,
+          "duration" : 2038
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "'测试张三'", "13512345678" ]
+      }, {
+        "name" : "test_createAgency[\\u6d4b\\u8bd5\\u5f20\\u4e09-13512345671]",
+        "uid" : "6ee27e633cbe9fe3",
+        "parentUid" : "9e2a1ec2f1a5b8a1c141c1ab2dfbf620",
+        "status" : "failed",
+        "time" : {
+          "start" : 1744642432609,
+          "stop" : 1744642434648,
+          "duration" : 2039
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "'测试张三'", "13512345671" ]
+      }, {
+        "name" : "test_createAgency[\\u6d4b\\u8bd5\\u5f20\\u4e09-13512345672]",
+        "uid" : "fdef8d22b110d13",
+        "parentUid" : "9e2a1ec2f1a5b8a1c141c1ab2dfbf620",
+        "status" : "passed",
+        "time" : {
+          "start" : 1744642470751,
+          "stop" : 1744642472795,
+          "duration" : 2044
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "'测试张三'", "13512345672" ]
+      }, {
+        "name" : "test_createAgency[\\u6d4b\\u8bd5\\u674e\\u56db-13912345673]",
+        "uid" : "2bb618d610a646b",
+        "parentUid" : "9e2a1ec2f1a5b8a1c141c1ab2dfbf620",
+        "status" : "passed",
+        "time" : {
+          "start" : 1744642472801,
+          "stop" : 1744642474836,
+          "duration" : 2035
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "'测试李四'", "13912345673" ]
+      } ],
+      "uid" : "9e2a1ec2f1a5b8a1c141c1ab2dfbf620"
+    } ],
+    "uid" : "e641631f8f96e7184f89b885116266ab"
+  } ]
+}
