@@ -47,42 +47,44 @@ def get_portfolio_holding_data(id, id_to_name):
         return pd.DataFrame()
 
 
-def save_results_to_csv(holding_data, filename, mode='a', header=True):
+def save_results_to_csv(holding_data, filename, mode='a', header=True,  sheet_name=None):
     if mode == 'a' and os.path.exists(filename):
         header = False
-    holding_data.to_csv(filename, mode=mode, header=header, index=False)
+    holding_data.to_csv(filename, mode=mode, header=header, sheet_name = sheet_name,index=False)
     print(f"持仓结果已保存到 {filename}")
 
 
 if __name__ == '__main__':
-    all_dfs = []
+    etf_all_dfs = []
 
     # 处理ETF组合持仓数据
     for id in ETF_ids:
         df = get_portfolio_holding_data(id, ETF_ids_to_name)
         if not df.empty:
-            all_dfs.append(df)
+            etf_all_dfs.append(df)
 
     # 合并所有DataFrame
-    final_df = pd.concat(all_dfs, ignore_index=True)
+    etf_final_df = pd.concat(etf_all_dfs, ignore_index=True)
+    print(etf_final_df)
 
     # 保存为CSV文件
     # file_path = ETF_adjustment_holding_file.replace('.xlsx', '.csv')
     file_path = ETF_adjustment_holding_file
-    save_results_to_csv(final_df, file_path, mode='w', header=True)
+    # save_results_to_csv(etf_final_df, file_path, mode='w', sheet_name= "etf", header=True)
 
     # 处理股票组合持仓数据
-    all_dfs = []  # 重置 all_dfs
+    stock_all_dfs = []  # 重置 all_dfs
     for id in Combination_ids:
         df = get_portfolio_holding_data(id, Combination_ids_to_name)
         if not df.empty:
-            all_dfs.append(df)
+            stock_all_dfs.append(df)
 
     # 合并所有DataFrame
-    final_df = pd.concat(all_dfs, ignore_index=True)
+    stock_final_df = pd.concat(stock_all_dfs, ignore_index=True)
 
     # 保存为CSV文件
-    save_results_to_csv(final_df, file_path, mode='a', header=False)
+    # save_results_to_csv(stock_final_df, file_path, mode='a', sheet_name= "stock", header=False)
+    # save_results_to_csv(stock_final_df, file_path, mode='a', ,sheet_name = "stock", header=False)
 
     # 打印最终的DataFrame
-    print(final_df)
+    print(stock_final_df)

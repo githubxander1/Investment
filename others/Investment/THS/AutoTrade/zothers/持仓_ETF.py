@@ -1,7 +1,7 @@
 import pandas as pd
 import requests
 
-from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name
+from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, ETF_adjustment_holding_file
 
 
 def get_portfolio_holding_data(id):
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     final_df = pd.concat(all_dfs, ignore_index=True)
 
     # 保存为Excel文件
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\自动化交易_同花顺\data\持仓ETF.csv"
+    file_path = ETF_adjustment_holding_file
     final_df.to_excel(file_path, index=False)
     print("数据已保存到Excel文件：", file_path)
 

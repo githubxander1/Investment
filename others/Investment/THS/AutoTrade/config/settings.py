@@ -28,10 +28,10 @@ ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和stock_port
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.csv')
-ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'etf_stock_position.csv')
+ETF_adjustment_holding_file = os.path.join(DATA_DIR, 'etf_stock_position.xlsx')
 Combination_info_file = os.path.join(DATA_DIR, '股票组合持仓_历史调仓_今天调仓.csv')
 
-compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.csv')
+compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
 # compare_Strategy_info_file = os.path.join(DATA_DIR, '策略信息.csv')
 compare_Combination_info_file = os.path.join(DATA_DIR, '股票组合对比.csv')
 
@@ -87,11 +87,11 @@ Strategy_id_to_name = {
     }
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = ['19347',  '6994','11094',  '14980',         '7152','16281']
+Combination_ids = ['19347',  '11094',  '14980',  '7152','16281']
 # Combination_ids = [ 16281, 19347, 6994]
 Combination_ids_to_name = {
     '19347': '超短稳定复利',
-    '6994': '梦想一号',#中芯国际盈利占比过大  长期
+    # '6994': '梦想一号',#中芯国际盈利占比过大  长期
     '11094': '低位题材',#胜率高，回撤小，收益高
     '14980': '波段突击',#胜率高
 

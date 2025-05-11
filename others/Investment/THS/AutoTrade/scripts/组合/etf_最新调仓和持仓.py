@@ -1,3 +1,4 @@
+import os
 from pprint import pprint
 
 import pandas as pd
@@ -91,44 +92,27 @@ def extract_result(data, id):
     return relocate_Info, holding_Info, holding_count
 
 def save_results_to_xlsx(relocation_data, holding_data, filename):
-    # 检查文件是否存在
-    try:
-        with pd.ExcelFile(filename) as _:
-            # 文件存在，追加模式
-            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-                if relocation_data:
-                    df_relocation = pd.DataFrame(relocation_data)
-                    # print(df_relocation)
-                    df_relocation.to_excel(writer, sheet_name='ETF组合调仓', index=False)
-                    print(f"调仓结果已保存到 {filename}")
-                else:
-                    print("没有调仓数据")
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
-                if holding_data:
-                    df_holding = pd.DataFrame(holding_data)
-                    # print(df_holding)
-                    df_holding.to_excel(writer, sheet_name='ETF组合持仓', index=False)
-                    print(f"持仓结果已保存到 {filename}")
-                else:
-                    print("没有持仓数据")
-    except FileNotFoundError:
-        # 文件不存在，创建新文件
-        with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-            if relocation_data:
-                df_relocation = pd.DataFrame(relocation_data)
-                # print(df_relocation)
-                df_relocation.to_excel(writer, sheet_name='ETF组合调仓', index=False)
-                print(f"调仓结果已保存到 {filename}")
-            else:
-                print("没有调仓数据")
+    etf_relocation = [item for item in relocation_data if item['ETF组合'] in ETF_ids_to_name.values()]
+    combo_relocation = [item for item in relocation_data if item['ETF组合'] in Combination_ids_to_name.values()]
 
-            if holding_data:
-                df_holding = pd.DataFrame(holding_data)
-                # print(df_holding)
-                df_holding.to_excel(writer, sheet_name='ETF组合持仓', index=False)
-                print(f"持仓结果已保存到 {filename}")
-            else:
-                print("没有持仓数据")
+    etf_holding = [item for item in holding_data if item['ETF组合'] in ETF_ids_to_name.values()]
+    combo_holding = [item for item in holding_data if item['ETF组合'] in Combination_ids_to_name.values()]
+
+    with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+        if etf_relocation:
+            pd.DataFrame(etf_relocation).to_excel(writer, sheet_name='ETF调仓', index=False)
+        if combo_relocation:
+            pd.DataFrame(combo_relocation).to_excel(writer, sheet_name='组合调仓', index=False)
+        if etf_holding:
+            pd.DataFrame(etf_holding).to_excel(writer, sheet_name='ETF持仓', index=False)
+        if combo_holding:
+            pd.DataFrame(combo_holding).to_excel(writer, sheet_name='组合持仓', index=False)
+
+    print(f"数据已分类保存至 {filename}")
+
+
 
 def main():
     all_relocation_data = []
