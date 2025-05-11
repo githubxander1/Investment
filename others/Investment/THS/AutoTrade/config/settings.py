@@ -39,6 +39,9 @@ Strategy_info_file = os.path.join(DATA_DIR, '策略信息.csv')
 Combination_list_file = os.path.join(DATA_DIR, '组合列表.csv')
 Strategy_list_file = os.path.join(DATA_DIR, '策略列表.csv')
 Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.csv')
+#ai诊断文件
+Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
+# Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.csv')
 
 Holding_Stockes_info_file = os.path.join(DATA_DIR, '账户持仓信息.csv')
 
