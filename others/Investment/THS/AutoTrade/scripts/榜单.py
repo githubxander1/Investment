@@ -11,8 +11,10 @@ params = {
     "offset": "0",
     "page_size": "20",
     "block_id": "0",
-    "list_type": "4",
-    "match_id": "14" #14为etf
+    # "list_type": "4",
+    "list_type": "7",
+    # "match_id": "14" #14为etf
+    "match_id": "17" #15为新比赛
 }
 headers = {
     "Host": "t.10jqka.com.cn",
@@ -54,7 +56,7 @@ if response.status_code == 200:
 
     # 保存到Excel文件
     # df.to_excel('榜单数据.xlsx', index=False)
-    df.to_excel(Combination_list_file, index=False)
-    print("数据已保存到 '榜单数据.xlsx'")
+    df.to_csv(Combination_list_file, index=False)
+    print("数据已保存到 '榜单数据.csv'")
 else:
     print(f"请求失败，状态码: {response.status_code}")

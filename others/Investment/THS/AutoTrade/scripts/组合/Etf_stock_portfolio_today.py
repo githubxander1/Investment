@@ -136,11 +136,17 @@ async def ETF_Combination_main():
         # 保留到分钟级别
         return " ".join(time_str.split())[:16]  # 截断至 'YYYY-MM-DD HH:MM'
 
-    all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
+    # 只有在非空的情况下才进行字段处理
+    if not all_today_trades_df.empty:
+        all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
+        all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(
+            all_today_trades_df.index + 1
+        )  # 从1开始
+    else:
+        # print("今日无任何交易更新")
+        print("⚠️ 当前无今日交易数据")
+        return
 
-    all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(
-        all_today_trades_df.index + 1
-    )  # 从1开始
     # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
     print(all_today_trades_df_without_content)
@@ -165,13 +171,13 @@ async def ETF_Combination_main():
         existing_data['代码'] = existing_data['代码'].astype(str).str.zfill(6)
         existing_data['时间'] = existing_data['时间'].apply(normalize_time)
         existing_data['_id'] = existing_data['时间'].astype(str) + '_' + existing_data['代码'].astype(str)
-        print("existing_data _id:", existing_data['_id'].tolist())
+        # print("existing_data _id:", existing_data['_id'].tolist())
 
     # 处理 today_trades 数据
     if not all_today_trades_df.empty:
         # 添加唯一标识 _id
         all_today_trades_df['_id'] = all_today_trades_df['时间'].astype(str) + '_' + all_today_trades_df['代码'].astype(str)
-        print("all_today_trades_df _id:", all_today_trades_df['_id'].tolist())
+        # print("all_today_trades_df _id:", all_today_trades_df['_id'].tolist())
 
         new_mask = ~all_today_trades_df['_id'].isin(existing_data['_id']) if not existing_data.empty else []
         new_data = all_today_trades_df[new_mask].copy().drop(columns=['_id']) if not existing_data.empty else all_today_trades_df.copy().drop(columns=['_id'])
@@ -183,7 +189,9 @@ async def ETF_Combination_main():
             print(new_data_without_content)
             header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
             new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
-            send_notification(f"{len(new_data)} 条新增交易，\n{new_data_without_content}")
+            #通知时不要显示标题行
+            new_data_print_without_header = new_data.drop(columns=['理由'], errors='ignore').to_string(index=False)
+            send_notification(f"{len(new_data)} 条新增交易，\n{new_data_print_without_header}")
         else:
             print("今日无新增交易数据")
     else:

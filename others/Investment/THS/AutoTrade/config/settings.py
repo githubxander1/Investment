@@ -24,7 +24,7 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.csv')
 SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
 
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.csv')
-ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF和stock_portfolio_today.csv')
+ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'Etf_stock_portfolio_today.csv')
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.csv')
@@ -65,8 +65,8 @@ Combination_headers = {
         "Sec-Fetch-Dest": "empty",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        # "Cookie": "uid=CvRZCmYY8EVWW6iOCFHxAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQzOTkyMDA3Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWJhMmJjYmFjMmVlZTA5MTkwYmNjMTA3ZGJjMmE5MDA4Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=8a77719029a419a5579e6d690d4d6910; user_status=0; v=Az77FiGH1RrgQAE-LFj60x1njV-AfwLwlEa23ehHq199itHFUA9SCWTTBuO7"
-        "Cookie": "uid=CvRZCmYY8EVWW6iOCFHxAg==; user_status=0; hxmPid=sns_live_p_440232505; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ0MDc2NDg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTI5MTNkMzI4N2JkMTY0Y2M1OWVkMDdiMDk2NzY3NjVlOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=565e4b7134d3c0f99e205592734c2926; v=A9IX2nU74Zm9iR1lR0AO1xGDIZO049Z9COfKoZwr_gVwr30JhHMmjdh3GrVv"
+        #20250509 9:42
+        "Cookie": "uid=CvRZCmYY8EVWW6iOCFHxAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ0MjQ5NTA5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTIyMTI5ZjM1YTMyODA1ZWJlOWE1ZDg0NDJkNzEyNjZiOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=8aa63297699e0283609802d6428a22ae; user_status=0; _clck=l14ts7%7C2%7Cfv9%7C0%7C0; hxmPid=seq_668026888; v=A8MGZcwArzfYe2NDuGNQNBGYUIxtOFd6kcybrvWgHyKZtOx2fQjnyqGcK_QG"
     }
 
 Strategy_ids = ['155680', '137789', '138006', '155273']
@@ -74,6 +74,7 @@ Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
         '137789': '高现金毛利战法',#基本面
         '138006': '连续五年优质股战法',#基本面
+        # '155273': '国资云',#基本面
         '155273': '国资云概念'#消息面  两个创业板
 
         # '138036': '低价小盘股战法',
@@ -84,7 +85,7 @@ Strategy_id_to_name = {
     }
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = ['19347',  '6994','11094',  '14980',         '7152','16281']
+Combination_ids = ['19347',  '6994', '11094', '14980', '7152', '16281']
 # Combination_ids = [ 16281, 19347, 6994]
 Combination_ids_to_name = {
     '19347': '超短稳定复利',
