@@ -6,30 +6,16 @@ import requests
 from others.Investment.THS.AutoTrade.config.settings import Combination_list_file, Combination_headers
 
 
-def get_all_portfolio_rank_data():
+def get_all_portfolio_rank_data(match_id):
     # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v1/subTab?match_id=0"
-    # url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list?offset=0&page_size=8&block_id=0&list_type=4&match_id=0" #股票
     url = "https://t.10jqka.com.cn/portfoliolist/tgserv/v2/block_list"
 
     headers = Combination_headers
-    # headers = {
-    #     "Host": "t.10jqka.com.cn",
-    #     "Connection": "keep-alive",
-    #     "Accept": "application/json, text/plain, */*",
-    #     "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid=641926488 getHXAPPAccessibilityMode/0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
-    #     "Content-Type": "application/x-www-form-urlencoded",
-    #     "Referer": "https://t.10jqka.com.cn/tgactivity/portfolioSquare.html",
-    #     "Accept-Encoding": "gzip, deflate",
-    #     "Accept-Language": "zh-CN,en-US;q=0.9",
-    #     # "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0,ExLDQwOzYsMS,0MDs1,ExsNDA7MS,xMDEsNDA7Mi,xLDQwOzMs,ExsNDA7NS,ExsNDA7OC,wwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMS,0MDsxMDIs,ExsNDAoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; hxmPid=hqMarketPkgVersionControl; v=A8nfSB_XyhoyhrZuY3TPETuT0f4jFr1OJw_h3Gs-RF3vQeZks2bNGLda8aP4",
-    #     "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0,ExLDQwOzYsMS,0MDs1,ExsNDA7MS,xMDEsNDA7Mi,xLDQwOzMs,ExsNDA7NS,ExsNDA7OC,wwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMS,0MDsxMDIs,ExsNDAoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; hxmPid=hqMarketPkgVersionControl; v=A8nfSB_XyhoyhrZuY3TPETuT0f4jFr1OJw_h3Gs-RF3vQeZks2bNGLda8aP4",
-    #     "X-Requested-With": "com.hexin.plat.android"
-    # }
 
     params = {
+        "match_id": match_id,#0 为全国总榜 14为ETF，15为智投杯投顾比赛
         "offset": 0,
         "page_size": 20,
-        "match_id": 15,#0 为全国总榜 14为ETF
         "block_id": 0,
         "list_type": 4
     }
@@ -84,40 +70,45 @@ print("开始爬取数据...")
 #     except Exception as e:
 #         print(f"保存 {sheet_name} 数据时出错: {e}")
 
-def process_and_save_data(file_path, list_types):
-    """Process and save portfolio rank testdata to an Excel file."""
+def process_and_save_data(file_path, match_ids):
+    """
+    将多个 match_id 的数据写入同一个 Excel 文件的不同 Sheet 中
 
-    for list_type, sheet_name in list_types.items():
-        raw_data = get_all_portfolio_rank_data()
-        out_put_data = extract_data(raw_data)
+    :param file_path: 输出文件路径（.xlsx）
+    :param match_ids: {match_id: sheet_name} 字典
+    """
+    with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+        for match_id, sheet_name in match_ids.items():
+            raw_data = get_all_portfolio_rank_data(match_id)
+            out_put_data = extract_data(raw_data)
 
-        if out_put_data:
-            df = pd.DataFrame(out_put_data)
-            # full_file_name = f"{sheet_name}.csv"
-            df.to_csv(file_path, index=False)
-            print(f"{file_path} 数据已保存")
-
-            top20_data = out_put_data[:20]
-            if top20_data:
-                df20 = pd.DataFrame(top20_data)
-                top20_file_name = f"{sheet_name} 前二十.csv"
-                df20.to_csv(file_path, index=False)
-                print(f"{file_path} 前二十条数据已保存")
+            if out_put_data:
+                df = pd.DataFrame(out_put_data)
+                print(df)
+                # df.to_excel(writer, sheet_name=sheet_name, index=False)
+                # print(f"✅ [{sheet_name}] 数据已保存")
+            else:
+                print(f"❌ 请求失败，{sheet_name} 数据未保存")
 
 
-# 示例调用
+
+
 if __name__ == '__main__':
-    file_path = Combination_list_file
-    print(f'数据保存地址:{file_path}')
-    list_types = {
-        # 1: "日收益",
-        # 2: "周收益",
-        3: "月收益",
-        4: "总收益"
-    }
-    process_and_save_data(file_path, list_types)
+    file_path = Combination_list_file.replace('.csv', '.xlsx')  # 修改为 .xlsx 格式
+    print(f'数据保存地址: {file_path}')
 
-    extract_da = extract_data(get_all_portfolio_rank_data())
-    # pprint(extract_da)
+    match_ids = {
+        0: "全国总榜",
+        14: "ETF",
+        15: "智投杯"
+    }
+
+    process_and_save_data(file_path, match_ids)
+
+    # 示例：获取智投杯前20组合ID
+    raw_data = get_all_portfolio_rank_data(15)  # 获取智投杯数据
+    extract_da = extract_data(raw_data)
     portfolio_ids = [item["组合id"] for item in extract_da][:20]
-    print(portfolio_ids)
+    print("Top 20 组合ID:", portfolio_ids)
+
+

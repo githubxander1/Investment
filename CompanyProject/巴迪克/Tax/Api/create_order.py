@@ -174,7 +174,7 @@ if __name__ == "__main__":
     today = datetime.datetime.now().strftime("%Y%m%d")
 
     #批量生成
-    n = 8
+    n = 11
     amount = "0.01"
     # for paymentType in paymentType:
     order_suffix = f"{n:03d}"
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     # productName = '的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈哈嗝嗝哈哈哈更回复二哥给狗狗狗法国嗝哈哈哈哈哈哈哈哈哈哈哈狗狗狗狗狗狗个我是通过好好谷歌官方的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈一百'
 
     creat_request_payload = {
-        "merchantId": "600008M0001002",
+        "merchantId": "600008M0000002",
         # "paymentType": paymentType,
         "paymentType": "StaticMandiriVA",
         # "paymentType": "CASH",
@@ -194,8 +194,8 @@ if __name__ == "__main__":
         # "sourceAgentOrderNo": "souceAgentOrderNo20250508001",
         # "sourceAgentOrderNo": "20250508001",
         "sourceAgentOrderNo": "",
-        # "productName": productName,
-        "productName": 'product 1',
+        "productName": productName,
+        # "productName": 'product 1',
         "requestId": "1"
     }
 

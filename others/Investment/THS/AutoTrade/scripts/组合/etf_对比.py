@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
-    ETF_info_file
+    compare_ETF_info_file
 
 
 def send_request(id):
@@ -65,7 +65,7 @@ def main():
             all_results.extend(extracted_result)
         else:
             print(f"未获取到有效数据 (ID: {id})")
-    save_path =ETF_info_file
+    save_path = compare_ETF_info_file
     save_results_to_xlsx(all_results, save_path , sheetname='ETF组合对比')
 
 if __name__ == "__main__":

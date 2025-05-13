@@ -19,7 +19,7 @@ sys.path.append(others_dir)
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
     ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
-    Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE, Combination_headers
+    Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE, Combination_headers, all_ids
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
 from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
@@ -116,17 +116,17 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
 async def ETF_Combination_main():
     # 处理 ETF 组合
     etf_today_trades_all = []
-    for etf_id in ETF_ids:
+    for etf_id in all_ids:
         etf_today_trades = fetch_and_extract_data(etf_id, is_etf=True)
         etf_today_trades_all.extend(etf_today_trades)
 
-    # 处理股票组合
-    stock_today_trades_all = []
-    for stock_id in Combination_ids:
-        stock_today_trades = fetch_and_extract_data(stock_id, is_etf=False)
-        stock_today_trades_all.extend(stock_today_trades)
-
-    all_today_trades = etf_today_trades_all + stock_today_trades_all  # 整合两个表数据
+    # # 处理股票组合
+    # stock_today_trades_all = []
+    # for stock_id in Combination_ids:
+    #     stock_today_trades = fetch_and_extract_data(stock_id, is_etf=False)
+    #     stock_today_trades_all.extend(stock_today_trades)
+    #
+    all_today_trades = etf_today_trades_all # 整合两个表数据
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
 
     # 转换成pd表格样式
