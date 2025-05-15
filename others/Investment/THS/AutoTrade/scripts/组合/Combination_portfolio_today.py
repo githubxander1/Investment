@@ -19,7 +19,7 @@ sys.path.append(others_dir)
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
     ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
-    Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE, Combination_headers, all_ids
+    Combination_ids_to_name, Combination_portfolio_today, Combination_headers, all_ids, id_to_name
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
 from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
@@ -27,7 +27,7 @@ from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, c
 
 # logger = setup_print(ETF_ADJUSTMENT_LOG_FILE)
 
-def fetch_and_extract_data(portfolio_id, is_etf=True):
+def fetch_and_extract_data(portfolio_id):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = Combination_headers
     params = {"id": portfolio_id, "dynamic_id": 0}
@@ -88,14 +88,14 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
             operation = '买入' if new_ratio > current_ratio else '卖出'
 
             market = determine_market(code)
-            # 获取组合名称
-            if is_etf:
-                combination_name = ETF_ids_to_name.get(portfolio_id, '未知ETF组合')
-            else:
-                combination_name = Combination_ids_to_name.get(portfolio_id, '未知股票组合')
+            # # 获取组合名称
+            # if is_etf:
+            #     combination_name = ETF_ids_to_name.get(portfolio_id, '未知ETF组合')
+            # else:
+            #     combination_name = Combination_ids_to_name.get(portfolio_id, '未知股票组合')
 
             history_post = {
-                '名称': combination_name,
+                '名称': id_to_name.get(str(portfolio_id), '未知组合'),
                 '操作': operation,
                 '标的名称': name,
                 '代码': str(code).zfill(6),  # 提前统一格式
@@ -113,20 +113,15 @@ def fetch_and_extract_data(portfolio_id, is_etf=True):
 
     return today_trades
 
-async def ETF_Combination_main():
-    # 处理 ETF 组合
-    etf_today_trades_all = []
-    for etf_id in all_ids:
-        etf_today_trades = fetch_and_extract_data(etf_id, is_etf=True)
-        etf_today_trades_all.extend(etf_today_trades)
 
-    # # 处理股票组合
-    # stock_today_trades_all = []
-    # for stock_id in Combination_ids:
-    #     stock_today_trades = fetch_and_extract_data(stock_id, is_etf=False)
-    #     stock_today_trades_all.extend(stock_today_trades)
-    #
-    all_today_trades = etf_today_trades_all # 整合两个表数据
+async def Combination_main():
+    all_today_trades = []
+    for portfolio_id in all_ids:
+        # print(all_ids)
+        # print(f"正在处理组合ID: {portfolio_id}")
+        today_trades = fetch_and_extract_data(portfolio_id)
+        all_today_trades.extend(today_trades)
+
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
 
     # 转换成pd表格样式
@@ -152,7 +147,7 @@ async def ETF_Combination_main():
     print(all_today_trades_df_without_content)
 
     # 读取历史数据
-    existing_data_file = ETF_Combination_TODAY_ADJUSTMENT_FILE
+    existing_data_file = Combination_portfolio_today
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:
@@ -201,4 +196,4 @@ async def ETF_Combination_main():
 
 
 if __name__ == '__main__':
-    asyncio.run(ETF_Combination_main())
+    asyncio.run(Combination_main())

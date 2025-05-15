@@ -1,5 +1,6 @@
 # config/settings.py
 import os
+from pprint import pprint
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,7 +25,7 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.csv')
 SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
 
 STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.csv')
-ETF_Combination_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'Etf_stock_portfolio_today.csv')
+Combination_portfolio_today = os.path.join(DATA_DIR, 'Combination_portfolio_today.csv')
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
 ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.csv')
@@ -71,11 +72,11 @@ Combination_headers = {
         "Cookie": 'userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488","custid":"100113495581"}; _clck=l14ts7%7C2%7Cfv9%7C0%7C0; _clck=l14ts7%7C2%7Cfv9%7C0%7C0; _clsk=1mnl85m%7C1745213579117%7C1%7C1%7C; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ2OTYxMzcxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWE0ZGNmZTg2NmFkYmE4ZWI2Y2I0OTdkZDBkNDUzM2VhOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=9f3bd3da8c83f79c4fc92386aec0b43f; user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ2OTYxMzcxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWE0ZGNmZTg2NmFkYmE4ZWI2Y2I0OTdkZDBkNDUzM2VhOjox; ticket=9f3bd3da8c83f79c4fc92386aec0b43f; hxmPid=ths_mob_hotmap; v=AyvurZQYx1IF7RsGIlCo_CkQuEQVQD_DuVUDdp2oB7nBt0Q-JRDPEskkk8yu; hxmPid=hqMarketPkgVersionControl; v=A2uubdTYh5OladtHnVRovGnQ-IRVgH8C-ZRDtt3oR6oBfIR-ZVAPUglk0wfu'
     }
 
-Strategy_ids = ['155680', '137789', '138006', '155273']
+Strategy_ids = ['155680', '137789', '155273']
 Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
         '137789': '高现金毛利战法',#基本面
-        '138006': '连续五年优质股战法',#基本面
+        # '138006': '连续五年优质股战法',#基本面
         '155273': '国资云概念'#消息面  两个创业板
 
         # '138036': '低价小盘股战法',
@@ -87,13 +88,12 @@ Strategy_id_to_name = {
 
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = ['19347', '9564', '11094', '7152']
-# Combination_ids = [ 16281, 19347, 6994]
+Combination_ids = ['19347', '11094', '7152']
 Combination_ids_to_name = {
     '19347': '超短稳定复利',
     '11094': '低位题材埋伏',#胜率高，回撤小，收益高
     '7152': '中线龙头',#胜率低，收益高
-    '9564': '梦想二号',# 长期
+    # '9564': '梦想二号',# 长期
 
     '13081': '好赛道出牛股',#19年，稳 7
     # '18565': '龙头一年三倍',
@@ -104,11 +104,12 @@ Combination_ids_to_name = {
 }
 
 # ETF_ids = [ '29617', '29669', '29678', '29734', '29656']
-ETF_ids = [ '29762', '30463', '29684', '29778']
+ETF_ids = [ '29762', '30463', '29684']
 ETF_ids_to_name = {
     '29762': '全球领先ETF',
     '30463': '科技ETF高频',
     '29684': '主题成长优选',
+
     '29778': '波段轮动优选',
 
 
@@ -126,7 +127,7 @@ ETF_ids_to_name = {
     # '29646': '热点追踪猎手'
 }
 
-zhitou_ids = [ '31672', '29774', '31816']
+zhitou_ids = [ '31672', '29774']
 zhitou_ids_to_name = {
     "31672": "短线趋势题材",
     "29774": "智投短线精选",
@@ -135,5 +136,6 @@ zhitou_ids_to_name = {
 
 all_ids = Combination_ids + ETF_ids + zhitou_ids
 id_to_name = {**Combination_ids_to_name, **ETF_ids_to_name, **zhitou_ids_to_name}
+# pprint(id_to_name)
 # for id in ETF_ids:
 #     print(ETF_ids_to_name.get(id,'未知'))

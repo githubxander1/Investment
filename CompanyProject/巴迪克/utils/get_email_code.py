@@ -71,9 +71,9 @@ async def get_email_code(username, password) -> None:
         text_box = page.get_by_role("textbox", name="发送文本到所有ssh终端")
         await text_box.fill('grep "verify code" *') #tax的验证码
         await text_box.press("Enter")
-        # await page.pause()
-        await page.wait_for_timeout(2000)
-        await page.screenshot(path="./email_code.png")
+        await page.pause()
+        # await page.wait_for_timeout(2000)
+        # await page.screenshot(path="./email_code.png")
         # ---------------------
         # context.close()
         # browser.close()
