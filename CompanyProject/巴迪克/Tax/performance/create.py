@@ -1,4 +1,5 @@
 import datetime
+import logging
 from pprint import pprint
 from typing import Dict
 
@@ -61,8 +62,8 @@ if __name__ == "__main__":
     n = 14
     order_suffix = f"{n:03d}"
     # agentOrderNo = f"AgentOrderNo{today}{n}"
-    # payOrderNo = f"PayOrder{today}{n}"
-    order_no = fake.random_int(min=1, max=1000)
+    order_no = fake.random_int(min=1, max=1)
+    payOrderNo = f"PayOrder{today}{order_no}"
     # productName = faker.name()
     # productName = '的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈哈嗝嗝哈哈哈更回复二哥给狗狗狗法国嗝哈哈哈哈哈哈哈哈哈哈哈狗狗狗狗狗狗个我是通过好好谷歌官方的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈一百'
 
@@ -71,7 +72,7 @@ if __name__ == "__main__":
             "paymentType": "StaticMandiriVA",
             "amount": "0.01",
             "agentOrderNo": f"AgentOrderNo{today}{order_no}",
-            "payOrderNo": f"PayOrder{today}{order_no}",
+            "payOrderNo": payOrderNo,
             "sourceAgentOrderNo": "",
             "productName": fake.name(),
             "requestId": "1"
@@ -80,6 +81,11 @@ if __name__ == "__main__":
     # result = api_client.send_declaration(creat_request_payload)
     result = api_client.create_order(creat_request_payload)
     pprint(result)
+    if result.get("errCode") == "0":
+        logging.info(f"✅ 订单已生成，订单号：{result.get('incomeOrderNo')}")
+    else:
+        logging.warning(f"⚠️ 订单未生成，错误信息：{result}")
+
     # print(
     #     f"\n{n},已完成：agentOrderNo：{agentOrderNo}, payOrderNo：{payOrderNo}, productName：{productName}")
 

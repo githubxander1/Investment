@@ -1,6 +1,6 @@
 # utils/helper.py
-import datetime
 
+import datetime
 import aiohttp
 import asyncio
 import time
@@ -18,13 +18,40 @@ async def send_create_order(session, payload):
         async with session.post(url, json=payload) as response:
             elapsed = (time.time() - start) * 1000  # 毫秒
             text = await response.text()
-            result = {"status": "success", "elapsed": elapsed, "response": text[:499]}
-            logger.info(f"✅ 成功：{payload['agentOrderNo']} - 耗时 {elapsed:.2f} ms")
-            return result
+
+            try:
+                data = await response.json()
+            except Exception as e:
+                data = {"error": f"JSON 解析失败: {str(e)}"}
+
+            if response.status == 200 and data.get("errCode") == "0":
+                logger.info(f"✅ 成功：{payload['agentOrderNo']} - 耗时 {elapsed:.2f} ms")
+                return {
+                    "status": "success",
+                    "elapsed": elapsed,
+                    "payload": payload,
+                    "response_data": data
+                }
+            else:
+                logger.error(f"❌ 失败：{payload['agentOrderNo']} - 状态码: {response.status}, 返回: {text[:499]}")
+                return {
+                    "status": "failure",
+                    "elapsed": elapsed,
+                    "payload": payload,
+                    "response": text,
+                    "response_data": data
+                }
+
     except Exception as e:
         elapsed = (time.time() - start) * 1000
-        logger.error(f"❌ 失败：{payload['agentOrderNo']} - 错误：{str(e)}")
-        return {"status": "failure", "elapsed": elapsed, "response": str(e)[:499]}
+        logger.error(f"🚨 异常捕获：{payload['agentOrderNo']} - 错误: {str(e)}")
+        return {
+            "status": "exception",
+            "elapsed": elapsed,
+            "payload": payload,
+            "response": str(e),
+            "response_data": {}
+        }
 
 
 async def run_async_requests(total=50):

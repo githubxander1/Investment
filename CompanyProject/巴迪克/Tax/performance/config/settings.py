@@ -11,7 +11,7 @@ class Config:
         "port": 3306,
         "user": "balitax_test",
         "password": "VSwE8zVrfuUP#HN",
-        "database": "declaration_order",
+        "database": "performance_results",
         "charset": "utf8mb4"
     }
 
