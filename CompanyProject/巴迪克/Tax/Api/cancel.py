@@ -13,10 +13,10 @@ class CancelOrderAPI(TaxAPIBase):
         return self.send_request(self.ENDPOINT_PATH, payload)
 
 if __name__ == "__main__":
-    api_client = CancelOrderAPI(company_name="tax_agent001@linshiyou.com")
+    api_client = CancelOrderAPI(company_name="tax_agent009")
 
     cancel_request_payload = {
-        "agentOrderNo": "AgentOrderNo2025051411",
+        "agentOrderNo": "AgentOrderNo20250516304",
         "requestId": "19999999999999999999"
     }
 

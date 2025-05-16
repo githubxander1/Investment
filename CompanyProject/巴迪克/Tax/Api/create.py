@@ -17,7 +17,7 @@ class CreateOrderAPI(TaxAPIBase):
 
 if __name__ == "__main__":
     fake = Faker()
-    api_client = CreateOrderAPI(company_name="tax_agent002@linshiyou.com")
+    api_client = CreateOrderAPI(company_name="tax_agent009")
 
     MCC_dict = {7311: 'Advertising', 4511: 'Airlines', 5533: 'Automotive', 7298: 'Beauty Services',
                 4899: 'Cable & Streaming Service', 8398: 'Charity / Donation',
@@ -67,12 +67,12 @@ if __name__ == "__main__":
     # productName = '的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈哈嗝嗝哈哈哈更回复二哥给狗狗狗法国嗝哈哈哈哈哈哈哈哈哈哈哈狗狗狗狗狗狗个我是通过好好谷歌官方的地方凤凰好好谷歌广告和狗狗狗狗狗个哈哈哈哈嗝哈哈哈一百'
 
     creat_request_payload = {
-            "merchantId": "600009M0000001",
+            "merchantId": "601005M0000003",
             "paymentType": "StaticMandiriVA",
-            "amount": "0.01",
+            "amount": "999999999999.99",
             "agentOrderNo": f"AgentOrderNo{today}{order_no}",
             "payOrderNo": f"PayOrder{today}{order_no}",
-            "sourceAgentOrderNo": "",
+            "sourceAgentOrderNo": "AgentOrderNo20250516817",
             "productName": fake.name(),
             "requestId": "1"
         }

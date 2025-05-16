@@ -69,7 +69,14 @@ async def agent_login_and_create_merchant(login_email: str) -> None:
         await page.wait_for_timeout(3000)
         await page.get_by_role("button", name="Submit Registration").click()
         await expect(page.locator("h3")).to_contain_text("Registration submitted successfully")
+        await page.get_by_role("button", name="I Understand").click()
         print("✅ 商户注册提交成功")
+
+        #获取注册后的id
+        merchant_id = await page.locator('//*[@id="profit-datatable"]/tbody/tr[1]/td[1]').text_content()
+        # merchant_id = await page.locator('#profit-datatable tbody tr:first-child td:first-child').text_content()
+
+        print(f"刚注册的merchant id: {merchant_id}")
 
         await page.pause()
 
@@ -79,5 +86,5 @@ async def agent_login_and_create_merchant(login_email: str) -> None:
 
 
 if __name__ == '__main__':
-    login_email = "tax_agent002@linshiyou.com"
+    login_email = "tax_agent009@linshiyou.com"
     asyncio.run(agent_login_and_create_merchant(login_email))
