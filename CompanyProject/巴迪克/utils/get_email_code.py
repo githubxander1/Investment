@@ -66,13 +66,14 @@ async def get_email_code(username, password) -> None:
         await page.wait_for_timeout(2000)
         # await page.get_by_title("192.168.0.224").click()  #payok/paylabs
         await page.get_by_title("192.168.0.49").click()    #tax
-        await page.wait_for_timeout(2000)
+        await page.wait_for_timeout(10000)
         # await page.get_by_role("textbox", name="发送文本到所有ssh终端").fill('grep "发邮件结束 getVerificationCode 登录邮箱" *') #payok的验证码
-        await page.get_by_role("textbox", name="发送文本到所有ssh终端").fill('grep "verify code" *') #tax的验证码
-        await page.get_by_role("textbox", name="发送文本到所有ssh终端").press("Enter")
-        # await page.pause()
-        await page.wait_for_timeout(2000)
-        await page.screenshot(path="./email_code.png")
+        text_box = page.get_by_role("textbox", name="发送文本到所有ssh终端")
+        await text_box.fill('grep "verify code" *') #tax的验证码
+        await text_box.press("Enter")
+        await page.pause()
+        # await page.wait_for_timeout(2000)
+        # await page.screenshot(path="./email_code.png")
         # ---------------------
         # context.close()
         # browser.close()

@@ -47,10 +47,10 @@ def get_portfolio_holding_data(id, id_to_name):
         return pd.DataFrame()
 
 
-def save_results_to_csv(holding_data, filename, mode='a', header=True,  sheet_name=None):
+def save_results_to_csv(holding_data, filename, mode='a', header=True, sheet_name):
     if mode == 'a' and os.path.exists(filename):
         header = False
-    holding_data.to_csv(filename, mode=mode, header=header, sheet_name = sheet_name,index=False)
+    holding_data.to_csv(filename, mode=mode, header=header, index=False,  sheet_name)
     print(f"持仓结果已保存到 {filename}")
 
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # 保存为CSV文件
     # file_path = ETF_adjustment_holding_file.replace('.xlsx', '.csv')
     file_path = ETF_adjustment_holding_file
-    # save_results_to_csv(etf_final_df, file_path, mode='w', sheet_name= "etf", header=True)
+    save_results_to_csv(etf_final_df, file_path, mode='w', header=True)
 
     # 处理股票组合持仓数据
     stock_all_dfs = []  # 重置 all_dfs
@@ -83,8 +83,7 @@ if __name__ == '__main__':
     stock_final_df = pd.concat(stock_all_dfs, ignore_index=True)
 
     # 保存为CSV文件
-    # save_results_to_csv(stock_final_df, file_path, mode='a', sheet_name= "stock", header=False)
-    # save_results_to_csv(stock_final_df, file_path, mode='a', ,sheet_name = "stock", header=False)
+    save_results_to_csv(stock_final_df, file_path, mode='a', header=False)
 
     # 打印最终的DataFrame
     print(stock_final_df)

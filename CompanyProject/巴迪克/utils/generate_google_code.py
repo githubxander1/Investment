@@ -8,7 +8,7 @@ import struct
 import hashlib
 from typing import Optional
 
-from CompanyProject.巴迪克.others.Tools.paylabs.GoogleSecure import CalGoogleCode
+from CompanyProject.巴迪克.utils.GoogleSecure import CalGoogleCode
 from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
 # 动态获取配置文件路径

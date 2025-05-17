@@ -1,0 +1,39 @@
+勾选同意服务协议
+        # checkbox = await page.query_selector('#customCheck2')
+        # if checkbox:
+        #     await page.evaluate('(element) => element.click()', checkbox)
+        # else:
+        #     print("元素未找到")
+        # async def check_service_agreement(page):
+        #     """勾选服务协议复选框"""
+        #     # 组合定位策略
+        #     checkbox_selector = """
+        #         //div[contains(@class,'custom-radio')]
+        #         /input[@id='customRadio3' and @name='customRadio1']
+        #     """
+        #
+        #     try:
+        #         # 等待元素可见
+        #         await page.wait_for_selector(checkbox_selector, state="visible", timeout=5000)
+        #
+        #         # 更精确的定位方式
+        #         checkbox = await page.locator(checkbox_selector).and_(
+        #             page.get_by_label("I have read and agree to the")
+        #         )
+        #
+        #         # 滚动到可视区域
+        #         await checkbox.scroll_into_view_if_needed()
+        #
+        #         # 使用Playwright原生点击
+        #         await checkbox.check(force=True)  # force参数确保绕过可见性检查
+        #
+        #         print("成功勾选服务协议")
+        #         return True
+        #     except Exception as e:
+        #         print(f"勾选失败: {str(e)}")
+        #         # 备用点击方案
+        #         await page.evaluate('''() => {
+        #             const el = document.querySelector('input#customRadio3');
+        #             if(el) el.click();
+        #         }''')
+        #         return False

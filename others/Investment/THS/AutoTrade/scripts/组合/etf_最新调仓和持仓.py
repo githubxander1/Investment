@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
-    Combination_ids, Combination_ids_to_name, ETF_adjustment_holding_file, Combination_headers
+    Combination_ids, Combination_ids_to_name, ETF_adjustment_holding_file, Strategy_id_to_name, Combination_headers
 
 
 def send_request(id):
@@ -14,7 +14,7 @@ def send_request(id):
         'portfolioId': id
     }
     headers = Combination_headers
-    # {
+    # headers = {
     #     'Host': 't.10jqka.com.cn',
     #     'Connection': 'keep-alive',
     #     'Accept': 'application/json, text/plain, */*',
@@ -92,6 +92,7 @@ def extract_result(data, id):
     return relocate_Info, holding_Info, holding_count
 
 def save_results_to_xlsx(relocation_data, holding_data, filename):
+    # 检查文件是否存在
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     etf_relocation = [item for item in relocation_data if item['ETF组合'] in ETF_ids_to_name.values()]
@@ -111,8 +112,6 @@ def save_results_to_xlsx(relocation_data, holding_data, filename):
             pd.DataFrame(combo_holding).to_excel(writer, sheet_name='组合持仓', index=False)
 
     print(f"数据已分类保存至 {filename}")
-
-
 
 def main():
     all_relocation_data = []

@@ -26,19 +26,19 @@ sys.path.append(Path(__file__).parent.parent.as_posix())
 sys.path.append(Path(__file__).parent.parent.parent.as_posix())  
 print(sys.path)  
 
-from others.Investment.THS.AutoTrade.config.settings import ETF_Combination_TODAY_ADJUSTMENT_FILE, \
-    STRATEGY_TODAY_ADJUSTMENT_FILE
+from others.Investment.THS.AutoTrade.config.settings import \
+    STRATEGY_TODAY_ADJUSTMENT_FILE, Combination_portfolio_today
 from others.Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
 
 # 模块导入 ========================================================
-from others.Investment.THS.AutoTrade.scripts.组合.Etf_stock_portfolio_today import ETF_Combination_main
+from others.Investment.THS.AutoTrade.scripts.组合.Combination_portfolio_today import Combination_main
 from others.Investment.THS.AutoTrade.scripts.策略.strategy_portfolio_today import strategy_main
 from others.Investment.THS.AutoTrade.utils.scheduler import Scheduler
 
 # 调度器配置 ======================================================
 SCHEDULE_CONFIG: Dict[str, Tuple[float, Tuple[int, int], Tuple[int, int]]] = {
     "strategy": (1, (9, 29), (9, 33)),
-    "etf_combo": (1, (9, 15), (16, 00))
+    "etf_combo": (1, (9, 15), (15, 00))
 }
 
 # 公共方法 ========================================================
@@ -74,7 +74,7 @@ async def etf_combo_wrapper():
     """组合任务执行包装"""
     print("\n[ETF组合] 开始执行...")
     try:
-        await ETF_Combination_main()
+        await Combination_main()
         next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
         print(f"\n[ETF组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("----------------------------------------------------")
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         now_time = datetime.datetime.now()
         if now_time.hour == 15 and now_time.minute >= 30:
             print("当前时间是下午3点，程序将自动退出。")
-            clear_sheet(ETF_Combination_TODAY_ADJUSTMENT_FILE, '所有今天调仓')  # 清空昨天的数据
+            clear_sheet(Combination_portfolio_today, '所有今天调仓')  # 清空昨天的数据
             clear_sheet(STRATEGY_TODAY_ADJUSTMENT_FILE, '策略今天调仓')  # 清空昨天的数据
 
             sys.exit(0)
