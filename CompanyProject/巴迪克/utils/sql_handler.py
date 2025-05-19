@@ -85,6 +85,25 @@ class SQLHandler:
             raise KeyError(f"未配置的表键名: {table_key}")
         return f"{self.connection_info['database']}.{self.tables[table_key]}"
 
+    def execute(self, sql: str, params: Optional[Tuple] = None) -> int:
+        """
+        执行写入类SQL语句（INSERT/UPDATE/DELETE）
+        :param sql: 带%s占位符的SQL语句
+        :param params: 参数元组
+        :return: 受影响的行数
+        """
+        with self._get_connection() as conn:
+            with conn.cursor() as cursor:
+                try:
+                    cursor.execute(sql, params or ())
+                    conn.commit()
+                    return cursor.rowcount
+                except pymysql.Error as e:
+                    conn.rollback()
+                    print(f"SQL执行失败: {str(e)}")
+                    raise
+
+
 if __name__ == '__main__':
     # 动态获取配置文件路径
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -101,7 +120,6 @@ if __name__ == '__main__':
     #         print(f"查询失败: {str(e)}")
     #         return None
 
-    # 测试查询
     def get_tax_agent_info(environment, project, table, company_name: str) -> tuple:
         try:
             handler = SQLHandler(yaml_path, environment, project)
@@ -123,6 +141,12 @@ if __name__ == '__main__':
     print("Agent配置测试:")
     agent_no,  sign_key = get_tax_agent_info('test', 'tax', 'agent_base_info', 'tax001')
     print(f"AgentNo: {agent_no}\nSignKey: {sign_key[:6]}******")
+
+    # handler = SQLHandler(yaml_path, "test", "tax")
+    # with handler as h:
+    #     sql = f"UPDATE {h.get_table('agent_operator')} SET google_secret_key = %s WHERE login_name = %s"
+    #     rows_affected = h.execute(sql, ("new_secret", "tax_agent009@linshiyou.com"))
+    #     print(f"受影响的行数: {rows_affected}")
 
     # # Google密钥查询测试
     # print("\nGoogle密钥测试:")

@@ -1,7 +1,8 @@
 from pprint import pprint
 from typing import Dict
 
-from common import TaxAPIBase
+# from common import TaxAPIBase
+from CompanyProject.巴迪克.Tax.Api.common import TaxAPIBase
 
 class CancelOrderAPI(TaxAPIBase):
     """撤销订单API"""

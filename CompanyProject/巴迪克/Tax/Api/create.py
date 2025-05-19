@@ -4,7 +4,8 @@ from typing import Dict
 
 from faker import Faker
 
-from common import TaxAPIBase
+from CompanyProject.巴迪克.Tax.Api.common import TaxAPIBase
+# from common import TaxAPIBase
 
 class CreateOrderAPI(TaxAPIBase):
     """创建订单API"""

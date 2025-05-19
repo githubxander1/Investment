@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\others\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\ETF和stock_portfolio_today.csv">
           <value>
             <Attribute>
