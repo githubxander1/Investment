@@ -14,7 +14,14 @@ class CreateOrderAPI(TaxAPIBase):
 
     def create_order(self, payload: Dict) -> Dict:
         """创建订单"""
-        return self.send_request(self.ENDPOINT_PATH, payload)
+        result = self.send_request(self.ENDPOINT_PATH, payload)
+        try:
+            assert result["errCodeDes"] == "success"
+            print(f"✅ 创建订单成功：{result}")
+        except  AssertionError:
+            print(f"❌ 创建订单失败：请求： {payload}, 返回：{result}")
+        # pprint(f"✅ 创建订单成功：errCodeDes: {result['errCodeDes']}, incomeOrderNo: {result['incomeOrderNo']}, agentOrderNo:{result['agentOrderNo']}")
+        return result
 
 if __name__ == "__main__":
     fake = Faker()

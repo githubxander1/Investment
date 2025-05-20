@@ -1,8 +1,11 @@
 # main.py - 全流程主入口
 
 import asyncio
+import datetime
 import os
+from pprint import pprint
 
+from faker import Faker
 from playwright.async_api import async_playwright
 
 from CompanyProject.巴迪克.Tax.UI.logic.tax_agent_register import agent_register
@@ -11,6 +14,7 @@ from CompanyProject.巴迪克.Tax.UI.logic.tax_platform_audit import platform_lo
 from CompanyProject.巴迪克.Tax.Api.create import CreateOrderAPI
 from CompanyProject.巴迪克.Tax.Api.cancel import CancelOrderAPI
 
+fake = Faker()
 
 async def run_full_flow(
     agent_email,
@@ -37,55 +41,67 @@ async def run_full_flow(
             if do_register_agent:
                 print("🔄 开始注册Agent")
                 await agent_register(agent_email, pdf_file_path)
-                print("✅ Agent注册完成")
+                print("✅ Agent注册完成\n")
 
             # 2️⃣ 登录平台并审核Agent（可选）
             if do_audit_agent:
-                print("🔄 开始平台登录并审核Agent")
+                print("🔄 开始platform登录并审核Agent")
                 await platform_login(page, login_email)
                 await audit_agent(page, agent_email)
-                print("✅ Agent审核完成")
+                print("✅ Agent审核完成\n")
 
             # 3️⃣ Agent登录并创建Merchant（可选）
             if do_create_merchant:
-                print("🔄 开始Agent登录并创建商户")
+                print("🔄 开始Agent登录并创建merchant")
                 await agent_login(page, agent_email)
                 await create_merchant(page)  # 注意：create_merchant 需要传入 page
-                print("✅ 商户创建完成")
+                print("✅ merchant创建完成\n")
 
             # 4️⃣ 登录平台并审核Merchant（可选）
             if do_audit_merchant:
-                print("🔄 开始平台登录并审核商户")
+                print("🔄 开始平台登录并审核merchant")
                 await platform_login(page, login_email)
-                await audit_merchant(page)
-                print("✅ 商户审核完成")
+                merchant_id = await audit_merchant(page)
+                print("✅ merchant审核完成\n")
 
             # 5️⃣ 创建订单（可选）
             if do_create_order:
                 print("🔄 开始创建订单")
-                create_api = CreateOrderAPI()
+                if not merchant_id:
+                    raise ValueError("merchant_id 未定义，请先执行 do_audit_merchant=True 获取 merchant_id")
+
+                company_name = agent_email.split("@")[0]
+                create_api = CreateOrderAPI(company_name)
+                today = datetime.datetime.now().strftime("%Y%m%d")
+                # order_suffix = f"{n:03d}"
+                # agentOrderNo = f"AgentOrderNo{today}{n}"
+                # payOrderNo = f"PayOrder{today}{n}"
+                order_no = fake.random_int(min=1, max=1000)
                 payload = {
-                    "merchantId": create_merchant(page),
-                    "paymentType": "StaticMandiriVA",
-                    "amount": "999999999999.99",
-                    "agentOrderNo": "AgentOrderNo20250516305",
-                    "payOrderNo": "PayOrder20250516305",
-                    "productName": "Test Product",
-                    "requestId": "1"
-                }
+                        "merchantId": merchant_id,
+                        "paymentType": "StaticMandiriVA",
+                        "amount": "999999999999.99",
+                        "agentOrderNo": f"AgentOrderNo{today}{order_no}",
+                        "payOrderNo": f"PayOrder{today}{order_no}",
+                        "sourceAgentOrderNo": "AgentOrderNo20250516817",
+                        "productName": fake.name(),
+                        "requestId": "1"
+                    }
                 result = create_api.create_order(payload)
-                print("✅ 订单创建成功", result)
+                AgentOrderNo = result["agentOrderNo"]
+                print("✅ 订单创建成功\n")
 
             # 6️⃣ 撤销订单（可选）
             if do_cancel_order:
                 print("🔄 开始撤销订单")
-                cancel_api = CancelOrderAPI()
+                cancel_api = CancelOrderAPI(company_name)
                 cancel_payload = {
-                    "agentOrderNo": "AgentOrderNo20250516305",
+                    # "agentOrderNo": "AgentOrderNo20250516305",
+                    "agentOrderNo": AgentOrderNo,
                     "requestId": "19999999999999999999"
                 }
                 result = cancel_api.cancel_order(cancel_payload)
-                print("✅ 订单撤销成功", result)
+                print("✅ 订单撤销成功\n")
 
         finally:
             await context.close()
@@ -99,9 +115,9 @@ if __name__ == '__main__':
 
     asyncio.run(run_full_flow(
         login_email="tax_operator@test.com",
-        agent_email="tax_agent0012@linshiyou.com",
+        agent_email="tax_agent0016@linshiyou.com",
         do_register_agent=False,
-        do_audit_agent=True,
+        do_audit_agent=False,
         do_create_merchant=True,
         do_audit_merchant=True,
         do_create_order=True,

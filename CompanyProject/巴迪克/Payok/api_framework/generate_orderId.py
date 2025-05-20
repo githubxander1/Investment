@@ -17,7 +17,7 @@ def generate_order_id(merchant_id):
     order_id = f"{timestamp_str}{random_num}"
     return order_id
 
-# 示例使用
-merchant_id = "010095"
-order_id = generate_order_id(merchant_id)
-print("生成的订单号:", order_id)
+# # 示例使用
+# merchant_id = "010095"
+# order_id = generate_order_id(merchant_id)
+# print("生成的订单号:", order_id)

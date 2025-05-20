@@ -11,7 +11,14 @@ class CancelOrderAPI(TaxAPIBase):
 
     def cancel_order(self, payload: Dict) -> Dict:
         """撤销订单"""
-        return self.send_request(self.ENDPOINT_PATH, payload)
+        result = self.send_request(self.ENDPOINT_PATH, payload)
+        try:
+            print(f"✅ 撤销订单成功：{result}")
+            assert result["errCodeDes"] == "success"
+        except AssertionError:
+            print("❌ 撤销订单失败：请求{}，返回{}".format(payload, result))
+        # pprint(f"✅ 订单撤销成功", {result})
+        return result
 
 if __name__ == "__main__":
     api_client = CancelOrderAPI(company_name="tax_agent009")
