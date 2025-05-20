@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 
 
 def test_example(page: Page) -> None:
-    page.goto("http://payok-test.com/merchant/payok-user-login.html")
+    page.goto("http://payok-dev.com/merchant/payok-user-login.html")
     page.locator("span").filter(has_text="Indonesia").first.click()
     page.get_by_role("link", name="Indonesia").click()
     page.get_by_role("textbox", name="Country E-mail").click()

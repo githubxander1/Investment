@@ -2,7 +2,7 @@ from pprint import pprint
 from typing import Dict
 
 # from common import TaxAPIBase
-from CompanyProject.巴迪克.Tax.Api.common import TaxAPIBase
+from CompanyProject.巴迪克.Tax.Api.com.common import TaxAPIBase
 
 class CancelOrderAPI(TaxAPIBase):
     """撤销订单API"""
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     api_client = CancelOrderAPI(company_name="tax_agent009")
 
     cancel_request_payload = {
-        "agentOrderNo": "AgentOrderNo20250516304",
+        "agentOrderNo": "AgentOrderNo20250520613",
         "requestId": "19999999999999999999"
     }
 

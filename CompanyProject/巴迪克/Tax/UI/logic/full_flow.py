@@ -54,7 +54,7 @@ async def run_full_flow(
             if do_create_merchant:
                 print("🔄 开始Agent登录并创建merchant")
                 await agent_login(page, agent_email)
-                await create_merchant(page)  # 注意：create_merchant 需要传入 page
+                await create_merchant(page)
                 print("✅ merchant创建完成\n")
 
             # 4️⃣ 登录平台并审核Merchant（可选）
@@ -118,8 +118,8 @@ if __name__ == '__main__':
         agent_email="tax_agent0016@linshiyou.com",
         do_register_agent=False,
         do_audit_agent=False,
-        do_create_merchant=True,
+        do_create_merchant=False,
         do_audit_merchant=True,
-        do_create_order=True,
-        do_cancel_order=True
+        do_create_order=False,
+        do_cancel_order=False
     ))

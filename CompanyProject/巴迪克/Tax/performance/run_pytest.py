@@ -9,7 +9,7 @@ def start_locust():
     print("🚀 正在启动 Locust 压测...")
     result = subprocess.run([
         "locust",
-        "-f", "locustfile.py",
+        "-f", "locustfile_1.py",
         "--host", "http://balitax-test.com/declaration-api",
         "--web-port", "8090"
     ])

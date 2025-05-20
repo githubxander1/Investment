@@ -4,7 +4,7 @@ from typing import Dict
 
 from faker import Faker
 
-from CompanyProject.巴迪克.Tax.Api.common import TaxAPIBase
+from CompanyProject.巴迪克.Tax.Api.com.common import TaxAPIBase
 # from common import TaxAPIBase
 
 class CreateOrderAPI(TaxAPIBase):
@@ -25,7 +25,7 @@ class CreateOrderAPI(TaxAPIBase):
 
 if __name__ == "__main__":
     fake = Faker()
-    api_client = CreateOrderAPI(company_name="tax_agent009")
+    api_client = CreateOrderAPI(company_name="tax_agent005")
 
     MCC_dict = {7311: 'Advertising', 4511: 'Airlines', 5533: 'Automotive', 7298: 'Beauty Services',
                 4899: 'Cable & Streaming Service', 8398: 'Charity / Donation',
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     creat_request_payload = {
             "merchantId": "601005M0000003",
             "paymentType": "StaticMandiriVA",
-            "amount": "999999999999.99",
+            "amount": "-999999999999.99",
             "agentOrderNo": f"AgentOrderNo{today}{order_no}",
             "payOrderNo": f"PayOrder{today}{order_no}",
             "sourceAgentOrderNo": "AgentOrderNo20250516817",
