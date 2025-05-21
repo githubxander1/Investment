@@ -115,11 +115,11 @@ if __name__ == '__main__':
 
     asyncio.run(run_full_flow(
         login_email="tax_operator@test.com",
-        agent_email="tax_agent0016@linshiyou.com",
-        do_register_agent=False,
+        agent_email="tax_agent0017@linshiyou.com",
+        do_register_agent=True,
         do_audit_agent=False,
         do_create_merchant=False,
-        do_audit_merchant=True,
+        do_audit_merchant=False,
         do_create_order=False,
         do_cancel_order=False
     ))
