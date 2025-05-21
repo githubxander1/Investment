@@ -136,6 +136,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\others\测试相关\数据驱动\data\sina.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
