@@ -19,7 +19,7 @@ sys.path.append(others_dir)
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
     ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
-    Combination_ids_to_name, ETF_Combination_TODAY_ADJUSTMENT_FILE, Combination_headers
+    Combination_ids_to_name, Combination_headers
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
 from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \

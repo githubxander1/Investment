@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_adjustment_holding_file, ETF_ids, Combination_ids, \
-    Combination_ids_to_name, ETF_ids_to_name
+    Combination_ids_to_name, ETF_ids_to_name, all_ids, id_to_name
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 
 
@@ -58,8 +58,8 @@ if __name__ == '__main__':
     etf_all_dfs = []
 
     # 处理ETF组合持仓数据
-    for id in ETF_ids:
-        df = get_portfolio_holding_data(id, ETF_ids_to_name)
+    for id in all_ids:
+        df = get_portfolio_holding_data(id, id_to_name)
         if not df.empty:
             etf_all_dfs.append(df)
 
