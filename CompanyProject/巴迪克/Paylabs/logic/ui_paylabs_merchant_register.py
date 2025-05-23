@@ -1,87 +1,90 @@
-import time
+import logging
+from playwright.sync_api import Playwright, sync_playwright, expect, TimeoutError as PlaywrightTimeoutError
 
-from playwright.sync_api import Playwright, sync_playwright, expect
-
+# from CompanyProject.巴迪克 import config
 from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
+# 初始化日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def paylabs_merchant_register(playwright: Playwright, email) -> None:
-    env_config = config.current_env
+def paylabs_merchant_register(playwright: Playwright, env, email, verification_code="652266",
+                              phone="15318544125", password="A123456@test", invitation_code="123456") -> None:
+    env_config = config  # 注意：此处仍依赖全局 config，建议改为传参
     browser = playwright.chromium.launch(
-        headless=config.get('ui/headless', False),
-        slow_mo=config.get('ui/slow_mo', 0)
+        headless=env_config.get('ui/headless', False),
+        slow_mo=env_config.get('ui/slow_mo', 0)
     )
 
     context = browser.new_context()
     page = context.new_page()
+
     # 动态选择环境
-    if config.env == 'stich':
-        page.goto(env_config['base_url'] + "/logic-register-register.html")
-    else:
-        page.goto(env_config['base_url'] + "/merchant/logic-register-register.html")
-    # browser = playwright.chromium.launch(headless=False)
-    # # page.goto("http://paylabs-test.com/merchant/paylabs-register-register.html#") #测试环境
-    # page.goto("https://sitch-merchant.paylabs.co.id/paylabs-register-register.html") #sitch环境
-    page.locator("span").filter(has_text="id").first.click()
-    page.get_by_role("link", name="EN", exact=True).click()
+    base_url = env_config.get('sitch_base_url') if env == 'sitch' else env_config.get('test_base_url')
+    page.goto(f"{base_url}/merchant/paylabs-register-register.html")
 
-    page.get_by_role("textbox", name="E-mail *", exact=True).fill(email)
-    page.get_by_role("textbox", name="Email Verification Code *").fill("652266")
-    page.locator("#phone").fill("15318544125")
-    page.locator("#phoneCode").fill("652266")
-    page.get_by_role("textbox", name="Secure Email for fund account").fill(email)
-    page.get_by_role("textbox", name="Please enter contact").fill(email)#PIC名字
-    # page.get_by_role("textbox", name="Password *" , exact=True).fill("Abc@123456789")
-    page.get_by_role("textbox", name="Password *" , exact=True).fill("A123456@test")
-    page.get_by_role("textbox", name="Confirm password *", exact=True).fill("A123456@test")
-    page.locator("#invitation_code").fill("123456")
-    page.get_by_role("button", name="Register").click()
+    # 缓存常用定位器
+    email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
+    code_input = page.get_by_role("textbox", name="Email Verification Code *")
+    phone_input = page.locator("#phone")
+    phone_code_input = page.locator("#phoneCode")
+    secure_email_input = page.get_by_role("textbox", name="Secure Email for fund account")
+    pic_name_input = page.get_by_role("textbox", name="Please enter contact")
+    password_input = page.get_by_role("textbox", name="Password *", exact=True)
+    confirm_password_input = page.get_by_role("textbox", name="Confirm password *", exact=True)
+    invite_code_input = page.locator("#invitation_code")
+    register_button = page.get_by_role("button", name="Register")
+    agree_button = page.get_by_role("button", name="I have read and agree to the")
+    gologin_button = page.locator("#gologin")
 
-    page.get_by_role("button", name="I have read and agree to the").click()#同意
-    gologin = page.locator("#gologin")
-    # page.pause()
-    
+    # 表单填写
+    email_input.fill(email)
+    code_input.fill(verification_code)
+    phone_input.fill(phone)
+    phone_code_input.fill(verification_code)
+    secure_email_input.fill(email)
+    pic_name_input.fill(email)  # PIC 名字（联系人）
+    password_input.fill(password)
+    confirm_password_input.fill(password)
+    invite_code_input.fill(invitation_code)
+    register_button.click()
+
+    agree_button.click()  # 同意协议
+
     try:
         # 检查邮箱是否已注册
         expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered")
-        print("邮箱已注册！")
-    except AssertionError:  # 捕获 Assertion 错误
-        # 检查 gologin 元素是否存在且可见
-        # page.wait_for_timeout(3000)
-        gologin.wait_for(state='visible',timeout=10000)
-        if gologin.is_visible():
-            # gologin.click()
-            print("注册成功")
-        else:
-            print("未找到 'gologin' 元素或其不可见")
-    except Exception as e:  # 捕获其他未知异常
-        print(f"发生未知错误: {e}")
+        logging.info("邮箱已注册！")
+    except AssertionError:
+        try:
+            gologin_button.wait_for(state='visible', timeout=10000)
+            if gologin_button.is_visible():
+                logging.info("注册成功")
+            else:
+                logging.warning("未找到 'gologin' 元素或其不可见")
+        except PlaywrightTimeoutError:
+            logging.error("'gologin' 元素未在预期时间内显示")
+    except PlaywrightTimeoutError as e:
+        logging.error(f"页面操作超时: {e}")
+    except Exception as e:
+        logging.error(f"发生未知错误: {e}")
 
-
-    # ---------------------
+    # 清理资源
     context.close()
     browser.close()
-def generate_google_code():
-    db_handler = SQLHandler('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'logic')
-    db_handler.connect()
 
-    secret_key = db_handler.get_google_secret_key('merchant_operator', 'paylabs2@test.com')
-    if secret_key:
-        print("Google Secret Key:", secret_key)
 
-    db_handler.disconnect()
-    # try:
-    #     current_time = int(time.time()) // 30
-    #     print(f"Current Time: {current_time}")
-    #     generated_code = CalGoogleCode.cal_google_code(secret_key, current_time)
-    #     print(f"Generated Code: {generated_code}")
-    #     print(CalGoogleCode.cal_google_code(secret_key))  # 并未实例化CalGoogleCode，也可以调用它的方法
-    #     return generated_code
-    # except ValueError as e:
-    #     print("错误:", e)
 if __name__ == '__main__':
-    email = "paylabsmerchant1@test.com"
-    generate_google_code()
+    config = {
+        "ui": {
+            "headless": False,
+            "slow_mo": 0
+        },
+        "env": "sitch",
+        "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
+        "test_base_url": "http://test.paylabs.id"
+    }
+    email = "paylabsmerchant1@sitch.com"
+    google_secret_key = "igz4obkiqirr16pudug7qkfbjj544yy2"
 
-    # with sync_playwright() as playwright:
-    #     paylabs_merchant_register(playwright, email)
+    with sync_playwright() as playwright:
+        paylabs_merchant_register(playwright, "test", email)

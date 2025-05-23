@@ -34,3 +34,15 @@ test: #环境
       merchant_info: 'merchant_info'
       tax_operator: 'tax_operator'
       declaration_order: 'declaration_order'
+
+sitch:
+  paylabs: #环境
+    ip: '192.168.0.233'
+    port: 3306
+    user: 'paylabs_payapi'
+    password: 'SharkZ@DBA666'
+    db_name: 'paylabs'
+    tables:
+      platform_operator: 'operator'
+      merchant_operator: 'merchant_operator'
+      sales_operator: 'sales_operator'

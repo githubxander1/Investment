@@ -1,119 +1,102 @@
-#谷歌验证码生成器
+# GoogleSecure.py (精简优化版)
+
 import hmac
 import base64
 import os
+import re
 import struct
 import hashlib
 import time
-import re
-import os
-import base64
-
+from typing import Optional
 
 from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
-
 # 动态获取配置文件路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
-yaml_path = os.path.normpath(os.path.join(current_dir, "../common/sql_config.yaml"))
+yaml_path = os.path.join(current_dir, "../common/sql_config.yaml")
 
-class CalGoogleCode:
+
+class GoogleAuth:
+    """
+    谷歌验证码工具类：密钥管理 + 验证码生成 + 数据库操作
+    """
     @staticmethod
-    def cal_google_code(secret, current_time=int(time.time()) // 30):
-        cleaned_secret = CalGoogleCode.clean_secret_key(secret)
+    def _calculate(secret: str, current_time: int = int(time.time()) // 30) -> str:
+        """计算并返回6位验证码"""
+        missing_padding = len(secret) % 8
+        if missing_padding:
+            secret += '=' * (8 - missing_padding)
 
-        if not CalGoogleCode.is_valid_base32(cleaned_secret):
-            raise ValueError("secret_key 不是有效的 Base32 编码")
+        cleaned = re.sub(r'[^A-Z2-7=]', '', secret.upper())
+        if not re.fullmatch(r'[A-Z2-7]+=*', cleaned):
+            raise ValueError("无效的 Base32 密钥格式")
 
-        key = base64.b32decode(cleaned_secret)
+        key = base64.b32decode(cleaned, casefold=True)
         msg = struct.pack(">Q", current_time)
-        google_code = hmac.new(key, msg, hashlib.sha1).digest()
-        o = google_code[19] & 15
-        google_code = (struct.unpack(">I", google_code[o:o + 4])[0] & 0x7fffffff) % 1000000
-        return '%06d' % google_code
+        digest = hmac.new(key, msg, hashlib.sha1).digest()
+        offset = digest[19] & 0x0F
+        code = (struct.unpack(">I", digest[offset:offset+4])[0] & 0x7FFFFFFF) % 1000000
+        return f"{code:06d}"
 
     @staticmethod
-    def is_valid_base32(s):
-        return re.fullmatch('[A-Z2-7]+=*', s) is not None
-
-    @staticmethod
-    def clean_secret_key(secret_key):
-        return re.sub(r'[^A-Z2-7=]', '', secret_key.upper())
-
-    def generate_google_code(environment: str, project: str, table: str, login_name: str):
-        """从数据库获取谷歌密钥"""
+    def generate(environment: str, project: str, table: str, login_name: str) -> Optional[str]:
+        """主流程：根据用户信息生成谷歌验证码"""
         try:
             with SQLHandler(yaml_path, environment, project) as handler:
                 sql = f"SELECT google_secret_key FROM {handler.get_table(table)} WHERE login_name = %s"
                 result = handler.query_one(sql, (login_name,))
-                return result[0] if result else None
+                print(f"{login_name} 的谷歌密钥: {result}")
+                if not result:
+                    print(f"[ERROR] 用户 {login_name} 没有设置谷歌密钥")
+                    return None
+                secret = result[0]
+                return GoogleAuth._calculate(secret)
         except Exception as e:
-            print(f"[ERROR] 数据库查询失败: {str(e)}")
+            print(f"[ERROR] 生成验证码失败: {str(e)}")
             return None
 
     @staticmethod
     def create_secret_key(length: int = 20) -> str:
-        """
-        生成指定长度的随机字节，并编码为 RFC 4648 兼容的 Base32 字符串（无填充字符）
-        :param length: 原始字节数，默认 20 字节（对应 32 位 Base32 字符）
-        :return: 小写的 Base32 编码字符串
-        """
-        raw_bytes = os.urandom(length)
-        # Base32 编码并去除填充字符 '='，转换为小写
-        return base64.b32encode(raw_bytes).decode("utf-8").strip("=").lower()
-
+        """生成 RFC 4648 兼容的 Base32 编码密钥（无填充字符）"""
+        return base64.b32encode(os.urandom(length)).decode().rstrip("=").lower()
 
     @staticmethod
-    def update_google_secret_key_in_db(environment: str, project: str, table: str,
-                                      login_name: str):
-        """
-        生成 Google Secret Key 并加密写入数据库
-        :param environment: 环境标识（test/prod）
-        :param project: 项目名（tax）
-        :param table: 数据表（agent_operator）
-        :param login_name: 登录邮箱（如 tax_agent009@linshiyou.com）
-        """
+    def update_secret_key_to_db(environment: str, project: str, table: str, login_name: str) -> str:
+        """生成新密钥并更新数据库"""
+        secret = GoogleAuth.create_secret_key()
         try:
-            # 1. 生成 Base32 Secret Key
-            secret_key = CalGoogleCode.create_secret_key()
-
-            # 3. 写入数据库
             with SQLHandler(yaml_path, environment, project) as handler:
                 sql = f"UPDATE {handler.get_table(table)} SET google_secret_key = %s WHERE login_name = %s"
-                handler.execute(sql, (secret_key, login_name))
-                print(f"[INFO] 已成功生成并更新加密的谷歌密钥 for {login_name}")
-
-            return secret_key
-
+                handler.execute(sql, (secret, login_name))
+                print(f"[INFO] 已更新谷歌密钥 for {login_name}")
+            return secret
         except Exception as e:
             print(f"[ERROR] 更新谷歌密钥失败: {str(e)}")
             raise
 
-
-    def main(self):
-        environment = "test"
-        project = "tax"
-        table = "agent_operator"
-        login_name = "tax_agent0010@linshiyou.com"
-        # aes_key = self.create_secret_key()
-
-        original_secret = CalGoogleCode.update_google_secret_key_in_db(
-            environment=environment,
-            project=project,
-            table=table,
-            login_name=login_name,
-            # aes_key=aes_key
-        )
-        print(f"生成的原始谷歌密钥: {original_secret}")
-
+    @staticmethod
+    def test():
+        # 示例调用
+        # code = GoogleAuth.generate(
+        #     environment='test',
+        #     project='tax',
+        #     table='agent_operator',
+        #     # login_name='tax_operator@test.com'
+        #     login_name='tax_agent001@linshiyou.com'
+        # )
+        # if code:
+        #     print(f"生成的验证码: {code}（有效期剩余 {30 - int(time.time()) % 30}s）")
+        # else:
+        #     print("验证码生成失败")
+#
+        # 测试一致性
+        secret = "as3ofdbf7w5eatieq2hydfd6ptgtgbgr"
+        secret2 = "igz4obkiqirr16pudug7qkfbjj544yy2"
+        code1 = GoogleAuth._calculate(secret)
+        print(f"旧算法: {code1}")
+        # code2 = GoogleAuth._calculate(secret2)
+        # print(f"算法一致性测试: {code1} == {code2} => {'✅' if code2 == code2 else '❌'}")
+#
+#
 if __name__ == "__main__":
-    calGoogleCode = CalGoogleCode()
-    calGoogleCode.main()
-    # raw_key = CalGoogleCode.generate_secure_google_key()  # 得到 16 字节原始密钥
-    # print(f"原始密钥: {raw_key.hex()}")
-    # secret_key = base64.b32encode(raw_key).decode().rstrip("=")  # 用于谷歌验证码
-    # print(f"Base32 编码的密钥: {secret_key}")
-    # encrypted_secret = CalGoogleCode.aes_encrypt(secret_key, raw_key.hex())  # raw_key.hex() 可作为 32 字符(16字节) AES 密钥
-    # print(f"AES 加密后的密钥: {encrypted_secret}")
-    # 'aty2zhr4aognqm4xcvaja4jqdxtaotoz'
-    # '5upc2xtpmxwnzvzl6tzy2zsf6vb3qz7m'
+    GoogleAuth.test()

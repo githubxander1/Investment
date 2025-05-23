@@ -118,7 +118,7 @@ if __name__ == '__main__':
         agent_email="tax_agent0016@linshiyou.com",
         do_register_agent=False,
         do_audit_agent=False,
-        do_create_merchant=False,
+        do_create_merchant=True,
         do_audit_merchant=True,
         do_create_order=False,
         do_cancel_order=False

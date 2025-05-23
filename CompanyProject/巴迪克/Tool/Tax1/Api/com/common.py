@@ -23,7 +23,7 @@ class TaxAPIBase:
     def __init__(self, company_name: str, environment: str = 'test'):
         """
         初始化税务API客户端
-        :param environment: 环境标识（test/prod）
+        :param environment: 环境标识（test）
         :param company_name: 代理公司名称
         """
         self.environment = environment
@@ -31,7 +31,7 @@ class TaxAPIBase:
         self.agent_id, self.secret_key = self._load_agent_credentials()
 
     def _load_agent_credentials(self) -> Tuple[str, str]:
-        """从数据库加载代理凭证"""
+        """从数据库加载key"""
         try:
             with SQLHandler(CONFIG['YAML_PATH'], self.environment, 'tax') as handler:
                 sql = f"SELECT agent_no, sign_key FROM {handler.get_table('agent_base_info')} WHERE company_name = %s"

@@ -1,15 +1,18 @@
+from tenacity import retry, stop_after_attempt
 import os
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 
 from CompanyProject.巴迪克.Paylabs.logic.ui_paylabs_merchant_register import paylabs_merchant_register
+from CompanyProject.巴迪克.utils.GoogleSecure import GoogleAuth
+from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
-from CompanyProject.巴迪克.utils.generate_google_code import generate_google_code
+# from CompanyProject.巴迪克.utils.generate_google_code import generate_google_code
 
 
 def sales_login(page , sales_login_name):
-    # page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
-    page.goto("https://sitch-sales.paylabs.co.id/paylabs-user-login.html")
+    page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
+    # page.goto("https://sitch-sales.paylabs.co.id/paylabs-user-login.html")
     # 切换语言
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
@@ -21,8 +24,24 @@ def sales_login(page , sales_login_name):
     perform_block_slider_verification(page)
     page.get_by_role("button", name="Login").click()
 
-    paylabs_merchant_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'logic', 'sales_operator', sales_login_name)
-    page.wait_for_timeout(1000)
+    # paylabs_merchant_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'logic', 'sales_operator', sales_login_name)
+    @retry(stop=stop_after_attempt(3))
+    async def get_google_code():
+        google_code = GoogleAuth.generate(
+            environment='test',
+            project='paylabs',
+            table='sales_operator',
+            login_name=sales_login_name
+        )
+        page.locator("#googleCode").fill(google_code)
+
+        if page.query_selector(".error-message:visible"):
+            page.get_by_role("textbox", name="Google Verification Code").clear()
+            raise ValueError("谷歌验证码错误")
+
+    get_google_code()
+    # page.get_by_role("button", name="Log In").click()
+    # page.wait_for_timeout(1000)
     # page.pause()
     # try:
     #     page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
@@ -308,8 +327,23 @@ def platform_login(page ,paylabs_operator_login_name):
     if has_login.is_visible():
         page.get_by_role("button", name="Confirm").click()
 
-    paylabs_platform_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'logic', 'operator', paylabs_operator_login_name)
-    page.pause()
+    @retry(stop=stop_after_attempt(3))
+    async def get_google_code():
+        google_code = GoogleAuth.generate(
+            environment='test',
+            project='paylabs',
+            table='operator',
+            login_name=paylabs_operator_login_name
+        )
+        page.locator("#googleCode").fill(google_code)
+
+        if page.query_selector(".error-message:visible"):
+            page.get_by_role("textbox", name="Google Verification Code").clear()
+            raise ValueError("谷歌验证码错误")
+
+    get_google_code()
+    # paylabs_platform_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'logic', 'operator', paylabs_operator_login_name)
+    # page.pause()
     # page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_platform_google_code)
 
     # error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
@@ -574,8 +608,8 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
 
     #商户注册
-    register_email = "1@linshiyou.com"
-    paylabs_merchant_register(playwright, register_email)
+    # register_email = "1@linshiyou.com"
+    # paylabs_merchant_register(playwright, "test", register_email)
     #
     #
     # # sales端提交资料
