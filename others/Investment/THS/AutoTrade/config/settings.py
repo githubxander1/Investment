@@ -103,13 +103,11 @@ Combination_ids_to_name = {
     # '18710': '用收益率征服您'
 }
 
-# ETF_ids = [ '29617', '29669', '29678', '29734', '29656']
-ETF_ids = [ '29762', '30463', '29684', "29669", '29656',  '31672', '29774']
+ETF_ids = [ '30463', '29684', "29778"]
 ETF_ids_to_name = {
-    '29762': '全球领先ETF',
+    # '29762': '全球领先ETF',
     '30463': '科技ETF高频',
     '29684': '主题成长优选',
-
     '29778': '波段轮动优选',
 
     '29669': '波段优选ETF',
@@ -117,16 +115,13 @@ ETF_ids_to_name = {
     '29617': 'ETF灵蛇智投',
     # '29734': '热点追击ETF',
 
-    "31672": "短线趋势题材",
-    "29774": "智投短线精选",
-    "31816": "一只不休息的牛",
     # '29678': '科技腾飞精选',
     # '27122': '热点多因子驱动',#失效
     # '29665': '轮动寻金ETF', #排名落后了
     # '29646': '热点追踪猎手'
 }
 
-zhitou_ids = [ '31672', '29774']
+zhitou_ids = ['31672']
 zhitou_ids_to_name = {
     "31672": "短线趋势题材",
     "29774": "智投短线精选",
@@ -134,6 +129,7 @@ zhitou_ids_to_name = {
 }
 
 all_ids = Combination_ids + ETF_ids + zhitou_ids
+# all_ids = Combination_ids + zhitou_ids
 id_to_name = {**Combination_ids_to_name, **ETF_ids_to_name, **zhitou_ids_to_name}
 # pprint(id_to_name)
 # for id in ETF_ids:
