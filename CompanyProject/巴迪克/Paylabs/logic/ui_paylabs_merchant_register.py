@@ -22,6 +22,10 @@ def paylabs_merchant_register(playwright: Playwright, env, email, verification_c
     base_url = env_config.get('sitch_base_url') if env == 'sitch' else env_config.get('test_base_url')
     page.goto(f"{base_url}/merchant/paylabs-register-register.html")
 
+    #切换到英文环境
+    page.locator("span").filter(has_text="id").first.click()
+    page.get_by_role("link", name="EN", exact=True).click()
+
     # 缓存常用定位器
     email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
     code_input = page.get_by_role("textbox", name="Email Verification Code *")
@@ -83,8 +87,8 @@ if __name__ == '__main__':
         "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
         "test_base_url": "http://test.paylabs.id"
     }
-    email = "paylabsmerchant1@sitch.com"
+    email = "paylabsmerchant@sitch.com"
     google_secret_key = "igz4obkiqirr16pudug7qkfbjj544yy2"
 
     with sync_playwright() as playwright:
-        paylabs_merchant_register(playwright, "test", email)
+        paylabs_merchant_register(playwright, "sitch", email)

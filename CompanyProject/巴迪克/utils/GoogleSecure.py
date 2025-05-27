@@ -36,6 +36,7 @@ class GoogleAuth:
         digest = hmac.new(key, msg, hashlib.sha1).digest()
         offset = digest[19] & 0x0F
         code = (struct.unpack(">I", digest[offset:offset+4])[0] & 0x7FFFFFFF) % 1000000
+        print(f"谷歌验证码: {code:06d}")
         return f"{code:06d}"
 
     @staticmethod
