@@ -1,10 +1,8 @@
-import re
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-from CompanyProject.巴迪克.Paylabs.logic.ui_paylabs_merchant_register import generate_google_code
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_merchant_register import generate_google_code
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
-from tenacity import retry, stop_after_attempt
+
 
 def platform_login(playwright: Playwright ,operator_login_name, operator_password):
     # 平台登录

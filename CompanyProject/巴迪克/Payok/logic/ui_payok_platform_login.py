@@ -2,7 +2,7 @@ import os
 
 from playwright.sync_api import Playwright, sync_playwright
 
-from CompanyProject.巴迪克.Paylabs.logic.ui_paylabs_merchant_register import generate_google_code
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_merchant_register import generate_google_code
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
 
 

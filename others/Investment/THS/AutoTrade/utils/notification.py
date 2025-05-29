@@ -104,7 +104,7 @@ def send_dingtalk_notification(message):
         }
     }
     try:
-        response = requests.post(DINGTALK_WEBHOOK, json=data)
+        response = requests.post(DINGTALK_WEBHOOK, json=data,verify='D:/Xander/Pycharm_gitee/reqable-ca.crt')
         response.raise_for_status()
         # logger.info('钉钉通知发送成功')
     except Exception as e:

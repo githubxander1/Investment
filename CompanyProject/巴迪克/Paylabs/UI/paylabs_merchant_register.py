@@ -9,7 +9,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def paylabs_merchant_register(playwright: Playwright, env, email, verification_code="652266",
                               phone="15318544125", password="A123456@test", invitation_code="123456") -> None:
-    env_config = config  # 注意：此处仍依赖全局 config，建议改为传参
+    env_config = {
+        "ui": {
+            "headless": False,
+            "slow_mo": 0
+        },
+        "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
+        "test_base_url": "http://test.paylabs.id"
+    }
     browser = playwright.chromium.launch(
         headless=env_config.get('ui/headless', False),
         slow_mo=env_config.get('ui/slow_mo', 0)
@@ -77,18 +84,18 @@ def paylabs_merchant_register(playwright: Playwright, env, email, verification_c
     browser.close()
 
 
-if __name__ == '__main__':
-    config = {
-        "ui": {
-            "headless": False,
-            "slow_mo": 0
-        },
-        "env": "sitch",
-        "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
-        "test_base_url": "http://test.paylabs.id"
-    }
-    email = "paylabsmerchant@sitch.com"
-    google_secret_key = "igz4obkiqirr16pudug7qkfbjj544yy2"
-
-    with sync_playwright() as playwright:
-        paylabs_merchant_register(playwright, "sitch", email)
+# if __name__ == '__main__':
+#     config = {
+#         "ui": {
+#             "headless": False,
+#             "slow_mo": 0
+#         },
+#         "env": "sitch",
+#         "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
+#         "test_base_url": "http://test.paylabs.id"
+#     }
+#     email = "paylabsmerchant@sitch.com"
+#     google_secret_key = "igz4obkiqirr16pudug7qkfbjj544yy2"
+#
+#     with sync_playwright() as playwright:
+#         paylabs_merchant_register(playwright, "sitch", email)

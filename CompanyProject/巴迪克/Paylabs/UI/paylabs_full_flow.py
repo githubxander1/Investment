@@ -1,14 +1,12 @@
 # paylabs_full_flow.py - Paylabs 完整业务流程入口
 
-import io
 import os
-from pprint import pprint
 
 from playwright.sync_api import sync_playwright
 
 # 从项目结构中导入相关模块
-from CompanyProject.巴迪克.Paylabs.logic.paylabs_MerchantRegisterAndaudio import (
-    paylabs_merchant_register,
+#     paylabs_merchant_register,
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_MerchantRegisterAndaudio import (
     sales_login,
     sales_setting_sales,
     sales_submit_info,
@@ -18,6 +16,8 @@ from CompanyProject.巴迪克.Paylabs.logic.paylabs_MerchantRegisterAndaudio imp
     platform_request_activation,
     platform_activation_audit
 )
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_merchant_register import paylabs_merchant_register
+
 
 def run_paylabs_full_flow(
     register_email: str,

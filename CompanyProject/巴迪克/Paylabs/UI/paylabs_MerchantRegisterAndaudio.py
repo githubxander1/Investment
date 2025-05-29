@@ -1,18 +1,15 @@
 from tenacity import retry, stop_after_attempt
 import os
 
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import expect, Playwright, sync_playwright
 
-from CompanyProject.巴迪克.Paylabs.logic.ui_paylabs_merchant_register import paylabs_merchant_register
 from CompanyProject.巴迪克.utils.GoogleSecure import GoogleAuth
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
-# from CompanyProject.巴迪克.utils.generate_google_code import generate_google_code
 
 
-def sales_login(page , sales_login_name):
-    # page.goto("http://paylabs-test.com/sales/paylabs-user-login.html")
-    page.goto("https://sitch-sales.paylabs.co.id/paylabs-user-login.html")
+def sales_login(page, env, sales_login_name):
+    url = 'http://test.paylabs.id/sales/paylabs-user-login.html' if env == 'test' else 'https://sitch-sales.paylabs.co.id/paylabs-user-login.html'
+    page.goto(url)
     # 切换语言
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
@@ -24,50 +21,45 @@ def sales_login(page , sales_login_name):
     perform_block_slider_verification(page)
     page.get_by_role("button", name="Login").click()
 
-    # paylabs_merchant_google_code = generate_google_code('192.168.0.233', 3306, 'paylabs_payapi', 'SharkZ@DBA666', 'logic', 'sales_operator', sales_login_name)
+    #等待
+    page.wait_for_timeout(3000)
     @retry(stop=stop_after_attempt(3))
-    def get_google_code():
-        google_code = GoogleAuth._calculate("4cavnkhcy3x46g46jwhe45ajulmsouwe")
-        # google_code = GoogleAuth.generate(
-        #     environment='test',
-        #     project='paylabs',
-        #     table='sales_operator',
-        #     login_name=sales_login_name
-        # )
+    def get_google_code(page, env):
+        if env == 'sitch':
+            google_code = GoogleAuth._calculate("4cavnkhcy3x46g46jwhe45ajulmsouwe")
+        else:
+            google_code = GoogleAuth.generate(
+                environment='test',
+                project='paylabs',
+                table='sales_operator',
+                login_name=sales_login_name
+            )
         page.locator("#googleCode").fill(google_code)
+        # page.pause()
+        page.get_by_role("button", name="Login").click()
 
-        if page.query_selector(".error-message:visible"):
+        if page.locator(".googleCodeError").is_visible():
             page.get_by_role("textbox", name="Google Verification Code").clear()
+            print("谷歌验证码错误")
             raise ValueError("谷歌验证码错误")
 
-    get_google_code()
-    # page.get_by_role("button", name="Log In").click()
-    # page.wait_for_timeout(1000)
-    # page.pause()
-    # try:
-    #     page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
-    #
-    #     error_code = page.get_by_role("textbox", name="The Google verification code is incorrect, please reenter")
-    #     if error_code.is_visible():
-    #         page.get_by_role("textbox", name="Google Verification Code").fill(paylabs_merchant_google_code)
+    get_google_code(page, env)
     page.get_by_role("button", name="Login").click()
-    # except Exception as e:
-    #     print(f'输入谷歌验证码失败：{e}')
 
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(2000)
     try:
-        page_title = page.title()
-        expect(page).to_have_title("Paylabs- Payin Summary")
+        # page_title = page.title()
+        # print(f'页面标题：{page_title}')
+        # expect(page).to_have_title("Paylabs- Payin Summary")
         url = page.url
-        print(f'页面url：{url}')
-        # assert url == "http://paylabs-test.com/sales/paylabs-board-board.html", f"URL 不匹配，实际值为 {url}"
-        assert url == "https://sitch-sales.paylabs.co.id/paylabs-board-board.html", f"URL 不匹配，实际值为 {url}"
-        print("断言url-登录成功")
+        assert_url = "http://test.paylabs.id/sales/paylabs-board-board.html" if env == 'test' else "https://sitch-sales.paylabs.co.id/paylabs-board-board.html"
+        assert url == assert_url, f"登录后URL 不匹配，实际值为 {url}"
+        print("登录成功")
         # 等待页面加载完成并检查 URL
-        # expect(page).to_have_url("http://paylabs-test.com/sales/paylabs-board-board.html", timeout=5000)
-        # expect(page).to_have_url("http://paylabs-test.com/sales/paylabs-board-board.html", timeout=5000)
-
-        # expect(page.get_by_role("heading", name="Merchant Information")).to_be_visible()
+        expect(page).to_have_url(assert_url, timeout=5000)
+        loging_name = page.locator("#txtOperatorName").text_content()
+        print(f"登录成功，当前登录用户为：{loging_name}")
+        expect(loging_name).to_be_visible()
         # page.pause()
     except Exception as e:
         print(f'登录失败：{e}')
@@ -308,10 +300,10 @@ def sales_submit_info(page,email, merchant_id, pdf_file_path):
     page.get_by_role("link", name="I got it").click()
     print("客户端资料提交成功")
 
-def platform_login(page ,paylabs_operator_login_name):
+def platform_login(page,env:str,paylabs_operator_login_name):
     # 平台登录
-    # page.goto("http://paylabs-test.com/platform/paylabs-user-login.html")
-    page.goto("https://sitch-admin.paylabs.co.id/paylabs-user-login.html")
+    url = 'http://test.paylabs.id/platform/paylabs-user-login.html' if env == 'test' else 'https://sitch-admin.paylabs.co.id/paylabs-user-login.html'
+    page.goto(url)
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
 
@@ -332,7 +324,7 @@ def platform_login(page ,paylabs_operator_login_name):
 
     @retry(stop=stop_after_attempt(3))
     def get_google_code():
-        google_code = GoogleAuth._calculate("bodioyzf2ojyh7qawk7ip2k5pnw7dzdn")
+        google_code = GoogleAuth._calculate("bodioyzf2ojyh7qawk7ip2k5pnw7dzdn") #sitch-sales,找开发要sitch环境的key
         # google_code = GoogleAuth._calculate("urq7ocrpbxptnmr5zsw2upxxu76qbil6")
         # print("google_code:", google_code)
         # google_code = GoogleAuth.generate(
@@ -634,44 +626,44 @@ def run(playwright: Playwright) -> None:
     #
     # # sales端提交资料
     sales_login_name = '15318544153'
-    # merchant_id = "010327"
+#     # merchant_id = "010327"
     page = context.new_page()
-    sales_login(page, sales_login_name)
-    # # #
-    # # 获取第一条商户id
-    page.get_by_role("link", name="ﱖ Merchant ").click()
-    page.get_by_role("link", name="Merchant", exact=True).click()
-    # # 通过xpath获取元素的text值  //*[@id="merchant-datatable"]/tbody/tr[1]/td[1]
-    merchant_id = page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
-    print(merchant_id)
-    # #
-    # sales_setting_sales(page,merchant_id) #设置销售人员
-    sales_submit_info(page,register_email,merchant_id) #提交销售资料
-    # #
-    # # 平台审核
-    # paylabs_operator_login_name = 'test001@qq.com'
-    paylabs_operator_login_name = 'Xander1@sitch.paylabs.co.id'
-    page2 = context.new_page()
-    platform_login(page2, paylabs_operator_login_name)#登录平台
-
-    platform_risk_control_audit(page2,merchant_id)# 风控审核
-    # page2.wait_for_timeout(3000)
-    # platform_legal_risk_audit(page2,merchant_id)#法律审核
-    # platform_request_activation(page2,merchant_id)# 激活请求审核
-    # platform_activation_audit(page2,merchant_id)# 激活审核
-
-
-    context.close()
-    browser.close()
-
-# if __name__ == '__main__':
-#     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-#     DATA_DIR = os.path.join(BASE_DIR, '../../common', 'data')
-#     # print(os.path.abspath('../../common'))
-#     pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
-#     #判断文件是否存在
-#     if not os.path.exists(pdf_file_path):
-#         print('文件不存在')
+    sales_login(page, 'sitch',sales_login_name)
+#     # # #
+#     # # 获取第一条商户id
+#     page.get_by_role("link", name="ﱖ Merchant ").click()
+#     page.get_by_role("link", name="Merchant", exact=True).click()
+#     # # 通过xpath获取元素的text值  //*[@id="merchant-datatable"]/tbody/tr[1]/td[1]
+#     merchant_id = page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
+#     print(merchant_id)
+#     # #
+#     # sales_setting_sales(page,merchant_id) #设置销售人员
+#     sales_submit_info(page,register_email,merchant_id) #提交销售资料
+#     # #
+#     # # 平台审核
+#     # paylabs_operator_login_name = 'test001@qq.com'
+#     paylabs_operator_login_name = 'Xander1@sitch.paylabs.co.id'
+#     page2 = context.new_page()
+#     platform_login(page2, paylabs_operator_login_name)#登录平台
 #
-#     with sync_playwright() as playwright:
-#         run(playwright)
+#     platform_risk_control_audit(page2,merchant_id)# 风控审核
+#     # page2.wait_for_timeout(3000)
+#     # platform_legal_risk_audit(page2,merchant_id)#法律审核
+#     # platform_request_activation(page2,merchant_id)# 激活请求审核
+#     # platform_activation_audit(page2,merchant_id)# 激活审核
+#
+#
+#     context.close()
+#     browser.close()
+
+if __name__ == '__main__':
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATA_DIR = os.path.join(BASE_DIR, '../../common', 'data')
+    # print(os.path.abspath('../../common'))
+    pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
+    #判断文件是否存在
+    if not os.path.exists(pdf_file_path):
+        print('文件不存在')
+
+    with sync_playwright() as playwright:
+        run(playwright)
