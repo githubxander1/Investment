@@ -43,9 +43,10 @@ def run_paylabs_full_flow(
         browser =  p.chromium.launch(headless=False)
         context =  browser.new_context()
         page =  context.new_page()
+        page.set_default_timeout(10000)  # 设置默认等待时间为 10 秒
 
         try:
-            merchant_id = "010329"  # 初始化 merchant_id
+            # merchant_id = "010328"  # 初始化 merchant_id
 
             # 1️⃣ 注册 Agent（可选）
             if do_register_agent:
@@ -56,20 +57,20 @@ def run_paylabs_full_flow(
             # 2️⃣ Sales 登录（可选）
             if do_sales_login:
                 print("🔄 开始 Sales 登录")
-                sales_login(page, sales_login_name)
+                sales_login(page, evn, sales_login_name)
                 print("✅ Sales 登录成功\n")
 
             # 3️⃣ 获取 Merchant ID 并设置 Sales（可选）
             if do_sales_setting:
                 print("🔄 开始设置 Sales")
-                with page.expect_popup() as popup_info:
-                    page.get_by_role("link", name=" Merchant ").click()
-                    page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()
-                    page.wait_for_timeout(1000)
-
-                page = popup_info.value
-                merchant_id =  page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
-                print(f"✅ 获取 Merchant ID: {merchant_id}")
+                # with page.expect_popup() as popup_info:
+                #     page.get_by_role("link", name=" Merchant ").click()
+                #     page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()
+                #     page.wait_for_timeout(1000)
+                #
+                # page = popup_info.value
+                # merchant_id =  page.locator('//*[@id="merchant-datatable"]/tbody/tr[1]/td[1]').text_content()
+                # print(f"✅ 获取 Merchant ID: {merchant_id}")
 
                 sales_setting_sales(page, merchant_id)
                 print("✅ Sales 设置完成\n")
@@ -83,7 +84,7 @@ def run_paylabs_full_flow(
             # 5️⃣ 平台登录（可选）
             if do_platform_login:
                 print("🔄 开始平台登录")
-                platform_login(page, operator_login_name)
+                platform_login(page, evn,operator_login_name)
                 print("✅ 平台登录成功\n")
 
             # 6️⃣ 风险审核（可选）
@@ -119,6 +120,10 @@ if __name__ == '__main__':
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_DIR = os.path.join(BASE_DIR, '../../common', 'data')
     pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
+
+    merchant_id = "010328"  # 初始化 merchant_id
+    evn = "sitch"
+
 
     run_paylabs_full_flow(
         register_email="tax_agent0010@linshiyou.com",

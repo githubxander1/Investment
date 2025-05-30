@@ -1,8 +1,6 @@
 from tenacity import retry, stop_after_attempt
 import os
-
 from playwright.sync_api import expect, Playwright, sync_playwright
-
 from CompanyProject.巴迪克.utils.GoogleSecure import GoogleAuth
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
 
@@ -10,18 +8,15 @@ from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_s
 def sales_login(page, env, sales_login_name):
     url = 'http://test.paylabs.id/sales/paylabs-user-login.html' if env == 'test' else 'https://sitch-sales.paylabs.co.id/paylabs-user-login.html'
     page.goto(url)
-    # 切换语言
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
 
-    # sales 端登录
     page.get_by_role("textbox", name="Phone Number").fill(sales_login_name)
     page.get_by_role("textbox", name="Password").fill("A123456@test")
 
     perform_block_slider_verification(page)
     page.get_by_role("button", name="Login").click()
 
-    #等待
     page.wait_for_timeout(3000)
     @retry(stop=stop_after_attempt(3))
     def get_google_code(page, env):
@@ -35,7 +30,6 @@ def sales_login(page, env, sales_login_name):
                 login_name=sales_login_name
             )
         page.locator("#googleCode").fill(google_code)
-        # page.pause()
         page.get_by_role("button", name="Login").click()
 
         if page.locator(".googleCodeError").is_visible():
@@ -44,26 +38,19 @@ def sales_login(page, env, sales_login_name):
             raise ValueError("谷歌验证码错误")
 
     get_google_code(page, env)
-    page.get_by_role("button", name="Login").click()
 
     page.wait_for_timeout(2000)
     try:
-        # page_title = page.title()
-        # print(f'页面标题：{page_title}')
-        # expect(page).to_have_title("Paylabs- Payin Summary")
         url = page.url
         assert_url = "http://test.paylabs.id/sales/paylabs-board-board.html" if env == 'test' else "https://sitch-sales.paylabs.co.id/paylabs-board-board.html"
         assert url == assert_url, f"登录后URL 不匹配，实际值为 {url}"
-        print("登录成功")
-        # 等待页面加载完成并检查 URL
+
         expect(page).to_have_url(assert_url, timeout=5000)
         loging_name = page.locator("#txtOperatorName").text_content()
-        print(f"登录成功，当前登录用户为：{loging_name}")
         expect(loging_name).to_be_visible()
-        # page.pause()
+        print(f"登录成功，当前登录用户为：{loging_name}")
     except Exception as e:
         print(f'登录失败：{e}')
-        # page.pause()
 
 def sales_setting_sales(page, merchant_id):
     page.get_by_role("link", name="ﱖ Merchant ").click()
@@ -282,7 +269,6 @@ def sales_submit_info(page,email, merchant_id, pdf_file_path):
         select_bank_account.click()
         page.locator("#merFormModal i").click()
 
-        #监听 file_chooser 事件
         page.on('filechooser', lambda file_chooser: file_chooser.set_files(pdf_file_path))
         page.locator("#temps-modal").click()
         page.wait_for_timeout(1000)
@@ -296,7 +282,6 @@ def sales_submit_info(page,email, merchant_id, pdf_file_path):
     page.wait_for_timeout(1000)
     page.locator("#btnSubmit").click()
     page.wait_for_timeout(2000)
-    # page1.pause()
     page.get_by_role("link", name="I got it").click()
     print("客户端资料提交成功")
 
@@ -307,15 +292,12 @@ def platform_login(page,env:str,paylabs_operator_login_name):
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
 
-    # page.pause()
     # 登录
     page.get_by_role("textbox", name="E-mail").fill(paylabs_operator_login_name)
-    # page.get_by_role("textbox", name="Password Verification Code").fill("Abc@123456789")
     page.get_by_role("textbox", name="Password Verification Code").fill("A123456@test")
 
     perform_block_slider_verification(page)
     page.get_by_role("button", name=" Login").click()
-    # page.pause()
     page.wait_for_timeout(2000)
     # 如果有弹窗，点确定
     has_login = page.get_by_role("heading", name="This user has logged in on")
@@ -620,15 +602,15 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
 
     #商户注册
-    register_email = "paylabsmerchant@sitch.com"
+    # register_email = "paylabsmerchant@sitch.com"
     # paylabs_merchant_register(playwright, "test", register_email)
     #
     #
     # # sales端提交资料
-    sales_login_name = '15318544153'
-#     # merchant_id = "010327"
-    page = context.new_page()
-    sales_login(page, 'sitch',sales_login_name)
+#     sales_login_name = '15318544153'
+# #     # merchant_id = "010327"
+#     page = context.new_page()
+#     sales_login(page, 'sitch',sales_login_name)
 #     # # #
 #     # # 获取第一条商户id
 #     page.get_by_role("link", name="ﱖ Merchant ").click()
