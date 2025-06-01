@@ -5,7 +5,8 @@ import pandas as pd
 import requests
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
-    Combination_ids, Combination_ids_to_name, ETF_adjustment_holding_file, Strategy_id_to_name, Combination_headers
+    Combination_ids, Combination_ids_to_name, ETF_adjustment_holding_file, Strategy_id_to_name, Combination_headers, \
+    all_ids, id_to_name
 
 
 def send_request(id):
@@ -63,8 +64,8 @@ def extract_result(data, id):
         profitLossRate = relocateInfo.get('profitLossRate', 0) or 0
 
         relocate_Info.append({
-            # 'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
-            'ETF组合': Combination_ids_to_name.get(id, '未知ETF'),
+            # '组合': ETF_ids_to_name.get(id, '未知ETF'),
+            '组合': id_to_name.get(id, '未知ETF'),
             '股票代码': relocateInfo.get('code'),
             # '市场': relocateInfo.get('marketCode'),
             '名称': relocateInfo.get('name'),
@@ -79,7 +80,7 @@ def extract_result(data, id):
     holding_Info = []
     if holdingInfo.get('code'):
         holding_Info.append({
-            'ETF组合': ETF_ids_to_name.get(id, '未知ETF'),
+            '组合': ETF_ids_to_name.get(id, '未知ETF'),
             '股票代码': holdingInfo.get('code'),
             # '市场': holdingInfo.get('marketCode'),
             '名称': holdingInfo.get('name'),
@@ -95,11 +96,11 @@ def save_results_to_xlsx(relocation_data, holding_data, filename):
     # 检查文件是否存在
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
-    etf_relocation = [item for item in relocation_data if item['ETF组合'] in ETF_ids_to_name.values()]
-    combo_relocation = [item for item in relocation_data if item['ETF组合'] in Combination_ids_to_name.values()]
+    etf_relocation = [item for item in relocation_data if item['组合'] in ETF_ids_to_name.values()]
+    combo_relocation = [item for item in relocation_data if item['组合'] in Combination_ids_to_name.values()]
 
-    etf_holding = [item for item in holding_data if item['ETF组合'] in ETF_ids_to_name.values()]
-    combo_holding = [item for item in holding_data if item['ETF组合'] in Combination_ids_to_name.values()]
+    etf_holding = [item for item in holding_data if item['组合'] in ETF_ids_to_name.values()]
+    combo_holding = [item for item in holding_data if item['组合'] in Combination_ids_to_name.values()]
 
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
         if etf_relocation:
@@ -117,7 +118,7 @@ def main():
     all_relocation_data = []
     all_holding_data = []
     # for id in ETF_ids:
-    for id in Combination_ids:
+    for id in all_ids:
         result = send_request(id)
         # pprint(result)
         if not result or not result.get('result'):

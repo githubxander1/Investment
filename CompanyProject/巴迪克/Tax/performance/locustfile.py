@@ -1,4 +1,4 @@
-# locustfile.py
+# locustfile_1.py
 import datetime
 import logging
 import time
@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from faker import Faker
 from locust import HttpUser, task, between
 
-from CompanyProject.巴迪克.Tax.Api.common import TaxAPIBase, CONFIG
+from CompanyProject.巴迪克.Tax.Api.com.common import TaxAPIBase, CONFIG
 # from utils.helper import send_create_order
 # import asyncio
 import json

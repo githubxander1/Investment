@@ -72,14 +72,14 @@ async def strategy_wrapper():
 
 async def etf_combo_wrapper():
     """组合任务执行包装"""
-    print("\n[ETF组合] 开始执行...")
+    print("\n[组合] 开始执行...")
     try:
         await Combination_main()
         next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
-        print(f"\n[ETF组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"\n[组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         print("----------------------------------------------------")
     except Exception as e:
-        print(f"[ETF组合] 执行异常: {e}")
+        print(f"[组合] 执行异常: {e}")
 
 # 主程序 =========================================================
 async def main():
@@ -93,7 +93,7 @@ async def main():
                 callback=strategy_wrapper
             ),
             create_scheduler(
-                name="ETF组合调度",
+                name="组合调度",
                 config=SCHEDULE_CONFIG["etf_combo"],
                 callback=etf_combo_wrapper
             )

@@ -15,8 +15,8 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     # page.set_viewport_size({"width": 1920, "height": 1040})
     # context = browser.new_context(no_viewport=True)
     # context = browser.new_context(viewport={"width": 1920, "height": 1080})
-    # page.goto("http://payok-test.com/merchant/payok-register-register.html") #测试环境
-    page.goto("https://m.payok.com/payok-register-register.html") #正式环境
+    page.goto("http://payok-test.com/merchant/payok-register-register.html") #测试环境
+    # page.goto("https://m.payok.com/payok-register-register.html") #正式环境
     # page.evaluate("() => { document.documentElement.requestFullscreen(); }")
     next_button = page.locator("text=Next")
     page.wait_for_selector("text=Next", state="visible")
@@ -116,8 +116,8 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     # page.get_by_role("textbox", name="Email Verification Code *").fill("5@linshiyou.com")
     # page.locator("#mpanel4 div").filter(has_text="Slide right to unlock").locator("i").click()
     # page.get_by_role("textbox", name="Email Verification Code *").fill("123654")
-    page.get_by_role("textbox", name="Password*").fill("A123456@test")
-    page.get_by_role("textbox", name="Comfirm Password *").fill("A123456@test")
+    page.get_by_role("textbox", name="Password*").fill("QWEqwe@123456")
+    page.get_by_role("textbox", name="Comfirm Password *").fill("QWEqwe@123456")
     page.get_by_role("button", name="Submit").click()
     continue_register = page.get_by_role("button", name="Continue Registration")
     continue_register.click()
@@ -135,6 +135,6 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
 
 if __name__ == '__main__':
     with sync_playwright() as playwright:
-        register_email = "1@linshiyou.com"
+        register_email = "Nick@dev.m.com"
         merchant_name =  register_email
-        # payok_register(playwright, register_email, merchant_name)
+        payok_register(playwright, register_email, merchant_name)

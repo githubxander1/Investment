@@ -32,7 +32,7 @@ def fetch_and_extract_data(portfolio_id):
     headers = Combination_headers
     params = {"id": portfolio_id, "dynamic_id": 0}
     try:
-        response = requests.get(url, params=params, headers=headers)
+        response = requests.get(url, params=params, headers=headers,verify='D:/Xander/Pycharm_gitee/reqable-ca.crt')
         response.raise_for_status()
         response_json = response.json()
         # pprint(response_json)
@@ -185,12 +185,13 @@ async def Combination_main():
             header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
             new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
             #通知时不要显示标题行
-            new_data_print_without_header = new_data.drop(columns=['理由'], errors='ignore').to_string(index=False)
-            send_notification(f"{len(new_data)} 条新增交易，\n{new_data_print_without_header}")
+            # new_data_print_without_header = new_data.drop(columns=['理由'], errors='ignore').to_string(index=False)
+            new_data_print_without_header = new_data_without_content.drop(columns=['理由'], errors='ignore').to_string(index=False)
+            send_notification(f"{len(new_data)} 条新增交易，\n {new_data_print_without_header}")
         else:
-            print("今日无新增交易数据")
+            print("---------------今日无新增交易数据----------------")
     else:
-        print("今日无任何交易更新")
+        print("---------今日无任何交易更新-----------")
 
 
 

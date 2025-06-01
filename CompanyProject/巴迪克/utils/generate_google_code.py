@@ -8,7 +8,7 @@ import struct
 import hashlib
 from typing import Optional
 
-from CompanyProject.巴迪克.utils.GoogleSecure import CalGoogleCode
+# from CompanyProject.巴迪克.utils.GoogleSecure import CalGoogleCode
 from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
 # 动态获取配置文件路径
@@ -98,18 +98,18 @@ if __name__ == "__main__":
 
 
     # 测试用例
-    def get_code():
-        secret = "x4aaz7setzhuvnzehk7ueqw2tvn2aaj7"
-
-        # 新旧算法对比
-        old_code = CalGoogleCode.cal_google_code(secret)  # GoogleSecure1的方法
-        new_code = GoogleAuthenticator._calculate_code(secret)
-
-        print(f"旧算法: {old_code}")
-        print(f"新算法: {new_code}")
-        assert old_code == new_code, "验证码不一致"
-
-    get_code()
+    # def get_code():
+    #     secret = "x4aaz7setzhuvnzehk7ueqw2tvn2aaj7"
+    #
+    #     # 新旧算法对比
+    #     old_code = CalGoogleCode.cal_google_code(secret)  # GoogleSecure1的方法
+    #     new_code = GoogleAuthenticator._calculate_code(secret)
+    #
+    #     print(f"旧算法: {old_code}")
+    #     print(f"新算法: {new_code}")
+    #     assert old_code == new_code, "验证码不一致"
+    #
+    # get_code()
 
     # if __name__ == "__main__":
     #     test_code()

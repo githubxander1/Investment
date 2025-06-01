@@ -23,9 +23,9 @@ def send_notification(message):
     if len(message) > 256:
         message = message[:256 - 3] + '...'
     notification.notify(
-        title="交易通知",
+        title="trade通知",
         message=message,
-        app_name="THS 自动交易",
+        app_name="THS",
         timeout=10
     )
 
@@ -93,18 +93,18 @@ def send_dingtalk_notification(message):
     # DINGTALK_WEBHOOK = os.getenv('DINGTALK_WEBHOOK')
     # KEYWORD = os.getenv('DINGTALK_KEYWORD', '交易通知')
     DINGTALK_WEBHOOK = 'https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2'
-    KEYWORD =  '交易通知'
+    KEYWORD =  '通知'
 
     data = {
         "msgtype": "markdown",
         "markdown": {
-            "title": "调仓通知",
-            "text": f"**{KEYWORD}**\n {message}\n"
+            "title": "通知",
+            "text": f"{KEYWORD}：\n {message}"
             # "text": f"**{KEYWORD}**\n {message}\n 时间：{datetime.now().strftime('%Y-%m-%d %H:%M')}"
         }
     }
     try:
-        response = requests.post(DINGTALK_WEBHOOK, json=data)
+        response = requests.post(DINGTALK_WEBHOOK, json=data,verify='D:/Xander/Pycharm_gitee/reqable-ca.crt')
         response.raise_for_status()
         # logger.info('钉钉通知发送成功')
     except Exception as e:

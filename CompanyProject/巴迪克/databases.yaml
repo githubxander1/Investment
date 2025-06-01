@@ -22,11 +22,11 @@ environments:
         password: VSwE8zVrfuUP#HN
         database: tax_operator
 
-  stich:
-    paylabs:
-      operator:
-        host: 192.168.0.233
-        port: 3306
-        user: paylabs_payapi
-        database: paylabs
-        schema: operator
+#  stich:
+#    paylabs:
+#      operator:
+#        host: 192.168.0.233
+#        port: 3306
+#        user: paylabs_payapi
+#        database: paylabs
+#        schema: operator
