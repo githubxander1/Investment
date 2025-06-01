@@ -1,4 +1,5 @@
 import requests
+from pprint import pprint
 
 def get_stock_base_info():
     """
@@ -42,4 +43,4 @@ def get_stock_base_info():
 if __name__ == "__main__":
     result = get_stock_base_info()
     if result:
-        print(result)
+        pprint(result)

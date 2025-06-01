@@ -17,13 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\others\Investment\THS\AutoTrade\data\Etf_stock_portfolio_today.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\etf_stock_position.csv">
           <value>
             <Attribute>
@@ -81,6 +74,27 @@
           </value>
         </entry>
         <entry key="\others\Investment\THS\北向资金\data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\tushare回测\000001_minute.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\tushare回测\stock_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\tushare回测\sz000001_minute.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

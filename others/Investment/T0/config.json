@@ -1,0 +1,6 @@
+{
+    "tushare_token": "2e9a7a0827b4c655aa6c267dc00484c6e76ab1022b5717092b44573e",
+    "dingtalk_webhook": "https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2",
+    "stocks": ["000001", "600519", "510300"],
+    "monitor_interval": 15
+}

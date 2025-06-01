@@ -49,4 +49,4 @@ df.rename(columns=column_mapping, inplace=True)
 print(df)
 
 # 保存到CSV文件
-df.to_csv('D:\\stock_list.csv', index=False, encoding='utf-8-sig')
+# df.to_csv('D:\\stock_list.csv', index=False, encoding='utf-8-sig')
