@@ -111,7 +111,7 @@ def sales_setting_sales(page, merchant_id):
     page.get_by_role("textbox", name="Remarks").fill("1设置sales")
     page.locator("#btnSureSaleModal").click()
     print("销售设置成功")
-def sales_submit_info(page,email, merchant_id, pdf_file_path):
+def sales_submit_merchant_info(page,email, merchant_id, pdf_file_path):
     # 开始提交资料
     page.get_by_role("link", name="ﱖ Merchant ").click()
     page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()

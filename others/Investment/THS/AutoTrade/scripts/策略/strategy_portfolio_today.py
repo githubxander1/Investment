@@ -42,7 +42,7 @@ async def get_latest_position_and_trade(strategy_id):
     headers = {"User-Agent": ua.random}
 
     try:
-        data = requests.get(url, headers=headers, timeout=10, verify='D:/Xander/Pycharm_gitee/reqable-ca.crt').json()
+        data = requests.get(url, headers=headers, timeout=10).json()
     except requests.RequestException as e:
         print(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []

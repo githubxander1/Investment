@@ -32,7 +32,7 @@ def fetch_and_extract_data(portfolio_id):
     headers = Combination_headers
     params = {"id": portfolio_id, "dynamic_id": 0}
     try:
-        response = requests.get(url, params=params, headers=headers,verify='D:/Xander/Pycharm_gitee/reqable-ca.crt')
+        response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         response_json = response.json()
         # pprint(response_json)

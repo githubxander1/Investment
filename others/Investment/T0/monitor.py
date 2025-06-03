@@ -1,5 +1,4 @@
 from pprint import pprint
-
 import akshare as ak
 import os
 import logging
@@ -17,16 +16,18 @@ logger = logging.getLogger(__name__)
 # 加载 indicator 模块（根据你的路径调整）
 from others.Investment.T0.real1 import indicator1
 from others.Investment.T0.real2 import indicator2
-from real3 import indicator3
+from others.Investment.T0.real3 import indicator3
 
 
 class StockMonitor:
     def __init__(self):
         self.config = {
             "dingtalk_webhook": "https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2",
-            "stocks": ["159920", "513130", "600900"],
+            # "stocks": ["601398", "601728", "600900"],
+            "stocks": ["601398"],
             "monitor_interval": 60,
-            "cache_dir": "cache"
+            "cache_dir": "cache",
+            "max_cache_size": 100  # 增加缓存大小配置
         }
 
         # 初始化缓存目录
@@ -35,7 +36,7 @@ class StockMonitor:
 
         # 初始化缓存结构
         self.price_cache = {}
-        self.load_cache_from_csv()
+        self.load_cache_from_parquet()  # 改用Parquet格式
 
         # 初始化钉钉 Webhook
         self.dingtalk_webhook = self.config['dingtalk_webhook']
@@ -45,30 +46,74 @@ class StockMonitor:
 
         logger.info("股票监控系统已初始化")
 
-    def load_cache_from_csv(self):
-        """从CSV加载已有缓存"""
-        for stock_code in self.config['stocks']:
-            cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.csv")
-            if os.path.exists(cache_file):
-                df = pd.read_csv(cache_file)
-                self.price_cache[stock_code] = df.to_dict(orient='records')
-            else:
-                self.price_cache[stock_code] = []
+    def load_cache_from_parquet(self):
+        """从Parquet加载已有缓存，使用更高效的格式"""
+        try:
+            for stock_code in self.config['stocks']:
+                cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.parquet")
+                if os.path.exists(cache_file):
+                    df = pd.read_parquet(cache_file)
+                    self.price_cache[stock_code] = df.to_dict(orient='records')
+                else:
+                    self.price_cache[stock_code] = []
+        except Exception as e:
+            logger.error(f"加载Parquet缓存失败，回退到CSV: {e}")
+            # 如果Parquet加载失败，回退到CSV
+            for stock_code in self.config['stocks']:
+                cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.csv")
+                if os.path.exists(cache_file):
+                    df = pd.read_csv(cache_file)
+                    self.price_cache[stock_code] = df.to_dict(orient='records')
+                else:
+                    self.price_cache[stock_code] = []
 
-    def save_cache_to_csv(self, stock_code):
-        """将缓存保存到CSV文件"""
-        cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.csv")
-        if stock_code in self.price_cache and self.price_cache[stock_code]:
-            df = pd.DataFrame(self.price_cache[stock_code])
+    def save_cache_to_parquet(self, stock_code):
+        """将缓存保存到Parquet文件，提高性能"""
+        try:
+            if stock_code in self.price_cache and self.price_cache[stock_code]:
+                df = pd.DataFrame(self.price_cache[stock_code])
+
+                # 优化数据类型以节省内存和磁盘空间
+                for col in df.columns:
+                    if col in ['open', 'high', 'low', 'close', 'pre_close']:
+                        df[col] = df[col].astype('float32')
+                    elif col in ['volume']:
+                        df[col] = df[col].astype('int32')
+
+                cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.parquet")
+                df.to_parquet(cache_file, index=False)
+        except Exception as e:
+            logger.error(f"保存Parquet缓存失败，尝试CSV: {e}")
+            # 备用方案：保存为CSV
+            cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.csv")
             df.to_csv(cache_file, index=False)
 
     def append_to_cache(self, stock_code, data):
-        """向缓存中追加一条记录"""
-        self.price_cache.setdefault(stock_code, []).append(data)
-        # 控制缓存大小，保留最近 5 条
-        while len(self.price_cache[stock_code]) > 5:
+        """向缓存中追加一条记录，并优化内存使用"""
+        if stock_code not in self.price_cache:
+            self.price_cache[stock_code] = []
+
+        # 转换数据为更紧凑的格式
+        compact_data = {
+            't': datetime.strptime(data['time'], "%Y-%m-%d %H:%M:%S").timestamp(),  # 时间戳存储
+            'o': float(data['open']),
+            'h': float(data['high']),
+            'l': float(data['low']),
+            'c': float(data['close']),
+            'pc': float(data['pre_close']),
+            'v': int(data['volume']),
+            'n': data['name']  # 股票名称
+        }
+
+        self.price_cache[stock_code].append(compact_data)
+
+        # 控制缓存大小
+        while len(self.price_cache[stock_code]) > self.config['max_cache_size']:
             self.price_cache[stock_code].pop(0)
-        self.save_cache_to_csv(stock_code)
+
+        # 定期保存到磁盘（每10条记录保存一次）
+        if len(self.price_cache[stock_code]) % 10 == 0:
+            self.save_cache_to_parquet(stock_code)
 
     def is_trading_time(self):
         """判断当前是否为交易日的交易时间"""
@@ -139,62 +184,50 @@ class StockMonitor:
             logger.error(f"获取股票 {stock_code} 前一日收盘价失败: {e}")
             return None
 
-    def get_stock_data(self, stock_code):
-        """获取股票分时行情"""
-        try:
-            df = ak.stock_zh_a_tick_tx_js(symbol=stock_code)
-            pprint(df)
-            if df.empty:
-                logger.warning(f"无法获取股票 {stock_code} 的分时数据")
-                return None
-
-            latest = df.iloc[-1]
-            time_str = latest['成交时间']
-
-            return {
-                'code': stock_code,
-                'open': float(df.iloc[0]['成交价格']),
-                'high': df['成交价格'].max(),
-                'low': df['成交价格'].min(),
-                'close': float(latest['成交价格']),
-                'pre_close': self.get_pre_close_price(stock_code),
-                'time': time_str,
-                'volume': int(latest['成交量'])
-            }
-
-        except Exception as e:
-            logger.error(f"获取股票 {stock_code} 数据失败: {e}")
+    def calculate_indicators(self, records):
+        """计算指标并优化性能"""
+        if len(records) < 3:
             return None
 
-    def calculate_indicators(self, records):
-        close = pd.Series([r['close'] for r in records])
-        high = pd.Series([r['high'] for r in records])
-        low = pd.Series([r['low'] for r in records])
-        volume = pd.Series([r['volume'] for r in records])
+        # 将记录转换为DataFrame以提高计算效率
+        df = pd.DataFrame(records)
 
-        ind1 = indicator1(close, volume, high, low)
-        ind2 = indicator2(close, volume, high, low, close.index)
-        ind3 = indicator3(close, high, low)
+        # 转换数据类型以提高计算速度
+        numeric_cols = ['o', 'h', 'l', 'c', 'pc', 'v']
+        df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors='coerce')
 
-        buy_count = sum([
-            bool(ind1['buy_signal'].iloc[-1]),
-            bool(ind2['buy_signal'].iloc[-1]),
-            bool(ind3['buy_signal'].iloc[-1]),
-        ])
+        close = df['c']
+        high = df['h']
+        low = df['l']
+        volume = df['v']
 
-        sell_count = sum([
-            bool(ind1['sell_signal'].iloc[-1]),
-            bool(ind2['sell_signal'].iloc[-1]),
-            bool(ind3['sell_signal'].iloc[-1]),
-        ])
+        try:
+            ind1 = indicator1(close, volume, high, low)
+            ind2 = indicator2(close, volume, high, low, df.index)
+            ind3 = indicator3(close, high, low)
 
-        return {
-            'resistance': (ind1['resistance'] + ind2['resistance'] + ind3['resistance']) / 3,
-            'support': (ind1['support'] + ind2['support'] + ind3['support']) / 3,
-            'current_price': records[-1]['close'],
-            'buy_signal': buy_count >= 2,
-            'sell_signal': sell_count >= 2,
-        }
+            buy_count = sum([
+                bool(ind1['buy_signal'].iloc[-1]),
+                bool(ind2['buy_signal'].iloc[-1]),
+                bool(ind3['buy_signal'].iloc[-1]),
+            ])
+
+            sell_count = sum([
+                bool(ind1['sell_signal'].iloc[-1]),
+                bool(ind2['sell_signal'].iloc[-1]),
+                bool(ind3['sell_signal'].iloc[-1]),
+            ])
+
+            return {
+                'resistance': (ind1['resistance'] + ind2['resistance'] + ind3['resistance']) / 3,
+                'support': (ind1['support'] + ind2['support'] + ind3['support']) / 3,
+                'current_price': records[-1]['c'],
+                'buy_signal': buy_count >= 2,
+                'sell_signal': sell_count >= 2,
+            }
+        except Exception as e:
+            logger.error(f"计算指标失败: {e}")
+            return None
 
     def send_notification(self, message):
         """发送系统通知"""
@@ -252,6 +285,9 @@ class StockMonitor:
         # 提取指标数据
         indicators = self.calculate_indicators(records)
 
+        if indicators is None:
+            return
+
         # 判断是否触发信号
         if indicators['buy_signal']:
             msg = f"{stock_code} 触发【买入信号】：支撑位 {indicators['support']:.2f}"
@@ -291,15 +327,24 @@ class StockMonitor:
 
 if __name__ == "__main__":
     monitor = StockMonitor()
-    stock_code = "000001"
+    stocks = {"工商银行":"601398",
+              "中国电信":"601728",
+              "长江电力":"600900"}
+    # stock_code = ["601398", "601728", "600900"]
+    stock_code = ["601398"]
+    # for stock_name, stock_code in stocks.items():
+    #     #打印对应的股票数据，格式：股票名称：股票代码
+    #     print(stock_name, stock_code)
 
-    # 测试实时行情
-    # data = monitor.get_realtime_data(stock_code)
-    # print("实时行情:", data)
+    for stock_code in stock_code:
 
-    # 测试前一日收盘价
-    pre_close = monitor.get_pre_close_price(stock_code)
-    print("前一日收盘价:", pre_close)
+        # 测试实时行情
+        data = monitor.get_realtime_data(stock_code)
+        print("实时行情:", data)
 
-    # 启动监控
-    monitor.start_monitoring()
+        # 测试前一日收盘价
+        pre_close = monitor.get_pre_close_price(stock_code)
+        print("前一日收盘价:", pre_close)
+
+        # 启动监控
+        monitor.start_monitoring()

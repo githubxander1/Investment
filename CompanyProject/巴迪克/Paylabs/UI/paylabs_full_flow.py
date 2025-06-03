@@ -24,10 +24,10 @@ def run_paylabs_full_flow(
     sales_login_name: str,
     operator_login_name: str,
     pdf_file_path: str,
-    do_register_agent: bool = True,
+    do_register_merchant: bool = True,
     do_sales_login: bool = True,
     do_sales_setting: bool = True,
-    do_submit_info: bool = True,
+    do_submit_merchant_info: bool = True,
     do_platform_login: bool = True,
     do_risk_audit: bool = True,
     do_legal_audit: bool = True,
@@ -49,7 +49,7 @@ def run_paylabs_full_flow(
             # merchant_id = "010328"  # 初始化 merchant_id
 
             # 1️⃣ 注册 Agent（可选）
-            if do_register_agent:
+            if do_register_merchant:
                 print("🔄 开始注册 Agent")
                 paylabs_merchant_register(p, register_email, pdf_file_path)
                 print("✅ Agent 注册完成\n")
@@ -76,7 +76,7 @@ def run_paylabs_full_flow(
                 print("✅ Sales 设置完成\n")
 
             # 4️⃣ 提交商户资料（可选）
-            if do_submit_info:
+            if do_submit_merchant_info:
                 print("🔄 开始提交商户资料")
                 sales_submit_info(page, register_email, merchant_id,  pdf_file_path)
                 print("✅ 商户资料提交成功\n")
@@ -131,13 +131,13 @@ if __name__ == '__main__':
         operator_login_name="Xander@sitch.paylabs.co.id",
         pdf_file_path=pdf_file_path,
 
-        do_register_agent=False,
-        do_sales_login=False,
-        do_sales_setting=False,
-        do_submit_info=False,
-        do_platform_login=True,
-        do_risk_audit=False,
-        do_legal_audit=True,
-        do_request_activation=True,
-        do_activation_audit=True
+        do_register_merchant=False,#  是否注册Merchant
+        do_sales_login=False,#  是否登录Sales
+        do_sales_setting=False,# 是否设置Sales
+        do_submit_merchant_info=False,# 是否提交商户资料
+        do_platform_login=True,# 是否登录平台端
+        do_risk_audit=False,#  是否进行风险审核
+        do_legal_audit=False,#  是否进行法律风控审核
+        do_request_activation=False,#  是否进行激活请求
+        do_activation_audit=False #  是否进行激活审核
     )
