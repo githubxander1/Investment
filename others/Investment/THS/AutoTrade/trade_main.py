@@ -24,7 +24,7 @@ from pathlib import Path
 sys.path.append(Path(__file__).parent.as_posix())  
 sys.path.append(Path(__file__).parent.parent.as_posix())  
 sys.path.append(Path(__file__).parent.parent.parent.as_posix())  
-print(sys.path)  
+# print(sys.path)
 
 from others.Investment.THS.AutoTrade.config.settings import \
     STRATEGY_TODAY_ADJUSTMENT_FILE, Combination_portfolio_today

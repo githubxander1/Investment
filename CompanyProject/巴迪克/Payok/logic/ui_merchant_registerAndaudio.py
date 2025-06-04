@@ -58,15 +58,15 @@ def run(playwright: Playwright) -> None:
     # page.wait_for_selector("text=Next", state="visible")
 
     #商户注册
-    register_email = "1@linshiyou.com"
+    register_email = "2@linshiyou.com"
     merchant_password = "A123456@test"
     merchant_name = register_email
     # merchant_name = '1'
     # payok_register(playwright, register_email, merchant_name) #商户注册
 
-    operator_login_name = 'Xander@test.com'
-    operator_password = 'QWEqwe@123456'
-    platform_login(playwright,operator_login_name, operator_password) #平台端登录
+    # operator_login_name = 'Xander@test.com'
+    # operator_password = 'QWEqwe@123456'
+    # platform_login(playwright,operator_login_name, operator_password) #平台端登录
     # page.pause()
 
     # platform_merchant_go_live(page,merchant_name) # 审核上线

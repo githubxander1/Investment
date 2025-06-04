@@ -46,7 +46,7 @@ def merchant_login(playwright: Playwright, login_email,password) -> None:
 
 
 if __name__ == '__main__':
-    login_email= "3@qq.com"
+    login_email= "payok@test.com"
     password= "A123456@test"
     with sync_playwright() as playwright:
         merchant_login(playwright, login_email,password)

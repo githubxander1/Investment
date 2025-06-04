@@ -144,6 +144,6 @@ def run(playwright: Playwright, email) -> None:
     browser.close()
 
 if __name__ == '__main__':
-    email = '1@qq.com'
+    email = '4@qq.com'
     with sync_playwright() as playwright:
         run(playwright, email)
