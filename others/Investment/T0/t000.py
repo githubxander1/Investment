@@ -5,13 +5,35 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import akshare as ak
 
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
 
-def calculate_support_resistance(df):
+
+def calculate_rsi(close, window=14):
+    delta = close.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
+
+
+def calculate_macd(close, short_window=12, long_window=26, signal_window=9):
+    short_ema = close.ewm(span=short_window, adjust=False).mean()
+    long_ema = close.ewm(span=long_window, adjust=False).mean()
+    macd_line = short_ema - long_ema
+    signal_line = macd_line.ewm(span=signal_window, adjust=False).mean()
+    return macd_line, signal_line, macd_line - signal_line
+
+
+def calculate_support_resistance(df, window=50, multiplier=1.5):
     """
     计算支撑位和阻力位，并生成买卖信号
 
     参数:
     df: DataFrame，包含股票数据(开盘价、最高价、最低价、收盘价)
+    window: 布林带窗口长度
+    multiplier: 标准差倍数
 
     返回:
     df: 处理后的DataFrame，包含计算结果和信号
@@ -22,8 +44,6 @@ def calculate_support_resistance(df):
         raise ValueError(f"数据缺少必要的列: {required_columns}")
 
     # 计算布林带
-    window = 20
-    multiplier = 2
     df['middle_band'] = df['收盘'].rolling(window=window).mean()
     df['upper_band'] = df['middle_band'] + multiplier * df['收盘'].rolling(window=window).std()
     df['lower_band'] = df['middle_band'] - multiplier * df['收盘'].rolling(window=window).std()
@@ -36,10 +56,23 @@ def calculate_support_resistance(df):
     df['buy_signal'] = (df['收盘'] < df['支撑']) & (df['收盘'].shift(1) >= df['支撑'].shift(1))
     df['sell_signal'] = (df['收盘'] > df['阻力']) & (df['收盘'].shift(1) <= df['阻力'].shift(1))
 
+    # 增加最小信号间隔时间（例如 30 分钟）
+    df['buy_signal'] = df['buy_signal'] & (df['buy_signal'].rolling('30T').sum() == 0)
+    df['sell_signal'] = df['sell_signal'] & (df['sell_signal'].rolling('30T').sum() == 0)
+
+    # 引入 RSI 和 MACD 过滤信号
+    df['rsi'] = calculate_rsi(df['收盘'])
+    macd_line, signal_line, _ = calculate_macd(df['收盘'])
+    df['macd_uptrend'] = macd_line > signal_line
+
+    df['buy_signal'] = df['buy_signal'] & (df['rsi'] < 30) & df['macd_uptrend']
+    df['sell_signal'] = df['sell_signal'] & (df['rsi'] > 70) & ~df['macd_uptrend']
+
     return df
 
 
-def plot_support_resistance(df, title='支撑位和阻力位分析'):
+
+def plot_support_resistance(df, title='分时支撑位阻力位'):
     """
     绘制支撑位、阻力位和买卖信号
 
@@ -61,10 +94,11 @@ def plot_support_resistance(df, title='支撑位和阻力位分析'):
     buy_points = df[df['buy_signal']]
     sell_points = df[df['sell_signal']]
 
-    plt.scatter(buy_points.index, buy_points['支撑'], marker='^', color='red', s=100, label='买入信号')
-    plt.scatter(sell_points.index, sell_points['阻力'], marker='v', color='green', s=100, label='卖出信号')
+    plt.scatter(buy_points.index, buy_points['支撑'], marker='^', color='red', s=100, label='买入')
+    plt.scatter(sell_points.index, sell_points['阻力'], marker='v', color='green', s=100, label='卖出')
 
     # 设置图表属性
+
     plt.title(title)
     plt.xlabel('时间')
     plt.ylabel('价格')
@@ -84,7 +118,9 @@ def plot_support_resistance(df, title='支撑位和阻力位分析'):
 if __name__ == "__main__":
     import akshare as ak
     today = datetime.date.today().strftime('%Y%m%d')
-    data = ak.stock_zh_a_hist_min_em(symbol='600900', period="1", start_date=today, end_date=today)
+    symbol = '600900'
+    # data = ak.stock_zh_a_hist_min_em(symbol=symbol, period="1", start_date=today, end_date=today)
+    data = ak.stock_zh_a_hist_min_em(symbol=symbol, period="1", start_date='20250604', end_date='20250604')
     print(data)
 
     # 重命名列以匹配函数需求
@@ -104,5 +140,5 @@ if __name__ == "__main__":
     df = calculate_support_resistance(data)
 
     # 绘制图表
-    plot = plot_support_resistance(df, '支撑位和阻力位分析示例')
+    plot = plot_support_resistance(df, f'{symbol}分时支撑阻力位')
     plot.show()
