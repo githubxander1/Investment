@@ -75,68 +75,66 @@ class DateFormatter(Formatter):
 
 import mplcursors
 
-import mplcursors
-
-def plot_combined_price_fund(df):
+def plot_indicator(df):
     """
-    合并价格和资金偏离度图表，并支持鼠标悬停显示时间和当前值。
-    图表结构：
-    - 上部：价格（CLOSE）和资金偏离度（资金）
-    - 下部：MACD柱状图和信号线
+    绘制指标图：
+    - 上半部分：DIFF、DEA曲线 + MAC柱状线（区分颜色）
+    - 下半部分：资金指标曲线
     """
-    fig, (ax_main, ax_macd) = plt.subplots(
-        2, 1, figsize=(12, 8), sharex=True,
-        gridspec_kw={'height_ratios': [3, 1]}
+    fig, (ax_close, ax_macd, ax_fund) = plt.subplots(
+        3, 1, figsize=(12, 8), sharex=True,
+        gridspec_kw={'height_ratios': [3, 1, 2]}
     )
 
-    # ------------------- 绘制价格线 + 资金偏离度 -------------------
-    ax_main.plot(df.index, df['CLOSE'], label='收盘价', color='blue', linewidth=1.5)
-    ax_main.plot(df.index, df['资金'], label='资金偏离度', color='green', linestyle='--', linewidth=1.2)
+    # ------------------- 绘制价格线 -------------------
+    ax_close.plot(df.index, df['CLOSE'], label='CLOSE', color='blue', linewidth=1.2)
+    ax_close.set_ylabel('价格', fontsize=12)
+    ax_close.legend(loc='upper left')
+    ax_close.grid(alpha=0.3, linestyle='--')
 
-    ax_main.set_ylabel('价格 / 资金偏离度', fontsize=12)
-    ax_main.legend(loc='upper left')
-    ax_main.grid(alpha=0.3, linestyle='--')
-
-    # ------------------- 绘制 MAC 柱状线（区分条件） -------------------
-    cond_mask = df['MAC_cond'] & (df['MAC'] > 0)
-    neg_mask = df['MAC'] <= 0
-
-    ax_macd.bar(
-        df[cond_mask].index, df[cond_mask]['MAC'],
-        color='#0000AA', width=0.8, alpha=0.8, label='MAC上升'
-    )
-    ax_macd.bar(
-        df[neg_mask].index, df[neg_mask]['MAC'],
-        color='red', width=0.8, alpha=0.5, label='MAC下降'
-    )
-    ax_macd.plot(df.index, df['DIFF'], label='DIFF', color='yellow', linewidth=1.2)
-    ax_macd.plot(df.index, df['DEA'], label='DEA', color='lightgray', linewidth=1.2)
-
-    ax_macd.set_ylabel('MACD', fontsize=12)
+    # ------------------- 绘制 DIFF & DEA 曲线 -------------------
+    ax_macd.plot(df.index, df['DIFF'], label='DIFF', color='yellow', linewidth=1.5)
+    ax_macd.plot(df.index, df['DEA'], label='DEA', color='lightgray', linewidth=1.5)
+    ax_macd.set_ylabel('DIFF / DEA', fontsize=12)
     ax_macd.legend(loc='upper left')
     ax_macd.grid(alpha=0.3, linestyle='--')
 
-    # ------------------- 时间轴格式化 -------------------
+    # ------------------- 绘制 MAC 柱状线（区分条件） -------------------
+    cond_mask = df['MAC_cond'] & (df['MAC'] > 0)
+    ax_macd.bar(
+        df[cond_mask].index, df[cond_mask]['MAC'],
+        color='#0000AA', width=0.8, alpha=0.8,
+        label='MAC 上升'
+    )
+    pos_mask = (df['MAC'] > 0) & ~cond_mask
+    ax_macd.bar(
+        df[pos_mask].index, df[pos_mask]['MAC'],
+        color='cyan', width=0.8, alpha=0.5
+    )
+    neg_mask = df['MAC'] <= 0
+    ax_macd.bar(
+        df[neg_mask].index, df[neg_mask]['MAC'],
+        color='red', width=0.8, alpha=0.5
+    )
+
+    # ------------------- 绘制 资金指标 曲线 -------------------
+    ax_fund.plot(df.index, df['资金'], label='资金偏离度', color='green', linewidth=1.2)
+    ax_fund.set_ylabel('资金指标', fontsize=12)
+    ax_fund.legend(loc='upper left')
+    ax_fund.grid(alpha=0.3, linestyle='--')
+
+    # ------------------- 时间轴格式化（适配股票date） -------------------
     dates = df.index.tolist()
-    ax_main.xaxis.set_major_formatter(DateFormatter(dates))
     ax_macd.xaxis.set_major_formatter(DateFormatter(dates))
+    ax_fund.xaxis.set_major_formatter(DateFormatter(dates))
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
 
-    # ------------------- 鼠标悬停事件绑定 -------------------
+    # ------------------- 添加鼠标悬停注释 -------------------
     def show_annotation(sel):
         x, y = sel.target
-        try:
-            idx = int(round(x))  # 尝试找到最接近的整数索引
-            if 0 <= idx < len(df):
-                date_str = df.index[idx].strftime('%Y-%m-%d')
-                price = df.iloc[idx]['CLOSE']
-                fund = df.iloc[idx]['资金']
-                sel.annotation.set_text(f'日期: {date_str}\n收盘价: {price:.2f}\n资金偏离度: {fund:.2f}')
-            else:
-                sel.annotation.set_text("无效位置")
-        except Exception as e:
-            sel.annotation.set_text("错误")
+        date_str = df.index[int(x)].strftime('%Y-%m-%d')
+        sel.annotation.set_text(f'Date: {date_str}\nValue: {y:.2f}')
 
     cursor = mplcursors.cursor(hover=True)
     cursor.connect("add", show_annotation)
@@ -145,14 +143,19 @@ def plot_combined_price_fund(df):
 
 
 
-
 # ---------------------- 4. 主程序运行（示例） ----------------------
 if __name__ == "__main__":
+    # 配置参数
+    # stock_code = "sh600900"  # 长江电力（示例）
     stock_code = "sh601728"  # 工商银行
-    start_date = "20250117"
-    end_date = "20250605"
+    start_date = "20250117"  # 起始日期
+    end_date = "20250605"  # 结束日期
 
+    # 1. 获取日线数据
     df = get_stock_data(stock_code, start_date, end_date)
+
+    # 2. 计算指标
     df = calculate_indicator(df)
 
-    plot_combined_price_fund(df)  # 使用新图表函数
+    # 3. 可视化
+    plot_indicator(df)
