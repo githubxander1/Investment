@@ -7,15 +7,15 @@ from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 # 初始化日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def paylabs_merchant_register(playwright: Playwright, env, email, verification_code="652266",
-                              phone="15318544125", password="A123456@test", invitation_code="123456") -> None:
+def paylabs_merchant_register(playwright: Playwright, env, email) -> None:
     env_config = {
         "ui": {
             "headless": False,
             "slow_mo": 0
         },
         "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
-        "test_base_url": "http://test.paylabs.id"
+        # "test_base_url": "http://test.paylabs.id"
+        "test_base_url": "http://easternunion-test.com"
     }
     browser = playwright.chromium.launch(
         headless=env_config.get('ui/headless', False),
@@ -27,11 +27,12 @@ def paylabs_merchant_register(playwright: Playwright, env, email, verification_c
 
     # 动态选择环境
     base_url = env_config.get('sitch_base_url') if env == 'sitch' else env_config.get('test_base_url')
-    page.goto(f"{base_url}/merchant/paylabs-register-register.html")
+    # page.goto(f"{base_url}/merchant/paylabs-register-register.html")
+    page.goto(f"{base_url}/merchant/easternunion-register-register.html")
 
     #切换到英文环境
-    page.locator("span").filter(has_text="id").first.click()
-    page.get_by_role("link", name="EN", exact=True).click()
+    # page.locator("span").filter(has_text="id").first.click()
+    # page.get_by_role("link", name="EN", exact=True).click()
 
     # 缓存常用定位器
     email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
@@ -47,16 +48,20 @@ def paylabs_merchant_register(playwright: Playwright, env, email, verification_c
     agree_button = page.get_by_role("button", name="I have read and agree to the")
     gologin_button = page.locator("#gologin")
 
+    # page.get_by_role("textbox", name="Email Verification Code *").click()
+
     # 表单填写
+    page.pause()
     email_input.fill(email)
-    code_input.fill(verification_code)
-    phone_input.fill(phone)
-    phone_code_input.fill(verification_code)
+    # code_input.fill(verification_code)
+    code_input.fill("652266")
+    phone_input.fill('15318544154')
+    phone_code_input.fill('652266')
     secure_email_input.fill(email)
     pic_name_input.fill(email)  # PIC 名字（联系人）
-    password_input.fill(password)
-    confirm_password_input.fill(password)
-    invite_code_input.fill(invitation_code)
+    password_input.fill("A123456@test")
+    confirm_password_input.fill("A123456@test")
+    invite_code_input.fill('123456')
     register_button.click()
 
     agree_button.click()  # 同意协议

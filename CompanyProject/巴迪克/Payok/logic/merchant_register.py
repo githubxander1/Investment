@@ -280,7 +280,7 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
     page.pause()
 
     from tenacity import retry
-    slide_verification(page)
+    # slide_verification(page)
 
     '''复制粘贴：
             cd /data/logs/tomcat/merchart
@@ -310,6 +310,6 @@ def payok_register(playwright: Playwright, register_email, merchant_name) -> Non
 
 if __name__ == '__main__':
     with sync_playwright() as playwright:
-        register_email = "payok1@test.com"
+        register_email = "payok2@test.com"
         merchant_name =  register_email
         payok_register(playwright, register_email, merchant_name)

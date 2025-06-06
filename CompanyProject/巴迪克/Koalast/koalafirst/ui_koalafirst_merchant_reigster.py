@@ -2,19 +2,23 @@ import os
 import re
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-from CompanyProject.巴迪克.UI.logic.get_email_code import get_email_code
+from CompanyProject.巴迪克.utils.get_email_code import get_email_code
 
 
-def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False,slow_mo=100)
+# from CompanyProject.巴迪克.UI.logic.get_email_code import get_email_code
+
+
+def run(playwright: Playwright, email) -> None:
+    browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
 
     # koalafirst商户入口
     page.goto("http://koalafirst-test.com/merchant/koalafirst-register-register.html") #测试环境
+    # page.goto("http://easternunion-test.com/merchant/easternunion-register-register.html") #测试环境
     page.get_by_role("link", name="中文").click()
 
-    page.get_by_role("textbox", name="公司名称 *").fill("公司名称002")
+    page.get_by_role("textbox", name="公司名称 *").fill(email)
     page.get_by_role("textbox", name="纳税人号 *").fill("002")
     page.get_by_role("textbox", name="公司品牌名").fill("公司品牌名001")
     page.get_by_role("textbox", name="公司简称").fill("公司简称001")
@@ -42,7 +46,7 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("textbox", name="结算卡开户银行 *").fill("结算卡开户银行001")
     page.get_by_label("账户类型 *").select_option("1")
     page.get_by_role("textbox", name="银行国际代码 *").fill("001")
-    page.get_by_role("textbox", name="资金账户安全邮箱 *").fill("1@linshiyou.com")
+    page.get_by_role("textbox", name="资金账户安全邮箱 *").fill(email)
     page.get_by_role("button", name=" 添加一行").click()
     page.locator("select[name=\"selMdPlatform\"]").select_option("H5")
     page.get_by_role("cell", name="https:// 1/").get_by_placeholder("请输入").fill("www.baidu.com")
@@ -86,7 +90,7 @@ def run(playwright: Playwright) -> None:
     # 国家
     '''Indonesia,Vietnam,Brazil,Thailand,Turkey,Colombia,India,Bangladesh'''
     page.get_by_role("link", name="Indonesia").click()
-    page.get_by_role("textbox", name="业务归属地 * 邮箱 *").fill("3@qq.com")
+    page.get_by_role("textbox", name="业务归属地 * 邮箱 *").fill(email)
     page.get_by_role("button", name="发送验证码").click()
 
     # 等待滑动解锁弹窗出现
@@ -97,7 +101,7 @@ def run(playwright: Playwright) -> None:
     '''复制粘贴：
         cd /data/logs/tomcat/merchart
         grep "发邮件结束 getVerificationCode 登录邮箱" *'''
-    get_email_code(playwright)
+    get_email_code(username, password)
 
     page.get_by_role("textbox", name="密码 *").fill("A123456@test")
     page.get_by_role("textbox", name="密码（确认） *").fill("A123456@test")
@@ -107,6 +111,10 @@ def run(playwright: Playwright) -> None:
     context.close()
     browser.close()
 
+if __name__ == '__main__':
+    username = 'xiaozehua'
+    password = '8qudcQifW7cjydglydm{'
 
-with sync_playwright() as playwright:
-    run(playwright)
+    register_email =  "3@linshiyou.com"
+    with sync_playwright() as playwright:
+        run(playwright,register_email)

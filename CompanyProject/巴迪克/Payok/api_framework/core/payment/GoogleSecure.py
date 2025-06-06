@@ -6,7 +6,7 @@ import hashlib
 import time
 import re
 
-from CompanyProject.巴迪克.Tools.paylabs.sql_handler import SQLHandler
+from CompanyProject.巴迪克.utils.GoogleSecure import SQLHandler
 
 
 # from CompanyProject.巴迪克.交付.logic.sql_handler import SQLHandler

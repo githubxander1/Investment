@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 from CompanyProject.巴迪克.Paylabs.UI.paylabs_MerchantRegisterAndaudio import (
     sales_login,
     sales_setting_sales,
-    sales_submit_info,
+    sales_submit_merchant_info,
     platform_login,
     platform_risk_control_audit,
     platform_legal_risk_audit,
@@ -50,9 +50,9 @@ def run_paylabs_full_flow(
 
             # 1️⃣ 注册 Agent（可选）
             if do_register_merchant:
-                print("🔄 开始注册 Agent")
-                paylabs_merchant_register(p, register_email, pdf_file_path)
-                print("✅ Agent 注册完成\n")
+                print("🔄 开始注册 merchant")
+                paylabs_merchant_register(p, evn, register_email)
+                print("✅ merchant 注册完成\n")
 
             # 2️⃣ Sales 登录（可选）
             if do_sales_login:
@@ -78,7 +78,7 @@ def run_paylabs_full_flow(
             # 4️⃣ 提交商户资料（可选）
             if do_submit_merchant_info:
                 print("🔄 开始提交商户资料")
-                sales_submit_info(page, register_email, merchant_id,  pdf_file_path)
+                sales_submit_merchant_info(page, register_email, merchant_id,  pdf_file_path)
                 print("✅ 商户资料提交成功\n")
 
             # 5️⃣ 平台登录（可选）
@@ -122,16 +122,17 @@ if __name__ == '__main__':
     pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
 
     merchant_id = "010328"  # 初始化 merchant_id
-    evn = "sitch"
+    evn = "test"
 
 
     run_paylabs_full_flow(
-        register_email="tax_agent0010@linshiyou.com",
+        register_email="easternunion_merchant001@linshiyou.com",
         sales_login_name="15318544153",
-        operator_login_name="Xander@sitch.paylabs.co.id",
+        # operator_login_name="Xander@sitch.paylabs.co.id",
+        operator_login_name="xzh@test.com",
         pdf_file_path=pdf_file_path,
 
-        do_register_merchant=False,#  是否注册Merchant
+        do_register_merchant=True,#  是否注册Merchant
         do_sales_login=False,#  是否登录Sales
         do_sales_setting=False,# 是否设置Sales
         do_submit_merchant_info=False,# 是否提交商户资料
