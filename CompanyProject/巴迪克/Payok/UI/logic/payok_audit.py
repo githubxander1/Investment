@@ -1,7 +1,11 @@
 from playwright.sync_api import Playwright
 
-from CompanyProject.巴迪克.UI.utils.generate_google_code import generate_google_code
-from CompanyProject.巴迪克.UI.utils.perform_slider_unlock import perform_block_slider_verification
+from CompanyProject.巴迪克.Payok.UI.others.old_ui_merchant_login import generate_google_code
+from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
+
+
+# from CompanyProject.巴迪克.UI.utils.generate_google_code import generate_google_code
+# from CompanyProject.巴迪克.UI.utils.perform_slider_unlock import perform_block_slider_verification
 
 
 def payok_merchant_audio(playwright: Playwright, login_email, merchant_name) -> None:

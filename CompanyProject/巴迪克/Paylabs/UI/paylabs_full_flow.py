@@ -6,17 +6,25 @@ from playwright.sync_api import sync_playwright
 
 # 从项目结构中导入相关模块
 #     paylabs_merchant_register,
-from CompanyProject.巴迪克.Paylabs.UI.paylabs_MerchantRegisterAndaudio import (
-    sales_login,
-    sales_setting_sales,
-    sales_submit_merchant_info,
-    platform_login,
-    platform_risk_control_audit,
-    platform_legal_risk_audit,
-    platform_request_activation,
-    platform_activation_audit
-)
+# from CompanyProject.巴迪克.Paylabs.UI.paylabs_MerchantRegisterAndaudio import (
+#     sales_login,
+#     sales_setting_sales,
+#     sales_submit_merchant_info,
+#     platform_login,
+#     platform_risk_control_audit,
+#     platform_legal_risk_audit,
+#     platform_request_activation,
+#     platform_activation_audit
+# )
 from CompanyProject.巴迪克.Paylabs.UI.paylabs_merchant_register import paylabs_merchant_register
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_platform_login import platform_login
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_platform_activation_audit import platform_activation_audit
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_platform_legal_risk_audit import platform_legal_risk_audit
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_platform_request_activation import platform_request_activation
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_platform_risk_control_audit import platform_risk_control_audit
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_sales_login import sales_login
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_sales_setting_sales import sales_setting_sales
+from CompanyProject.巴迪克.Paylabs.UI.paylabs_sales_submit_merchant_info import sales_submit_merchant_info
 
 
 def run_paylabs_full_flow(
@@ -51,7 +59,7 @@ def run_paylabs_full_flow(
             # 1️⃣ 注册 Agent（可选）
             if do_register_merchant:
                 print("🔄 开始注册 merchant")
-                paylabs_merchant_register(p, evn, register_email)
+                paylabs_merchant_register(page, evn, register_email)
                 print("✅ merchant 注册完成\n")
 
             # 2️⃣ Sales 登录（可选）
@@ -64,7 +72,11 @@ def run_paylabs_full_flow(
             if do_sales_setting:
                 print("🔄 开始设置 Sales")
                 # with page.expect_popup() as popup_info:
-                #     page.get_by_role("link", name=" Merchant ").click()
+                #     # page.get_by_role("link", name=" Merchant ").click()
+                #     page.locator("a").filter(has_text="Merchant").click()
+                #     # import re
+                #     # page.get_by_role("link", name=re.compile(r"Merchant")).click()
+                #
                 #     page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()
                 #     page.wait_for_timeout(1000)
                 #
@@ -84,7 +96,7 @@ def run_paylabs_full_flow(
             # 5️⃣ 平台登录（可选）
             if do_platform_login:
                 print("🔄 开始平台登录")
-                platform_login(page, evn,operator_login_name)
+                platform_login(page, evn, operator_login_name)
                 print("✅ 平台登录成功\n")
 
             # 6️⃣ 风险审核（可选）
@@ -121,24 +133,25 @@ if __name__ == '__main__':
     DATA_DIR = os.path.join(BASE_DIR, '../../common', 'data')
     pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
 
-    merchant_id = "010328"  # 初始化 merchant_id
+    merchant_id = "010436"  # 初始化 merchant_id
     evn = "test"
 
 
     run_paylabs_full_flow(
-        register_email="easternunion_merchant001@linshiyou.com",
+        # register_email="easternunion_merchant001@linshiyou.com",
+        register_email="paylabs_merchant002@linshiyou.com",
         sales_login_name="15318544153",
         # operator_login_name="Xander@sitch.paylabs.co.id",
         operator_login_name="xzh@test.com",
         pdf_file_path=pdf_file_path,
 
-        do_register_merchant=True,#  是否注册Merchant
-        do_sales_login=False,#  是否登录Sales
-        do_sales_setting=False,# 是否设置Sales
-        do_submit_merchant_info=False,# 是否提交商户资料
+        do_register_merchant=False,#  是否注册Merchant
+        do_sales_login=True,#  是否登录Sales
+        do_sales_setting=True,# 是否设置Sales
+        do_submit_merchant_info=True,# 是否提交商户资料
         do_platform_login=True,# 是否登录平台端
-        do_risk_audit=False,#  是否进行风险审核
-        do_legal_audit=False,#  是否进行法律风控审核
-        do_request_activation=False,#  是否进行激活请求
-        do_activation_audit=False #  是否进行激活审核
+        do_risk_audit=True,#  是否进行风险审核
+        do_legal_audit=True,#  是否进行法律风控审核
+        do_request_activation=True,#  是否进行激活请求
+        do_activation_audit=True #  是否进行激活审核
     )

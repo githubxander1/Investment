@@ -13,7 +13,7 @@ def get_portfolio_holding_data(id):
         "Referer": "https://t.10jqka.com.cn/portfolio/relocate/user/index?id=6994",
         'cookie': 'hxmPid=cot_mkt_conf_20240416_63095; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM1Nzk4NTQxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTkzMWYxMzQxYzIwODVlNTZkZDE2NmFjNDdhNzA5NmE1Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c5bc8d322763afbfb6bdc4c9f43381ce; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; v=A97ICdweNXX3q2GRIhA9tWEUJn8gn6IQNGNW_YhnSiEcq3El8C_yKQTzph5b'
     }
-    response = requests.get(url, headers=headers,verify='D:/Xander/Pycharm_gitee/reqable-ca.crt')
+    response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
         data = response.json()

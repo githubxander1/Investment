@@ -1,60 +1,58 @@
 
-from playwright.sync_api import Playwright, sync_playwright
+from playwright.sync_api import Playwright, sync_playwright, expect
 
+from CompanyProject.巴迪克.utils.GoogleSecure import GoogleAuth
 from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
 from tenacity import retry, stop_after_attempt
 
-def run(playwright: Playwright, login_email) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
-    page.goto("http://paylabs-test.com/platform/paylabs-user-login.html")
-    # page.goto("http://paylabs-test.com/merchant/paylabs-user-login.html")
+def platform_login(page,env:str,paylabs_operator_login_name):
+    # 平台登录
+    url = 'http://test.paylabs.id/platform/paylabs-user-login.html' if env == 'test' else 'https://sitch-admin.paylabs.co.id/paylabs-user-login.html'
+    page.goto(url)
     page.locator("span").filter(has_text="Bahasa").first.click()
     page.get_by_role("link", name="English").click()
-    page.get_by_role("textbox", name="E-mail").fill(login_email)
-    page.get_by_role("textbox", name="Password Verification Code").fill("Asd123456789.")
 
-    # 滑块验证
+    # 登录
+    page.get_by_role("textbox", name="E-mail").fill(paylabs_operator_login_name)
+    page.get_by_role("textbox", name="Password Verification Code").fill("A123456@test")
+
     perform_block_slider_verification(page)
     page.get_by_role("button", name=" Login").click()
-
-    repeat_login_error = page.locator("text=This user has logged in on another device, is it force to log in?")
-    if repeat_login_error.is_visible():
+    page.wait_for_timeout(2000)
+    # 如果有弹窗，点确定
+    has_login = page.get_by_role("heading", name="This user has logged in on")
+    if has_login.is_visible():
         page.get_by_role("button", name="Confirm").click()
 
-    @retry(stop=stop_after_attempt(3))  # 补全stop参数
-    def get_google_code():
-        merchant_google_code = GoogleAuthenticator.generate(
-            environment='test',
-            project='paylabs',
-            table='platform_operator',
-            login_name=login_email
-        )
-        page.get_by_role("textbox", name="Google Verification Code").fill(merchant_google_code)
+    @retry(stop=stop_after_attempt(3))
+    def get_google_code(env):
+        if env == 'sitch':
+            google_code = GoogleAuth._calculate("bodioyzf2ojyh7qawk7ip2k5pnw7dzdn") #sitch-sales,找开发要sitch环境的key
+            # google_code = GoogleAuth._calculate("urq7ocrpbxptnmr5zsw2upxxu76qbil6")
+            print("google_code:", google_code)
+        else:
+            google_code = GoogleAuth.generate(
+                environment='test',
+                project='paylabs',
+                table='platform_operator',
+                login_name=paylabs_operator_login_name
+            )
+        # page.pause()
+        page.locator("#googleCode").fill(google_code)
 
-        code_error_message = page.get_by_role("textbox",
-                                              name="The Google verification code is incorrect, please reenter")
-        page.wait_for_timeout(1000)
-
-        # 主动抛出异常触发重试
-        if code_error_message.is_visible():
+        if page.query_selector(".error-message:visible"):
             page.get_by_role("textbox", name="Google Verification Code").clear()
-            raise ValueError("谷歌验证码错误")  # 添加异常抛出
+            raise ValueError("谷歌验证码错误")
 
-        page.get_by_role("button", name="Login").click()
-
-    get_google_code()
-    page.pause()
-
-    # ---------------------
-    context.close()
-    browser.close()
+    get_google_code('test')
+    page.get_by_role("button", name="Submit").click()
+    assert_url = "https://sitch-admin.paylabs.co.id/paylabs-trans-trans.html" if env == 'sitch' else "http://test.paylabs.id/platform/paylabs-trans-trans.html"
+    print("登录成功") if page.url.startswith(assert_url) else print("登录失败")
 
 
 if __name__ == '__main__':
     login_email = "xzh@test.com"
 
     with sync_playwright() as playwright:
-        run(playwright, login_email)
+        platform_login(playwright, 'test',login_email)

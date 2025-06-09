@@ -1,92 +1,79 @@
 import logging
-from playwright.sync_api import Playwright, sync_playwright, expect, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import expect, TimeoutError as PlaywrightTimeoutError
 
-# from CompanyProject.巴迪克 import config
-from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
+from CompanyProject.巴迪克.common.config.settings import ENV_CONFIG
+from CompanyProject.巴迪克.utils.logger import get_logger
 
-# 初始化日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# from utils.logger import get_logger
+# from config.settings import ENV_CONFIG
 
-def paylabs_merchant_register(playwright: Playwright, env, email) -> None:
-    env_config = {
-        "ui": {
-            "headless": False,
-            "slow_mo": 0
-        },
-        "sitch_base_url": "https://sitch-merchant.paylabs.co.id",
-        # "test_base_url": "http://test.paylabs.id"
-        "test_base_url": "http://easternunion-test.com"
-    }
-    browser = playwright.chromium.launch(
-        headless=env_config.get('ui/headless', False),
-        slow_mo=env_config.get('ui/slow_mo', 0)
-    )
+logger = get_logger(__name__)
 
-    context = browser.new_context()
-    page = context.new_page()
+def paylabs_merchant_register(page, env="test", email=None):
+    base_url = ENV_CONFIG[env]["base_url"]
+    page.goto(f"{base_url}/merchant/paylabs-register-register.html")
 
-    # 动态选择环境
-    base_url = env_config.get('sitch_base_url') if env == 'sitch' else env_config.get('test_base_url')
-    # page.goto(f"{base_url}/merchant/paylabs-register-register.html")
-    page.goto(f"{base_url}/merchant/easternunion-register-register.html")
-
-    #切换到英文环境
-    # page.locator("span").filter(has_text="id").first.click()
-    # page.get_by_role("link", name="EN", exact=True).click()
-
-    # 缓存常用定位器
-    email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
-    code_input = page.get_by_role("textbox", name="Email Verification Code *")
-    phone_input = page.locator("#phone")
-    phone_code_input = page.locator("#phoneCode")
-    secure_email_input = page.get_by_role("textbox", name="Secure Email for fund account")
-    pic_name_input = page.get_by_role("textbox", name="Please enter contact")
-    password_input = page.get_by_role("textbox", name="Password *", exact=True)
-    confirm_password_input = page.get_by_role("textbox", name="Confirm password *", exact=True)
-    invite_code_input = page.locator("#invitation_code")
-    register_button = page.get_by_role("button", name="Register")
-    agree_button = page.get_by_role("button", name="I have read and agree to the")
-    gologin_button = page.locator("#gologin")
-
-    # page.get_by_role("textbox", name="Email Verification Code *").click()
-
-    # 表单填写
-    page.pause()
-    email_input.fill(email)
-    # code_input.fill(verification_code)
-    code_input.fill("652266")
-    phone_input.fill('15318544154')
-    phone_code_input.fill('652266')
-    secure_email_input.fill(email)
-    pic_name_input.fill(email)  # PIC 名字（联系人）
-    password_input.fill("A123456@test")
-    confirm_password_input.fill("A123456@test")
-    invite_code_input.fill('123456')
-    register_button.click()
-
-    agree_button.click()  # 同意协议
-
+    logger.info("开始注册商户流程")
     try:
-        # 检查邮箱是否已注册
-        expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered")
-        logging.info("邮箱已注册！")
-    except AssertionError:
-        try:
-            gologin_button.wait_for(state='visible', timeout=10000)
-            if gologin_button.is_visible():
-                logging.info("注册成功")
-            else:
-                logging.warning("未找到 'gologin' 元素或其不可见")
-        except PlaywrightTimeoutError:
-            logging.error("'gologin' 元素未在预期时间内显示")
-    except PlaywrightTimeoutError as e:
-        logging.error(f"页面操作超时: {e}")
-    except Exception as e:
-        logging.error(f"发生未知错误: {e}")
+        #切换到英文环境
+        page.locator("span").filter(has_text="id").first.click()
+        page.get_by_role("link", name="EN", exact=True).click()
 
-    # 清理资源
-    context.close()
-    browser.close()
+        # 缓存常用定位器
+        email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
+        code_input = page.get_by_role("textbox", name="Email Verification Code *")
+        phone_input = page.locator("#phone")
+        phone_code_input = page.locator("#phoneCode")
+        secure_email_input = page.get_by_role("textbox", name="Secure Email for fund account")
+        pic_name_input = page.get_by_role("textbox", name="Please enter contact")
+        password_input = page.get_by_role("textbox", name="Password *", exact=True)
+        confirm_password_input = page.get_by_role("textbox", name="Confirm password *", exact=True)
+        invite_code_input = page.locator("#invitation_code")
+        register_button = page.get_by_role("button", name="Register")
+        agree_button = page.get_by_role("button", name="I have read and agree to the")
+        gologin_button = page.locator("#gologin")
+
+        # page.get_by_role("textbox", name="Email Verification Code *").click()
+
+        # 表单填写
+        page.pause()
+        email_input.fill(email)
+        # code_input.fill(verification_code)
+        code_input.fill("652266")
+        phone_input.fill('15318544154')
+        phone_code_input.fill('652266')
+        secure_email_input.fill(email)
+        pic_name_input.fill(email)  # PIC 名字（联系人）
+        password_input.fill("A123456@test")
+        confirm_password_input.fill("A123456@test")
+        invite_code_input.fill('123456')
+        register_button.click()
+
+        agree_button.click()  # 同意协议
+
+        try:
+            # 检查邮箱是否已注册
+            expect(page.locator("#inputEmail")).to_contain_text("The E-mail has been registered")
+            logging.info("邮箱已注册！")
+        except AssertionError:
+            try:
+                gologin_button.wait_for(state='visible', timeout=10000)
+                if gologin_button.is_visible():
+                    logging.info("注册成功")
+                else:
+                    logging.warning("未找到 'gologin' 元素或其不可见")
+            except PlaywrightTimeoutError:
+                logging.error("'gologin' 元素未在预期时间内显示")
+        except PlaywrightTimeoutError as e:
+            logging.error(f"页面操作超时: {e}")
+        except Exception as e:
+            logging.error(f"发生未知错误: {e}")
+    except Exception as e:
+        logger.error(f"注册失败: {e}")
+        raise
+        # # 清理资源
+        # context.close()
+        # browser.close()
 
 
 # if __name__ == '__main__':

@@ -69,7 +69,7 @@ Combination_headers = {
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         #20250509 9:42
-        "Cookie": 'userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488","custid":"100113495581"}; _clck=l14ts7%7C2%7Cfv9%7C0%7C0; _clck=l14ts7%7C2%7Cfv9%7C0%7C0; _clsk=1mnl85m%7C1745213579117%7C1%7C1%7C; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ2OTYxMzcxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWE0ZGNmZTg2NmFkYmE4ZWI2Y2I0OTdkZDBkNDUzM2VhOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=9f3bd3da8c83f79c4fc92386aec0b43f; user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ2OTYxMzcxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWE0ZGNmZTg2NmFkYmE4ZWI2Y2I0OTdkZDBkNDUzM2VhOjox; ticket=9f3bd3da8c83f79c4fc92386aec0b43f; hxmPid=ths_mob_hotmap; v=AyvurZQYx1IF7RsGIlCo_CkQuEQVQD_DuVUDdp2oB7nBt0Q-JRDPEskkk8yu; hxmPid=hqMarketPkgVersionControl; v=A2uubdTYh5OladtHnVRovGnQ-IRVgH8C-ZRDtt3oR6oBfIR-ZVAPUglk0wfu'
+        "Cookie": 'uid=CvTgI2gv1Fl+Hy8sA+1IAg==; user_status=0; _clck=a5x9j2%7C2%7Cfw5%7C0%7C0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ3OTY1MTA1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTIwYzhhZDI3YWNjNTg0MTdhMmM1YTVhYmU4Yjc5MmRiOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=35e6f200b5574e9a48f426592dfebc57; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":"100113495581"}; hxmPid=sns_index_622697320.user.visitor.all.follow.show; v=A4s4Y_eCZxQtVbtA1FZzl07IGCR1IJ-iGTRjVv2IZ0ohHKTehfAv8ikE86wO'
     }
 
 Strategy_ids = ['155680', '137789', '155273']
@@ -121,7 +121,7 @@ ETF_ids_to_name = {
     # '29646': '热点追踪猎手'
 }
 
-zhitou_ids = ['31672','31903']
+zhitou_ids = ['31672']
 zhitou_ids_to_name = {
     "31672": "短线趋势题材",
     "31903": "太极擒龙免费组合",

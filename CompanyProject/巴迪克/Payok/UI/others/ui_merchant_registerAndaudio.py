@@ -3,9 +3,6 @@ from os.path import exists
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-from CompanyProject.巴迪克.Payok.logic.merchant_register import payok_register
-from CompanyProject.巴迪克.Payok.logic.platform_login import platform_login
-
 
 def platform_merchant_go_live(page, merchant_name):
     # 开始审核,上线
