@@ -47,8 +47,9 @@ def platform_login(page,env:str,paylabs_operator_login_name):
 
     get_google_code('test')
     page.get_by_role("button", name="Submit").click()
+    page.wait_for_timeout(1000)
     assert_url = "https://sitch-admin.paylabs.co.id/paylabs-trans-trans.html" if env == 'sitch' else "http://test.paylabs.id/platform/paylabs-trans-trans.html"
-    print("登录成功") if page.url.startswith(assert_url) else print("登录失败")
+    print("平台端登录成功") if page.url.startswith(assert_url) else print("平台端登录失败")
 
 
 if __name__ == '__main__':

@@ -74,6 +74,21 @@ class SQLHandler:
                 except pymysql.Error as e:
                     print(f"SQL执行失败: {str(e)}")
                     raise
+    def query_all(self, sql: str, params: Optional[Tuple] = None) -> list:
+        """
+        通用查询方法（多条记录）
+        :param sql: 带%s占位符的SQL语句
+        :param params: 参数元组
+        :return: 查询结果列表
+        """
+        with self._get_connection() as conn:
+            with conn.cursor() as cursor:
+                try:
+                    cursor.execute(sql, params or ())
+                    return cursor.fetchall()
+                except pymysql.Error as e:
+                    print(f"SQL执行失败: {str(e)}")
+                    raise
 
     def get_table(self, table_key: str) -> str:
         """

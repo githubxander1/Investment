@@ -8,8 +8,10 @@ from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_s
 
 def platform_activation_audit(page,merchant_id):
     # 激活审核
-    page.get_by_role("link", name="ﶇ Merchant ").click()
-    page.get_by_role("link", name="Merchant List").click()
+    link_risk_control = page.get_by_role("link", name=" Risk Control ")
+    if link_risk_control.get_attribute("class") != "active":
+        page.get_by_role("link", name=" Risk Control ").click()
+        page.get_by_role("link", name="Risk Control", exact=True).click()
 
     # 移动滑块
     scroll_div = page.wait_for_selector('#scrollDiv')  # 等待目标 div 加载

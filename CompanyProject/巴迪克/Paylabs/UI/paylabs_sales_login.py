@@ -19,8 +19,12 @@ def sales_login(page: Page, env="test", login_name="15318544153"):
     page.goto(url)
 
     try:
-        page.locator("span").filter(has_text="Bahasa").first.click()
-        page.get_by_role("link", name="English").click()
+        lang_text = page.locator(".lang-text").text_content()
+        if lang_text != "English":
+            page.locator("span").filter(has_text="Bahasa").first.click()
+            page.get_by_role("link", name="English").click()
+        else:
+            print(lang_text)
 
         page.get_by_role("textbox", name="Phone Number").fill(login_name)
         page.get_by_role("textbox", name="Password").fill("A123456@test")
@@ -29,7 +33,7 @@ def sales_login(page: Page, env="test", login_name="15318544153"):
 
         # 获取谷歌验证码并登录
         if env == 'sitch':
-            code = GoogleAuth._calculate("4cavnkhcy3x46g46jwhe45ajulmsouwe")
+            code = GoogleAuth._calculate("4cavnkhcy3x46g46jwhe45ajulmsouwe") # 替换为你的谷歌验证码密钥，找开发
         else:
             code = GoogleAuth.generate(environment='test', project='paylabs',
                                       table='sales_operator', login_name=login_name)
@@ -37,11 +41,10 @@ def sales_login(page: Page, env="test", login_name="15318544153"):
         page.locator("#googleCode").fill(code)
         page.get_by_role("button", name="Login").click()
 
-        #等待1秒
         page.wait_for_timeout(2000)
         assert_url ='http://test.paylabs.id/sales/paylabs-board-board.html'
         # assert page.url.startswith(ENV_URLS[env].split("//")[1]), f"URL 不匹配：{page.url}"
-        assert assert_url  == page.url, f"URL 不匹配,实际值为：{page.url}"
+        assert assert_url  == page.url, f"登录后URL 不匹配,实际值为：{page.url}"
         logger.info(f"Sales 登录成功：{login_name}")
     except Exception as e:
         logger.error(f"Sales 登录失败：{e}")

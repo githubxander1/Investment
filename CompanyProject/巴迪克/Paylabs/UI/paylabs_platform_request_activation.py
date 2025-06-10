@@ -8,8 +8,15 @@ from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_s
 
 def platform_request_activation(page,merchant_id):
     # 激活请求
-    page.get_by_role("link", name="ﶇ Merchant ").click()
-    page.get_by_role("link", name="Merchant List").click()
+    page.pause()
+    link_merchant = page.get_by_role("link", name="ﶇ Merchant ")
+    if link_merchant.is_visible():
+        page.get_by_role("link", name=" Merchant ").click()
+    else:
+        print("Merchant 菜单项不存在")
+    if link_merchant.get_attribute("class") != "active":
+        page.get_by_role("link", name="ﱖ Merchant ").click()
+        page.locator("#left-bar-menu").get_by_role("link", name="Merchant", exact=True).click()
 
     # page.pause()
     page.wait_for_timeout(1000)
@@ -19,19 +26,19 @@ def platform_request_activation(page,merchant_id):
     scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
     scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')  # 滚动到最右侧
 
-    row = page.locator(f"tbody tr").filter(has_text=merchant_id)
-    #
-    # # 查找该行中的 Setting Sales 按钮
-    # setting_sales_button = row.locator("button[name='btnSetSales']")
-    # activate_request_button = row.locator("#btnOnlineApply").first
-    request_activate_button = row.get_by_role('button', name="Request Activation ")
-    try:
-        # 等待按钮可点击
-        # page.pause()
-        # 尝试直接使用 JavaScript 点击按钮
-        page.evaluate('(button) => button.click()', request_activate_button.element_handle())
-    except Exception as e:
-        print(f"点击设置sales按钮失败：{e}")
+    # row = page.locator(f"tbody tr").filter(has_text=merchant_id)
+    # #
+    # # # 查找该行中的 Setting Sales 按钮
+    # # setting_sales_button = row.locator("button[name='btnSetSales']")
+    # # activate_request_button = row.locator("#btnOnlineApply").first
+    # request_activate_button = row.get_by_role('button', name="Request Activation ")
+    # try:
+    #     # 等待按钮可点击
+    #     # page.pause()
+    #     # 尝试直接使用 JavaScript 点击按钮
+    #     page.evaluate('(button) => button.click()', request_activate_button.element_handle())
+    # except Exception as e:
+    #     print(f"点击设置sales按钮失败：{e}")
 
     # request_audio = page.locator("button[name=\"btnOnlineApply\"]").nth(2)
     # request_audio2 = page.locator("tbody").filter(
@@ -56,7 +63,19 @@ def platform_request_activation(page,merchant_id):
     #         request_audio3.click()
     # except Exception as e:
     #     print(f"点击request_audio按钮时发生错误:{e}")
-
+    row = page.locator("tbody tr").filter(has_text=merchant_id)
+    merchant_status = row.locator("td").nth(2)
+    merchant_status_content = merchant_status.text_content()
+    left_wrapper = page.locator(".dataTables_scrollBody")
+    left_row = left_wrapper.locator("tbody tr").filter(has_text=merchant_id)
+    left_row.wait_for(state="visible", timeout=3000)
+    row_index = left_row.evaluate('(row) => Array.from(row.parentNode.children).indexOf(row)')
+    right_wrapper = page.locator(".DTFC_RightBodyLiner")
+    corresponding_right_row = right_wrapper.locator("tbody tr").nth(row_index)
+    submit_button = corresponding_right_row.get_by_text("Submit")
+    if merchant_status_content == "Request Activation":
+        # with page.expect_popup() as popup_info:
+        submit_button.click()
 
     # page.get_by_role("button", name="H5 Display").click()
     page.locator("#nav_1 div").filter(has_text="DanamonVA Settlement Type").get_by_role("button").click()

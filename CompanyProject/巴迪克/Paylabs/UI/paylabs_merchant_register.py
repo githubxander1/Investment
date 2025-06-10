@@ -1,8 +1,11 @@
 import logging
+import os
+
 from playwright.sync_api import expect, TimeoutError as PlaywrightTimeoutError
 
 from CompanyProject.巴迪克.common.config.settings import ENV_CONFIG
 from CompanyProject.巴迪克.utils.logger import get_logger
+from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
 # from utils.logger import get_logger
 # from config.settings import ENV_CONFIG
@@ -19,7 +22,6 @@ def paylabs_merchant_register(page, env="test", email=None):
         page.locator("span").filter(has_text="id").first.click()
         page.get_by_role("link", name="EN", exact=True).click()
 
-        # 缓存常用定位器
         email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
         code_input = page.get_by_role("textbox", name="Email Verification Code *")
         phone_input = page.locator("#phone")
@@ -38,7 +40,6 @@ def paylabs_merchant_register(page, env="test", email=None):
         # 表单填写
         page.pause()
         email_input.fill(email)
-        # code_input.fill(verification_code)
         code_input.fill("652266")
         phone_input.fill('15318544154')
         phone_code_input.fill('652266')
@@ -49,7 +50,7 @@ def paylabs_merchant_register(page, env="test", email=None):
         invite_code_input.fill('123456')
         register_button.click()
 
-        agree_button.click()  # 同意协议
+        agree_button.click()
 
         try:
             # 检查邮箱是否已注册
@@ -59,7 +60,17 @@ def paylabs_merchant_register(page, env="test", email=None):
             try:
                 gologin_button.wait_for(state='visible', timeout=10000)
                 if gologin_button.is_visible():
-                    logging.info("注册成功")
+                    current_dir = os.path.dirname(os.path.abspath(__file__))
+                    yaml_path = os.path.join(current_dir, "../../common/sql_config.yaml")
+                    if yaml_path:
+                        logging.info(f"YAML 文件路径: {yaml_path}")
+                    else:
+                        logging.warning("未找到 YAML 文件路径")
+                    handler = SQLHandler(yaml_path, env, 'paylabs')
+                    sql = f"SELECT merchant_no FROM merchant_operator ORDER BY creation_time DESC LIMIT 1"
+                    merchant_id = handler.query_one(sql)
+                    logging.info(f"注册成功，商户merchant_id:{merchant_id[0]}")
+                    return merchant_id[0]
                 else:
                     logging.warning("未找到 'gologin' 元素或其不可见")
             except PlaywrightTimeoutError:
@@ -71,12 +82,21 @@ def paylabs_merchant_register(page, env="test", email=None):
     except Exception as e:
         logger.error(f"注册失败: {e}")
         raise
-        # # 清理资源
-        # context.close()
-        # browser.close()
 
 
 # if __name__ == '__main__':
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
+#     yaml_path = os.path.join(current_dir, "../../common/sql_config.yaml")
+#     if yaml_path:
+#         logging.info(f"YAML 文件路径: {yaml_path}")
+#     else:
+#         logging.warning("未找到 YAML 文件路径")
+#     # handler = SQLHandler(yaml_path, env, 'paylabs')
+#     handler = SQLHandler(yaml_path, 'test', 'paylabs')
+#     sql = f"SELECT merchant_no FROM merchant_operator ORDER BY create_time DESC LIMIT 5"
+#     merchant_id = handler.query_one(sql)
+#     # merchant_id = handler.execute(sql)
+#     print(merchant_id)
 #     config = {
 #         "ui": {
 #             "headless": False,

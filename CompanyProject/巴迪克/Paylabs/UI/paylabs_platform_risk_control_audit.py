@@ -8,42 +8,23 @@ from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_s
 
 def platform_risk_control_audit(page, merchant_id, pdf_file_path):
     # 开始风险审核
-    page.get_by_role("link", name=" Risk Control ").click()
-    page.get_by_role("link", name="Risk Control", exact=True).click()
-    # page.pause()
-    # page.locator(".DTFC_RightBodyLiner > .table > tbody > tr:nth-child(3) > td > .mb-2 > .btnAudit").click()
+    link_risk_control = page.get_by_role("link", name=" Risk Control ")
+    if link_risk_control.get_attribute("class") != "active":
+        page.get_by_role("link", name=" Risk Control ").click()
+        page.get_by_role("link", name="Risk Control", exact=True).click()
 
-    # 移动滑块
-    scroll_div = page.wait_for_selector('#scrollDiv')  # 等待目标 div 加载
-    scroll_div_table = page.query_selector('#scrollDivTable')  # 获取 scrollDivTable 的宽度
-    scroll_width = scroll_div_table.evaluate('(element) => element.offsetWidth')
-    scroll_div.evaluate(f'(element) => element.scrollLeft = {scroll_width}')  # 滚动到最右侧
-
-    # row = page.locator(f"tbody tr").filter(has_text=merchant_id)
-    # #
-    # # # 查找该行中的 Setting Sales 按钮
-    # setting_sales_button = row.locator("button[name='btnSetSales']")
-    # risk_control_audit_button = row.locator("#btnAudit").first
-    #文本含‘Risk Control Audit’,含data属性的按钮
-    # page.pause()
-    # risk_control_audit_button = row.get_by_role("button", name="Risk Control Audit", exact=True)
-    # 在某个具体的 <tr> 中查找按钮
-    # risk_control_audit_button = page.locator("tbody tr").filter(has_text=merchant_id).get_by_role("button", name="Risk Control Audit")
-
-    # risk_control_audit_button = page.locator(".DTFC_RightBodyLiner > .table > tbody > tr > td > .mb-2 > .btnAudit").first.click()
-    try:
-        # 等待按钮可点击
-        # page.pause()
-        # 尝试直接使用 JavaScript 点击按钮
-        # page.evaluate('(button) => button.click()', risk_control_audit_button.element_handle())
-        # page.get_by_role("button", name="Risk Control Audit").filter(has_text=merchant_id).click()
-        # 或者使用 data 属性中的 merchantNo 进行筛选
-        page.locator("tbody tr").filter(has_text=merchant_id).get_by_role("button", name="Risk Control Audit").click()
-
-    except Exception as e:
-        print(f"Risk Control Audit按钮点击失败：{e}")
-    # page.locator(".DTFC_RightBodyLiner > .table > tbody > tr > td > .mb-2 > .btnAudit").first.click()
-
+    row = page.locator("tbody tr").filter(has_text=merchant_id)
+    merchant_status = row.locator("td").nth(6)
+    merchant_status_content = merchant_status.text_content()
+    left_wrapper = page.locator(".dataTables_scrollBody")
+    left_row = left_wrapper.locator("tbody tr").filter(has_text=merchant_id)
+    left_row.wait_for(state="visible", timeout=3000)
+    row_index = left_row.evaluate('(row) => Array.from(row.parentNode.children).indexOf(row)')
+    right_wrapper = page.locator(".DTFC_RightBodyLiner")
+    corresponding_right_row = right_wrapper.locator("tbody tr").nth(row_index)
+    risk_control_audit_button = corresponding_right_row.get_by_text("Risk Control Audit")
+    if merchant_status_content == "Pending Risk Control Audit":
+        risk_control_audit_button.click()
     page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风险控制审计通过")
     page.locator("#toRiskAudit").click()
 
@@ -56,5 +37,9 @@ def platform_risk_control_audit(page, merchant_id, pdf_file_path):
     page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风控报告上传成功，风险控制审计通过2")
     page.get_by_role("button", name="Approve").click()
     page.locator("#btnSubmitSure").click()
-    # page2.get_by_role("button", name="Approve").click()
-    print("风险审核通过")
+    page.wait_for_timeout(1000)
+    merchant_status_content2 = row.locator("td").nth(2).text_content()
+    if merchant_status_content2 == "Pending Legal Audit":
+        print("✅风险审核通过，下一步：Request Activation")
+    else:
+        print(f"⚠️风险审核未通过，{merchant_status_content2}")
