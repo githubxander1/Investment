@@ -12,7 +12,7 @@ def platform_risk_control_audit(page, merchant_id, pdf_file_path):
     if link_risk_control.get_attribute("class") != "active":
         page.get_by_role("link", name=" Risk Control ").click()
         page.get_by_role("link", name="Risk Control", exact=True).click()
-
+    page.pause()
     row = page.locator("tbody tr").filter(has_text=merchant_id)
     merchant_status = row.locator("td").nth(6)
     merchant_status_content = merchant_status.text_content()
@@ -25,21 +25,31 @@ def platform_risk_control_audit(page, merchant_id, pdf_file_path):
     risk_control_audit_button = corresponding_right_row.get_by_text("Risk Control Audit")
     if merchant_status_content == "Pending Risk Control Audit":
         risk_control_audit_button.click()
-    page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风险控制审计通过")
-    page.locator("#toRiskAudit").click()
 
-    page.get_by_role("link", name="None").click()
+        page.pause()
+        # 上传风控报告
+        page.on('filechooser', lambda file_chooser: file_chooser.set_files(pdf_file_path))
+        page.locator("#reportForm1").click()
+        page.locator("#reportForm2").click()
+        page.locator("#reportForm3").click()
 
-    # 上传风控报告
-    page.on('filechooser', lambda file_chooser: file_chooser.set_files(pdf_file_path))
-    page.locator("#reportForm1").click()
+        page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风控报告上传成功，风险控制审计通过")
+        page.get_by_role("button", name="Approve").click()
+        # page.locator("#btnSubmitSure").click()
+        page.locator("#btnSurePass").click()
 
-    page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风控报告上传成功，风险控制审计通过2")
-    page.get_by_role("button", name="Approve").click()
-    page.locator("#btnSubmitSure").click()
-    page.wait_for_timeout(1000)
-    merchant_status_content2 = row.locator("td").nth(2).text_content()
-    if merchant_status_content2 == "Pending Legal Audit":
-        print("✅风险审核通过，下一步：Request Activation")
+        # page.get_by_role("textbox", name="Max 200 characters can be").fill("评论：风险控制审计通过")
+        # page.locator("#toRiskAudit").click()
+
+        # page.get_by_role("link", name="None").click()
+
+        page.wait_for_timeout(1000)
+        page.reload(wait_until="networkidle")
+        merchant_status2 = row.locator("td").nth(6)
+        merchant_status_content2 = merchant_status2.text_content()
+        if merchant_status_content2 == "Pending Legal Audit":
+            print("✅风险审核通过，下一步：Request Activation")
+        else:
+            print(f"⚠️风险审核未通过，{merchant_status_content2}")
     else:
-        print(f"⚠️风险审核未通过，{merchant_status_content2}")
+        print("⚠️提示：商户状态不是Pending Risk Control Audit,不需要再进行该流程")

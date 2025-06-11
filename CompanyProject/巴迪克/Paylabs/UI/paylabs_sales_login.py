@@ -2,6 +2,7 @@ import logging
 from playwright.sync_api import Page
 
 from CompanyProject.巴迪克.utils.GoogleSecure import GoogleAuth
+from CompanyProject.巴迪克.utils.change_ui_language import change_ui_language
 from CompanyProject.巴迪克.utils.logger import get_logger
 from CompanyProject.巴迪克.utils.retry import default_retry
 # from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuth
@@ -17,15 +18,9 @@ ENV_URLS = {
 def sales_login(page: Page, env="test", login_name="15318544153"):
     url = ENV_URLS.get(env, ENV_URLS["test"])
     page.goto(url)
+    change_ui_language(page, "English")
 
     try:
-        lang_text = page.locator(".lang-text").text_content()
-        if lang_text != "English":
-            page.locator("span").filter(has_text="Bahasa").first.click()
-            page.get_by_role("link", name="English").click()
-        else:
-            print(lang_text)
-
         page.get_by_role("textbox", name="Phone Number").fill(login_name)
         page.get_by_role("textbox", name="Password").fill("A123456@test")
         perform_block_slider_verification(page)
@@ -48,4 +43,4 @@ def sales_login(page: Page, env="test", login_name="15318544153"):
         logger.info(f"Sales 登录成功：{login_name}")
     except Exception as e:
         logger.error(f"Sales 登录失败：{e}")
-        raise
+        raise e

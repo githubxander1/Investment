@@ -1,5 +1,7 @@
 import logging
 from playwright.sync_api import Playwright, sync_playwright
+
+from CompanyProject.巴迪克.utils.change_ui_language import change_ui_language
 from CompanyProject.巴迪克.utils.retry import default_retry
 from CompanyProject.巴迪克.utils.logger import get_logger
 from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
@@ -11,8 +13,7 @@ logger = get_logger(__name__)
 def platform_login(page, login_email):
     try:
         page.goto("http://paylabs-test.com/platform/paylabs-user-login.html")
-        page.locator("span").filter(has_text="Bahasa").first.click()
-        page.get_by_role("link", name="English").click()
+        change_ui_language(page, "English")
 
         page.get_by_role("textbox", name="E-mail").fill(login_email)
         page.get_by_role("textbox", name="Password Verification Code").fill("Asd123456789.")

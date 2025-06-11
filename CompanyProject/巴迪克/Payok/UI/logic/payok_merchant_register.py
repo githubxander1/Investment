@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import random
 import re
 import time
@@ -50,6 +51,7 @@ def slide_verification(page):
         # 释放鼠标
         page.mouse.up()
         time.sleep(1)  # 等待验证结果
+
 
 def payok_register(playwright: Playwright, register_email, merchant_name, upload_filepath) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -114,6 +116,9 @@ def payok_register(playwright: Playwright, register_email, merchant_name, upload
     page.get_by_role("textbox", name="E-mail *").fill(register_email)
     page.get_by_role("button", name="Send the verification code").click()
     page.pause()
+
+    captcha_img = page.locator("#captchaImg")
+    captcha_text = get_captcha_text("ddddocr",captcha_img)
 
     from tenacity import retry
     # slide_verification(page)

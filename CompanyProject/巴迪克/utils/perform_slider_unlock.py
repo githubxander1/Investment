@@ -4,7 +4,10 @@ import cv2
 import numpy as np
 import requests
 
+from CompanyProject.巴迪克.utils.retry import default_retry
 
+
+@default_retry
 def perform_block_slider_verification(page):
     # 获取滑块元素和滑动区域元素
     slider = page.locator(".verify-move-block")
@@ -32,6 +35,7 @@ def perform_block_slider_verification(page):
     # 等待验证结果（可选）
     page.wait_for_timeout(1000)  # 等待1秒以确保验证完成
 
+@default_retry
 def perform_slide_unlock(page):
     def get_dis(bj_rgb, hk_rgb):
         # 解析x距离

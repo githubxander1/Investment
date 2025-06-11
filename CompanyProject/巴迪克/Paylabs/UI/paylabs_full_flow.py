@@ -121,7 +121,7 @@ def run_paylabs_full_flow(
             if do_activation_audit:
                 print("🔄 开始激活审核")
                 platform_activation_audit(page, merchant_id)
-                print("✅ 激活审核-流程结束，商户入驻完成！\n")
+                print("✅ 激活审核-流程结束\n")
 
         finally:
             context.close()
@@ -133,25 +133,25 @@ if __name__ == '__main__':
     DATA_DIR = os.path.join(BASE_DIR, '../../common', 'data')
     pdf_file_path = os.path.join(DATA_DIR, "合同.pdf")
 
-    merchant_id = "010438"  # 初始化 merchant_id
+    merchant_id = "010069"  # 指定 merchant_id
     evn = "test"
 
 
     run_paylabs_full_flow(
         # register_email="easternunion_merchant001@linshiyou.com",
-        register_email="paylabs_merchant004@linshiyou.com",
+        register_email="paylabs_merchant003@linshiyou.com",
         sales_login_name="15318544153",
         # operator_login_name="Xander@sitch.paylabs.co.id",
         operator_login_name="xzh@test.com",
         pdf_file_path=pdf_file_path,
 
         do_register_merchant=False,#  是否注册Merchant
-        do_sales_login=False,#  是否登录Sales
+        do_sales_login=True,#  是否登录Sales
         do_sales_setting=False,# 是否设置Sales
         do_submit_merchant_info=False,# 是否提交商户资料
-        do_platform_login=True,# 是否登录平台端
+        do_platform_login=False,# 是否登录平台端
         do_risk_audit=False,#  是否进行风险审核
         do_legal_audit=False,#  是否进行法律风控审核
-        do_request_activation=True,#  是否进行激活请求
-        do_activation_audit=True #  是否进行激活审核
+        do_request_activation=False,#  是否进行激活请求
+        do_activation_audit=False #  是否进行激活审核
     )

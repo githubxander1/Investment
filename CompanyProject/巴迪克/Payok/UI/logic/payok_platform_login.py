@@ -2,6 +2,7 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 from tenacity import stop_after_attempt, retry
 
 from CompanyProject.巴迪克.utils.GoogleSecure import GoogleAuth
+from CompanyProject.巴迪克.utils.change_ui_language import change_ui_language
 # from CompanyProject.巴迪克.Paylabs.UI.paylabs_merchant_register import generate_google_code
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
 
@@ -11,8 +12,8 @@ def platform_login(playwright: Playwright ,operator_login_name, operator_passwor
     page = playwright.chromium.launch(headless=False).new_page()
 
     page.goto("http://payok-test.com/platform/payok-user-login.html")
-    page.get_by_text("Bahasa").click()
-    page.get_by_role("link", name="中文").click()
+    page.pause()
+    change_ui_language(page, "中文")
 
     page.get_by_role("textbox", name="邮箱").fill(operator_login_name)
     page.get_by_placeholder("请输入密码").fill(operator_password)

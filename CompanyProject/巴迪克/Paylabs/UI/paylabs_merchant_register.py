@@ -4,6 +4,7 @@ import os
 from playwright.sync_api import expect, TimeoutError as PlaywrightTimeoutError
 
 from CompanyProject.巴迪克.common.config.settings import ENV_CONFIG
+from CompanyProject.巴迪克.utils.change_ui_language import change_ui_language
 from CompanyProject.巴迪克.utils.logger import get_logger
 from CompanyProject.巴迪克.utils.sql_handler import SQLHandler
 
@@ -18,9 +19,7 @@ def paylabs_merchant_register(page, env="test", email=None):
 
     logger.info("开始注册商户流程")
     try:
-        #切换到英文环境
-        page.locator("span").filter(has_text="id").first.click()
-        page.get_by_role("link", name="EN", exact=True).click()
+        change_ui_language(page, "English")
 
         email_input = page.get_by_role("textbox", name="E-mail *", exact=True)
         code_input = page.get_by_role("textbox", name="Email Verification Code *")
