@@ -53,10 +53,10 @@ def slide_verification(page):
         time.sleep(1)  # 等待验证结果
 
 
-def payok_register(playwright: Playwright, register_email, merchant_name, upload_filepath) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context(no_viewport=True)
-    page = context.new_page()
+def payok_register(page, register_email, merchant_name, upload_filepath) -> None:
+    # browser = playwright.chromium.launch(headless=False)
+    # context = browser.new_context(no_viewport=True)
+    # page = context.new_page()
     page.goto("http://payok-test.com/merchant/payok-register-register.html") #测试环境
     # page.goto("https://m.payok.com/payok-register-register.html") #正式环境
 
@@ -97,7 +97,7 @@ def payok_register(playwright: Playwright, register_email, merchant_name, upload
     page.get_by_role("textbox", name="Secure Email for fund account").fill("1@linshiyou.com")
     page.get_by_role("button", name="Next").click()
     # 第四页
-    page.on("filechooser", lambda f: f.set_files(filepath))
+    page.on("filechooser", lambda f: f.set_files(upload_filepath))
     page.locator("#form1").click()
     page.locator("#form2").click()
     page.locator("#form3").click()
@@ -111,14 +111,13 @@ def payok_register(playwright: Playwright, register_email, merchant_name, upload
     #第五页
     # page.pause()
     page.locator("span").filter(has_text=re.compile(r"^Indonesia$")).click()
-    page.get_by_role("link", name="Indonesia").click()
-    # page.get_by_role("link", name="Vietnam").click()
+    page.get_by_role("link", name="Indonesia").click()#Vietnam
     page.get_by_role("textbox", name="E-mail *").fill(register_email)
     page.get_by_role("button", name="Send the verification code").click()
     page.pause()
 
-    captcha_img = page.locator("#captchaImg")
-    captcha_text = get_captcha_text("ddddocr",captcha_img)
+    # captcha_img = page.locator("#captchaImg")
+    # captcha_text = get_captcha_text("ddddocr",captcha_img)
 
     from tenacity import retry
     # slide_verification(page)
@@ -127,7 +126,6 @@ def payok_register(playwright: Playwright, register_email, merchant_name, upload
             cd /data/logs/tomcat/merchart
             grep "发邮件结束 getVerificationCode 登录邮箱" *
             '''
-    # asyncio.run(get_email_code('xiaozehua', '8qudcQifW7cjydglydm{'))
     get_email_code('xiaozehua', '8qudcQifW7cjydglydm{')
     page.get_by_role("textbox", name="Password*").fill("A123456@test")
     page.get_by_role("textbox", name="Comfirm Password *").fill("A123456@test")
@@ -142,8 +140,8 @@ def payok_register(playwright: Playwright, register_email, merchant_name, upload
     page.pause()
 
     # ---------------------
-    context.close()
-    browser.close()
+    # context.close()
+    # browser.close()
 
 
 if __name__ == '__main__':

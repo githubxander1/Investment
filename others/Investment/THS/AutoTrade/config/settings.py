@@ -72,15 +72,19 @@ Combination_headers = {
         "Cookie": 'uid=CvTgI2gv1Fl+Hy8sA+1IAg==; user_status=0; _clck=a5x9j2%7C2%7Cfw5%7C0%7C0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ3OTY1MTA1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTIwYzhhZDI3YWNjNTg0MTdhMmM1YTVhYmU4Yjc5MmRiOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=35e6f200b5574e9a48f426592dfebc57; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":"100113495581"}; hxmPid=sns_index_622697320.user.visitor.all.follow.show; v=A4s4Y_eCZxQtVbtA1FZzl07IGCR1IJ-iGTRjVv2IZ0ohHKTehfAv8ikE86wO'
     }
 
-Strategy_ids = ['155680', '137789', '155273']
+Strategy_ids = ['155680', '136574', '137789']
 Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
+        '136574': '低价小市值股战法', #技术面
+        # '136509': '缩量绩优小盘股战法', #技术面
+
         '137789': '高现金毛利战法',#基本面
         # '138006': '连续五年优质股战法',#基本面
-        '155273': '国资云概念'#消息面  两个创业板
+        # '155273': '国资云概念',#消息面  两个创业板
 
-        # '138036': '低价小盘股战法',
-        # '155270': '中字头概念',
+        # '138386': '主力控盘低价股战法'# 基本面
+        # '138036': '低价小盘股战法',#基本面
+        # '155270': '中字头概念',# 基本面
         # '136567': '净利润同比大增低估值战法',
         # '138127': '归母净利润高战法',
         # '118188': '均线粘合平台突破'
@@ -106,10 +110,10 @@ Combination_ids_to_name = {
 ETF_ids = ['29684', "29778"]
 ETF_ids_to_name = {
     # '29762': '全球领先ETF',
-    '29778': '波段轮动优选',
-    '29684': '主题成长优选',
-    '30463': '科技ETF高频',
+    '29778': '波段轮动优选ETF',
+    '29684': '主题成长优选ETF',
 
+    '30463': '科技ETF高频',
     '29669': '波段优选ETF',
     '29656': '龙头驾到ETF',
     '29617': 'ETF灵蛇智投',

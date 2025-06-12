@@ -97,12 +97,12 @@ async def strategy_main():
     # 过滤掉创业板股票的交易信息
     # all_today_trades_info_without_sc = [trade for trade in all_today_trades_info if trade['市场'] not in ['创业板', '科创板']]
     # 排除创业板、科创板
-    all_trades_df = all_trades_df[all_trades_df['市场'].isin(['沪深A股', '创业板', '科创板']) == False]
+    all_trades_df = all_trades_df[all_trades_df['市场'].isin(['创业板', '科创板']) == False]
 
     # 排序 & 打印
     all_trades_df = all_trades_df.sort_values(by='时间', ascending=False).reset_index(drop=True)
     all_trades_df.index += 1
-    print(all_trades_df.drop(columns=['时间'], errors='ignore'))
+    # print(all_trades_df.drop(columns=['时间'], errors='ignore'))
     # pprint("去掉参考价大于30的")
     # all_today_trades_info_without_sc = [trade for trade in all_today_trades_info_without_sc if trade['参考价'] < 30]
 
@@ -132,8 +132,8 @@ async def strategy_main():
     # 处理当前数据
     all_trades_df['_id'] = all_trades_df['时间'].astype(str) + '_' + all_trades_df['代码'].astype(str)
 
-    print("all_trades_df _id:", all_trades_df['_id'].tolist())
-    print("existing_data _id:", existing_data['_id'].tolist() if not existing_data.empty else [])
+    # print("all_trades_df _id:", all_trades_df['_id'].tolist())
+    # print("existing_data _id:", existing_data['_id'].tolist() if not existing_data.empty else [])
 
     # 筛选新增数据
     new_mask = ~all_trades_df['_id'].isin(existing_data['_id']) if not existing_data.empty else []
