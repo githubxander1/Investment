@@ -204,7 +204,7 @@ def plot_tdx_indicator(stock_code, period="1", trade_date=None):
 if __name__ == "__main__":
     # 设置股票代码和日期
     stock_code = '600900'  # 长江电力
-    trade_date = '20250605'  # 指定日期，或使用None表示当天
+    trade_date = '20250612'  # 指定日期，或使用None表示当天
 
     # 绘制分时图
     result_df = plot_tdx_indicator(stock_code, period="1", trade_date=trade_date)

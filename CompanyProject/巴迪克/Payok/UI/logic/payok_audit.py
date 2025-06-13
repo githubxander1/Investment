@@ -1,10 +1,5 @@
-from playwright.sync_api import Playwright
-
-from CompanyProject.巴迪克.utils.change_ui_language import change_ui_language
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
-# from CompanyProject.巴迪克.Payok.UI.others.merchant_login import generate_google_code
-from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
-from CompanyProject.巴迪克.utils.retry import default_retry
+from CompanyProject.巴迪克.zothers.generate_google_code import GoogleAuthenticator
+# from CompanyProject.巴迪克.Payok.UI.zothers.merchant_login import generate_google_code
 
 
 # from CompanyProject.巴迪克.UI.utils.generate_google_code import generate_google_code

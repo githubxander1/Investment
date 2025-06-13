@@ -1,10 +1,7 @@
-import logging
-from playwright.sync_api import Playwright, sync_playwright
-
 from CompanyProject.巴迪克.utils.change_ui_language import change_ui_language
 from CompanyProject.巴迪克.utils.retry import default_retry
 from CompanyProject.巴迪克.utils.logger import get_logger
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
+from CompanyProject.巴迪克.zothers.generate_google_code import GoogleAuthenticator
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
 
 logger = get_logger(__name__)

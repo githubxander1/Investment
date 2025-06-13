@@ -1,9 +1,8 @@
-import asyncio
-from playwright.async_api import async_playwright, expect
+from playwright.async_api import expect
 from tenacity import retry, stop_after_attempt
 # from CompanyProject.巴迪克.Payok.api_framework.generate_orderId import merchant_id
 from CompanyProject.巴迪克.utils.GoogleSecure import CalGoogleCode
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
+from CompanyProject.巴迪克.zothers.generate_google_code import GoogleAuthenticator
 
 
 @retry(stop=stop_after_attempt(3))

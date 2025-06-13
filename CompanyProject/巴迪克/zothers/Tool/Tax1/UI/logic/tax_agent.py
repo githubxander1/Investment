@@ -1,6 +1,6 @@
 from playwright.async_api import async_playwright, expect
 
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
+from CompanyProject.巴迪克.zothers.generate_google_code import GoogleAuthenticator
 from tenacity import retry, stop_after_attempt
 
 @retry(stop=stop_after_attempt(3))
@@ -103,7 +103,7 @@ async def create_merchant(page) -> None:
     await page.get_by_role("textbox", name="Contact phone number *").fill("11111111111111111111")
 
     # 文件上传
-    file_path = '../../../../common/data/合同.pdf'
+    file_path = '../../../../../common/data/合同.pdf'
     page.on("filechooser", lambda file_chooser: file_chooser.set_files(file_path))
     await page.locator("#form1 i").click()
     await page.locator("#form2 i").click()

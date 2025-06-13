@@ -4,7 +4,7 @@ import random
 import re
 import time
 from os.path import exists
-
+import asyncio
 from playwright.sync_api import Playwright, sync_playwright, expect
 from playwright.sync_api import Playwright, sync_playwright, expect
 from tenacity import stop_after_attempt
@@ -154,3 +154,5 @@ if __name__ == '__main__':
         register_email = "payok3@test.com"
         merchant_name =  register_email.split("@")[0]
         payok_register(playwright, register_email, merchant_name,  filepath)
+
+    asyncio.run(get_email_code('xiaozehua', '8qudcQifW7cjydglydm{'))

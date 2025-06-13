@@ -24,7 +24,7 @@ trade_operations_log_file = os.path.join(LOGS_DIR, '自动化交易操作记录.
 OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.csv')
 SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
 
-STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '策略今天调仓.csv')
+STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'Strategy_portfolio_today.csv')
 Combination_portfolio_today = os.path.join(DATA_DIR, 'Combination_portfolio_today.csv')
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 

@@ -1,4 +1,4 @@
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
+from CompanyProject.巴迪克.zothers.generate_google_code import GoogleAuthenticator
 from tenacity import retry, stop_after_attempt
 
 @retry(stop=stop_after_attempt(3))

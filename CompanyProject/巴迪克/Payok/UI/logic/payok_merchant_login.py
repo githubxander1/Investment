@@ -1,7 +1,6 @@
-import re
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import Playwright, sync_playwright
 
-from CompanyProject.巴迪克.utils.generate_google_code import GoogleAuthenticator
+from CompanyProject.巴迪克.zothers.generate_google_code import GoogleAuthenticator
 from CompanyProject.巴迪克.utils.perform_slider_unlock import perform_block_slider_verification
 from tenacity import retry, stop_after_attempt
 
