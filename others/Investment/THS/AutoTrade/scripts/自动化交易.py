@@ -4,17 +4,17 @@ import sys
 import time
 import asyncio
 import uiautomator2 as u2
-from others.Investment.THS.AutoTrade.config.settings import (
+from THS.AutoTrade.config.settings import (
     THS_AUTO_TRADE_LOG_FILE,
     OPERATION_HISTORY_FILE,
     OPRATION_RECORD_DONE_FILE,
-    STRATEGY_TODAY_ADJUSTMENT_FILE, Combination_portfolio_today,
+    Strategy_portfolio_today, Combination_portfolio_today, ETF_adjustment_holding_file,
     # COMBINATION_TODAY_ADJUSTMENT_FILE,
     # ETF_Combination_TODAY_ADJUSTMENT_FILE,
 )
-from others.Investment.THS.AutoTrade.pages.ths_page2 import THSPage
-from others.Investment.THS.AutoTrade.scripts.数据处理 import process_excel_files
-from others.Investment.THS.AutoTrade.utils.logger import setup_logger
+from THS.AutoTrade.pages.ths_page2 import THSPage
+from THS.AutoTrade.scripts.数据处理 import process_excel_files
+from THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE)
 
@@ -68,9 +68,8 @@ def check_files_modified(file_paths, last_modification_times):
 async def auto_main():
     logger.info("自动化交易程序开始运行")
     file_paths = [
-        STRATEGY_TODAY_ADJUSTMENT_FILE,
+        Strategy_portfolio_today,
         Combination_portfolio_today,
-        STRATEGY_TODAY_ADJUSTMENT_FILE
     ]
     operation_history_file = OPERATION_HISTORY_FILE
     last_modification_times = get_file_modification_times(operation_history_file)
@@ -87,7 +86,7 @@ async def auto_main():
 
     # 检查文件是否有更新
     if check_files_modified(file_paths, last_modification_times):
-        process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file=)
+        process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file=ETF_adjustment_holding_file)
         logger.info("文件处理完成")
         last_modification_times.update(get_file_modification_times(file_paths))
     else:
@@ -97,7 +96,7 @@ if __name__ == '__main__':
     try:
         # 初始化文件路径和最后修改时间
         file_paths = [
-            STRATEGY_TODAY_ADJUSTMENT_FILE,
+            Strategy_portfolio_today,
             Combination_portfolio_today
         ]
         operation_history_file = OPERATION_HISTORY_FILE

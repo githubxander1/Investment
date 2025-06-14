@@ -4,9 +4,9 @@ from datetime import datetime
 
 import pandas as pd
 
-from others.Investment.THS.AutoTrade.config.settings import trade_operations_log_file
-from others.Investment.THS.AutoTrade.utils.logger import setup_logger
-from others.Investment.THS.AutoTrade.utils.notification import send_notification
+from THS.AutoTrade.config.settings import trade_operations_log_file
+from THS.AutoTrade.utils.logger import setup_logger
+from THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(trade_operations_log_file)
 
@@ -27,6 +27,7 @@ def read_operation_history(file_path):
                     logger.info(f"读取去重后的操作历史文件")#\n{operation_history_df}
                 else:
                     operation_history_df = pd.DataFrame(columns=['股票名称', '操作', '状态', '信息', '时间'])
+                    logger.warning(f"操作历史文件,表名称: {today}不存在")
         except Exception as e:
             logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
             operation_history_df = pd.DataFrame(columns=['股票名称', '操作', '状态', '信息', '时间'])
@@ -39,7 +40,11 @@ def write_operation_history(file_path, new_operation_history_df):
     today = datetime.now().strftime('%Y%m%d')
 
     if not os.path.exists(file_path):
-        # 文件不存在时创建一个新的Excel文件，并添加一个以今日日期为名称的工作表
+        # 文件不存在时创建一个新的csv文件，并添加一个以今日日期为名称的工作表
+
+        # 换成csv文件
+        # with open(file_path, 'w', newline='', encoding='utf-8') as writer:
+        #     new_operation_history_df.to_csv(writer,  index=False,  encoding='utf-8')
         with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
             new_operation_history_df.to_excel(writer, sheet_name=today, index=False)
             logger.info(f"操作历史文件不存在，创建新的Excel文件: {file_path}")
@@ -67,9 +72,9 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
             logger.warning(f"文件不存在: {file_path}")
             continue
         try:
-            df = pd.read_excel(file_path)
+            df = pd.read_csv(file_path)
             for index, row in df.iterrows():
-                stock_name = row['股票名称']
+                stock_name = row['标的名称']
                 operation = row['操作']
                 time = row['时间']
                 quantity = str(row['新比例%'])

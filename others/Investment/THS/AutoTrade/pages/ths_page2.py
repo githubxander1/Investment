@@ -3,8 +3,8 @@ import time
 
 from uiautomator2 import UiObjectNotFoundError
 
-from others.Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
-from others.Investment.THS.AutoTrade.utils.logger import setup_logger
+from THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
+from THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 

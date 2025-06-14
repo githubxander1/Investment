@@ -91,15 +91,21 @@ def extract_stock_info():
                 if horizontal_scrollview.exists:
                     linear_layouts = horizontal_scrollview.child(className="android.widget.LinearLayout")
                     if len(linear_layouts) > 3:
+                        # 获取盈亏/盈亏率
+                        profit_loss_node = linear_layouts[1].child(className="android.widget.TextView", index=0)
+                        profit_loss_rate_node = linear_layouts[1].child(className="android.widget.TextView", index=1)
+                        profit_loss = profit_loss_node.get_text() if profit_loss_node.exists else "未找到"
+                        profit_loss_rate = profit_loss_rate_node.get_text() if profit_loss_rate_node.exists else "未找到"
+
                         # 获取当日盈亏/盈亏率
-                        daily_profit_loss_node = linear_layouts[1].child(className="android.widget.TextView", index=0)
-                        daily_profit_loss_rate_node = linear_layouts[1].child(className="android.widget.TextView", index=1)
+                        daily_profit_loss_node = linear_layouts[2].child(className="android.widget.TextView", index=0)
+                        daily_profit_loss_rate_node = linear_layouts[2].child(className="android.widget.TextView", index=1)
                         daily_profit_loss = daily_profit_loss_node.get_text() if daily_profit_loss_node.exists else "未找到"
                         daily_profit_loss_rate = daily_profit_loss_rate_node.get_text() if daily_profit_loss_rate_node.exists else "未找到"
 
                         # 获取成本/现价
-                        cost_node = linear_layouts[2].child(className="android.widget.TextView", index=0)
-                        current_price_node = linear_layouts[2].child(className="android.widget.TextView", index=1)
+                        cost_node = linear_layouts[4].child(className="android.widget.TextView", index=0)
+                        current_price_node = linear_layouts[4].child(className="android.widget.TextView", index=1)
                         cost = cost_node.get_text() if cost_node.exists else "未找到"
                         current_price = current_price_node.get_text() if current_price_node.exists else "未找到"
 
@@ -108,17 +114,12 @@ def extract_stock_info():
                         position_available_node2 = linear_layouts[3].child(className="android.widget.TextView", index=1)
                         position_available = f"{position_available_node1.get_text()}/{position_available_node2.get_text()}" if position_available_node1.exists and position_available_node2.exists else "未找到"
 
-                        # 获取盈亏/盈亏率
-                        profit_loss_node = linear_layouts[4].child(className="android.widget.TextView", index=0)
-                        profit_loss_rate_node = linear_layouts[4].child(className="android.widget.TextView", index=1)
-                        profit_loss = profit_loss_node.get_text() if profit_loss_node.exists else "未找到"
-                        profit_loss_rate = profit_loss_rate_node.get_text() if profit_loss_rate_node.exists else "未找到"
 
                 new_stocks.append({
                     "股票名": stock_name,
                     # "市值": market_value,
-                    "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
                     "盈亏/盈亏率": f"{profit_loss}/{profit_loss_rate}",
+                    "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
                     "成本/现价": f"{cost}/{current_price}",
                     "持仓/可用": position_available,
                 })

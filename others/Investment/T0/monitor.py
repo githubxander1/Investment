@@ -11,12 +11,12 @@ import json
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+ # = logging.get(__name__)
 
 # 加载 indicator 模块（根据你的路径调整）
-from others.Investment.T0.real1 import indicator1
-from others.Investment.T0.real2 import indicator2
-from others.Investment.T0.real3 import indicator3
+from T0.real1 import indicator1
+from T0.real2 import indicator2
+# from T0.real3 import indicator3
 
 
 class StockMonitor:
@@ -44,7 +44,7 @@ class StockMonitor:
         # 存储信号状态
         self.last_signals = {stock: {'buy': False, 'sell': False} for stock in self.config['stocks']}
 
-        logger.info("股票监控系统已初始化")
+        .info("股票监控系统已初始化")
 
     def load_cache_from_parquet(self):
         """从Parquet加载已有缓存，使用更高效的格式"""
@@ -57,7 +57,7 @@ class StockMonitor:
                 else:
                     self.price_cache[stock_code] = []
         except Exception as e:
-            logger.error(f"加载Parquet缓存失败，回退到CSV: {e}")
+            .error(f"加载Parquet缓存失败，回退到CSV: {e}")
             # 如果Parquet加载失败，回退到CSV
             for stock_code in self.config['stocks']:
                 cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.csv")
@@ -83,7 +83,7 @@ class StockMonitor:
                 cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.parquet")
                 df.to_parquet(cache_file, index=False)
         except Exception as e:
-            logger.error(f"保存Parquet缓存失败，尝试CSV: {e}")
+            .error(f"保存Parquet缓存失败，尝试CSV: {e}")
             # 备用方案：保存为CSV
             cache_file = os.path.join(self.config['cache_dir'], f"{stock_code}.csv")
             df.to_csv(cache_file, index=False)
@@ -143,7 +143,7 @@ class StockMonitor:
             df = ak.stock_zh_a_spot_em()
             df = df[df['代码'] == stock_code]
             if df.empty:
-                logger.warning(f"无法获取股票 {stock_code} 的实时行情")
+                .warning(f"无法获取股票 {stock_code} 的实时行情")
                 return None
 
             latest = df.iloc[0].to_dict()
@@ -159,7 +159,7 @@ class StockMonitor:
                 'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
         except Exception as e:
-            logger.error(f"获取股票 {stock_code} 实时行情失败: {e}")
+            .error(f"获取股票 {stock_code} 实时行情失败: {e}")
             return None
 
     def get_pre_close_price(self, stock_code):
@@ -171,17 +171,17 @@ class StockMonitor:
         try:
             df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", adjust="")
             if df.empty:
-                logger.warning(f"无法获取股票 {stock_code} 的历史行情数据")
+                .warning(f"无法获取股票 {stock_code} 的历史行情数据")
                 return None
 
             if len(df) >= 2:
                 pre_close = df.iloc[-2]['收盘']
                 return float(pre_close)
             else:
-                logger.warning(f"股票 {stock_code} 历史数据不足两天")
+                .warning(f"股票 {stock_code} 历史数据不足两天")
                 return None
         except Exception as e:
-            logger.error(f"获取股票 {stock_code} 前一日收盘价失败: {e}")
+            .error(f"获取股票 {stock_code} 前一日收盘价失败: {e}")
             return None
 
     def calculate_indicators(self, records):
@@ -226,7 +226,7 @@ class StockMonitor:
                 'sell_signal': sell_count >= 2,
             }
         except Exception as e:
-            logger.error(f"计算指标失败: {e}")
+            .error(f"计算指标失败: {e}")
             return None
 
     def send_notification(self, message):
@@ -238,9 +238,9 @@ class StockMonitor:
                 app_name="Stock Monitor",
                 timeout=10
             )
-            logger.info("系统通知发送成功")
+            .info("系统通知发送成功")
         except Exception as e:
-            logger.error(f"系统通知发送失败: {e}")
+            .error(f"系统通知发送失败: {e}")
 
     def send_dingtalk(self, message):
         """发送钉钉消息"""
@@ -255,9 +255,9 @@ class StockMonitor:
 
             response = requests.post(self.dingtalk_webhook, headers=headers, data=json.dumps(data))
             response.raise_for_status()
-            logger.info("钉钉消息发送成功")
+            .info("钉钉消息发送成功")
         except Exception as e:
-            logger.error(f"钉钉消息发送失败: {e}")
+            .error(f"钉钉消息发送失败: {e}")
 
     def send_signal_notification(self, stock_code, message, is_buy):
         key = 'buy' if is_buy else 'sell'
@@ -268,7 +268,7 @@ class StockMonitor:
         self.send_dingtalk(message)
 
     def monitor_stock(self, stock_code):
-        logger.info(f"正在监控股票: {stock_code}")
+        .info(f"正在监控股票: {stock_code}")
 
         stock_data = self.get_realtime_data(stock_code)
         if not stock_data:
@@ -299,13 +299,13 @@ class StockMonitor:
 
     def start_monitoring(self):
         """开始监控所有股票"""
-        logger.info("启动股票监控系统...")
+        .info("启动股票监控系统...")
 
         scheduler = BlockingScheduler()
 
         # 添加监控任务
         for stock_code in self.config['stocks']:
-            logger.info(f"首次获取股票 {stock_code} 数据用于初始化缓存")
+            .info(f"首次获取股票 {stock_code} 数据用于初始化缓存")
             stock_data = self.get_realtime_data(stock_code)
             if stock_data:
                 self.append_to_cache(stock_code, stock_data)
@@ -317,12 +317,12 @@ class StockMonitor:
                 name=f"monitor_{stock_code}"
             )
 
-        logger.info(f"已设置 {len(self.config['stocks'])} 只股票的监控任务")
+        .info(f"已设置 {len(self.config['stocks'])} 只股票的监控任务")
 
         try:
             scheduler.start()
         except (KeyboardInterrupt, SystemExit):
-            logger.info("股票监控系统已停止")
+            .info("股票监控系统已停止")
 
 
 if __name__ == "__main__":

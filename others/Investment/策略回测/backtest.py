@@ -163,7 +163,7 @@ def backtest(df, initial_capital=Decimal('100000.0')):
 
     # 将 `transactions` 添加到表格中
     file_path = '记录/transactions.xlsx'
-    df['transactions'] = [transactions] * len(df)
+    # df['transactions'] = [transactions] * len(df)
     df['transactions'].to_excel(file_path, index=False)
     # df.to_excel('output.xlsx', index=False)
 
@@ -171,4 +171,4 @@ def backtest(df, initial_capital=Decimal('100000.0')):
     transaction_df = pd.DataFrame(transactions)
 
     # 返回原始的 df、最终总资产和总利润
-    return df, final_total_asset, total_profit, transaction_df
+    return df, final_total_asset, total_profit, transactions

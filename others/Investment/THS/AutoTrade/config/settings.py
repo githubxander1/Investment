@@ -21,10 +21,10 @@ file_monitor_file = os.path.join(LOGS_DIR, '文件监控.log')
 trade_operations_log_file = os.path.join(LOGS_DIR, '自动化交易操作记录.log')
 
 # 数据文件路径
-OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.csv')
-SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.csv')
+OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, '交易操作历史.xlsx')
+SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.xlsx')
 
-STRATEGY_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'Strategy_portfolio_today.csv')
+Strategy_portfolio_today = os.path.join(DATA_DIR, 'Strategy_portfolio_today.csv')
 Combination_portfolio_today = os.path.join(DATA_DIR, 'Combination_portfolio_today.csv')
 # COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
@@ -43,7 +43,7 @@ Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.csv')
 #ai诊断文件
 Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
-Holding_Stockes_info_file = os.path.join(DATA_DIR, '账户持仓信息.csv')
+Holding_Stockes_info_file = os.path.join(DATA_DIR, '账户持仓信息.xlsx')
 
 TEMP_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '调仓操作记录.csv')
 

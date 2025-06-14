@@ -4,7 +4,7 @@ from pprint import pprint
 import openpyxl
 import pandas as pd
 
-from others.Investment.THS.AutoTrade.utils.scheduler import logger
+from THS.AutoTrade.utils.scheduler import logger
 
 def create_empty_excel(file_path, sheet_name):
     if not os.path.exists(file_path):
@@ -44,21 +44,31 @@ def save_to_excel(df, filename, sheet_name, mode='w', index=True):
     else:
         df.to_excel(filename, sheet_name=sheet_name, index=index)
 
-def clear_sheet(filename, sheet_name):
-    """清空指定Excel文件中的指定表格"""
+# def clear_sheet(filename, sheet_name):
+#     """清空指定Excel文件中的指定表格"""
+#     try:
+#         # 检查文件是否存在
+#         if os.path.exists(filename):
+#             wb = openpyxl.load_workbook(filename)
+#             if sheet_name in wb.sheetnames:
+#                 ws = wb[sheet_name]
+#                 # 删除所有行
+#                 ws.delete_rows(1, ws.max_row)
+#                 wb.save(filename)
+#                 pprint(f"成功清空表格: {sheet_name} 文件: {filename}")
+#             else:
+#                 logger.warning(f"表格 {sheet_name} 不存在于文件: {filename}")
+#         else:
+#             logger.warning(f"文件 {filename} 不存在，无需清空")
+#     except Exception as e:
+#         logger.error(f"清空表格失败: {e}")
+def clear_csv(filename):
     try:
-        # 检查文件是否存在
         if os.path.exists(filename):
-            wb = openpyxl.load_workbook(filename)
-            if sheet_name in wb.sheetnames:
-                ws = wb[sheet_name]
-                # 删除所有行
-                ws.delete_rows(1, ws.max_row)
-                wb.save(filename)
-                pprint(f"成功清空表格: {sheet_name} 文件: {filename}")
-            else:
-                logger.warning(f"表格 {sheet_name} 不存在于文件: {filename}")
+            with open(filename, 'w', newline='') as f:
+                f.truncate()
+                logger.info(f"成功清空文件: {filename}")
         else:
             logger.warning(f"文件 {filename} 不存在，无需清空")
-    except Exception as e:
-        logger.error(f"清空表格失败: {e}")
+    except  Exception as e:
+        logger.error(f"清空文件失败: {e}")

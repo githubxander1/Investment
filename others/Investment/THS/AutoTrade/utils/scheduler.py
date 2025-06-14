@@ -3,11 +3,11 @@ import asyncio
 from datetime import datetime, time as dt_time, timedelta
 from pprint import pprint
 
-import pandas_market_calendars as mcal
+# import pandas_market_calendars as mcal
 
-from others.Investment.THS.AutoTrade.config import settings
-from others.Investment.THS.AutoTrade.config.settings import SCHEDULER_LOG_FILE
-from others.Investment.THS.AutoTrade.utils.logger import setup_logger
+from THS.AutoTrade.config import settings
+from THS.AutoTrade.config.settings import SCHEDULER_LOG_FILE
+from THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(SCHEDULER_LOG_FILE)
 

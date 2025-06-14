@@ -3,7 +3,8 @@ from pprint import pprint
 
 import pandas as pd
 import requests
-
+import fake_useragent
+ua = fake_useragent.UserAgent()
 # 请求的URL
 url = "https://dataq.10jqka.com.cn/fetch-data-server/fetch/v1/specific_data"
 
@@ -24,6 +25,7 @@ headers = {
     "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY1MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_641926488\",\"userid\":\"641926488\"}; hxmPid=juece_new; v=A_PlyoFJkPs_8lyvgzlFs10li_wdKIf5QbjLHqWQTw9IjhzmLfgXOlGMW3S2",
     "X-Requested-With": "com.hexin.plat.android"
 }
+# headers = ua.random
 
 def fetch_data(url, headers, payload):
     """
@@ -39,27 +41,37 @@ def fetch_data(url, headers, payload):
 
 def extract_result(data):
     """
-    从接口返回数据中提取结果
+    提取 data['data']['data'] 中的数据，并按 idx 映射为字典
     """
-    if data and 'testdata' in data and 'testdata' in data['testdata']:
-        result_data = data['testdata']['testdata']
-        parsed_data = []
-        for item in result_data:
-            parsed_item = {}
-            for value in item['values']:
-                idx = str(value['idx'])
-                parsed_item[idx] = value['value']
-            parsed_data.append(parsed_item)
-        return parsed_data
-    return []
+    if not data or 'data' not in data or 'data' not in data['data']:
+        print("无效的响应数据")
+        return []
 
-def save_to_csv(data, filename):
+    result_data = data['data']['data']
+    parsed_data = []
+
+    for item in result_data:
+        row = {}
+        for value in item.get('values', []):
+            idx = str(value.get('idx'))
+            val = value.get('value')
+            row[idx] = val
+        parsed_data.append(row)
+
+    return parsed_data
+
+
+def save_to_excel(df, filename):
     """
-    将数据保存到CSV文件
+    将 DataFrame 保存为 Excel 文件
     """
-    if data:
-        # 创建一个映射字典，将index_id映射到中文标题
-        index_to_chinese = {
+    if df.empty:
+        print("没有可写入的数据")
+        return
+
+    try:
+        # 列名映射表（根据 idx 映射中文列名）
+        column_mapping = {
             "0": "股票名称",
             "1": "价格变化百分比之和",
             "2": "财务指标",
@@ -72,21 +84,23 @@ def save_to_csv(data, filename):
             "9": "所属行业"
         }
 
-        # 替换表头为中文
-        df = pd.DataFrame(data)
-        df.columns = [index_to_chinese[col] for col in df.columns]
+        # 替换列名为中文
+        df.columns = [column_mapping.get(col, col) for col in df.columns]
 
-        print(df)
-        df.to_csv(filename, index=False, encoding='utf-8-sig')
-    else:
-        print("未提取到有效数据")
+        # 保存为 Excel
+        df.to_excel(filename, index=False, engine='openpyxl')
+        print(f"✅ 数据已保存至 {filename}")
+    except Exception as e:
+        print(f"❌ 保存文件失败: {e}")
+
+
 
 def main():
     # 用户输入起始日期和结束日期
     # start_date_str = input("请输入起始日期 (格式: YYYY-MM-DD): ")
-    start_date_str = "2024-12-10"
+    start_date_str = "2025-01-10"
     # end_date_str = input("请输入结束日期 (格式: YYYY-MM-DD): ")
-    end_date_str = "2025-01-15"
+    end_date_str = "2025-06-15"
     # 将日期字符串转换为时间戳
     try:
         start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
@@ -226,7 +240,12 @@ def main():
     if data:
         pprint(data)
         extracted_result = extract_result(data)
-        save_to_csv(extracted_result, filename)
+
+        # ✅ 添加这行：将提取结果转为 DataFrame
+        df = pd.DataFrame(extracted_result)
+        print(df)
+
+        save_to_excel(df, filename)  # ✅ 正确传递 DataFrame
     else:
         print("未获取到数据")
 

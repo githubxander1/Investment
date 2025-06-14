@@ -3,20 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\others\Investment\T0\600900_20250605_分时指标.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\others\Investment\T0\cache\600900.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv">
           <value>
             <Attribute>
@@ -31,13 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\others\Investment\THS\AutoTrade\data\Etf_stock_portfolio_today.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\etf_stock_position.csv">
           <value>
             <Attribute>
@@ -46,27 +25,6 @@
           </value>
         </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\策略今天调仓.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\others\Investment\THS\AutoTrade\zothers\stock_final_score_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\others\Investment\THS\AutoTrade\zothers\stock_finance_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\others\Investment\THS\AutoTrade\zothers\stock_profit_history.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

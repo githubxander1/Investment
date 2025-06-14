@@ -5,7 +5,7 @@ import os
 import colorlog
 
 # from config.settings import LOGS_DIR
-from others.Investment.THS.AutoTrade.config.settings import LOGS_DIR
+from THS.AutoTrade.config.settings import LOGS_DIR
 
 
 def setup_logger(log_file, logger_name='THSLogger'):

@@ -19,11 +19,12 @@ sys.path.append(others_dir)
 
 from others.Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
     ETF_ADJUSTMENT_LOG_FILE, Combination_ids, \
-    Combination_ids_to_name, Combination_portfolio_today, Combination_headers, all_ids, id_to_name
+    Combination_ids_to_name, Combination_portfolio_today, Combination_headers, all_ids, id_to_name, \
+    OPRATION_RECORD_DONE_FILE
 from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
 from others.Investment.THS.AutoTrade.utils.notification import send_notification
-from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
-    create_empty_excel
+# from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet, read_excel, \
+#     create_empty_excel
 
 # logger = setup_print(ETF_ADJUSTMENT_LOG_FILE)
 
@@ -107,7 +108,12 @@ def fetch_and_extract_data(portfolio_id):
                 '理由': clean_reason
             }
             # 今天更新的
-            today = datetime.date.today().strftime('%Y-%m-%d')
+            # today = datetime.date.today().strftime('%Y-%m-%d')
+            #昨天
+            # yesterday \
+            today= (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+
+
             if today == createAt.split()[0]:
                 today_trades.append(history_post)
 
@@ -179,6 +185,8 @@ async def Combination_main():
 
         # 保存新增数据
         if not new_data.empty:
+            with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
+                f.write('1')
             print(f'发现{len(new_data)}条新增交易:')
             new_data_without_content = new_data.drop(columns=['理由'], errors='ignore')
             print(new_data_without_content)
@@ -188,6 +196,7 @@ async def Combination_main():
             # new_data_print_without_header = new_data.drop(columns=['理由'], errors='ignore').to_string(index=False)
             new_data_print_without_header = new_data_without_content.drop(columns=['理由'], errors='ignore').to_string(index=False)
             send_notification(f"{len(new_data)} 条新增交易，\n {new_data_print_without_header}")
+            #创建标志文件
         else:
             print("---------------今日无新增交易数据----------------")
     else:

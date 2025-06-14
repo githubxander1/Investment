@@ -2,7 +2,7 @@
 import requests
 
 # from config.settings import API_URL, HEADERS
-from others.Investment.THS.AutoTrade.config.settings import API_URL, Combination_headers
+from THS.AutoTrade.config.settings import API_URL, Combination_headers
 
 
 class APIClient:

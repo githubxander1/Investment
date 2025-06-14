@@ -7,12 +7,12 @@ import pandas as pd
 import requests
 from fake_useragent import UserAgent
 
-from others.Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    STRATEGY_TODAY_ADJUSTMENT_FILE, Strategy_id_to_name, Strategy_ids
-from others.Investment.THS.AutoTrade.utils.determine_market import determine_market
-from others.Investment.THS.AutoTrade.utils.logger import setup_logger
-from others.Investment.THS.AutoTrade.utils.notification import send_notification
-from others.Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_sheet
+from THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
+    Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids,OPRATION_RECORD_DONE_FILE
+from THS.AutoTrade.utils.determine_market import determine_market
+from THS.AutoTrade.utils.logger import setup_logger
+from THS.AutoTrade.utils.notification import send_notification
+from THS.AutoTrade.utils.excel_handler import save_to_excel, clear_csv
 
 
 logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
@@ -52,6 +52,8 @@ async def get_latest_position_and_trade(strategy_id):
     trade_stocks = latest_trade.get('tradeStocks', [])
 
     today = datetime.datetime.now().strftime('%Y-%m-%d')
+    # today = (datetime.datetime.today() - datetime.timedelta(days=1))
+    # print("today:", today)
     result = []
     for trade_info in trade_stocks:
         code = trade_info.get('stkCode', 'N/A').split('.')[0].zfill(6)
@@ -112,7 +114,7 @@ async def strategy_main():
 
     # 检查新增流程
     # 读取历史数据
-    existing_data_file = STRATEGY_TODAY_ADJUSTMENT_FILE
+    existing_data_file = Strategy_portfolio_today
     try:
         existing_data = pd.read_csv(existing_data_file)
     except (FileNotFoundError, pd.errors.EmptyDataError):
@@ -141,6 +143,8 @@ async def strategy_main():
 
     # 写入 CSV 并通知
     if not new_data.empty:
+        with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
+            f.write('')
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
         msg = f"{len(new_data)} 条新增策略调仓：\n{new_data.drop(columns=['理由'], errors='ignore')}"

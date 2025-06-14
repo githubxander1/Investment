@@ -39,4 +39,12 @@ def generate_signals(df, short_window=5, long_window=20):
     df.loc[(df[f'{short_window}日均线'] < df[f'{long_window}日均线']) &
            (df[f'{short_window}日均线'].shift(1) > df[f'{long_window}日均线'].shift(1)), '信号'] = '卖出'
 
+    # 在 generate_signals 后加入验证
+    buy_dates = df[df['信号'] == '买入']['交易日期']
+    sell_dates = df[df['信号'] == '卖出']['交易日期']
+
+    print("买入时间点:", buy_dates.tolist())
+    print("卖出时间点:", sell_dates.tolist())
+
+
     return df

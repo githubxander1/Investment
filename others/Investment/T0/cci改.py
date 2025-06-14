@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
 def cci_modified_signal(df: pd.DataFrame, n=34, m=13):
     """
     将通达信指标 'cci改' 转换为 Python 函数。
@@ -41,6 +41,51 @@ def cci_modified_signal(df: pd.DataFrame, n=34, m=13):
 
     return df[['open', 'high', 'low', 'close', 'AA', 'BB', '黄柱', 'XG', '速顶']]
 
+def plot_cci_signals(df):
+    """
+    可视化 CCI 改进策略的指标与交易信号。
+    """
+    fig, ax = plt.subplots(figsize=(14, 6))
+
+    # 绘制 AA 和 BB 曲线
+    ax.plot(df.index, df['AA'], label='AA', color='blue')
+    ax.plot(df.index, df['BB'], label='BB', color='orange')
+
+    # 标记黄柱（底部参与）
+    yellow_signals = df[df['黄柱']]
+    ax.scatter(yellow_signals.index, yellow_signals['AA'], marker='^', color='gold', s=100, label='底部参与 (黄柱)')
+
+    # 标记 XG（买入）
+    buy_signals = df[df['XG']]
+    ax.scatter(buy_signals.index, buy_signals['AA'], marker='o', color='green', s=100, label='XG 买入')
+
+    # 标记速顶（卖出）
+        # 修改速顶计算逻辑
+    cross_bb_aa = (df['BB'].shift(1) <= df['AA'].shift(1)) & (df['BB'] > df['AA'])
+    df['速顶'] = cross_bb_aa & (df['AA'] > 80.3)
+
+    # 使用 rolling().sum() 来实现类似 FILTER 的功能
+    # 即最近 3 根 K 线中是否有且仅有当前一根满足条件
+    df['速顶'] = df['速顶'].rolling(window=3, min_periods=1).apply(
+        lambda x: (x.iloc[-1] == True) & (x.iloc[:-1].sum() == 0),
+    ).astype(bool)
+    print(df[['AA', 'BB', '速顶']].tail(10))
+
+
+    # 设置阈值线
+    ax.axhline(20, color='gray', linestyle='--', linewidth=0.8)
+    ax.axhline(80, color='gray', linestyle='--', linewidth=0.8)
+
+    # 图表美化
+    ax.set_title('CCI 改进指标与交易信号')
+    ax.set_xlabel('时间')
+    ax.set_ylabel('指标值')
+    ax.legend()
+    ax.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
 if __name__ == '__main__':
     # 示例获取某股票的日线行情
     import akshare as ak
@@ -67,3 +112,7 @@ if __name__ == '__main__':
         print("🔔 发现【XG买入】信号！")
     if latest['速顶']:
         print("🔔 发现【速顶卖出】信号！")
+
+    # 新增：绘制图表
+    plot_cci_signals(df)
+    # plt.savefig('cci_signals.png')

@@ -6,7 +6,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 from backtest import backtest
-from data_loader import load_data
+from data_loader import fetch_or_load_stock_data
 from plotter import plot_kline_with_ma, plot_assets_and_cumulative_returns
 
 # from strategy import calculate_ma, generate_signals  # 导入新的策略函数
@@ -21,8 +21,10 @@ pd.set_option('display.max_rows', 5000)  # 最多显示数据的行数
 
 
 # 时间段
-start_time = '20230531'
-end_time = '20240424'
+start_time = '20240531'
+end_time = '20250613'
+
+stock_codes = ['000001', '000002']
 
 # 获取股票文件夹路径
 file_path = os.path.abspath(os.path.dirname(__file__)) + '/股票数据/'  # 返回当前文件路径
@@ -97,20 +99,23 @@ def main(strategy_file):
     tables = []
     all_transactions = []
 
-    for f in file_list:
-        print(f"正在处理股票: {f}")
-        table = load_data(f)
+    for stock_code in stock_codes:
+        table = fetch_or_load_stock_data(stock_code, start_date=start_time, end_date=end_time)
+
+        if table.empty:
+            print(f"警告: 股票 {stock_code} 的数据为空，跳过该股票。")
+            continue
 
         table = calculate_ma(table)
         table = generate_signals(table)
-        table = table[(table['交易日期'] >= pd.to_datetime(start_time)) & (table['交易日期'] <= pd.to_datetime(end_time))]
 
-        if table.empty:
-            print(f"警告: 股票 {f} 的数据为空，跳过该股票。")
-        else:
-            tables.append(table)
+        tables.append(table)
+        print(f"[调试] 股票 {stock_code} 的信号分布：")
+        print(table['信号'].value_counts())  # 查看是否有 '买入' 或 '卖出'
 
     all_table = pd.concat(tables, ignore_index=True)
+    all_table['股票代码'] = all_table['股票代码'].astype(str)
+
 
     # 用于存储所有股票的交易记录
     all_transactions = {}
@@ -129,11 +134,16 @@ def main(strategy_file):
         stock_results.reset_index(drop=True, inplace=True)
 
         # 修改解包语句以匹配 backtest 函数的返回值数量
-        stock_results, final_total_asset, total_profit, transaction_df = backtest(stock_results)
-
+        stock_results, final_total_asset, total_profit, transactions = backtest(stock_results)
+        print(f"[调试] {stock} 的交易记录:")
+        print(transactions)
         # 提取交易记录
-        transactions = stock_results['transactions'].iloc[0]
-        all_transactions[stock] = transactions
+        # transactions = stock_results['transactions'].iloc[0]
+        transactions = pd.DataFrame(transactions)
+        if transactions:
+            all_transactions[stock] = transactions
+        else:
+            print(f"股票代码: {stock} 没有交易记录。")
 
         # 获取股票名称
         stock_name = stock_results['股票名称'].unique()[0]
@@ -152,35 +162,50 @@ def main(strategy_file):
         plot_assets_and_cumulative_returns(stock_results, stock_name, strategy_dir, strategy_module_name)
 
     # 使用 ExcelWriter 将每个股票的交易记录保存到不同的工作表中
-    with pd.ExcelWriter('记录/all_transactions.xlsx') as writer:
-        for stock, transactions in all_transactions.items():
-            stock_transactions = pd.DataFrame(transactions)
-            stock_transactions['股票代码'] = stock.split('.')[0]
-            stock_transactions.to_excel(writer, sheet_name=stock.split('.')[0], index=False)
+    if all_transactions.items():
+        with pd.ExcelWriter('记录/all_transactions.xlsx') as writer:
+            for stock, transactions in all_transactions.items():
+                if not transactions:
+                    continue
+                stock_transactions = pd.DataFrame(transactions)
+                stock_transactions['股票代码'] = stock.split('.')[0]
+                stock_transactions.to_excel(writer, sheet_name=stock.split('.')[0], index=False)
 
-    print(f"所有交易记录已保存到 all_transactions.xlsx")
+        print(f"所有交易记录已保存到 all_transactions.xlsx")
+    else:
+        print("没有交易记录。")
 
     # 统计汇总
-    reports_df = pd.DataFrame(reports)
-    print("\n所有股票的统计汇总:")
-    print(reports_df)
+    if not reports:
+        print('没有回测报告可生成')
+    else:
+        reports_df = pd.DataFrame(reports)
+        print("\n所有股票的统计汇总:")
+        print(reports_df)
 
-    # 计算策略的整体表现
-    average_profit = reports_df['累计收益'].mean()
-    win_rate = (reports_df['累计收益'] > 0).mean()  # 修改胜率计算方式
-    num_positive_assets = (reports_df['最终总资产'] > 100000).sum()
-    num_negative_assets = (reports_df['最终总资产'] <= 100000).sum()
+        # 计算策略的整体表现
+        average_profit = reports_df['累计收益'].mean()
+        win_rate = (reports_df['累计收益'] > 0).mean()  # 修改胜率计算方式
+        num_positive_assets = (reports_df['最终总资产'] > 100000).sum()
+        num_negative_assets = (reports_df['最终总资产'] <= 100000).sum()
 
-    print("\n整体表现:")
-    print(f"平均累计收益: {average_profit:.2f}")
-    print(f"胜率: {win_rate:.2%}")
-    print(f"最终总资产大于初始资产的数量: {num_positive_assets}")
-    print(f"最终总资产小于等于初始资产的数量: {num_negative_assets}")
+        print("\n整体表现:")
+        print(f"平均累计收益: {average_profit:.2f}")
+        print(f"胜率: {win_rate:.2%}")
+        print(f"最终总资产大于初始资产的数量: {num_positive_assets}")
+        print(f"最终总资产小于等于初始资产的数量: {num_negative_assets}")
 
 # 运行主函数
 if __name__ == "__main__":
     # 自定义要测试的策略文件路径
-    strategy_file = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\策略回测\策略\双均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
+    # strategy_file = r'量化投资\策略回测\策略\双均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
+    # strategy_file = '../策略/双均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
+    # strategy_file = os.path.join()
+    #文件在当前目录策略目录下的策略文件
+    strategy_file = os.path.join(os.path.dirname(__file__), '策略', '双均线策略.py')
+    if not os.path.exists(strategy_file):
+        print(f"策略文件 {strategy_file} 不存在，请检查路径是否正确。")
+        exit()
     # strategy_file = r'D:\1document\1test\PycharmProject_gitee\z_others\Investment\策略回测\策略\5日优化1.py'  # 这里可以修改为你想要测试的策略文件路径
     # strategy_file = r'D:\1document\1test\PycharmProject_gitee\z_others\Investment\策略回测\策略\五日均线策略.py'  # 这里可以修改为你想要测试的策略文件路径
 
