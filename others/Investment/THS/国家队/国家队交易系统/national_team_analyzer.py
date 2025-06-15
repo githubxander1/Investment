@@ -15,10 +15,14 @@ def national_team_scoring(filename="国家队持股.xlsx"):
 
     # 处理缺失值
     combined_df['总持股比例'] = combined_df['总持股比例'].fillna(0).astype(float)
-    combined_df['社保'] = combined_df['社保'].fillna(0).astype(int)
-    combined_df['养老金'] = combined_df['养老金'].fillna(0).astype(int)
-    combined_df['证金'] = combined_df['证金'].fillna(0).astype(int)
-    combined_df['汇金'] = combined_df['汇金'].fillna(0).astype(int)
+
+    # 统一处理 '社保'、'养老金'、'证金' 和 '汇金' 列
+    columns_to_process = ['社保', '养老金', '证金', '汇金']
+    for col in columns_to_process:
+        combined_df[col] = combined_df[col].apply(lambda x: 1 if x == col else 0)
+
+    # 统一股票代码格式
+    combined_df['股票代码'] = combined_df['股票代码'].apply(lambda x: str(x).zfill(6))
 
     # 构造因子
     combined_df['duration_score'] = combined_df['source'].map({
@@ -29,7 +33,7 @@ def national_team_scoring(filename="国家队持股.xlsx"):
     }).fillna(0.5)
 
     combined_df['holder_count'] = (
-        combined_df[['社保', '养老金', '证金', '汇金']].apply(lambda x: x > 0).sum(axis=1)
+        combined_df[columns_to_process].apply(lambda x: x > 0).sum(axis=1)
     ).astype(float)
 
     combined_df['total_scale'] = combined_df['总持股比例'].astype(float)
@@ -41,7 +45,9 @@ def national_team_scoring(filename="国家队持股.xlsx"):
         combined_df['total_scale'] * 0.5
     )
 
-    # 排序并选取前20名
-    top_stocks = combined_df.sort_values(by='score', ascending=False).head(20)
+    # 排序并选取前5名（排除ST股票）
+    top_stocks = combined_df[
+        ~combined_df['股票名称'].str.contains('ST')
+    ].sort_values(by='score', ascending=False).head(5)
 
     return top_stocks[['股票代码', '股票名称', 'score']]

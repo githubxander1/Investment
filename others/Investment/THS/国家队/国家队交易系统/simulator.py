@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-class NationalTeamSimulator:
+class Simulator:  # 修复：统一类名
     def __init__(self, initial_capital=100000):
         self.capital = initial_capital
         self.position = {}
@@ -10,7 +10,6 @@ class NationalTeamSimulator:
         self.transaction_fee_rate = 0.001  # 交易手续费
 
     def buy(self, symbol, price, size):
-        """执行买入操作"""
         cost = price * size * (1 + self.transaction_fee_rate)
         if cost > self.capital:
             print("资金不足，无法买入")
@@ -19,6 +18,10 @@ class NationalTeamSimulator:
         self.capital -= cost
         if symbol in self.position:
             self.position[symbol]['size'] += size
+            # 更新平均价格
+            total_cost = self.position[symbol]['size'] * self.position[symbol]['avg_price'] + cost
+            total_size = self.position[symbol]['size'] + size
+            self.position[symbol]['avg_price'] = total_cost / total_size
         else:
             self.position[symbol] = {'size': size, 'avg_price': price}
 
@@ -76,10 +79,10 @@ class NationalTeamSimulator:
 
         total_returns = 0
         for symbol, info in self.position.items():
-            current_price = self._get_current_price(symbol)  # 应该使用实时行情价格
+            # 简化实时价格获取（实际应用中需实现）
+            current_price = info['avg_price']  # 临时方案
             position_value = current_price * info['size']
             returns = (current_price - info['avg_price']) / info['avg_price']
-            total_returns += returns * position_value
 
             summary['positions'][symbol] = {
                 'size': info['size'],
@@ -88,6 +91,6 @@ class NationalTeamSimulator:
                 'value': position_value,
                 'returns': returns
             }
+            summary['total_value'] += position_value
 
-        summary['total_value'] += sum(p['value'] for p in summary['positions'].values())
-        summary
+        return summary  # 修复：添加返回值

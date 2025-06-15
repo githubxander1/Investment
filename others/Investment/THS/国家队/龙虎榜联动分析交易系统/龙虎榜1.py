@@ -95,7 +95,9 @@ def extract_lhb_data(json_data):
     return extracted_data
 
 
+start_date = "2024-06-13"
 if __name__ == "__main__":
+
     # 定义要请求的模块及对应的参数
     modules = {
         "hot_rank":
@@ -131,11 +133,12 @@ if __name__ == "__main__":
     }
 
     all_dfs = {}  # 存储所有 DataFrame，用于写入多个sheet
+    selected_stocks = {}
 
     for order_field, config in modules.items():
         print(f"正在获取【{config['title']}】数据...")
         data = get_stock_transaction_data(
-            date="2025-06-13",
+            date=start_date,
             page=1,
             size=10,
             order_field=order_field,
@@ -144,6 +147,13 @@ if __name__ == "__main__":
 
         if data:
             df = pd.DataFrame(extract_lhb_data(data))
+            #买卖金额排序，买入最多的排前面
+            df = df.sort_values(by='买卖净额', ascending=False)
+
+            # 取前两支股票
+            top_two_stocks = df.head(2)
+            selected_stocks[config['title']] = top_two_stocks[['股票代码', '股票名称']].values.tolist()
+
             print(f"\n📊 {config['title']} 数据表：")
             print(df)
 
@@ -153,10 +163,58 @@ if __name__ == "__main__":
             print(f"获取【{config['title']}】数据失败")
 
     # 写入 Excel
-    output_file = '龙虎榜综合分析.xlsx'
+    output_file = '龙虎榜综合数据.xlsx'
     with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
         for sheet_name, df in all_dfs.items():
             df.to_excel(writer, sheet_name=sheet_name, index=False)
 
     print(f"\n✅ 所有数据已保存至 {output_file}")
 
+# # 龙虎榜1.py (部分修改)
+# if __name__ == "__main__":
+#     selected_stocks = {}
+#     for order_field, config in modules.items():
+#         data = get_stock_transaction_data(
+#             date="2024-06-13",
+#             page=1,
+#             size=10,
+#             order_field=order_field,
+#             order_type="desc" if config["desc"] else "asc"
+#         )
+#
+#         if data:
+#             df = pd.DataFrame(extract_lhb_data(data))
+#             top_two_stocks = df.head(2)
+#             selected_stocks[config['title']] = top_two_stocks[['股票代码', '股票名称']].values.tolist()
+#
+#     all_stock_codes = [code for sublist in selected_stocks.values() for code, name in sublist]
+#     unique_stock_codes = list(set(all_stock_codes))  # 去重
+#
+#     print("Selected Stocks:", selected_stocks)
+#     print("Unique Stock Codes:", unique_stock_codes)
+#
+#     # 下载 K 线数据
+#     from download_stock_data import download_stock_data
+#     download_stock_data(unique_stock_codes, start_date="2024-06-14", end_date="2023-10-01")
+#
+#     # 进行回测
+#     import backtrader as bt
+#     from HoldingPeriodStrategy import HoldingPeriodStrategy
+#
+#     cerebro = bt.Cerebro()
+#
+#     # 添加数据 feed
+#     for code in unique_stock_codes:
+#         data = bt.feeds.YahooFinanceData(dataname=f"{code}.csv")
+#         cerebro.adddata(data)
+#
+#     # 添加策略
+#     cerebro.addstrategy(HoldingPeriodStrategy)
+#
+#     # 运行回测
+#     cerebro.run()
+#
+#     # 打印分析结果
+#     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+#
+#

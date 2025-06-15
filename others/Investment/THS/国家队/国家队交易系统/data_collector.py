@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import json
 from datetime import datetime
+import os
 
 class NationalTeamDataCollector:
     def __init__(self):
@@ -32,14 +33,15 @@ class NationalTeamDataCollector:
 
         results = []
         for item in raw_data['data']:
-            holders_info = ', '.join([f"{holder['name']}({holder['scale']}%)"
-                                    for holder in item.get('holders', [])])
+            holders_info = ', '.join(
+                [f"{holder['name']}({holder['scale']}%)" for holder in item.get('holders', [])]
+            ) if 'holders' in item else ''
 
             results.append({
-                'stock_code': item.get('code'),
-                'stock_name': item.get('name'),
-                'report_date': item.get('report'),
-                'declare_date': item.get('declare'),
+                'stock_code': item.get('code', ''),
+                'stock_name': item.get('name', ''),
+                'report_date': item.get('report', ''),
+                'declare_date': item.get('declare', ''),
                 'total_scale': float(item.get('scale', 0)),
                 'holders_info': holders_info,
                 'social_security': int(item.get('sb', 0)),
@@ -59,8 +61,9 @@ class NationalTeamDataCollector:
 
         df = pd.DataFrame(data)
         try:
-            with pd.ExcelWriter('国家队持股数据.xlsx', mode='a', engine='openpyxl',
-                               if_sheet_exists='replace') as writer:
+            # 修复：检查文件是否存在
+            mode = 'a' if os.path.exists('国家队持股数据.xlsx') else 'w'
+            with pd.ExcelWriter('国家队持股数据.xlsx', mode=mode, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=False)
             print(f"成功保存 {sheet_name} 数据到Excel")
             return True
