@@ -6,7 +6,7 @@ import json
 from urllib.parse import urlencode
 
 
-def fetch_limit_up_data(type_key, date, page=1, limit=15):
+def fetch_limit_up_data(type_key, date, page=1, limit=5):
     """
     发送GET请求获取股票涨停池数据
 
@@ -139,7 +139,7 @@ def extract_continuous_limit_up(json_data):
 
 # 调用函数获取第一页数据
 if __name__ == "__main__":
-    date = "20250613"
+    date = "20240613"
     types = {
         'limit_up_pool': '涨停强度',
         'block_top': '最强风口',
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         all_dfs[type_name] = df
 
     # 写入 Excel
-    output_file = '涨停综合分析.xlsx'
+    output_file = '涨停综合数据.xlsx'
 
     with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
         for sheet_name, df in all_dfs.items():

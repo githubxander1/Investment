@@ -3,10 +3,11 @@ import os
 
 import akshare as ak
 import pandas as pd
-from 龙虎榜1 import start_date
+# from 龙虎榜1 import start_date
+
 
 from datetime import datetime
-# strat_date = '2025-04-03'
+start_date = '2025-06-13'
 dt = datetime.strptime(start_date, "%Y-%m-%d")
 start_date = dt.strftime("%Y%m%d")
 print(start_date)
@@ -50,10 +51,15 @@ if __name__ == "__main__":
     #     '301082': '久盛电气',
     #     '831526': '凯华材料'
     # }
+    # stock_infos = {
+    #     '900939': '汇丽B',
+    #     '605258': '协和电子',
+    #     '688107': '安路科技'
+    #
+    # }
     stock_infos = {
-        '900939': '汇丽B',
-        '605258': '协和电子',
-        '688107': '安路科技'
-
+        '603389': '亚振家居',
+        '688720': '艾森股份',
+        '000793': '华闻集团',
     }
     download_stock_data(stock_infos)

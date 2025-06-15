@@ -7,8 +7,8 @@ from HoldingPeriodStrategy import SingleHoldingPeriodStrategy
 
 def main():
     # 设置数据路径
-    # data_dir = 'stock_data'
-    data_dir = '股票数据'
+    data_dir = 'stock_data'
+    # data_dir = '股票数据'
     output_path = '../国家队/龙虎榜联动分析交易系统/backtest_results'
 
     if not os.path.exists(output_path):
@@ -21,7 +21,7 @@ def main():
     # print(f"🔄 DEBUG: 选股日={selection_date}(str) -> 买入日={buy_date}")
 
     # periods = [2, 5, 10, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300]
-    periods = [1,2,3,4,5]
+    periods = [1,2,3,4,5,10,20,30,60,90,120,180]
 
     summary_results = []
     # print(f"📢 开始日期筛选: {buy_date}")
