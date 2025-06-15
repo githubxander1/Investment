@@ -19,7 +19,7 @@ def main():
     print(f"📅 买入日期: {buy_date}")
     # print(f"🔄 DEBUG: 选股日={selection_date}(str) -> 买入日={buy_date}")
 
-    periods = [5, 10, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300]
+    periods = [2, 5, 10, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300]
 
     summary_results = []
     print(f"📢 开始日期筛选: {buy_date}")

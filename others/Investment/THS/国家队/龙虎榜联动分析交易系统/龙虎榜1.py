@@ -133,7 +133,7 @@ if __name__ == "__main__":
     }
 
     all_dfs = {}  # 存储所有 DataFrame，用于写入多个sheet
-    selected_stocks = {}
+    selected_stocks = []
 
     for order_field, config in modules.items():
         print(f"正在获取【{config['title']}】数据...")
@@ -147,13 +147,18 @@ if __name__ == "__main__":
 
         if data:
             df = pd.DataFrame(extract_lhb_data(data))
+
             #买卖金额排序，买入最多的排前面
-            df = df.sort_values(by='买卖净额', ascending=False)
+            df = df.sort_values(by='热度排名', ascending=False)
 
             # 取前两支股票
-            top_two_stocks = df.head(2)
+            top_two_stocks = df.head(1)
+            # 提取股票代码，保存到 selected_stocks
+            stock_codes = top_two_stocks['股票代码'].tolist()
             selected_stocks[config['title']] = top_two_stocks[['股票代码', '股票名称']].values.tolist()
-
+            selected_stocks.append(stock_codes)
+            #打印提取的股票代码
+            print(f"提取的股票代码：{top_two_stocks['股票代码'].tolist()}")
             print(f"\n📊 {config['title']} 数据表：")
             print(df)
 
@@ -169,6 +174,7 @@ if __name__ == "__main__":
             df.to_excel(writer, sheet_name=sheet_name, index=False)
 
     print(f"\n✅ 所有数据已保存至 {output_file}")
+    print(f"Selected Stocks: {selected_stocks}")
 
 # # 龙虎榜1.py (部分修改)
 # if __name__ == "__main__":
