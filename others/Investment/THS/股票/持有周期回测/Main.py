@@ -6,9 +6,10 @@ from BacktestUtils import *
 from HoldingPeriodStrategy import SingleHoldingPeriodStrategy
 
 def main():
-    # 设置路径
-    data_dir = 'stock_data'
-    output_path = 'backtest_results'
+    # 设置数据路径
+    # data_dir = 'stock_data'
+    data_dir = '股票数据'
+    output_path = '../国家队/龙虎榜联动分析交易系统/backtest_results'
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
@@ -19,10 +20,11 @@ def main():
     print(f"📅 买入日期: {buy_date}")
     # print(f"🔄 DEBUG: 选股日={selection_date}(str) -> 买入日={buy_date}")
 
-    periods = [2, 5, 10, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300]
+    # periods = [2, 5, 10, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300]
+    periods = [1,2,3,4,5]
 
     summary_results = []
-    print(f"📢 开始日期筛选: {buy_date}")
+    # print(f"📢 开始日期筛选: {buy_date}")
 
     for filename in os.listdir(data_dir):
         if not filename.endswith('.csv'):
@@ -38,7 +40,7 @@ def main():
 
         print(f"\n{'=' * 60}")
         # ✅ 正确显示日期
-        print(f"🔄 正式回测: {stock_name} | 数据周期: {df.index[0]} → {df.index[-1]}")
+        # print(f"🔄 正式回测: {stock_name} | 数据周期: {df.index[0]} → {df.index[-1]}")
         # print(f"🔍 DEBUG: 数据首行类型={type(df.index[0])} | 末行类型={type(df.index[-1])}")
 
         # 存储所有持有期结果
@@ -59,10 +61,10 @@ def main():
 
                 # 打印每个周期的详细结果
                 r = strat.result
-                print(f"✅ {stock_name} {period}天结果: "
-                      f"买入日={r['买入日期']} | 卖出日={r['卖出日期']} | "
-                      f"收益率={r['收益率(%)']:.2f}% | "
-                      f"买入价={r['买入价']:.2f} | 卖出价={r['卖出价']:.2f}")
+                # print(f"✅ {stock_name} {period}天结果: "
+                #       f"买入日={r['买入日期']} | 卖出日={r['卖出日期']} | "
+                #       f"收益率={r['收益率(%)']:.2f}% | "
+                #       f"买入价={r['买入价']:.2f} | 卖出价={r['卖出价']:.2f}")
 
         # 保存个股结果到Excel（使用默认引擎）
         if stock_results:
@@ -70,17 +72,17 @@ def main():
             excel_file = os.path.join(output_path, f"{stock_name}_周期回报.xlsx")
             try:
                 # 尝试使用xlsxwriter，失败时使用默认引擎
-                with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
+                with pd.ExcelWriter(excel_file) as writer:
                     result_df.to_excel(writer, index=False)
             except ModuleNotFoundError:
-                print("⚠️ xlsxwriter未安装，使用默认引擎")
+                # print("⚠️ xlsxwriter未安装，使用默认引擎")
                 result_df.to_excel(excel_file, index=False)
-            print(f"📖 个股历史记录: {excel_file}")
+            # print(f"📖 个股历史记录: {excel_file}")
 
         # 绘制并保存收益图表
         if stock_results:
             chart_path = plot_results(stock_results, stock_name, output_path)
-            print(f"📈 收益图表已保存至: {chart_path}")
+            # print(f"📈 收益图表已保存至: {chart_path}")
 
         print(f"{'='*50}\n")
 
@@ -95,7 +97,7 @@ def main():
             with pd.ExcelWriter(summary_file, engine='xlsxwriter') as writer:
                 summary_df.to_excel(writer, index=False)
         except ModuleNotFoundError:
-            print("⚠️ xlsxwriter未安装，使用默认引擎")
+            # print("⚠️ xlsxwriter未安装，使用默认引擎")
             summary_df.to_excel(summary_file, index=False)
 
         # 打印汇总结果

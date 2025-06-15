@@ -174,7 +174,7 @@ async def Combination_main():
         existing_data['_id'] = existing_data['时间'].astype(str) + '_' + existing_data['代码'].astype(str)
         # print("existing_data _id:", existing_data['_id'].tolist())
 
-    # 处理 today_trades 数据
+    # 处理 today_trades 股票数据
     if not all_today_trades_df.empty:
         # 添加唯一标识 _id
         all_today_trades_df['_id'] = all_today_trades_df['时间'].astype(str) + '_' + all_today_trades_df['代码'].astype(str)

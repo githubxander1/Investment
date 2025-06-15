@@ -40,7 +40,7 @@ def post_api_data():
     try:
         response = requests.post(url, json=data, headers=headers)
         response.raise_for_status()  # 若请求不成功，抛出异常
-        return response.json()  # 返回解析后的 JSON 数据
+        return response.json()  # 返回解析后的 JSON 股票数据
     except requests.RequestException as e:
         print(f"请求出现错误: {e}")
         return None

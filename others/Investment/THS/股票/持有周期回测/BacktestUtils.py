@@ -52,7 +52,7 @@ def prepare_data(data_path, buy_date, filename):
 
         # ✅ 保持原始pandas时间戳
         # print(f"🔍 DEBUG: 原始日期列类型={type(df['日期'].iloc[0])}")
-        df['日期'] = pd.to_datetime(df['日期'])  # 保留datetime64类型
+        df['日期'] = pd.to_datetime(df['日期'])  # 保留datetime64类型，变成pandas标准时间格式
         df.set_index('日期', inplace=True)      # 使用pandas.Timestamp索引
         # print(f"🔍 DEBUG: 转换后索引类型={type(df.index[0])}")
 

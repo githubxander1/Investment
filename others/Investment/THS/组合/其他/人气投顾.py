@@ -4,7 +4,7 @@ import pandas as pd
 
 url = "https://t.10jqka.com.cn/event/rank/popularity/v2"
 headers = {
-    "Host": "t.10jqka.com.cn",
+    "Host": "估值.py.10jqka.com.cn",
     "Connection": "keep-alive",
     "Accept": "application/json, text/plain, */*",
     "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",

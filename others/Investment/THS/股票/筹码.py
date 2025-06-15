@@ -4,9 +4,13 @@ import pandas as pd
 import requests
 
 
-def get_api_data(offset_num=0, page_size=20, shape_type=2, chip_type=1,
+def get_api_data(offset_num=0, page_size=10, shape_type=2, chip_type=1,
                   sort_field="closing_profit", sort_order="desc",
                   filter_selfstock=0, date="2025-01-13"):
+    #share_type:1低位锁定(主力拉伸)，2低位密集(主力建仓)，3双峰形态(高抛低吸)，4高位密集(谨慎入场)
+    #chip_type:1-机构 2-个人 3-机构个人混合
+    #sort_field:increase涨幅，price价格。close_profit获利比例，average_cost平均成本，ninty_quantile_concentration90%集中度
+
     url = "https://dq.10jqka.com.cn/fuyao/chip_shape_stock_selection/selection/v1/list"
     params = {
         "offset_num": offset_num,

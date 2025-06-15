@@ -95,7 +95,7 @@ class StockMonitor:
 
         # 转换数据为更紧凑的格式
         compact_data = {
-            't': datetime.strptime(data['time'], "%Y-%m-%d %H:%M:%S").timestamp(),  # 时间戳存储
+            '估值.py': datetime.strptime(data['time'], "%Y-%m-%d %H:%M:%S").timestamp(),  # 时间戳存储
             'o': float(data['open']),
             'h': float(data['high']),
             'l': float(data['low']),

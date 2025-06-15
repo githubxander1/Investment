@@ -76,7 +76,7 @@ metrics_list = ['win_rate_analyse', 'risk_analyse', 'profit_analyse', 'sharpe_an
 #             df = pd.DataFrame(result)
 #             df.to_excel(writer, sheet_name=f'{trading_metrics}', index=False)
 #         else:
-#             print(f"未获取到 {trading_metrics} 数据")
+#             print(f"未获取到 {trading_metrics} 股票数据")
 
 # 合并所有指标为一个 DataFrame 行
 def combine_strategy_data(strategy_id):

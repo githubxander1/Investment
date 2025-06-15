@@ -122,8 +122,8 @@ def plot_results(results, stock_name, output_path):
 
 if __name__ == '__main__':
     # 设置路径
-    data_dir = 'stock_data'
-    output_path = 'backtest_results'
+    data_dir = '../国家队/龙虎榜联动分析交易系统/stock_data'
+    output_path = '../国家队/龙虎榜联动分析交易系统/backtest_results'
 
     # 确保输出目录存在
     if not os.path.exists(output_path):
@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
                 # 遍历每个持有期
                 for period in holding_periods:
-                    print(f"\n--- 回测持有期: {period}天 ---")
+                    # print(f"\n--- 回测持有期: {period}天 ---")
 
                     # 创建新的cerebro实例
                     cerebro = bt.Cerebro()
@@ -206,40 +206,40 @@ if __name__ == '__main__':
                     )
 
                     # 运行回测
-                    print(f"数据开始日期: {df.index[0].date()}")
-                    print(f"数据结束日期: {df.index[-1].date()}")
-                    print(f"买入日: {buy_date.date()}")
-                    print('初始资金: %.2f' % cerebro.broker.getvalue())
+                    # print(f"数据开始日期: {df.index[0].date()}")
+                    # print(f"数据结束日期: {df.index[-1].date()}")
+                    # print(f"买入日: {buy_date.date()}")
+                    # print('初始资金: %.2f' % cerebro.broker.getvalue())
 
                     # 运行策略
                     strat = cerebro.run()[0]
 
-                    print('最终资金: %.2f' % cerebro.broker.getvalue())
+                    # print('最终资金: %.2f' % cerebro.broker.getvalue())
 
                     # 收集结果
                     if strat.result:
                         result_df = pd.DataFrame([strat.result])
                         result_df.to_excel(writer, sheet_name=f'{period}天', index=False)
                         stock_results.append(strat.result)
-                        print(f"持有期 {period}天 收益: {strat.result['收益率(%)']:.2f}%")
+                        # print(f"持有期 {period}天 收益: {strat.result['收益率(%)']:.2f}%")
                     else:
                         print(f"持有期 {period}天 未完成交易")
-
+                #
                 # 保存股票结果到Excel
                 if stock_results:
                     writer.save()
-                    print(f"📊 {stock_name} 持有期收益结果已保存至: {excel_file}")
+                    # print(f"📊 {stock_name} 持有期收益结果已保存至: {excel_file}")
 
                 # 绘制收益图表
                 if stock_results:
                     chart_path = plot_results(stock_results, stock_name, output_path)
-                    print(f"📈 收益图表已保存至: {chart_path}")
+                    # print(f"📈 收益图表已保存至: {chart_path}")
 
                 # 打印股票汇总结果
                 if stock_results:
                     stock_summary = pd.DataFrame(stock_results)
-                    print(f"\n{stock_name} 汇总结果:")
-                    print(stock_summary[['持有期(天)', '收益率(%)']].to_string(index=False))
+                    # print(f"\n{stock_name} 汇总结果:")
+                    # print(stock_summary[['持有期(天)', '收益率(%)']].to_string(index=False))
 
             except Exception as e:
                 print(f"回测 {filename} 失败: {str(e)}")

@@ -7,7 +7,7 @@ def national_team_scoring(filename="国家队持股.xlsx"):
     # 读取 Excel 文件中所有 sheet
     sheets = pd.read_excel(filename, sheet_name=None)
 
-    # 合并所有 sheet 数据
+    # 合并所有 sheet 股票数据
     combined_df = pd.DataFrame()
     for sheet_name, df in sheets.items():
         df['source'] = sheet_name  # 添加来源标识
