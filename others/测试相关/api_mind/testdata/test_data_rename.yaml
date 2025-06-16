@@ -1,5 +1,0 @@
-rename:
-  - case_name: 重命名成功
-    name: 重命名文件1
-  - case_name: 重命名失败
-    name:

@@ -3,7 +3,14 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\others\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv">
+        <entry key="\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -17,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\others\Investment\THS\AutoTrade\data\ai_诊股结果.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\etf_stock_position.csv">
           <value>
             <Attribute>
@@ -24,7 +38,42 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\others\Investment\THS\AutoTrade\data\所有策略绩效汇总.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\others\Investment\THS\AutoTrade\data\策略今天调仓.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\THS\AutoTrade\scripts\财务\stock_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\THS\AutoTrade\scripts\财务\stock_final_score_history.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\THS\AutoTrade\scripts\财务\stock_finance_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Investment\THS\AutoTrade\scripts\财务\stock_profit_history.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -45,7 +94,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\others\Investment\THS\北向资金\data.csv">
+        <entry key="\others\Investment\THS\股票\北向资金\data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -56,6 +105,34 @@
           <value>
             <Attribute>
               <option name="separator" value="|" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject250225\report\html\data\categories.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject250225\report\html\data\suites.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject5\report\html\data\categories.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\others\Projects\pythonProject5\report\html\data\suites.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>

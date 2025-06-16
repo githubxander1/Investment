@@ -1,0 +1,195 @@
+import asyncio
+import datetime
+import re
+
+import pandas as pd
+import requests
+
+import sys
+import os
+
+# # 获取根目录
+others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))))
+# # 将others目录添加到模块搜索路径中
+sys.path.append(others_dir)
+# print(f'包路径：{sys.path}')
+
+from Investment.THS.AutoTrade.config.settings import ETF_ids, ETF_ids_to_name, \
+    Combination_ids, \
+    Combination_ids_to_name, Combination_headers
+from Investment.THS.AutoTrade.utils.determine_market import determine_market
+from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.utils.excel_handler import clear_sheet
+
+
+# logger = setup_print(ETF_ADJUSTMENT_LOG_FILE)
+
+def fetch_and_extract_data(portfolio_id, is_etf=True):
+    url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
+    headers = Combination_headers
+    params = {"id": portfolio_id, "dynamic_id": 0}
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        response_json = response.json()
+        # pprint(response_json)
+    except requests.RequestException as e:
+        print(f"请求出错 (ID: {portfolio_id}): {e}")
+        return []
+
+    today_trades = []
+    data = response_json.get('data', [])
+    # pprint(data)
+    for item in data:
+        createAt = item.get('createAt', '') or '' # 防止空值
+        raw_content = item.get('content', '') or '' #防止空值
+        relocateList = item.get('relocateList', [])
+
+        # 优化内容提取逻辑
+        def clean_content(text):
+            """清洗HTML内容并提取关键信息"""
+            # 移除HTML标签
+            clean_text = re.sub(r'<[^>]+>', '', text)
+            # 提取调仓理由模式
+            # 增加空值检查
+            if not isinstance(text, str):
+                return '无'
+
+            # 预处理内容
+            text = text.replace('\n', ' ').replace('\r', ' ')
+            # 提取结构化理由
+            reasons = re.findall(
+                r'<div class="change_reason">([^<]*)</div>\s*<div class="change_content">([^<]*)</div>',
+                text
+            )
+            # 合并多个理由
+            if reasons:
+                return '\n'.join([f"{title.strip()}：{content.strip()}"
+                                for title, content in reasons])
+            # 降级处理：移除所有HTML标签
+            return re.sub(r'<[^>]+>', '', text).strip() or '无'
+
+        # 使用安全的内容清洗
+        clean_reason = clean_content(raw_content)
+
+        for infos in relocateList:
+            name = infos.get('name', None)
+            code = infos.get('code', None)
+            if '***' in name:
+                print(f"未订阅或标的名称显示异常 -组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                continue
+
+            # 计算操作类型
+            current_ratio = infos.get('currentRatio', 0)
+            new_ratio = infos.get('newRatio', 0)
+            operation = '买入' if new_ratio > current_ratio else '卖出'
+
+            market = determine_market(code)
+            # 获取组合名称
+            if is_etf:
+                combination_name = ETF_ids_to_name.get(portfolio_id, '未知ETF组合')
+            else:
+                combination_name = Combination_ids_to_name.get(portfolio_id, '未知股票组合')
+
+            history_post = {
+                '名称': combination_name,
+                '操作': operation,
+                '标的名称': name,
+                '代码': str(code).zfill(6),  # 提前统一格式
+                '最新价': infos.get('finalPrice'),
+                # '当前比例%': round(current_ratio * 100, 2),
+                '新比例%': round(new_ratio * 100, 2),
+                '市场': market,
+                '时间': createAt,
+                '理由': clean_reason
+            }
+            # 今天更新的
+            today = datetime.date.today().strftime('%Y-%m-%d')
+            if today == createAt.split()[0]:
+                today_trades.append(history_post)
+
+    return today_trades
+
+async def ETF_Combination_main():
+    # 处理 ETF 组合
+    etf_today_trades_all = []
+    for etf_id in ETF_ids:
+        etf_today_trades = fetch_and_extract_data(etf_id, is_etf=True)
+        etf_today_trades_all.extend(etf_today_trades)
+
+    # 处理股票组合
+    stock_today_trades_all = []
+    for stock_id in Combination_ids:
+        stock_today_trades = fetch_and_extract_data(stock_id, is_etf=False)
+        stock_today_trades_all.extend(stock_today_trades)
+
+    all_today_trades = etf_today_trades_all + stock_today_trades_all # 整合两个表数据
+    all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True) # 倒序排序
+
+    # 转换成pd表格样式
+    all_today_trades_df = pd.DataFrame(all_today_trades)
+    all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(all_today_trades_df.index + 1) #从1开始
+    # 打印时去掉‘理由’列
+    all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
+    print(all_today_trades_df_without_content)
+    #去掉‘理由’列
+
+    # all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'])
+    # if not all_today_trades_df.empty:
+    #     print(f'{len(all_today_trades_df)} 条今天更新数据, 如下：\n {all_today_trades_df_without_content}\n')
+
+    #读取历史数据
+    existing_data_file = ETF_Combination_TODAY_ADJUSTMENT_FILE
+    expected_columns = ['名称','操作','标的名称','代码','最新价','新比例%','市场','时间','理由']
+
+    try:
+        existing_data = pd.read_csv(existing_data_file)
+    except (FileNotFoundError, pd.errors.EmptyDataError):
+        # 显式创建带列名的空DataFrame
+        existing_data = pd.DataFrame(columns=expected_columns)
+        # 保存文件并保持existing_data为DataFrame
+        existing_data.to_csv(existing_data_file, index=False)
+        print(f'初始化历史记录文件: {existing_data_file}')
+
+    # 确保列结构一致（关键修复）
+    existing_data = existing_data.reindex(columns=expected_columns, fill_value=None)
+    # existing_data['_id'] = existing_data['时间'].astype(str) + '_' + existing_data['代码'].astype(str)
+
+
+    if not isinstance(existing_data, pd.DataFrame):
+        existing_data = pd.DataFrame(columns=all_today_trades_df.columns).to_csv(existing_data_file, index=False)
+
+    #新增数据筛选逻辑
+    if not all_today_trades_df.empty:
+        # 生成唯一标识：时间+代码
+        all_today_trades_df['_id'] = all_today_trades_df['时间'] + '_' + all_today_trades_df['代码']
+
+        # 历史数据存在时的处理
+        if not existing_data.empty:
+            existing_data['_id'] = existing_data['时间'] + '_' + existing_data['代码']
+            existing_data['_id'] = existing_data['时间'].astype(str) + '_' + existing_data['代码'].astype(str)
+
+            new_mask = ~all_today_trades_df['_id'].isin(existing_data['_id'])
+            new_data = all_today_trades_df[new_mask].copy().drop(columns=['_id'])
+        else:
+            new_data = all_today_trades_df.copy().drop(columns=['_id'])
+
+        # 保存新增数据
+        if not new_data.empty:
+            print(f'发现{len(new_data)}条新增交易:')
+            #打印时，new_data去掉‘理由’列
+            new_data_without_content = new_data.drop(columns=['理由'])
+            print(new_data_without_content)
+            # 智能添加header
+            header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
+            new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
+            #发送系统和钉钉通知
+            send_notification(f"{len(new_data)} 条新增交易，\n{new_data_without_content}")
+        else:
+            print("今日无新增交易数据")
+    else:
+        print("今日无任何交易更新")
+
+
+if __name__ == '__main__':
+    asyncio.run(ETF_Combination_main())

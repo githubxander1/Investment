@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?><?php if(is_array($sub_cate_list)): foreach($sub_cate_list as $key=>$cate): ?><label><?php echo ($cate["name"]); ?><input type="checkbox" name="deal_cate_type_id[]" value="<?php echo ($cate["id"]); ?>" <?php if($cate['checked']): ?>checked="checked"<?php endif; ?> /> </label><?php endforeach; endif; ?>
