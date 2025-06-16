@@ -19183,3 +19183,4 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-06-16 14:28:57 - INFO - 等待调仓操作记录完成的标志文件...[0m
 [32m2025-06-16 14:29:12 - INFO - 等待调仓操作记录完成的标志文件...[0m
 [33m2025-06-16 14:29:23 - WARNING - 用户主动终止程序[0m
+[33m2025-06-16 20:39:53 - WARNING - 用户主动终止程序[0m

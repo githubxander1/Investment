@@ -1,6 +1,8 @@
 # ths_page.py
 import time
 
+import uiautomator2
+
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
 # logger = setup_logger(r'/zothers/Investment/THS/AutoTrade/保存的数据/同花顺自动化交易.log')
 
@@ -10,7 +12,7 @@ logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 class THSPage:
     def __init__(self, d):
         self.d = d
-        self.d.implicit_wait(10)
+        self.d.implicitly_wait(10)
 
     # 元素定位
     def search_editor(self):
@@ -33,6 +35,12 @@ class THSPage:
 
     def buy_number(self):
         return self.d(text="买入数量")
+
+        # 输入数量后系统自动计算的价格
+    def get_price_by_volume(self):
+        # '//*[@resource-id="com.hexin.plat.android:id/couldbuy_volumn"]
+        price = self.d(resourceId='com.hexin.plat.android:id/couldbuy_volumn')
+        return price.get_text()
 
     def sale_number(self):
         return self.d(text="卖出数量")
@@ -126,6 +134,16 @@ class THSPage:
         logger.info('从详情页返回到搜索页')
         self.wait_and_click(self.back_button_search(), "back_button_search")
         logger.info(f"返回到搜索页")
+    def get1(self):
+        '//*[@resource-id="com.hexin.plat.android:id/two_text_value"]'
+        # win = self.d(resourceId='com.hexin.plat.android:id/two_text_value')
+        win = self.d(resourceId='com.hexin.plat.android:id/profit_and_ratio')
+        return win.get_text()
+    #定义一个实时价格的函数
+    def get_real_price(self):
+        'xpath_by_class为(//android.widget.EditText)[2]'
+        real_price = self.d(className='android.widget.EditText')[1]
+        return real_price.get_text()
     def buy_stock(self, stock_name, quantity):
         try:
             logger.info(f"开始买入流程 {stock_name}  {quantity}股")
@@ -200,3 +218,16 @@ class THSPage:
         except Exception as e:
             logger.error(f"卖出失败： {stock_name}: {e}", exc_info=True)
             return False
+
+if __name__ == '__main__':
+    d = uiautomator2.connect()
+    #打印结构树
+    # print(f"当前屏幕结构树:\n {d.dump_hierarchy()}")
+    pom = THSPage(d)
+    # def get1():
+    #     '//*[@resource-id="com.hexin.plat.android:id/two_text_value"]'
+    #     win = self.d(resourceId='com.hexin.plat.android:id/two_text_value')
+    #     return win.get_text()
+
+    # pom.get_real_price()
+    print(pom.get_real_price())

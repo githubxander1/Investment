@@ -12,7 +12,7 @@ except Exception as e:
     exit(1)
 
 # 获取UI层次结构
-tree = d.dump_hierarchy()
+# tree = d.dump_hierarchy()
 # print(tree)
 
 # 定义一个函数来查找特定resource-id的节点
@@ -35,23 +35,33 @@ def extract_header_info():
     float_profit_loss_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=1)
     header_info["浮动盈亏"] = float_profit_loss_node.get_text() if float_profit_loss_node.exists else "未找到"
 
+    float_profit_loss_ = d(resourceId="com.hexin.plat.android:id/capital_cell_value",
+                               className="android.widget.TextView", index=2)
+    header_info["当日盈亏/盈亏率"] = float_profit_loss_node.get_text() if float_profit_loss_node.exists else "未找到"
+
     # 当日盈亏
-    daily_profit_loss_node = d(resourceId="com.hexin.plat.android:id/dangri_yingkui_value", className="android.widget.TextView", index=0)
+    # daily_profit_loss_node = d(resourceId="com.hexin.plat.android:id/dangri_yingkui_value", className="android.widget.TextView", index=0)
+    daily_profit_loss_node = d.xpath('//*[@resource-id="com.hexin.plat.android:id/two_text_value"]')
     daily_profit_loss_rate_node = d(resourceId="com.hexin.plat.android:id/dangri_yingkuibi_value", className="android.widget.TextView", index=1)
     daily_profit_loss = daily_profit_loss_node.get_text() if daily_profit_loss_node.exists else "未找到"
     daily_profit_loss_rate = daily_profit_loss_rate_node.get_text() if daily_profit_loss_rate_node.exists else "未找到"
     header_info["当日盈亏/盈亏率"] = f"{daily_profit_loss}/{daily_profit_loss_rate}"
 
     # 总市值
-    total_market_value_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=2)
+    # total_market_value_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=2)
+    total_market_value_node = d.xpath('(//*[@resource-id="com.hexin.plat.android:id/capital_cell_value"])[3]')
     header_info["总市值"] = total_market_value_node.get_text() if total_market_value_node.exists else "未找到"
 
     # 可用
-    available_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=3)
+    # available_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=3)
+    available_node = d.xpath('(//*[@resource-id="com.hexin.plat.android:id/capital_cell_value"])[4]')
     header_info["可用"] = available_node.get_text() if available_node.exists else "未找到"
 
     # 可取
-    available_for_withdrawal_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=4)
+    # available_for_withdrawal_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=4)
+    #’(//*[@resource-id="com.hexin.plat.android:id/capital_cell_value"])[5]‘
+    available_for_withdrawal_node = d.xpath('(//*[@resource-id="com.hexin.plat.android:id/capital_cell_value"])[5]')
+    # available_for_withdrawal_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=4)
     header_info["可取"] = available_for_withdrawal_node.get_text() if available_for_withdrawal_node.exists else "未找到"
 
     return header_info
@@ -70,7 +80,7 @@ def extract_stock_info():
             new_stocks = []
 
             for stock_item in stock_items:
-                # 获取股票名
+                # 获取标的名称
                 stock_name_node = stock_item.child(className="android.widget.TextView", index=0)
                 stock_name = stock_name_node.get_text() if stock_name_node.exists else "未找到"
 
@@ -116,7 +126,7 @@ def extract_stock_info():
 
 
                 new_stocks.append({
-                    "股票名": stock_name,
+                    "标的名称": stock_name,
                     # "市值": market_value,
                     "盈亏/盈亏率": f"{profit_loss}/{profit_loss_rate}",
                     "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
@@ -127,12 +137,12 @@ def extract_stock_info():
             # 去重
             new_stocks_df = pd.DataFrame(new_stocks)
             if not new_stocks_df.empty:
-                new_stocks_df = new_stocks_df.drop_duplicates(subset=["股票名"])
+                new_stocks_df = new_stocks_df.drop_duplicates(subset=["标的名称"])
 
                 # 过滤已存在的股票
                 existing_stocks_df = pd.DataFrame(stocks)
                 if not existing_stocks_df.empty:
-                    new_stocks_df = new_stocks_df[~new_stocks_df["股票名"].isin(existing_stocks_df["股票名"])]
+                    new_stocks_df = new_stocks_df[~new_stocks_df["标的名称"].isin(existing_stocks_df["标的名称"])]
 
                 # 更新股票列表
                 stocks.extend(new_stocks_df.to_dict(orient="records"))
@@ -150,7 +160,7 @@ def extract_stock_info():
                 break
 
             # 执行下滑操作，从屏幕底部滑动到顶部
-            d.swipe(0.5, 0.8, 0.5, 0.2, duration=0.5)
+            d.swipe(0.5, 0.8, 0.5, 0.2, duration=0.25)
 
             # 检查是否有新的股票项
             if len(new_stocks_df) == 0:

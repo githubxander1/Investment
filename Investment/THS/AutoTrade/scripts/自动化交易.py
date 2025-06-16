@@ -24,8 +24,8 @@ async def connect_to_device():
     try:
         d = u2.connect()
         #打印当前屏幕的结构树
-        print("当前屏幕结构树:\n")
-        pprint(d.dump_hierarchy())
+        # print("当前屏幕结构树:\n")
+        # pprint(d.dump_hierarchy())
         logger.info(f"连接设备: {d.serial}")
         return d
     except Exception as e:
@@ -108,7 +108,7 @@ if __name__ == '__main__':
         last_modification_times = get_file_modification_times(operation_history_file)
 
         # 主循环，保持程序运行
-        stop_time = datetime.time(18, 00)  # 设置停止时间为15:00
+        stop_time = datetime.time(23, 00)  # 设置停止时间为15:00
         while True:
             now = datetime.datetime.now().time()
 

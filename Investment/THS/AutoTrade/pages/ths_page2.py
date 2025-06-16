@@ -85,6 +85,12 @@ class THSPage:
             # self.total_volume()
         logger.info("输入买入数量: 全仓")
 
+    # 输入数量后系统自动计算的价格
+    def get_price_by_volume(self):
+        #'//*[@resource-id="com.hexin.plat.android:id/couldbuy_volumn"]
+        price = self.d(resourceId='com.hexin.plat.android:id/couldbuy_volumn')
+        return price.get_text()
+
     def click_button_by_text(self, text):
         button = self.d(className='android.widget.TextView', text=text)
         button.click()
@@ -212,9 +218,9 @@ class THSPage:
             logger.error(f"卖出 {stock_name} {volume} 股失败: {e}", exc_info=True)
             return False, f"卖出 {stock_name} {volume} 股失败: {e}"
 
-# if __name__ == '__main__':
-#
-#     d = uiautomator2.connect()
-#     pom = THSPage(d)
+if __name__ == '__main__':
+    d = uiautomator2.connect()
+    pom = THSPage(d)
+    pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')
 #     pom.sell_stock('英维克','半仓')

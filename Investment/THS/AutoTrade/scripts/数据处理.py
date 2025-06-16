@@ -7,6 +7,7 @@ import pandas as pd
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, Account_holding_stockes_info_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.pages.ths_page import THSPage
 
 logger = setup_logger(trade_operations_log_file)
 
@@ -80,39 +81,31 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
                 stock_name = row['标的名称']
                 operation = row['操作']
                 time = row['时间']
-                # quantity = str(row['新比例%'])
-                quantity = None
-                logger.info(f"要处理的信息:  {operation} {stock_name} {quantity}")
+                price = int(row['最新价'])
+                new_ratio = float(row['新比例%'])
+                # new_ratio = None
+                # logger.info(f"要处理的信息:  {operation} {stock_name} {new_ratio}")
+                logger.info(f"要处理的信息:  {operation} {stock_name} {price}")
 
                 # 读取最新的操作历史记录
                 operation_history_df = read_operation_history(operation_history_file)
 
-                # 检查标的名称和操作是否已经存在于操作历史中
+                # 检查标的名称和操作,时间是否已经存在于操作历史中
                 if not operation_history_df.empty:
-                    existing_operations = operation_history_df[(operation_history_df['标的名称'] == stock_name) & (operation_history_df['时间'] == time)]
+                    existing_operations = operation_history_df[(operation_history_df['标的名称'] == stock_name) & (operation_history_df['新比例%'] == new_ratio)]
                     if not existing_operations.empty:
                         logger.info(f"{stock_name} 和操作 {operation} 已经操作过，跳过")
                         continue
 
-                if quantity == '0':
-                    # 读取持仓信息
-                    try:
-                        holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
-                        holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
-                        if not holding_stock.empty:
-                            available = holding_stock['持仓/可用'].str.split('/').str[1].iloc[0]
-                            volume = int(available)
-                            logger.info(f"根据持仓信息，卖出 {stock_name} 的可用数量: {volume}")
-                        else:
-                            logger.error(f"未找到 {stock_name} 的持仓信息")
-                            continue
-                    except Exception as e:
-                        logger.error(f"读取持仓信息文件失败: {e}", exc_info=True)
-                        continue
-                else:
-                    multiplier = int(quantity[0]) if quantity[0].isdigit() else 1
-                    volume = multiplier * 100
-                    volume = min(volume, 1000)
+                #定义操作股数：如果operation=“买入”，则买入数量为4000除以价格，结果取整；如果为卖出，如果new_ratio不为0，则卖出半仓，如果为0，则卖出全部
+                holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
+                print(holding_stock_df)
+                holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
+                if not holding_stock.empty:
+                    available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])
+                    print(f"持仓数量: {available}")
+                real_price = ths_page.get_real_price()
+                volume = int(4000 / real_price) if operation == "买入" else int(4000 / real_price / 2) if new_ratio != '0' else available
 
                 status, info = ths_page.sell_stock(stock_name, volume) if operation == '卖出' else ths_page.buy_stock(stock_name, volume)
                 # logger.info(f"{operation} {stock_name} {'成功' if status else '失败'} {info}")
