@@ -26,18 +26,18 @@ async def get_latest_position_and_trade(strategy_id):
 
     try:
         data = requests.get(url, headers=headers, timeout=10).json()
-        pprint(data)
+        # pprint(data)
     except requests.RequestException as e:
         print(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
 
     latest_trade = data.get('result', {}).get('latestTrade', {})
     trade_date = latest_trade.get('tradeDate', 'N/A')
-    print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
+    # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-    print(today)
+    # print(today)
 
     result = []
     for trade_info in trade_stocks:
@@ -48,7 +48,7 @@ async def get_latest_position_and_trade(strategy_id):
         ratio = round(trade_info.get('position', 0) * 100, 2)
         market = determine_market(code)
         stock_trade_date = trade_info.get('tradeDate', 'N/A')
-        print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
+        # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
 
         # 只保留当天记录
         if normalize_time(str(trade_date)) == today:
@@ -112,7 +112,7 @@ async def strategy_main():
     except (FileNotFoundError, pd.errors.EmptyDataError):
         existing_data = pd.DataFrame(columns=expected_columns)
         existing_data.to_csv(existing_data_file, index=False)
-        print(f'初始化历史记录文件: {existing_data_file}')
+        # print(f'初始化历史记录文件: {existing_data_file}')
 
     # 标准化数据格式
     all_today_trades_df = standardize_dataframe(all_today_trades_df_without_sc)

@@ -1,54 +1,58 @@
 # ths_page.py
 import time
-
+import pandas as pd
 import uiautomator2
 
-from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
-# logger = setup_logger(r'/zothers/Investment/THS/AutoTrade/保存的数据/同花顺自动化交易.log')
-
+from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
+# from Investment.THS.AutoTrade.scripts.数据处理 import new_ratio
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
+
+
 class THSPage:
     def __init__(self, d):
         self.d = d
         self.d.implicitly_wait(10)
+        self._current_stock_name = None
 
     # 元素定位
+    # 搜索框
     def search_editor(self):
         return self.d(resourceId="com.hexin.plat.android:id/text_switcher")
 
+    # 搜索框输入
     def search_input(self):
         return self.d(resourceId="com.hexin.plat.android:id/search_input")
 
+    # 搜索匹配结果
     def stock_name(self):
         return self.d(resourceId="com.hexin.plat.android:id/stock_name")[0]
 
+    # 下单
     def xiadan(self):
         return self.d(resourceId="com.hexin.plat.android:id/xiadan")
 
+    # 买入
     def buy_button_entry(self):
         return self.d(resourceId="com.hexin.plat.android:id/buy_button")
 
+    # 卖出
     def sale_button_entry(self):
         return self.d(resourceId="com.hexin.plat.android:id/sale_button")
 
+    # 买入数量
     def buy_number(self):
         return self.d(text="买入数量")
 
-        # 输入数量后系统自动计算的价格
-    def get_price_by_volume(self):
-        # '//*[@resource-id="com.hexin.plat.android:id/couldbuy_volumn"]
-        price = self.d(resourceId='com.hexin.plat.android:id/couldbuy_volumn')
-        return price.get_text()
-
+    # 卖出数量
     def sale_number(self):
         return self.d(text="卖出数量")
 
-    # 股票余额不够
-    def insufficient_balance(self):
-        return self.d(resourceId="com.hexin.plat.android:id/prompt_content", text='股票余额不足 ,不允许卖空')
 
+
+    # 仓位选择
     def total_quantity(self):
         # return self.d(resourceId="com.hexin.plat.android:id/key_all", text='全仓')
         return self.d(resourceId="com.hexin.plat.android:id/tv_flashorder_cangwei", text='全仓')
@@ -62,10 +66,19 @@ class THSPage:
     def operate_button_keyboard(self):
         return self.d(resourceId="com.hexin.plat.android:id/keyboard_key_imeaction")
 
+    # 输入数量后系统自动计算的价格
+    def get_price_by_volume(self):
+        # '//*[@resource-id="com.hexin.plat.android:id/couldbuy_volumn"]
+        price = self.d(resourceId='com.hexin.plat.android:id/couldbuy_volumn')
+        return price.get_text()
+
     # confirm_selector = self.d(resourceId="com.hexin.plat.android:id/confirm_btn_view")
     def confirm_buy_button(self):
         return self.d(resourceId="com.hexin.plat.android:id/confirm_btn_view")
 
+    # 股票余额不够
+    def insufficient_balance(self):
+        return self.d(resourceId="com.hexin.plat.android:id/prompt_content", text='股票余额不足 ,不允许卖空')
     def sale_button(self):
         return self.d(resourceId="com.hexin.plat.android:id/order_button")
     def confirm_sale_button(self):
@@ -134,19 +147,75 @@ class THSPage:
         logger.info('从详情页返回到搜索页')
         self.wait_and_click(self.back_button_search(), "back_button_search")
         logger.info(f"返回到搜索页")
-    def get1(self):
-        '//*[@resource-id="com.hexin.plat.android:id/two_text_value"]'
-        # win = self.d(resourceId='com.hexin.plat.android:id/two_text_value')
-        win = self.d(resourceId='com.hexin.plat.android:id/profit_and_ratio')
-        return win.get_text()
+
     #定义一个实时价格的函数
     def get_real_price(self):
-        'xpath_by_class为(//android.widget.EditText)[2]'
-        real_price = self.d(className='android.widget.EditText')[1]
-        return real_price.get_text()
-    def buy_stock(self, stock_name, quantity):
+        """获取当前股票实时价格"""
+        for _ in range(3): # 尝试3次
+            price_element = self.d(className='android.widget.EditText')[1]
+            text = price_element.get_text()
+            # print("当前价格:", price_element.get_text())
+            try:
+                return float(text)
+            except ValueError:
+                logger.error("无法解析价格文本")
+                return None
+        raise ValueError("无法获取实时价格")
+
+    def calculate_volume(self, operation: str, new_ratio: float = None):
+        """
+        根据当前持仓和策略动态计算交易数量
+        :param operation: '买入' 或 '卖出'
+        :param new_ratio: 新仓位比例（可选）
+        :return: 交易股数
+        """
+        volume_max = 4000
+        if not self._current_stock_name:
+            logger.warning("未设置标的名称")
+            return 0
+
+        stock_name = self._current_stock_name
+
+        if operation == "买入":
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据")
+            available = int(holding_stock_df['可用'])
+
+            real_price = self.get_real_price()
+
+            if available < volume_max:
+                volume_max = available
+            volume = int(volume_max / real_price)  # 固定金额买入
+            logger.info(f"买入操作 - 实时价格: {real_price}, 数量: {volume}")
+            return volume
+
+        elif operation == "卖出":
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
+            holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
+
+            if not holding_stock.empty:
+                available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])
+                if new_ratio is not None and new_ratio != 0:
+                    volume = int(available * 0.5)  # 半仓卖出
+                else:
+                    volume = available  # 全部卖出
+            else:
+                logger.warning(f"{stock_name} 不在持仓列表中")
+                volume = 0
+
+            logger.info(f"卖出操作 - 数量: {volume}")
+            return volume
+
+        else:
+            logger.warning("未知操作类型")
+            return 0
+
+    def buy_stock(self, stock_name):
         try:
+            self._current_stock_name = stock_name
+            quantity = self.calculate_volume("买入")
+
             logger.info(f"开始买入流程 {stock_name}  {quantity}股")
+            send_notification(f"开始买入流程 {stock_name}  {quantity}股")
             self.wait_and_click(self.search_editor(), "search_editor")
             self.set_text(self.search_input(), stock_name, "search_input")
             time.sleep(3)  # 等待搜索结果加载
@@ -160,31 +229,29 @@ class THSPage:
             time.sleep(1)
             self.operate_button_keyboard().click()
             time.sleep(1)
-            # confirm_buy_button = self.confirm_buy_button()
-            # if confirm_buy_button.info.get('enabled', False):
             self.wait_and_click(self.confirm_buy_button(), "confirm_buy_button")
             time.sleep(2)
+
             if self.withdraw_button().exists:
                 logger.info(f"买入成功 {stock_name}  {quantity}股")
-                time.sleep(1)
-                self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
-                return True
-            elif self.buy_fail_dialog_text().exists:
-                logger.error(f"买入失败 {stock_name}: 资金不足")
-                time.sleep(1)
-                self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
+                self.return_to_search_page()
+                return True, "买入成功"
             else:
                 logger.error(f"买入失败 {stock_name}: 确认按钮点击后未显示撤单按钮")
-                time.sleep(1)
-                self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
-                return False
+                self.return_to_search_page()
+                return False, "确认按钮异常"
+
         except Exception as e:
             logger.error(f"买入失败 {stock_name}: {e}", exc_info=True)
-            return False
+            return False, str(e)
 
-    def sell_stock(self, stock_name, quantity):
+    def sell_stock(self, stock_name, new_ratio=None):
         try:
+            self._current_stock_name = stock_name
+            quantity = self.calculate_volume("卖出", new_ratio=new_ratio)
+
             logger.info(f"开始卖出流程 {stock_name} {quantity}股")
+            send_notification(f"开始卖出流程 {stock_name} {quantity}股")
             self.wait_and_click(self.search_editor(), "search_editor")
             self.set_text(self.search_input(), stock_name, "search_input")
             time.sleep(3)  # 等待搜索结果加载
@@ -194,30 +261,24 @@ class THSPage:
             time.sleep(1)
             self.wait_and_click(self.sale_button_entry(), "sale_button_entry")
             time.sleep(1)
-
             self.wait_and_click(self.half_quantity(), "half_quantity")
-
-            # trade_money = self.trade_money()
-            # if trade_money.exists:
-            #     if trade_money.get_text() == '0':
-            #         self.wait_and_click(self.total_quantity())
             self.wait_and_click(self.sale_button(), "sale_button")
             time.sleep(1)
             self.wait_and_click(self.confirm_sale_button(), "confirm_sale_button")
             time.sleep(2)
+
             if self.withdraw_button().exists:
                 logger.info(f"卖出成功 {stock_name}  {quantity}股")
-                time.sleep(1)
-                self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
-                return True
+                self.return_to_search_page()
+                return True, "卖出成功"
             else:
                 logger.error(f"卖出失败 {stock_name}: 确认按钮不可点击")
-                time.sleep(1)
-                self.wait_and_click(self.return_to_search_page(), "return_to_search_page")
-                return False
+                self.return_to_search_page()
+                return False, "确认按钮不可点击"
+
         except Exception as e:
-            logger.error(f"卖出失败： {stock_name}: {e}", exc_info=True)
-            return False
+            logger.error(f"卖出失败：{stock_name}: {e}", exc_info=True)
+            return False, str(e)
 
 if __name__ == '__main__':
     d = uiautomator2.connect()

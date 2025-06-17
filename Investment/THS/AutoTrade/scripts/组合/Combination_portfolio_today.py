@@ -33,7 +33,7 @@ def fetch_and_extract_data(portfolio_id):
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         response_json = response.json()
-        pprint(response_json)
+        # pprint(response_json)
     except requests.RequestException as e:
         print(f"请求出错 (ID: {portfolio_id}): {e}")
         return []
@@ -148,7 +148,7 @@ async def Combination_main():
         # 显式创建带列名的空DataFrame
         existing_data = pd.DataFrame(columns=expected_columns)
         existing_data.to_csv(existing_data_file, index=False)
-        print(f'初始化历史记录文件: {existing_data_file}')
+        # print(f'初始化历史记录文件: {existing_data_file}')
 
     # 标准化数据格式
     all_today_trades_df = standardize_dataframe(all_today_trades_df)
@@ -164,7 +164,7 @@ async def Combination_main():
 
         print(f'发现{len(new_data)}条新增交易:')
         new_data_without_content = new_data.drop(columns=['理由'], errors='ignore')
-        print(new_data_without_content)
+        # print(new_data_without_content)
 
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         new_data.to_csv(existing_data_file, mode='a', header=header, index=False)

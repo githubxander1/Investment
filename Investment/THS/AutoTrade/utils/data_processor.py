@@ -76,8 +76,8 @@ def get_new_records(current_df, history_df):
     history_df = history_df[history_df['_id'].str.contains(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}_\d{6}$', regex=True)]
 
     # 打印调试信息
-    print("清洗后当前记录 _id:", current_df['_id'].tolist())
-    print("清洗后历史记录 _id:", history_df['_id'].tolist())
+    # print("清洗后当前记录 _id:", current_df['_id'].tolist())
+    # print("清洗后历史记录 _id:", history_df['_id'].tolist())
 
     # 筛选新记录
     new_mask = ~current_df['_id'].isin(history_df['_id'])

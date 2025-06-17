@@ -1,72 +1,57 @@
 # 数据处理.py
 import os
 from datetime import datetime
-
 import pandas as pd
 
-from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, Account_holding_stockes_info_file
+from Investment.THS.AutoTrade.config.settings import trade_operations_log_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.utils.notification import send_notification
-from Investment.THS.AutoTrade.pages.ths_page import THSPage
+# from Investment.THS.AutoTrade.utils.notification import send_notification
+# from Investment.THS.AutoTrade.pages.ths_page import THSPage
 
 logger = setup_logger(trade_operations_log_file)
 
-# 文件操作模块
-# def get_daily_log_file():
-#     today = datetime.now().strftime('%Y%m%d')
-#     return os.path.join(os.path.dirname(OPERATION_HISTORY_FILE), f'交易记录_{today}.xlsx')
 
 def read_operation_history(file_path):
     today = datetime.now().strftime('%Y%m%d')
     if os.path.exists(file_path):
         try:
-            with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
-                if today in operation_history_xlsx.sheet_names:
-                    operation_history_df = pd.read_excel(operation_history_xlsx, sheet_name=today)
-                    # 去重处理
-                    operation_history_df.drop_duplicates(subset=['标的名称', '操作', '时间'], inplace=True)
-                    logger.info(f"读取去重后的操作历史文件完成")#\n{operation_history_df}
-                else:
-                    operation_history_df = pd.DataFrame(columns=['标的名称', '操作', '状态', '信息', '时间'])
-                    logger.warning(f"操作历史文件,表名称: {today}不存在")
+            with pd.ExcelFile(file_path, engine='openpyxl') as f:
+                if today in f.sheet_names:
+                    df = pd.read_excel(f, sheet_name=today)
+                    df.drop_duplicates(subset=['标的名称', '操作', '时间'], inplace=True)
+                    return df
         except Exception as e:
-            logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
-            operation_history_df = pd.DataFrame(columns=['标的名称', '操作', '状态', '信息', '时间'])
+            logger.error(f"读取操作记录失败: {e}")
+    return pd.DataFrame(columns=['标的名称', '操作', '状态', '信息', '时间'])
+
+
+def write_operation_history(file_path, new_df):
+    today = datetime.now().strftime('%Y-%m-%d')
+    mode = 'a' if os.path.exists(file_path) else 'w'
+    # 修改 write_operation_history 函数中的 ExcelWriter 初始化部分
+
+    excel_writer_kwargs = {
+        'engine': 'openpyxl'
+    }
+
+    if mode == 'a':
+        excel_writer_kwargs.update({
+            'mode': 'a',
+            'if_sheet_exists': 'replace'
+        })
     else:
-        operation_history_df = pd.DataFrame(columns=['标的名称', '操作', '状态', '信息', '时间'])
+        excel_writer_kwargs['mode'] = 'w'
 
-    return operation_history_df
+    with pd.ExcelWriter(file_path, **excel_writer_kwargs) as writer:
+        if os.path.exists(file_path) and today in pd.ExcelFile(file_path).sheet_names:
+            old_df = pd.read_excel(file_path, sheet_name=today)
+            updated_df = pd.concat([old_df, new_df], ignore_index=True).drop_duplicates(
+                subset=['标的名称', '操作', '时间'])
+        else:
+            updated_df = new_df
+        updated_df.to_excel(writer, sheet_name=today, index=False)
+        logger.info("写入操作历史完成")
 
-def write_operation_history(file_path, new_operation_history_df):
-    today = datetime.now().strftime('%Y%m%d')
-
-    if not os.path.exists(file_path):
-        # 文件不存在时创建一个新的csv文件，并添加一个以今日日期为名称的工作表
-
-        # 换成csv文件
-        # with open(file_path, 'w', newline='', encoding='utf-8') as writer:
-        #     new_operation_history_df.to_csv(writer,  index=False,  encoding='utf-8')
-        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-            new_operation_history_df.to_excel(writer, sheet_name=today, index=False)
-            logger.info(f"操作历史文件不存在，创建新的Excel文件: {file_path}")
-    else:
-        # 文件存在时读取现有文件
-        with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
-            if today in operation_history_xlsx.sheet_names:
-                # 如果今天的工作表存在，读取现有数据并追加新数据
-                existing_df = pd.read_excel(operation_history_xlsx, sheet_name=today)
-                updated_df = pd.concat([existing_df, new_operation_history_df], ignore_index=True)
-                #去重
-                updated_df = updated_df.drop_duplicates(subset=['标的名称', '操作', '时间'])
-                logger.info(f"追加新的操作记录: \n{new_operation_history_df}")
-            else:
-                # 如果今天的工作表不存在，使用新数据创建新的工作表
-                updated_df = new_operation_history_df
-                logger.info(f"今天的工作表不存在，创建新的操作记录: \n{updated_df}")
-
-        # 写回文件
-        with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-            updated_df.to_excel(writer, sheet_name=today, index=False)
 
 def process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file):
     for file_path in file_paths:
@@ -74,6 +59,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
         if not os.path.exists(file_path):
             logger.warning(f"文件不存在: {file_path}")
             continue
+
         try:
             # 读取要处理的文件
             df = pd.read_csv(file_path)
@@ -83,51 +69,43 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
                 time = row['时间']
                 price = int(row['最新价'])
                 new_ratio = float(row['新比例%'])
-                # new_ratio = None
                 # logger.info(f"要处理的信息:  {operation} {stock_name} {new_ratio}")
                 logger.info(f"要处理的信息:  {operation} {stock_name} {price}")
 
-                # 读取最新的操作历史记录
-                operation_history_df = read_operation_history(operation_history_file)
-
-                # 检查标的名称和操作,时间是否已经存在于操作历史中
-                if not operation_history_df.empty:
-                    existing_operations = operation_history_df[(operation_history_df['标的名称'] == stock_name) & (operation_history_df['新比例%'] == new_ratio)]
-                    if not existing_operations.empty:
-                        logger.info(f"{stock_name} 和操作 {operation} 已经操作过，跳过")
+                # 检查是否已执行过该操作
+                history_df = read_operation_history(operation_history_file)
+                if not history_df.empty:
+                    exists = history_df[
+                        (history_df['标的名称'] == stock_name) &
+                        (history_df['操作'] == operation) &
+                        (history_df['新比例%'] == new_ratio)
+                    ]
+                    if not exists.empty:
+                        logger.info(f"{stock_name} 已操作过，跳过")
                         continue
 
-                #定义操作股数：如果operation=“买入”，则买入数量为4000除以价格，结果取整；如果为卖出，如果new_ratio不为0，则卖出半仓，如果为0，则卖出全部
-                holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
-                print(holding_stock_df)
-                holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
-                if not holding_stock.empty:
-                    available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])
-                    print(f"持仓数量: {available}")
-                real_price = ths_page.get_real_price()
-                volume = int(4000 / real_price) if operation == "买入" else int(4000 / real_price / 2) if new_ratio != '0' else available
+                # 执行买卖操作
+                logger.info(f"开始操作: {operation} {stock_name}")
+                if operation == '买入':
+                    status, info = ths_page.buy_stock(stock_name)
+                elif operation == '卖出':
+                    status, info = ths_page.sell_stock(stock_name, new_ratio=new_ratio)
+                else:
+                    logger.warning(f"不支持的操作: {operation}")
+                    continue
 
-                status, info = ths_page.sell_stock(stock_name, volume) if operation == '卖出' else ths_page.buy_stock(stock_name, volume)
-                # logger.info(f"{operation} {stock_name} {'成功' if status else '失败'} {info}")
-                logger.info(f"{operation} {stock_name} {info}")
-                send_notification(f"{operation} {stock_name} {info}")
-                logger.info(f"发送通知成功")
-
-                # 写入操作历史
+                # 写入操作记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                new_operation_history = pd.DataFrame([{
+                new_record = pd.DataFrame([{
                     '标的名称': stock_name,
                     '操作': operation,
+                    '新比例%': new_ratio,
                     '状态': status,
                     '信息': info,
                     '时间': operate_time
                 }])
+                write_operation_history(operation_history_file, new_record)
+                logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
-                # 写回操作历史文件
-                write_operation_history(operation_history_file, new_operation_history)
-                logger.info(f"写入操作历史文件成功")
-
-                logger.info(f'{operation} {stock_name} 流程结束, 操作已记录')
-            logger.info(f'文件处理完成 {file_path} \n')
         except Exception as e:
             logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
