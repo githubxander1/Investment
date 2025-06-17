@@ -44,8 +44,8 @@ logger = setup_logger(f"{current_file_name}.log")
 # 调度器配置 ======================================================
 SCHEDULE_CONFIG: Dict[str, Tuple[float, Tuple[int, int], Tuple[int, int]]] = {
     "strategy": (1, (9, 29), (9, 33)),
-    "etf_combo": (1, (9, 15), (19, 00)),
-    "automation": (1, (9, 15), (19, 00))
+    "etf_combo": (1, (9, 15), (23, 00)),
+    "automation": (1, (9, 15), (23, 10))
 }
 
 # 公共方法 ========================================================

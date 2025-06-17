@@ -23610,3 +23610,1433 @@ KeyError: "There is no item named '[Content_Types].xml' in the archive"
 [32m2025-06-17 18:44:30 - INFO - 等待调仓操作记录完成...[0m
 [32m2025-06-17 18:44:45 - INFO - 等待调仓操作记录完成...[0m
 [32m2025-06-17 18:45:00 - INFO - 等待调仓操作记录完成...[0m
+[33m2025-06-17 19:46:40 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 19:46:44 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 19:46:47 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 19:47:47[0m
+[32m2025-06-17 19:46:47 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 19:46:47 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 19:46:47 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 19:46:47 - INFO - 标志文件已删除[0m
+[32m2025-06-17 19:46:48 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 19:46:48 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 19:46:48 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 19:46:48 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 19:46:48 - INFO - 要处理的信息:  买入 超讯通信 43[0m
+[32m2025-06-17 19:46:48 - INFO - 开始操作: 买入 超讯通信[0m
+[31m2025-06-17 19:46:48 - ERROR - 买入失败 超讯通信: invalid literal for int() with base 10: '12,535.80'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 215, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 181, in calculate_volume
+    available = int(holding_stock_df['可用'])
+                ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\series.py", line 247, in wrapper
+    return converter(self.iloc[0])
+ValueError: invalid literal for int() with base 10: '12,535.80'
+[32m2025-06-17 19:46:48 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 19:46:48 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 19:46:48 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 19:46:48 - INFO - 要处理的信息:  买入 神剑股份 6[0m
+[32m2025-06-17 19:46:48 - INFO - 开始操作: 买入 神剑股份[0m
+[31m2025-06-17 19:46:48 - ERROR - 买入失败 神剑股份: invalid literal for int() with base 10: '12,535.80'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 215, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 181, in calculate_volume
+    available = int(holding_stock_df['可用'])
+                ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\series.py", line 247, in wrapper
+    return converter(self.iloc[0])
+ValueError: invalid literal for int() with base 10: '12,535.80'
+[32m2025-06-17 19:46:48 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 19:46:48 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 19:46:48 - INFO - 要处理的信息:  卖出 中红医疗 12[0m
+[32m2025-06-17 19:46:48 - INFO - 开始操作: 卖出 中红医疗[0m
+[33m2025-06-17 19:46:48 - WARNING - 中红医疗 不在持仓列表中[0m
+[32m2025-06-17 19:46:48 - INFO - 卖出操作 - 数量: 0[0m
+[32m2025-06-17 19:46:48 - INFO - 开始卖出流程 中红医疗 0股[0m
+[31m2025-06-17 19:46:49 - ERROR - 元素未找到 search_editor[0m
+[31m2025-06-17 19:46:49 - ERROR - 元素未找到 search_input[0m
+[31m2025-06-17 19:46:52 - ERROR - 元素未找到 stock_name[0m
+[31m2025-06-17 19:46:53 - ERROR - 元素未找到 xiadan[0m
+[31m2025-06-17 19:46:54 - ERROR - 元素未找到 sale_button_entry[0m
+[31m2025-06-17 19:46:55 - ERROR - 元素未找到 half_quantity[0m
+[31m2025-06-17 19:46:55 - ERROR - 元素未找到 sale_button[0m
+[31m2025-06-17 19:46:56 - ERROR - 元素未找到 confirm_sale_button[0m
+[31m2025-06-17 19:46:58 - ERROR - 卖出失败 中红医疗: 确认按钮不可点击[0m
+[31m2025-06-17 19:46:58 - ERROR - 元素未找到 back_button_details[0m
+[32m2025-06-17 19:46:58 - INFO - 从详情页返回到搜索页[0m
+[31m2025-06-17 19:46:58 - ERROR - 元素未找到 back_button_search[0m
+[32m2025-06-17 19:46:58 - INFO - 返回到搜索页[0m
+[32m2025-06-17 19:46:58 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 19:46:58 - INFO - 卖出 中红医疗 流程结束，操作已记录[0m
+[32m2025-06-17 19:46:58 - INFO - 要处理的信息:  卖出 双枪科技 22[0m
+[32m2025-06-17 19:46:58 - INFO - 开始操作: 卖出 双枪科技[0m
+[33m2025-06-17 19:46:58 - WARNING - 双枪科技 不在持仓列表中[0m
+[32m2025-06-17 19:46:58 - INFO - 卖出操作 - 数量: 0[0m
+[32m2025-06-17 19:46:58 - INFO - 开始卖出流程 双枪科技 0股[0m
+[31m2025-06-17 19:46:58 - ERROR - 元素未找到 search_editor[0m
+[31m2025-06-17 19:46:58 - ERROR - 元素未找到 search_input[0m
+[31m2025-06-17 19:47:02 - ERROR - 元素未找到 stock_name[0m
+[31m2025-06-17 19:47:03 - ERROR - 元素未找到 xiadan[0m
+[31m2025-06-17 19:47:04 - ERROR - 元素未找到 sale_button_entry[0m
+[31m2025-06-17 19:47:05 - ERROR - 元素未找到 half_quantity[0m
+[31m2025-06-17 19:47:05 - ERROR - 元素未找到 sale_button[0m
+[31m2025-06-17 19:47:07 - ERROR - 元素未找到 confirm_sale_button[0m
+[31m2025-06-17 19:47:09 - ERROR - 卖出失败 双枪科技: 确认按钮不可点击[0m
+[31m2025-06-17 19:47:09 - ERROR - 元素未找到 back_button_details[0m
+[32m2025-06-17 19:47:09 - INFO - 从详情页返回到搜索页[0m
+[31m2025-06-17 19:47:09 - ERROR - 元素未找到 back_button_search[0m
+[32m2025-06-17 19:47:09 - INFO - 返回到搜索页[0m
+[32m2025-06-17 19:47:09 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 19:47:09 - INFO - 卖出 双枪科技 流程结束，操作已记录[0m
+[32m2025-06-17 19:47:09 - INFO - 要处理的信息:  买入 久远银海 17[0m
+[32m2025-06-17 19:47:09 - INFO - 开始操作: 买入 久远银海[0m
+[31m2025-06-17 19:47:09 - ERROR - 买入失败 久远银海: invalid literal for int() with base 10: '12,535.80'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 215, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 181, in calculate_volume
+    available = int(holding_stock_df['可用'])
+                ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\series.py", line 247, in wrapper
+    return converter(self.iloc[0])
+ValueError: invalid literal for int() with base 10: '12,535.80'
+[32m2025-06-17 19:47:09 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 19:47:09 - INFO - 买入 久远银海 流程结束，操作已记录[0m
+[32m2025-06-17 19:47:09 - INFO - 要处理的信息:  卖出 中红医疗 12[0m
+[32m2025-06-17 19:47:09 - INFO - 开始操作: 卖出 中红医疗[0m
+[33m2025-06-17 19:47:09 - WARNING - 中红医疗 不在持仓列表中[0m
+[32m2025-06-17 19:47:09 - INFO - 卖出操作 - 数量: 0[0m
+[32m2025-06-17 19:47:09 - INFO - 开始卖出流程 中红医疗 0股[0m
+[31m2025-06-17 19:47:09 - ERROR - 元素未找到 search_editor[0m
+[31m2025-06-17 19:47:09 - ERROR - 元素未找到 search_input[0m
+[31m2025-06-17 19:47:12 - ERROR - 元素未找到 stock_name[0m
+[31m2025-06-17 19:47:14 - ERROR - 元素未找到 xiadan[0m
+[31m2025-06-17 19:47:15 - ERROR - 元素未找到 sale_button_entry[0m
+[31m2025-06-17 19:47:16 - ERROR - 元素未找到 half_quantity[0m
+[31m2025-06-17 19:47:16 - ERROR - 元素未找到 sale_button[0m
+[31m2025-06-17 19:47:17 - ERROR - 元素未找到 confirm_sale_button[0m
+[32m2025-06-17 20:12:48 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:12:50 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:13:50[0m
+[32m2025-06-17 20:12:50 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:12:50 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:12:50 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:13:05 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:13:05 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:13:06 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:13:06 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:13:06 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:13:06 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:13:06 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:13:06 - INFO - 开始操作: 买入 超讯通信[0m
+[31m2025-06-17 20:13:18 - ERROR - 买入失败 超讯通信: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 222, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 173, in calculate_volume
+    real_price = self.get_real_price()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 156, in get_real_price
+    text = price_element.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}
+[32m2025-06-17 20:13:18 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:13:18 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:13:18 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:13:18 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:13:18 - INFO - 开始操作: 买入 神剑股份[0m
+[31m2025-06-17 20:13:29 - ERROR - 买入失败 神剑股份: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 222, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 173, in calculate_volume
+    real_price = self.get_real_price()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 156, in get_real_price
+    text = price_element.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}
+[32m2025-06-17 20:13:29 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:13:29 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 20:13:29 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 20:13:29 - INFO - 开始操作: 卖出 中红医疗[0m
+[32m2025-06-17 20:15:16 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:15:18 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:16:18[0m
+[32m2025-06-17 20:15:18 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:15:18 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:15:18 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:15:33 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:15:33 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:15:33 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:15:34 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:15:34 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:15:34 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:15:34 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:15:34 - INFO - 开始操作: 买入 超讯通信[0m
+[31m2025-06-17 20:15:34 - ERROR - 买入失败 超讯通信: Can only use .str accessor with string values![0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 225, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 182, in calculate_volume
+    buy_available = float(holding_stock_df['可用'].str.replace(',',''))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\generic.py", line 6299, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\strings\accessor.py", line 191, in __init__
+    self._inferred_dtype = self._validate(data)
+                           ~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\strings\accessor.py", line 245, in _validate
+    raise AttributeError("Can only use .str accessor with string values!")
+AttributeError: Can only use .str accessor with string values!. Did you mean: 'std'?
+[32m2025-06-17 20:15:34 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:15:34 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:15:34 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:15:34 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:15:34 - INFO - 开始操作: 买入 神剑股份[0m
+[31m2025-06-17 20:15:34 - ERROR - 买入失败 神剑股份: Can only use .str accessor with string values![0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 225, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 182, in calculate_volume
+    buy_available = float(holding_stock_df['可用'].str.replace(',',''))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\generic.py", line 6299, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\strings\accessor.py", line 191, in __init__
+    self._inferred_dtype = self._validate(data)
+                           ~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\strings\accessor.py", line 245, in _validate
+    raise AttributeError("Can only use .str accessor with string values!")
+AttributeError: Can only use .str accessor with string values!. Did you mean: 'std'?
+[32m2025-06-17 20:15:34 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:15:34 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 20:15:34 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 20:15:34 - INFO - 开始操作: 卖出 中红医疗[0m
+[33m2025-06-17 20:15:34 - WARNING - 中红医疗 不在持仓列表中[0m
+[31m2025-06-17 20:15:45 - ERROR - 卖出失败：中红医疗: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 261, in sell_stock
+    quantity = self.calculate_volume("卖出", new_ratio=new_ratio)
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 211, in calculate_volume
+    real_price = self.get_real_price()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 156, in get_real_price
+    text = price_element.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}
+[32m2025-06-17 20:15:46 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:15:46 - INFO - 卖出 中红医疗 流程结束，操作已记录[0m
+[32m2025-06-17 20:15:46 - INFO - 要处理的信息:  卖出 双枪科技 价格:22.45 比例:0.0[0m
+[32m2025-06-17 20:15:46 - INFO - 开始操作: 卖出 双枪科技[0m
+[33m2025-06-17 20:15:46 - WARNING - 双枪科技 不在持仓列表中[0m
+[32m2025-06-17 20:22:17 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:22:19 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:23:19[0m
+[32m2025-06-17 20:22:19 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:22:19 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:22:19 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:22:34 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:22:34 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:22:35 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:22:35 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:22:35 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:22:35 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:22:35 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:22:35 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:22:35 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:22:46 - ERROR - 买入失败 超讯通信: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 226, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 186, in calculate_volume
+    real_price = self.get_real_price()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 156, in get_real_price
+    text = price_element.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}
+[32m2025-06-17 20:22:47 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:22:47 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:22:47 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:22:47 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:22:47 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 20:22:47 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 20:25:37 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:25:39 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:26:39[0m
+[32m2025-06-17 20:25:39 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:25:39 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:25:39 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:25:54 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:25:54 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:25:55 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:25:55 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:25:55 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:25:55 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:25:55 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:25:55 - INFO - 开始操作: 买入 超讯通信[0m
+[31m2025-06-17 20:25:56 - ERROR - 元素未找到 search_editor[0m
+[31m2025-06-17 20:25:56 - ERROR - 元素未找到 search_input[0m
+[31m2025-06-17 20:25:59 - ERROR - 元素未找到 stock_name[0m
+[31m2025-06-17 20:26:00 - ERROR - 元素未找到 xiadan[0m
+[31m2025-06-17 20:26:01 - ERROR - 元素未找到 buy_button_entry[0m
+[32m2025-06-17 20:26:02 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:26:13 - ERROR - 买入失败 超讯通信: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 235, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 186, in calculate_volume
+    real_price = self.get_real_price()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 156, in get_real_price
+    text = price_element.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}
+[32m2025-06-17 20:26:13 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:26:13 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:26:13 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:26:13 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:26:13 - INFO - 开始操作: 买入 神剑股份[0m
+[31m2025-06-17 20:26:13 - ERROR - 元素未找到 search_editor[0m
+[31m2025-06-17 20:26:13 - ERROR - 元素未找到 search_input[0m
+[31m2025-06-17 20:26:17 - ERROR - 元素未找到 stock_name[0m
+[31m2025-06-17 20:26:18 - ERROR - 元素未找到 xiadan[0m
+[32m2025-06-17 20:27:08 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:27:10 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:28:10[0m
+[32m2025-06-17 20:27:10 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:27:10 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:27:10 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:27:25 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:27:25 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:27:26 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:27:27 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:27:27 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:27:27 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:27:27 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:27:27 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:27:28 - INFO - 点击: search_editor[0m
+[32m2025-06-17 20:27:29 - INFO - 输入 '超讯通信' 在 search_input[0m
+[32m2025-06-17 20:27:32 - INFO - 点击: stock_name[0m
+[31m2025-06-17 20:27:34 - ERROR - 元素未找到 xiadan[0m
+[31m2025-06-17 20:27:35 - ERROR - 元素未找到 buy_button_entry[0m
+[32m2025-06-17 20:27:36 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:27:48 - ERROR - 买入失败 超讯通信: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 235, in buy_stock
+    quantity = self.calculate_volume("买入")
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 186, in calculate_volume
+    real_price = self.get_real_price()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page.py", line 156, in get_real_price
+    text = price_element.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.EditText', instance=1]", 'method': 'wait'}
+[32m2025-06-17 20:27:48 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:27:48 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:27:48 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:27:48 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:27:48 - INFO - 开始操作: 买入 神剑股份[0m
+[31m2025-06-17 20:27:48 - ERROR - 元素未找到 search_editor[0m
+[31m2025-06-17 20:27:48 - ERROR - 元素未找到 search_input[0m
+[31m2025-06-17 20:27:51 - ERROR - 元素未找到 stock_name[0m
+[32m2025-06-17 20:37:32 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:37:34 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:38:34[0m
+[32m2025-06-17 20:37:34 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:37:34 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:37:34 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:37:49 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:37:49 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:37:50 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:37:51 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:37:51 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:37:51 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:37:51 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:37:51 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:38:03 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:38:03 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:38:03 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 20:38:04 - INFO - 清除股票代码[0m
+[32m2025-06-17 20:38:05 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 20:38:06 - INFO - 没有匹配到股票或已选中[0m
+[32m2025-06-17 20:38:06 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:38:06 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 20:38:06 - INFO - 实时价格: None[0m
+[31m2025-06-17 20:38:06 - ERROR - 买入 超讯通信 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 232, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 185, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 20:38:06 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:38:06 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:38:06 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:38:06 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:38:06 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 20:38:06 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:38:07 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:38:07 - INFO - 点击股票搜索框: 神剑股份[0m
+[32m2025-06-17 20:38:07 - INFO - 清除股票代码[0m
+[32m2025-06-17 20:38:09 - INFO - 输入股票名称: 神剑股份[0m
+[32m2025-06-17 20:38:10 - INFO - 没有匹配到股票或已选中[0m
+[32m2025-06-17 20:38:10 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:38:10 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 20:38:10 - INFO - 实时价格: None[0m
+[31m2025-06-17 20:38:10 - ERROR - 买入 神剑股份 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 232, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 185, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 20:38:10 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:38:10 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 20:38:10 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 20:38:10 - INFO - 开始操作: 卖出 中红医疗[0m
+[31m2025-06-17 20:38:10 - ERROR - 处理文件 D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv 失败: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\scripts\数据处理.py", line 92, in process_excel_files
+    status, info = ths_page.sell_stock(stock_name, new_ratio=new_ratio)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-06-17 20:38:10 - INFO - 文件处理完成[0m
+[32m2025-06-17 20:38:10 - INFO - [自动化交易] 执行完成[0m
+[33m2025-06-17 20:38:23 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 20:42:44 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:42:47 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:43:47[0m
+[32m2025-06-17 20:42:47 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:42:47 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:42:47 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:43:02 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:43:17 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:43:32 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:43:47 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:43:50 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:44:50[0m
+[32m2025-06-17 20:43:50 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:44:05 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:44:20 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:44:35 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:44:35 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:44:35 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:44:36 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:44:36 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:44:36 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:44:36 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:44:36 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:44:36 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:44:36 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:44:37 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 20:44:37 - INFO - 清除股票代码[0m
+[32m2025-06-17 20:44:38 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 20:44:39 - INFO - 没有匹配到股票或已选中[0m
+[32m2025-06-17 20:44:40 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:44:40 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 20:44:40 - INFO - 实时价格: None[0m
+[31m2025-06-17 20:44:40 - ERROR - 买入 超讯通信 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 232, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 185, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 20:44:40 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:44:40 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 20:44:40 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 20:44:40 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 20:44:40 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 20:44:41 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:44:41 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:44:42 - INFO - 点击股票搜索框: 神剑股份[0m
+[32m2025-06-17 20:44:42 - INFO - 清除股票代码[0m
+[32m2025-06-17 20:44:43 - INFO - 输入股票名称: 神剑股份[0m
+[32m2025-06-17 20:44:44 - INFO - 没有匹配到股票或已选中[0m
+[32m2025-06-17 20:44:44 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 20:44:44 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 20:44:44 - INFO - 实时价格: None[0m
+[31m2025-06-17 20:44:44 - ERROR - 买入 神剑股份 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 232, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 185, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 20:44:44 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 20:44:45 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 20:44:45 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 20:44:45 - INFO - 开始操作: 卖出 中红医疗[0m
+[31m2025-06-17 20:44:45 - ERROR - 处理文件 D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv 失败: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\scripts\数据处理.py", line 92, in process_excel_files
+    status, info = ths_page.sell_stock(stock_name, new_ratio=new_ratio)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-06-17 20:44:45 - INFO - 文件处理完成[0m
+[32m2025-06-17 20:44:45 - INFO - [自动化交易] 执行完成[0m
+[33m2025-06-17 20:44:45 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 20:45:21 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:45:24 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:46:24[0m
+[32m2025-06-17 20:45:24 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:45:24 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:45:24 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 20:45:39 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:45:39 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:45:40 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:45:41 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:45:41 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:45:41 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:45:41 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:45:41 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:45:58 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:46:05 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:46:17 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 20:46:26 - INFO - 清除股票代码[0m
+[32m2025-06-17 20:47:35 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 20:52:46 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:52:48 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:53:48[0m
+[32m2025-06-17 20:52:48 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:52:48 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:52:48 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:52:48 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:52:49 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:52:50 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:52:50 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:52:50 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:52:50 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:52:50 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:52:57 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:53:09 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:53:34 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 20:53:52 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 20:57:32 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 20:57:35 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 20:58:35[0m
+[32m2025-06-17 20:57:35 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 20:57:35 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 20:57:35 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 20:57:35 - INFO - 标志文件已删除[0m
+[32m2025-06-17 20:57:36 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 20:57:36 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 20:57:36 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 20:57:36 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 20:57:36 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 20:57:36 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 20:57:36 - INFO - 点击交易按钮[0m
+[32m2025-06-17 20:57:37 - INFO - 点击买入按钮[0m
+[32m2025-06-17 20:57:37 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 20:57:39 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 21:00:51 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 21:01:29 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 21:02:22 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 21:02:34 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 21:03:34 - INFO - 输入买入数量: 97[0m
+[32m2025-06-17 21:03:48 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 21:05:20 - INFO - 点击确认按钮[0m
+[32m2025-06-17 21:15:30 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 21:15:33 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 21:16:33[0m
+[32m2025-06-17 21:15:33 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 21:15:33 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 21:15:33 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 21:15:33 - INFO - 标志文件已删除[0m
+[32m2025-06-17 21:15:34 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 21:15:34 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 21:15:34 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 21:15:34 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 21:15:34 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 21:15:34 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 21:15:35 - INFO - 点击交易按钮[0m
+[32m2025-06-17 21:15:35 - INFO - 点击买入按钮[0m
+[32m2025-06-17 21:15:36 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 21:15:38 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 21:15:56 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 21:16:00 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 21:16:07 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 21:16:39 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 21:16:47 - INFO - 输入买入数量: 97.0手[0m
+[32m2025-06-17 21:17:26 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 21:24:40 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 21:24:43 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 21:25:43[0m
+[32m2025-06-17 21:24:43 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 21:24:43 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 21:24:43 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 21:24:58 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 21:24:58 - INFO - 标志文件已删除[0m
+[32m2025-06-17 21:24:59 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 21:24:59 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 21:24:59 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 21:24:59 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 21:24:59 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 21:24:59 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 21:25:00 - INFO - 点击交易按钮[0m
+[32m2025-06-17 21:25:00 - INFO - 点击买入按钮[0m
+[32m2025-06-17 21:25:00 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 21:25:02 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 21:25:03 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 21:25:03 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 21:25:03 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 21:25:03 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 21:25:14 - INFO - 输入买入数量: 97.0手[0m
+[32m2025-06-17 21:25:19 - INFO - 点击按钮: 买 入[0m
+[31m2025-06-17 21:26:24 - ERROR - 买入 超讯通信 97 股失败: ('Invalid xpath', '//android.widget.TextView)[3]')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 260, in buy_stock
+    self.confirm_transaction()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 107, in confirm_transaction
+    dialog_info =self.d.xpath('//android.widget.TextView)[3]')
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 280, in __call__
+    return XPathSelector(xpath, self, PageSource.parse(source))
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 296, in __init__
+    self._base_xpath = XPath(xpath) if isinstance(xpath, str) else xpath
+                       ~~~~~^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 121, in __new__
+    xpath = strict_xpath(value)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 112, in strict_xpath
+    raise XPathError("Invalid xpath", orig_xpath)
+uiautomator2.xpath.XPathError: ('Invalid xpath', '//android.widget.TextView)[3]')
+[32m2025-06-17 21:28:29 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 21:28:31 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 21:29:31[0m
+[32m2025-06-17 21:28:31 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 21:28:31 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 21:28:31 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 21:28:46 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 21:28:46 - INFO - 标志文件已删除[0m
+[32m2025-06-17 21:28:47 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 21:28:47 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 21:28:47 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 21:28:47 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 21:28:47 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 21:28:48 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 21:28:48 - INFO - 点击交易按钮[0m
+[32m2025-06-17 21:28:48 - INFO - 点击买入按钮[0m
+[32m2025-06-17 21:28:49 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 21:28:50 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 21:28:51 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 21:28:51 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 21:28:51 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 21:28:51 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 21:28:56 - INFO - 输入买入数量: 97.0手[0m
+[32m2025-06-17 21:30:11 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 21:30:22 - INFO - 弹窗内容：XPathSelector(XPath('//*[@resource-id="com.hexin.plat.android:id/prompt_content"]'))[0m
+[32m2025-06-17 21:32:44 - INFO - 点击弹窗确认按钮[0m
+[32m2025-06-17 21:32:53 - INFO - 点击弹窗确认按钮[0m
+[32m2025-06-17 21:52:32 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 21:52:35 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 21:53:35[0m
+[32m2025-06-17 21:52:35 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 21:52:35 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 21:52:35 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 21:52:35 - INFO - 标志文件已删除[0m
+[32m2025-06-17 21:52:35 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 21:52:36 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 21:52:36 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 21:52:36 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 21:52:36 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 21:52:36 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 21:52:36 - INFO - 点击交易按钮[0m
+[32m2025-06-17 21:52:36 - INFO - 点击买入按钮[0m
+[32m2025-06-17 21:52:37 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 21:52:38 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 21:52:40 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 21:52:40 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 21:52:40 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 21:52:40 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 21:52:49 - INFO - 输入买入数量: 97.0手[0m
+[32m2025-06-17 21:53:05 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 21:55:16 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 21:55:19 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 21:56:19[0m
+[32m2025-06-17 21:55:19 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 21:55:19 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 21:55:19 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 21:55:19 - INFO - 标志文件已删除[0m
+[32m2025-06-17 21:55:19 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 21:55:20 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 21:55:20 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 21:55:20 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 21:55:20 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 21:55:20 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 21:55:20 - INFO - 点击交易按钮[0m
+[32m2025-06-17 21:55:21 - INFO - 点击买入按钮[0m
+[32m2025-06-17 21:55:21 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 21:55:23 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 21:55:24 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 21:55:24 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 21:55:24 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 21:55:24 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 21:55:42 - INFO - 输入买入数量: 97.0手[0m
+[32m2025-06-17 21:55:48 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 21:55:55 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:07:50 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:07:53 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:08:53[0m
+[32m2025-06-17 22:07:53 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:07:53 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:07:53 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:07:53 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:07:53 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:07:54 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:07:54 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:07:54 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:07:54 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:07:55 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:07:55 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:07:56 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:07:56 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:07:58 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:07:59 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 22:07:59 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 22:07:59 - INFO - 实时价格: None[0m
+[31m2025-06-17 22:07:59 - ERROR - 买入 超讯通信 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 372, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 207, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 22:08:00 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 22:08:00 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 22:08:00 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 22:08:00 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 22:08:00 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 22:08:01 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:08:01 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:08:01 - INFO - 点击股票搜索框: 神剑股份[0m
+[32m2025-06-17 22:08:03 - INFO - 输入股票名称: 神剑股份[0m
+[32m2025-06-17 22:08:04 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:08:04 - INFO - 实时价格: 6.04[0m
+[32m2025-06-17 22:08:04 - INFO - 买入操作 - 实时价格: 6.04, 数量: 662[0m
+[32m2025-06-17 22:08:04 - INFO - 开始买入流程 神剑股份  662股[0m
+[32m2025-06-17 22:08:15 - INFO - 输入买入数量: 662.0手[0m
+[32m2025-06-17 22:10:01 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:10:09 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:11:10 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:11:12 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:12:12[0m
+[32m2025-06-17 22:11:12 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:11:12 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:11:12 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 22:11:27 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 22:11:42 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:11:42 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:11:43 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:11:43 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:11:43 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:11:43 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:11:43 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:11:43 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:11:44 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:11:44 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:11:45 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:11:46 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:11:47 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:11:47 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:11:47 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:11:47 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:11:56 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:12:08 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:12:17 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:23:08 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:23:10 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:24:10[0m
+[32m2025-06-17 22:23:10 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:23:10 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:23:10 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:23:10 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:23:11 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:23:11 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:23:11 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:23:11 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:23:11 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:23:12 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:23:12 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:23:12 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:23:13 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:23:14 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:23:15 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 22:23:16 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 22:23:16 - INFO - 实时价格: None[0m
+[31m2025-06-17 22:23:16 - ERROR - 买入 超讯通信 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 380, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 207, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 22:23:17 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 22:23:17 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 22:23:17 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 22:23:18 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 22:23:18 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 22:23:18 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:23:18 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:23:19 - INFO - 点击股票搜索框: 神剑股份[0m
+[32m2025-06-17 22:23:20 - INFO - 输入股票名称: 神剑股份[0m
+[32m2025-06-17 22:23:22 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:23:22 - INFO - 实时价格: 6.04[0m
+[32m2025-06-17 22:23:22 - INFO - 买入操作 - 实时价格: 6.04, 数量: 662[0m
+[32m2025-06-17 22:23:22 - INFO - 开始买入流程 神剑股份  662股[0m
+[32m2025-06-17 22:26:43 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:26:46 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:27:46[0m
+[32m2025-06-17 22:26:46 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:26:46 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:26:46 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:26:46 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:26:46 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:26:47 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:26:47 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:26:47 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:26:47 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:26:47 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:26:47 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:26:48 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:26:48 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:26:50 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:26:53 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:26:53 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:26:57 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:27:01 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:27:06 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:27:12 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:27:14 - INFO - 开始处理弹窗[0m
+[31m2025-06-17 22:28:52 - ERROR - 买入 超讯通信 97 股失败: ('Invalid xpath', '//android.widget.TextView)[3]')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 390, in buy_stock
+    success, info = self.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 279, in dialog_handle
+    scroll_content= self.d.xpath('//android.widget.TextView)[3]')  # 可用资金不足是[3]
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 280, in __call__
+    return XPathSelector(xpath, self, PageSource.parse(source))
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 296, in __init__
+    self._base_xpath = XPath(xpath) if isinstance(xpath, str) else xpath
+                       ~~~~~^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 121, in __new__
+    xpath = strict_xpath(value)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\xpath.py", line 112, in strict_xpath
+    raise XPathError("Invalid xpath", orig_xpath)
+uiautomator2.xpath.XPathError: ('Invalid xpath', '//android.widget.TextView)[3]')
+[32m2025-06-17 22:38:35 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:38:38 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:39:38[0m
+[32m2025-06-17 22:38:38 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:38:38 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:38:38 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:38:38 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:38:38 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:38:39 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:38:39 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:38:39 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:38:39 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:38:39 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:38:39 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:38:39 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:38:40 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:38:42 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:38:45 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 22:38:45 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 22:38:45 - INFO - 实时价格: None[0m
+[32m2025-06-17 22:39:09 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:39:11 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:40:11[0m
+[32m2025-06-17 22:39:11 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:39:11 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:39:11 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 22:39:26 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:39:26 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:39:27 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:39:28 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:39:28 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:39:28 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:39:28 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:39:28 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:39:28 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:39:28 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:39:29 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:39:30 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:39:34 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:39:34 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:39:37 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:39:38 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:39:40 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:39:44 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:39:46 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:40:44 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:40:47 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:41:47[0m
+[32m2025-06-17 22:40:47 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:40:47 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:40:47 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:40:47 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:40:47 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:40:48 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:40:48 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:40:48 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:40:48 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:40:48 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:40:48 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:40:48 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:40:49 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:40:50 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:40:54 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:40:54 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:41:01 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:41:03 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:41:06 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:41:09 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:41:10 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:43:15 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:43:17 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:44:17[0m
+[32m2025-06-17 22:43:17 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:43:17 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:43:17 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:43:17 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:43:18 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:43:18 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:43:18 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:43:18 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:43:18 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:43:18 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:43:19 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:43:19 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:43:20 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:43:21 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:43:24 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 22:43:24 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 22:43:24 - INFO - 实时价格: None[0m
+[31m2025-06-17 22:43:29 - ERROR - 买入 超讯通信 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 383, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 209, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 22:43:56 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:43:59 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:44:59[0m
+[32m2025-06-17 22:43:59 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:43:59 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:43:59 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:43:59 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:44:00 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:44:00 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:44:00 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:44:00 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:44:00 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:44:00 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:44:01 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:44:01 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:44:02 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:44:03 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:44:07 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:44:07 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:44:15 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:44:17 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:44:20 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:44:23 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:44:24 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:45:59 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:46:02 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:47:02[0m
+[32m2025-06-17 22:46:02 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:46:02 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:46:02 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:46:02 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:46:02 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:46:03 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:46:03 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:46:03 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:46:03 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:46:03 - INFO - 开始操作: 买入 超讯通信[0m
+[31m2025-06-17 22:46:13 - ERROR - 买入 超讯通信 None 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 378, in buy_stock
+    self.click_trade_entry()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 29, in click_trade_entry
+    trade_entry.click()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-06-17 22:46:13 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 22:46:13 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 22:46:13 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 22:46:13 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 22:46:13 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 22:46:17 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:46:17 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:46:18 - INFO - 点击股票搜索框: 神剑股份[0m
+[32m2025-06-17 22:46:19 - INFO - 输入股票名称: 神剑股份[0m
+[32m2025-06-17 22:46:22 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:46:22 - INFO - 实时价格: 6.04[0m
+[32m2025-06-17 22:46:30 - INFO - 买入操作 - 实时价格: 6.04, 数量: 662[0m
+[32m2025-06-17 22:46:31 - INFO - 开始买入流程 神剑股份  662股[0m
+[32m2025-06-17 22:46:33 - INFO - 输入买入数量: 662手[0m
+[32m2025-06-17 22:46:38 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:46:40 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:47:27 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:47:29 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:48:29[0m
+[32m2025-06-17 22:47:29 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:47:29 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:47:29 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:47:29 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:47:30 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:47:31 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:47:31 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:47:31 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:47:31 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:47:31 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:47:31 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:47:31 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:47:32 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:47:33 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:47:36 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:47:36 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:47:51 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:47:52 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:47:55 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:47:59 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:48:00 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:49:15 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:49:18 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:50:18[0m
+[32m2025-06-17 22:49:18 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:49:18 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:49:18 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:49:18 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:49:18 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:49:19 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:49:19 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:49:19 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:49:19 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:49:19 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:49:19 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:49:19 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:49:20 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:49:21 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:49:25 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 22:49:25 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 22:49:25 - INFO - 实时价格: None[0m
+[31m2025-06-17 22:49:38 - ERROR - 买入 超讯通信 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 383, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 209, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 22:49:56 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:49:59 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:50:59[0m
+[32m2025-06-17 22:49:59 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:49:59 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:49:59 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:49:59 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:50:00 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:50:00 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:50:00 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:50:00 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:50:00 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:50:00 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:50:01 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:50:01 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:50:01 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:50:03 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:50:06 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:50:06 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:50:08 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:50:09 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:50:12 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:50:15 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:50:16 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:51:22 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:51:24 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:52:24[0m
+[32m2025-06-17 22:51:24 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:51:24 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:51:24 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:51:24 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:51:25 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:51:25 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:51:25 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:51:25 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:51:26 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:51:26 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:51:29 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:51:29 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:51:29 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:51:31 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:51:34 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:51:34 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:51:39 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:51:40 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:51:47 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:51:56 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:51:59 - INFO - 开始处理弹窗[0m
+[31m2025-06-17 22:52:20 - ERROR - 买入 超讯通信 97 股失败: classname is not allowed.[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 393, in buy_stock
+    success, info = self.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 281, in dialog_handle
+    scroll_content_enougth= self.d(classname='//android.widget.TextView)[2]')  # 可用资金不足是[3]
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 456, in __call__
+    return UiObject(self, Selector(**kwargs))
+                          ~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 51, in __init__
+    self[k] = kwargs[k]
+    ~~~~^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 72, in __setitem__
+    raise ReferenceError("%s is not allowed." % k)
+ReferenceError: classname is not allowed.
+[32m2025-06-17 22:52:20 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 22:52:20 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 22:52:20 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 22:52:20 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 22:52:20 - INFO - 开始操作: 买入 神剑股份[0m
+[31m2025-06-17 22:52:30 - ERROR - 买入 神剑股份 None 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 379, in buy_stock
+    self.click_trade_entry()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 29, in click_trade_entry
+    trade_entry.click()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title', text='交易']", 'method': 'wait'}
+[32m2025-06-17 22:52:31 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 22:52:31 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 22:52:31 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 22:52:31 - INFO - 开始操作: 卖出 中红医疗[0m
+[31m2025-06-17 22:52:31 - ERROR - 处理文件 D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv 失败: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\scripts\数据处理.py", line 92, in process_excel_files
+    status, info = ths_page.sell_stock(stock_name, new_ratio=new_ratio)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-06-17 22:52:31 - INFO - 文件处理完成[0m
+[32m2025-06-17 22:52:31 - INFO - [自动化交易] 执行完成[0m
+[32m2025-06-17 22:52:31 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:52:33 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:53:33[0m
+[33m2025-06-17 22:52:39 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 22:53:29 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:53:32 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:54:32[0m
+[32m2025-06-17 22:53:32 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:53:32 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:53:32 - INFO - 等待调仓操作记录完成...[0m
+[33m2025-06-17 22:53:32 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 22:53:42 - INFO - 
+[组合] 开始执行...[0m
+[32m2025-06-17 22:53:44 - INFO - 
+[组合] 执行完成，下一次执行时间: 2025-06-17 22:54:44[0m
+[32m2025-06-17 22:53:44 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 22:53:44 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 22:53:44 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 22:53:44 - INFO - 标志文件已删除[0m
+[32m2025-06-17 22:53:45 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 22:53:46 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 22:53:46 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 22:53:46 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 22:53:46 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 22:53:46 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 22:53:47 - INFO - 点击交易按钮[0m
+[32m2025-06-17 22:53:48 - INFO - 点击买入按钮[0m
+[32m2025-06-17 22:53:48 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 22:53:49 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 22:53:53 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 22:53:53 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 22:53:53 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 22:53:53 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 22:53:53 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 22:53:53 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 22:53:57 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 22:54:34 - INFO - 检测到'委托买入确认'提示[0m
+[32m2025-06-17 22:54:41 - INFO - 点击确认按钮[0m
+[33m2025-06-17 23:04:05 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 23:04:39 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 23:04:39 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 23:04:39 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 23:04:39 - INFO - 标志文件已删除[0m
+[32m2025-06-17 23:04:40 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 23:04:41 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 23:04:41 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 23:04:41 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 23:04:41 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 23:04:41 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 23:04:41 - INFO - 点击交易按钮[0m
+[32m2025-06-17 23:04:41 - INFO - 点击买入按钮[0m
+[32m2025-06-17 23:04:42 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 23:04:43 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 23:04:46 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 23:04:46 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 23:04:46 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 23:04:46 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 23:04:47 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 23:04:47 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 23:04:50 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 23:05:00 - INFO - 检测到'委托买入确认'提示[0m
+[32m2025-06-17 23:05:02 - INFO - 点击确认按钮[0m
+[32m2025-06-17 23:05:22 - INFO - 点击返回按钮[0m
+[32m2025-06-17 23:05:23 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 23:05:23 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 23:05:23 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 23:05:23 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 23:05:24 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 23:05:24 - INFO - 点击交易按钮[0m
+[32m2025-06-17 23:05:24 - INFO - 点击买入按钮[0m
+[31m2025-06-17 23:05:25 - ERROR - 买入 神剑股份 None 股失败: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getVisibleBounds(UiObject2.java:310)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:67)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 387, in buy_stock
+    self.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 44, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 150, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 171, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 158, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getVisibleBounds(UiObject2.java:310)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:67)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')
+[32m2025-06-17 23:05:25 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 23:05:25 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 23:05:25 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 23:05:25 - INFO - 开始操作: 卖出 中红医疗[0m
+[31m2025-06-17 23:05:25 - ERROR - 处理文件 D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv 失败: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\scripts\数据处理.py", line 92, in process_excel_files
+    status, info = ths_page.sell_stock(stock_name, new_ratio=new_ratio)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-06-17 23:05:25 - INFO - 文件处理完成[0m
+[32m2025-06-17 23:05:25 - INFO - [自动化交易] 执行完成[0m
+[32m2025-06-17 23:06:25 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 23:06:25 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 23:06:25 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:06:40 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:06:55 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:07:10 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:07:25 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:07:40 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:07:55 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:08:10 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:08:25 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:08:40 - INFO - 等待调仓操作记录完成...[0m
+[33m2025-06-17 23:08:40 - WARNING - 用户主动终止程序[0m
+[32m2025-06-17 23:08:51 - INFO - 
+[自动化交易] 开始执行...[0m
+[32m2025-06-17 23:08:51 - INFO - 自动化交易程序开始运行[0m
+[32m2025-06-17 23:08:51 - INFO - 等待调仓操作记录完成...[0m
+[32m2025-06-17 23:09:06 - INFO - 检测到标志文件，开始自动化交易[0m
+[32m2025-06-17 23:09:06 - INFO - 标志文件已删除[0m
+[32m2025-06-17 23:09:07 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-06-17 23:09:07 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-06-17 23:09:07 - INFO - 检测到文件有更新，开始执行交易任务[0m
+[32m2025-06-17 23:09:07 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv[0m
+[32m2025-06-17 23:09:07 - INFO - 要处理的信息:  买入 超讯通信 价格:43.52 比例:36.27[0m
+[32m2025-06-17 23:09:07 - INFO - 开始操作: 买入 超讯通信[0m
+[32m2025-06-17 23:09:08 - INFO - 点击交易按钮[0m
+[32m2025-06-17 23:09:08 - INFO - 点击买入按钮[0m
+[32m2025-06-17 23:09:09 - INFO - 点击股票搜索框: 超讯通信[0m
+[32m2025-06-17 23:09:10 - INFO - 输入股票名称: 超讯通信[0m
+[32m2025-06-17 23:09:13 - INFO - 可用金额: 12535.8[0m
+[32m2025-06-17 23:09:13 - INFO - 实时价格: 40.85[0m
+[32m2025-06-17 23:09:13 - INFO - 买入操作 - 实时价格: 40.85, 数量: 97[0m
+[32m2025-06-17 23:09:13 - INFO - 开始买入流程 超讯通信  97股[0m
+[32m2025-06-17 23:09:14 - INFO - 输入买入数量: 97手[0m
+[32m2025-06-17 23:09:14 - INFO - 点击按钮: 买 入[0m
+[32m2025-06-17 23:09:17 - INFO - 开始处理弹窗[0m
+[32m2025-06-17 23:09:24 - INFO - 检测到'委托买入确认'提示[0m
+[32m2025-06-17 23:09:28 - INFO - 点击确认按钮[0m
+[32m2025-06-17 23:09:31 - INFO - 点击确认按钮[0m
+[31m2025-06-17 23:09:33 - ERROR - 失败，委托数量不符合交易规则。 A股最少买入100股，买入数量为100及其整数倍； 可转债最少买入10张，买入数量为10及其整数倍； 可转债以外的债券最少买入1000张，买入数量为1000及其整数倍； 科创板最少买入200股，后续买入允许1股增加，即201股下单；更多疑问请客服咨询委托数量。[0m
+[32m2025-06-17 23:09:43 - INFO - 点击返回按钮[0m
+[32m2025-06-17 23:09:53 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 23:09:53 - INFO - 买入 超讯通信 流程结束，操作已记录[0m
+[32m2025-06-17 23:09:53 - INFO - 检测到文件更新，即将进行操作的文件路径: D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv[0m
+[32m2025-06-17 23:09:53 - INFO - 要处理的信息:  买入 神剑股份 价格:6.12 比例:20.0[0m
+[32m2025-06-17 23:09:54 - INFO - 开始操作: 买入 神剑股份[0m
+[32m2025-06-17 23:09:54 - INFO - 点击交易按钮[0m
+[32m2025-06-17 23:09:54 - INFO - 点击买入按钮[0m
+[32m2025-06-17 23:09:55 - INFO - 点击股票搜索框: 神剑股份[0m
+[32m2025-06-17 23:09:56 - INFO - 输入股票名称: 神剑股份[0m
+[32m2025-06-17 23:09:59 - INFO - 可用金额: 12535.8[0m
+[31m2025-06-17 23:09:59 - ERROR - 无法解析价格文本[0m
+[32m2025-06-17 23:09:59 - INFO - 实时价格: None[0m
+[31m2025-06-17 23:09:59 - ERROR - 买入 神剑股份 None 股失败: unsupported operand type(s) for /: 'int' and 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 393, in buy_stock
+    volume = self._calculate_volume("买入")
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\ths_page2.py", line 209, in _calculate_volume
+    volume = int(volume_max / real_price)  # 固定金额买入
+                 ~~~~~~~~~~~^~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'
+[32m2025-06-17 23:10:00 - INFO - 写入操作历史完成[0m
+[32m2025-06-17 23:10:00 - INFO - 买入 神剑股份 流程结束，操作已记录[0m
+[32m2025-06-17 23:10:00 - INFO - 要处理的信息:  卖出 中红医疗 价格:12.97 比例:0.0[0m
+[32m2025-06-17 23:10:00 - INFO - 开始操作: 卖出 中红医疗[0m
+[31m2025-06-17 23:10:00 - ERROR - 处理文件 D:\1document\Investment\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv 失败: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\scripts\数据处理.py", line 92, in process_excel_files
+    status, info = ths_page.sell_stock(stock_name, new_ratio=new_ratio)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: THSPage.sell_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-06-17 23:10:00 - INFO - 文件处理完成[0m
+[32m2025-06-17 23:10:00 - INFO - [自动化交易] 执行完成[0m
