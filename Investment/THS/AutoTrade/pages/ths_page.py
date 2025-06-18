@@ -170,6 +170,7 @@ class THSPage:
         :return: 交易股数
         """
         volume_max = 4000
+
         if not self._current_stock_name:
             logger.warning("未设置标的名称")
             return 0
@@ -177,32 +178,42 @@ class THSPage:
         stock_name = self._current_stock_name
 
         if operation == "买入":
-            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据")
-            available = int(holding_stock_df['可用'])
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据", thousands=',')
+            buy_available = float(holding_stock_df['可用'].iloc[0])
+
+            logger.info(f"可用金额: {buy_available}")
 
             real_price = self.get_real_price()
+            logger.info(f"实时价格: {real_price}")
 
-            if available < volume_max:
-                volume_max = available
+
+            if buy_available < volume_max:
+                volume_max = buy_available
             volume = int(volume_max / real_price)  # 固定金额买入
-            logger.info(f"买入操作 - 实时价格: {real_price}, 数量: {volume}")
+            #总价
+            total_price = volume * real_price
+            logger.info(f"买入操作 - 实时价格: {real_price}, 数量: {volume}, 总价：{total_price}")
             return volume
 
         elif operation == "卖出":
-            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
             holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
 
             if not holding_stock.empty:
-                available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])
+                sale_available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])
                 if new_ratio is not None and new_ratio != 0:
-                    volume = int(available * 0.5)  # 半仓卖出
+                    volume = int(sale_available * 0.5)  # 半仓卖出
                 else:
-                    volume = available  # 全部卖出
+                    volume = sale_available  # 全部卖出
             else:
                 logger.warning(f"{stock_name} 不在持仓列表中")
                 volume = 0
 
-            logger.info(f"卖出操作 - 数量: {volume}")
+            real_price = self.get_real_price()
+            logger.info(f"实时价格: {real_price}")
+
+            total_price = volume * real_price
+            logger.info(f"卖出操作 - 数量: {volume} (共可用：{sale_available}), 总价：{total_price}，")
             return volume
 
         else:
@@ -212,10 +223,6 @@ class THSPage:
     def buy_stock(self, stock_name):
         try:
             self._current_stock_name = stock_name
-            quantity = self.calculate_volume("买入")
-
-            logger.info(f"开始买入流程 {stock_name}  {quantity}股")
-            send_notification(f"开始买入流程 {stock_name}  {quantity}股")
             self.wait_and_click(self.search_editor(), "search_editor")
             self.set_text(self.search_input(), stock_name, "search_input")
             time.sleep(3)  # 等待搜索结果加载
@@ -225,6 +232,11 @@ class THSPage:
             time.sleep(1)
             self.wait_and_click(self.buy_button_entry(), "buy_button_entry")
             time.sleep(1)
+            quantity = self.calculate_volume("买入")
+
+            logger.info(f"开始买入流程 {stock_name}  {quantity}股")
+            send_notification(f"开始买入流程 {stock_name}  {quantity}股")
+
             self.set_text(self.buy_number(), str(quantity), "buy_number")
             time.sleep(1)
             self.operate_button_keyboard().click()
@@ -248,10 +260,6 @@ class THSPage:
     def sell_stock(self, stock_name, new_ratio=None):
         try:
             self._current_stock_name = stock_name
-            quantity = self.calculate_volume("卖出", new_ratio=new_ratio)
-
-            logger.info(f"开始卖出流程 {stock_name} {quantity}股")
-            send_notification(f"开始卖出流程 {stock_name} {quantity}股")
             self.wait_and_click(self.search_editor(), "search_editor")
             self.set_text(self.search_input(), stock_name, "search_input")
             time.sleep(3)  # 等待搜索结果加载
@@ -261,6 +269,12 @@ class THSPage:
             time.sleep(1)
             self.wait_and_click(self.sale_button_entry(), "sale_button_entry")
             time.sleep(1)
+
+            quantity = self.calculate_volume("卖出", new_ratio=new_ratio)
+
+            logger.info(f"开始卖出流程 {stock_name} {quantity}股")
+            send_notification(f"开始卖出流程 {stock_name} {quantity}股")
+
             self.wait_and_click(self.half_quantity(), "half_quantity")
             self.wait_and_click(self.sale_button(), "sale_button")
             time.sleep(1)

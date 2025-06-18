@@ -11,7 +11,7 @@ from Investment.THS.AutoTrade.config.settings import (
     Strategy_portfolio_today, Combination_portfolio_today,
     OPERATION_HISTORY_FILE
 )
-from Investment.THS.AutoTrade.pages.ths_page import THSPage
+from Investment.THS.AutoTrade.pages.ths_page2 import THSPage
 from Investment.THS.AutoTrade.scripts.数据处理 import process_excel_files
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
@@ -76,22 +76,22 @@ def get_file_modification_times(file_paths):
     for path in file_paths:
         with open(path, 'a'):
             os.utime(path, None)  # 更新文件时间戳
-        print(f"刷新文件时间戳: {path}")
+        # print(f"刷新文件时间戳: {path}")
 
     times = {
         file_path: os.path.getmtime(file_path)
         for file_path in file_paths
         if os.path.exists(file_path)
     }
-    print("文件最后修改时间:", {k: datetime.datetime.fromtimestamp(v).strftime('%Y-%m-%d %H:%M:%S') for k, v in times.items()})
+    # print("文件最后修改时间:", {k: datetime.datetime.fromtimestamp(v).strftime('%Y-%m-%d %H:%M:%S') for k, v in times.items()})
     return times
 
 
 
 def check_files_modified(file_paths, last_modification_times):
     current_modification_times = get_file_modification_times(file_paths)
-    print("当前修改时间:", current_modification_times)
-    print("上次修改时间:", last_modification_times)
+    # print("当前修改时间:", current_modification_times)
+    # print("上次修改时间:", last_modification_times)
 
     for file_path in file_paths:
         if not os.path.exists(file_path):

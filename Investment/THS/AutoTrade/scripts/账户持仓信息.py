@@ -7,6 +7,10 @@ from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_inf
 # 连接设备
 try:
     d = u2.connect()
+    # 保存xml文件
+    ui_xml = d.dump_hierarchy(pretty=True)
+    with open('account_ui_xml.xml', 'w', encoding='utf-8') as f:
+        f.write(ui_xml)
 except Exception as e:
     print(f"连接设备失败: {e}")
     exit(1)
@@ -196,7 +200,7 @@ def update_holding_info():
 
     # 保存到Excel文件
     with pd.ExcelWriter(Account_holding_stockes_info_file) as writer:
-        header_df.to_excel(writer, index=False, sheet_name="表头信息")
+        header_df.to_excel(writer, index=False, sheet_name="表头数据")
         stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
 
 if __name__ == '__main__':

@@ -67,10 +67,10 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
                 stock_name = row['标的名称']
                 operation = row['操作']
                 time = row['时间']
-                price = int(row['最新价'])
+                price = row['最新价']
                 new_ratio = float(row['新比例%'])
                 # logger.info(f"要处理的信息:  {operation} {stock_name} {new_ratio}")
-                logger.info(f"要处理的信息:  {operation} {stock_name} {price}")
+                logger.info(f"要处理的信息:  {operation} {stock_name} 价格:{price} 比例:{new_ratio}")
 
                 # 检查是否已执行过该操作
                 history_df = read_operation_history(operation_history_file)
