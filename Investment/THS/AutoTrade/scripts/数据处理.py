@@ -10,6 +10,20 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
 
+def ensure_valid_excel_file(file_path):
+    if not os.path.exists(file_path):
+        return
+
+    try:
+        with pd.ExcelFile(file_path, engine='openpyxl') as f:
+            if not f.sheet_names:
+                logger.warning(f"{file_path} 是空文件，正在重建")
+                os.remove(file_path)
+                pd.DataFrame().to_excel(file_path, index=False)
+    except Exception as e:
+        logger.warning(f"{file_path} 文件损坏，正在重建: {e}")
+        os.remove(file_path)
+        pd.DataFrame().to_excel(file_path, index=False)
 
 def read_operation_history(file_path):
     today = datetime.now().strftime('%Y%m%d')
@@ -28,11 +42,21 @@ def read_operation_history(file_path):
 def write_operation_history(file_path, new_df):
     today = datetime.now().strftime('%Y-%m-%d')
     mode = 'a' if os.path.exists(file_path) else 'w'
-    # 修改 write_operation_history 函数中的 ExcelWriter 初始化部分
-
     excel_writer_kwargs = {
         'engine': 'openpyxl'
     }
+
+    # 如果是追加模式且文件存在，检查是否有可见工作表
+    if mode == 'a':
+        try:
+            with pd.ExcelFile(file_path, engine='openpyxl') as f:
+                pass  # 确保可以打开文件
+        except ValueError as e:
+            if "Excel file format cannot be determined" in str(e):
+                logger.warning(f"{file_path} 格式无法识别，尝试创建新文件")
+                mode = 'w'  # 强制改为写入模式
+                os.remove(file_path)  # 删除无效文件
+                excel_writer_kwargs['mode'] = 'w'
 
     if mode == 'a':
         excel_writer_kwargs.update({
@@ -42,15 +66,31 @@ def write_operation_history(file_path, new_df):
     else:
         excel_writer_kwargs['mode'] = 'w'
 
-    with pd.ExcelWriter(file_path, **excel_writer_kwargs) as writer:
-        if os.path.exists(file_path) and today in pd.ExcelFile(file_path).sheet_names:
-            old_df = pd.read_excel(file_path, sheet_name=today)
-            updated_df = pd.concat([old_df, new_df], ignore_index=True).drop_duplicates(
-                subset=['标的名称', '操作', '时间'])
+    try:
+        with pd.ExcelWriter(file_path, **excel_writer_kwargs) as writer:
+            if mode == 'a' and today in pd.ExcelFile(file_path).sheet_names:
+                old_df = pd.read_excel(file_path, sheet_name=today)
+                updated_df = pd.concat([old_df, new_df], ignore_index=True).drop_duplicates(
+                    subset=['标的名称', '操作', '时间'])
+            else:
+                updated_df = new_df
+
+            updated_df.to_excel(writer, sheet_name=today, index=False)
+            logger.info("写入操作历史完成")
+
+    except IndexError as ie:
+        if "At least one sheet must be visible" in str(ie):
+            logger.warning(f"{file_path} 中没有可见的工作表，尝试重新创建文件...")
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+                new_df.to_excel(writer, sheet_name=today, index=False)
+            logger.info("成功重建操作记录文件并写入数据")
         else:
-            updated_df = new_df
-        updated_df.to_excel(writer, sheet_name=today, index=False)
-        logger.info("写入操作历史完成")
+            logger.error(f"写入 Excel 失败: {str(ie)}", exc_info=True)
+
+    except Exception as e:
+        logger.error(f"写入操作记录失败: {e}", exc_info=True)
 
 
 def process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file):
@@ -104,6 +144,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
                     '信息': info,
                     '时间': operate_time
                 }])
+                ensure_valid_excel_file(file_path)
                 write_operation_history(operation_history_file, new_record)
                 logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 

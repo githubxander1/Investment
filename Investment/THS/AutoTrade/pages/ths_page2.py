@@ -2,7 +2,9 @@
 import time
 from pydoc import classname
 
+import pandas as pd
 import uiautomator2
+from sympy.physics.units import volume
 from uiautomator2 import UiObjectNotFoundError
 
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
@@ -187,7 +189,7 @@ class THSPage:
         根据当前持仓和策略动态计算交易数量
         :param operation: '买入' 或 '卖出'
         :param new_ratio: 新仓位比例（可选）
-        :return: 交易股数
+        :return: tuple(success: bool, message: str, volume: int | None)
         """
         volume_max = 4000
 
@@ -206,32 +208,39 @@ class THSPage:
             if buy_available < volume_max:
                 volume_max = buy_available
 
-            volume = int(volume_max / real_price)  # 固定金额买入
+            volume = int(volume_max / real_price)
+            if volume < 100:
+                logger.info("交易数量不足100股")
+                return False  # 返回False表示交易失败
             logger.info(f"买入操作 - 实时价格: {real_price}, 数量: {volume}")
-            return volume
+            return True, '成功', volume
 
         elif operation == "卖出":
             holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
 
             if self._current_stock_name in holding_stock_df['标的名称'].values:
                 sale_available = int(holding_stock_df[holding_stock_df['标的名称'] == self._current_stock_name]['持仓/可用'].str.split('/').str[1].iloc[0])
-
+                if sale_available is None or sale_available == 0:
+                    logger.error("无法获取持仓数量")
+                    #退出，不继续下一步，直接退出
+                    return False
                 if new_ratio is not None and new_ratio != 0:
                     volume = int(sale_available * 0.5)  # 半仓卖出
                 else:
                     volume = sale_available  # 全部卖出
+
+                real_price = self._get_real_price()
+                logger.info(f"实时价格: {real_price}")
+                logger.info(f"卖出操作 - 数量: {volume} (共可用：{sale_available})")
+                return True, '成功', volume
             else:
                 logger.warning(f"{self._current_stock_name} 不在持仓列表中")
-                volume = 0
+                return False, '不在持仓列表', 0
 
-            real_price = self._get_real_price()
-            logger.info(f"实时价格: {real_price}")
-            logger.info(f"卖出操作 - 数量: {volume} (共可用：{sale_available})")
-            return volume
 
         else:
             logger.warning("未知操作类型")
-            return 0
+            return False, '未知操作类型',0
 
     def _get_real_price(self):
         """获取当前股票实时价格"""
@@ -389,16 +398,19 @@ class THSPage:
             self.buy_entry()
             self.search_stock(stock_name)
 
+            success, msg, calculate_volume = self._calculate_volume('买入')
+            if not success:
+                logger.warning(f"买入失败: {msg}")
+                return False, msg
+
             if volume is None:
-                volume = self._calculate_volume("买入")
+                volume = calculate_volume
                 logger.info(f"开始买入流程 {stock_name}  {volume}股")
             else:
                 logger.info(f"开始买入流程 {stock_name}  {volume}股")
 
             self.input_volume(int(volume))
             self.click_button_by_text('买 入')
-            # self.dialog_handle()
-            # time.sleep(1)
             success, info = self.dialog_handle()
             time.sleep(1)
             self.click_back()
@@ -407,36 +419,45 @@ class THSPage:
             logger.error(f"买入 {stock_name} {volume} 股失败: {e}", exc_info=True)
             return False, f"买入 {stock_name} {volume} 股失败: {e}"
 
-    def sell_stock(self, stock_name, volume='全仓'):
+    def sell_stock(self, stock_name, new_ratio=None):
         try:
             self._current_stock_name = stock_name
+
+            # 先检查持仓情况
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
+            holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
+
+            if holding_stock.empty:
+                logger.warning(f"{stock_name} 不在持仓列表中")
+                return False, f"{stock_name} 不在持仓列表中"
+
+            available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])
+            if available <= 0:
+                logger.warning(f"{stock_name} 可用数量为0，无法卖出")
+                return False, f"{stock_name} 可用数量为0，无法卖出"
+
+            # 根据 new_ratio 决定卖出数量
+            quantity = self._calculate_volume("卖出", new_ratio=new_ratio)
+            if not quantity:
+                return False, f"计算卖出数量失败"
+
+            logger.info(f"开始卖出流程 {stock_name} {quantity}股")
+
             self.click_trade_entry()
             self.sell_entry()
             self.search_stock(stock_name)
 
-            if volume == '全仓' or volume == '半仓':
-                self.total_volume()
-                # self.click_button_by_text('卖 出(模拟炒股)')
-                self.click_button_by_text('卖 出')
-                time.sleep(1)
-                success, info = self.dialog_handle()
-                time.sleep(1)
-                self.click_back()
-                return success, info
-            else:
-                self.input_volume(volume)
-                # self.click_button_by_text('卖 出(模拟炒股)')
-                self.click_button_by_text('卖 出')
-                self.confirm_transaction()
-                time.sleep(1)
-                success, info = self.handle_dialog()
-                time.sleep(1)
-                self.click_back()
-                return success, info
+            self.click_button_by_text('卖 出')
+            time.sleep(1)
+            success, info = self.dialog_handle()
+            time.sleep(1)
+            self.click_back()
+            return success, info
 
         except Exception as e:
-            logger.error(f"卖出 {stock_name} {volume} 股失败: {e}", exc_info=True)
-            return False, f"卖出 {stock_name} {volume} 股失败: {e}"
+            logger.error(f"卖出 {stock_name} 股失败: {e}", exc_info=True)
+            return False, f"卖出 {stock_name} 股失败: {e}"
+        #
 
 if __name__ == '__main__':
     d = uiautomator2.connect()
