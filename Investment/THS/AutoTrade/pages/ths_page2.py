@@ -209,6 +209,7 @@ class THSPage:
                 volume_max = buy_available
 
             volume = int(volume_max / real_price)
+            volume = (volume // 100) * 100
             if volume < 100:
                 logger.info("交易数量不足100股")
                 return False  # 返回False表示交易失败
@@ -228,6 +229,11 @@ class THSPage:
                     volume = int(sale_available * 0.5)  # 半仓卖出
                 else:
                     volume = sale_available  # 全部卖出
+
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    logger.warning(f"卖出数量小于100股，将不卖出")
+                    return False, '数量不足100',None
 
                 real_price = self._get_real_price()
                 logger.info(f"实时价格: {real_price}")
