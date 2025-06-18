@@ -90,8 +90,8 @@ def get_file_modification_times(file_paths):
 
 def check_files_modified(file_paths, last_modification_times):
     current_modification_times = get_file_modification_times(file_paths)
-    # print("当前修改时间:", current_modification_times)
-    # print("上次修改时间:", last_modification_times)
+    print("当前修改时间:", current_modification_times)
+    print("上次修改时间:", last_modification_times)
 
     for file_path in file_paths:
         if not os.path.exists(file_path):
@@ -102,6 +102,9 @@ def check_files_modified(file_paths, last_modification_times):
 
         if abs(current_time - last_time) > 1:  # 容忍1秒误差
             print(f"[变动] 检测到文件变动: {file_path}")
+            # 创建标志文件
+            with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
+                f.write('1')
             return True
     return False
 

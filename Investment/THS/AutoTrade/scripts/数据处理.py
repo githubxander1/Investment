@@ -10,20 +10,20 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
 
-def ensure_valid_excel_file(file_path):
-    if not os.path.exists(file_path):
-        return
-
-    try:
-        with pd.ExcelFile(file_path, engine='openpyxl') as f:
-            if not f.sheet_names:
-                logger.warning(f"{file_path} 是空文件，正在重建")
-                os.remove(file_path)
-                pd.DataFrame().to_excel(file_path, index=False)
-    except Exception as e:
-        logger.warning(f"{file_path} 文件损坏，正在重建: {e}")
-        os.remove(file_path)
-        pd.DataFrame().to_excel(file_path, index=False)
+# def ensure_valid_excel_file(file_path):
+#     if not os.path.exists(file_path):
+#         return
+#
+#     try:
+#         with open(file_path) as f:
+#             if not f.sheet_names:
+#                 logger.warning(f"{file_path} 是空文件，正在重建")
+#                 os.remove(file_path)
+#                 pd.DataFrame().to_csv(file_path, index=False)
+#     except Exception as e:
+#         logger.warning(f"{file_path} 文件损坏，正在重建: {e}")
+#         os.remove(file_path)
+#         pd.DataFrame().to_excel(file_path, index=False)
 
 def read_operation_history(file_path):
     today = datetime.now().strftime('%Y%m%d')
@@ -144,7 +144,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
                     '信息': info,
                     '时间': operate_time
                 }])
-                ensure_valid_excel_file(file_path)
+                # ensure_valid_excel_file(file_path)
                 write_operation_history(operation_history_file, new_record)
                 logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 

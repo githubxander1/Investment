@@ -4,10 +4,11 @@ from pydoc import classname
 
 import pandas as pd
 import uiautomator2
-from sympy.physics.units import volume
+# from sympy.physics.units import volume
 from uiautomator2 import UiObjectNotFoundError
 
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
+from Investment.THS.AutoTrade.scripts.账户持仓信息 import update_holding_info
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
@@ -205,16 +206,18 @@ class THSPage:
             real_price = self._get_real_price()
             logger.info(f"实时价格: {real_price}")
 
-            if buy_available < volume_max:
-                volume_max = buy_available
+            if buy_available < volume_max:# 如果可用金额小于4000，则使用可用金额
+                volume = int(buy_available / real_price)
+            else:
+                volume = int(volume_max / real_price)
 
-            volume = int(volume_max / real_price)
             volume = (volume // 100) * 100
             if volume < 100:
+                buy_failed_info = "交易数量不足100股"
                 logger.info("交易数量不足100股")
-                return False  # 返回False表示交易失败
+                return False, '失败', buy_failed_info  # 返回False表示交易失败
             logger.info(f"买入操作 - 实时价格: {real_price}, 数量: {volume}")
-            return True, '成功', volume
+            return True, '股数计算成功', volume
 
         elif operation == "卖出":
             holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
@@ -222,9 +225,9 @@ class THSPage:
             if self._current_stock_name in holding_stock_df['标的名称'].values:
                 sale_available = int(holding_stock_df[holding_stock_df['标的名称'] == self._current_stock_name]['持仓/可用'].str.split('/').str[1].iloc[0])
                 if sale_available is None or sale_available == 0:
-                    logger.error("无法获取持仓数量")
+                    logger.error("无持仓数量")
                     #退出，不继续下一步，直接退出
-                    return False
+                    return False, '失败', '无持仓数量'
                 if new_ratio is not None and new_ratio != 0:
                     volume = int(sale_available * 0.5)  # 半仓卖出
                 else:
@@ -233,7 +236,7 @@ class THSPage:
                 volume = (volume // 100) * 100
                 if volume < 100:
                     logger.warning(f"卖出数量小于100股，将不卖出")
-                    return False, '数量不足100',None
+                    return False, '失败', '卖出数量不足100'
 
                 real_price = self._get_real_price()
                 logger.info(f"实时价格: {real_price}")
@@ -307,18 +310,20 @@ class THSPage:
         if '委托买入确认' in dialog_title.get_text():
             logger.info("检测到'委托买入确认'提示")
             confirm_button.click()
+            confirm_button.click()
             logger.info("点击确认按钮")
-            if scroll_content_enougth.exists:
+            if scroll_content_enougth.exists:#可删除，逻辑已前置
                 error_info = scroll_content_enougth.get_text()
                 # if '买入最少100股' in scroll_content_enougth.get_text():
                 #     logger.info("检测到'买入最少100股'提示")
                 confirm_button_second.click()
+                # confirm_button.click()
+
                 logger.info("点击确认按钮")
                 # send_notification(f"买入失败，{error_info}")
                 logger.error(f"失败，{error_info}")
                 return False, f"失败，{error_info}"
 
-            logger.info("检测到'委托已提交'提示")
             logger.info("委托已提交")
             return True, "委托已提交"
 
@@ -418,7 +423,13 @@ class THSPage:
             self.input_volume(int(volume))
             self.click_button_by_text('买 入')
             success, info = self.dialog_handle()
-            time.sleep(1)
+            #点击持仓按钮(text='持仓‘），执行‘账户持仓信息.py’文件 '//*[@text="持仓"]
+            holding_button = self.d(className='android.widget.TextView', text='持仓')
+            refresh_button = self.d(resourceId="com.hexin.plat.android:id/refresh_img")
+            holding_button.click()
+            refresh_button.click()
+            update_holding_info()
+            # time.sleep(1)
             self.click_back()
             return success, info
         except Exception as e:
@@ -457,6 +468,13 @@ class THSPage:
             time.sleep(1)
             success, info = self.dialog_handle()
             time.sleep(1)
+            # 点击持仓按钮(text='持仓‘），执行‘账户持仓信息.py’文件 '//*[@text="持仓"]
+            holding_button = self.d(className='android.widget.TextView', text='持仓')
+            refresh_button = self.d(resourceId="com.hexin.plat.android:id/refresh_img")
+            holding_button.click()
+            refresh_button.click()
+            update_holding_info()
+
             self.click_back()
             return success, info
 
