@@ -135,7 +135,9 @@ async def Combination_main():
         return
 
     # 打印时去掉‘理由’列
+    # 去掉科创板和创业板的股票
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
+    all_today_trades_df_without_content = all_today_trades_df_without_content[~all_today_trades_df_without_content['市场'].str.contains('科创板|创业板')]
     print(all_today_trades_df_without_content)
 
     # 读取历史数据

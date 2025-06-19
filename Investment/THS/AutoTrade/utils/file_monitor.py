@@ -9,6 +9,17 @@ from watchdog.observers import Observer
 logger = setup_logger(file_monitor_file)
 
 class FileMonitor:
+    def __init__(self, file_paths):
+        self.file_paths = file_paths
+        self.last_hashes = {fp: get_file_hash(fp) for fp in file_paths}
+
+    def check(self):
+        modified, new_hashes = check_files_modified(self.file_paths, self.last_hashes)
+        if modified:
+            self.last_hashes = new_hashes
+        return modified
+
+class FileMonitor:
     def __init__(self, watched_files, callback):
         self.watched_files = watched_files
         self.callback = callback

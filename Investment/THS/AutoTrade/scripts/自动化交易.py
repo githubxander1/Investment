@@ -88,29 +88,63 @@ def get_file_modification_times(file_paths):
 
 
 
-def check_files_modified(file_paths, last_modification_times):
-    current_modification_times = get_file_modification_times(file_paths)
-    print("当前修改时间:", current_modification_times)
-    print("上次修改时间:", last_modification_times)
+# def check_files_modified(file_paths, last_modification_times):
+#     current_modification_times = get_file_modification_times(file_paths)
+#     print("当前修改时间:", current_modification_times)
+#     print("上次修改时间:", last_modification_times)
+#
+#     for file_path in file_paths:
+#         if not os.path.exists(file_path):
+#             continue
+#
+#         current_time = current_modification_times[file_path]
+#         last_time = last_modification_times.get(file_path, 0)
+#
+#         if abs(current_time - last_time) > 1:  # 容忍1秒误差
+#             print(f"[变动] 检测到文件变动: {file_path}")
+#             # 创建标志文件
+#             with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
+#                 f.write('1')
+#             return True
+#     return False
+import hashlib
+
+def get_file_hash(file_path):
+    """计算文件内容的MD5哈希值"""
+    if not os.path.exists(file_path):
+        return None
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+
+def check_files_modified(file_paths, last_hashes=None):
+    if last_hashes is None:
+        last_hashes = {}
+
+    current_hashes = {}
+    modified = False
 
     for file_path in file_paths:
-        if not os.path.exists(file_path):
-            continue
+        current_hash = get_file_hash(file_path)
+        current_hashes[file_path] = current_hash
 
-        current_time = current_modification_times[file_path]
-        last_time = last_modification_times.get(file_path, 0)
+        prev_hash = last_hashes.get(file_path)
+        if prev_hash is not None and current_hash != prev_hash:
+            print(f"[变动] 检测到文件内容变动: {file_path}")
+            modified = True
 
-        if abs(current_time - last_time) > 1:  # 容忍1秒误差
-            print(f"[变动] 检测到文件变动: {file_path}")
-            # 创建标志文件
-            with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
-                f.write('1')
-            return True
-    return False
+    return modified, current_hashes
 
 
+# 初始化历史哈希值
+last_hashes = None
 
 async def auto_main():
+    global last_hashes
+
     logger.info("自动化交易程序开始运行")
 
     file_paths = [
@@ -122,8 +156,9 @@ async def auto_main():
     operation_history_file = OPERATION_HISTORY_FILE
     flag_file = OPRATION_RECORD_DONE_FILE
 
-    # 获取初始文件修改时间
-    last_modification_times = get_file_modification_times(file_paths)
+    # 获取初始文件哈希值
+    if last_hashes is None:
+        last_hashes = {fp: get_file_hash(fp) for fp in file_paths}
 
     # 等待标志文件
     await wait_for_flag_file(flag_file)
@@ -136,8 +171,12 @@ async def auto_main():
 
     ths_page = THSPage(d)
 
-    # 检查文件是否更新
-    if check_files_modified(file_paths, last_modification_times):
+    # 增加等待时间，确保写入完成（可选）
+    time.sleep(2)
+
+    # 检查文件是否更新（基于内容哈希）
+    modified, new_hashes = check_files_modified(file_paths, last_hashes)
+    if modified:
         logger.info("检测到文件有更新，开始执行交易任务")
         process_excel_files(
             ths_page=ths_page,
@@ -146,7 +185,7 @@ async def auto_main():
             holding_stock_file=""
         )
         logger.info("文件处理完成")
-        last_modification_times.update(get_file_modification_times(file_paths))
+        last_hashes = new_hashes  # 更新哈希记录
     else:
         logger.info("未检测到文件更新，跳过处理")
 

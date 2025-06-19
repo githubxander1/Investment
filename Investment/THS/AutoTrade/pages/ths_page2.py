@@ -42,6 +42,16 @@ class THSPage:
         sell_entry.click()
         logger.info("点击卖出按钮")
 
+    def click_holding_stock(self):
+        holding_button = self.d(className='android.widget.TextView', text='持仓')
+        holding_button.click()
+        logger.info("点击持仓按钮")
+
+    def click_refresh_button(self):
+        refresh_button = self.d(resourceId='com.hexin.plat.android:id/refresh_button')
+        refresh_button.click()
+        logger.info("点击刷新按钮")
+
     def search_stock(self, stock_name):
         stock_search = self.d(resourceId='com.hexin.plat.android:id/content_stock')
         stock_search.click()
@@ -423,11 +433,11 @@ class THSPage:
             self.input_volume(int(volume))
             self.click_button_by_text('买 入')
             success, info = self.dialog_handle()
-            #点击持仓按钮(text='持仓‘），执行‘账户持仓信息.py’文件 '//*[@text="持仓"]
-            holding_button = self.d(className='android.widget.TextView', text='持仓')
-            refresh_button = self.d(resourceId="com.hexin.plat.android:id/refresh_img")
-            holding_button.click()
-            refresh_button.click()
+            self.click_holding_stock()
+            self.click_refresh_button()
+            # #点击持仓按钮(text='持仓‘），执行‘账户持仓信息.py’文件 '//*[@text="持仓"]
+            # refresh_button = self.d(resourceId="com.hexin.plat.android:id/refresh_img")
+            # refresh_button.click()
             update_holding_info()
             # time.sleep(1)
             self.click_back()
@@ -468,11 +478,8 @@ class THSPage:
             time.sleep(1)
             success, info = self.dialog_handle()
             time.sleep(1)
-            # 点击持仓按钮(text='持仓‘），执行‘账户持仓信息.py’文件 '//*[@text="持仓"]
-            holding_button = self.d(className='android.widget.TextView', text='持仓')
-            refresh_button = self.d(resourceId="com.hexin.plat.android:id/refresh_img")
-            holding_button.click()
-            refresh_button.click()
+            self.click_holding_stock()
+            self.click_refresh_button()
             update_holding_info()
 
             self.click_back()
