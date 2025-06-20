@@ -4,10 +4,12 @@ from pydoc import classname
 
 import pandas as pd
 import uiautomator2
+from sympy.physics.units import volume
 # from sympy.physics.units import volume
 from uiautomator2 import UiObjectNotFoundError
 
-from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
+from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file, \
+    send_notification
 from Investment.THS.AutoTrade.scripts.账户持仓信息 import update_holding_info
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
@@ -430,6 +432,7 @@ class THSPage:
             else:
                 logger.info(f"开始买入流程 {stock_name}  {volume}股")
 
+            send_notification(f"开始买入流程 {stock_name}  {volume}股")
             self.input_volume(int(volume))
             self.click_button_by_text('买 入')
             success, info = self.dialog_handle()
@@ -439,6 +442,7 @@ class THSPage:
             # refresh_button = self.d(resourceId="com.hexin.plat.android:id/refresh_img")
             # refresh_button.click()
             update_holding_info()
+            logger.info(f'买入 {stock_name} {volume} 股后更新持仓信息')
             # time.sleep(1)
             self.click_back()
             return success, info
@@ -470,6 +474,7 @@ class THSPage:
 
             logger.info(f"开始卖出流程 {stock_name} {quantity}股")
 
+            send_notification(f"开始卖出流程 {stock_name} {quantity}股")
             self.click_trade_entry()
             self.sell_entry()
             self.search_stock(stock_name)
@@ -481,6 +486,7 @@ class THSPage:
             self.click_holding_stock()
             self.click_refresh_button()
             update_holding_info()
+            logger.info(f'卖出 {stock_name} {volume} 股后更新持仓信息')
 
             self.click_back()
             return success, info

@@ -3,7 +3,11 @@ import pandas as pd
 import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file
+# from Investment.THS.AutoTrade.utils import logger
 
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+
+logger = setup_logger("get_account_info")  # 创建日志实例
 # 连接设备
 try:
     d = u2.connect()
@@ -201,7 +205,9 @@ def update_holding_info():
     # 保存到Excel文件
     with pd.ExcelWriter(Account_holding_stockes_info_file) as writer:
         header_df.to_excel(writer, index=False, sheet_name="表头数据")
+        logger.info('更新持仓 头部数据 成功')
         stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
+        logger.info('更新持仓 持仓数据 成功')
 
 if __name__ == '__main__':
     update_holding_info()
