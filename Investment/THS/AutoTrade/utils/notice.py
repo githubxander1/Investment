@@ -13,6 +13,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
 
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+
+logger = setup_logger("notification.log")
+
 report_url = 'http://localhost:8000/index.html'  # 使用实际运行的服务器地址和端口
 def run_server():
     # 从命令行参数获取报告URL和端口号
@@ -39,11 +43,14 @@ def send_dingtalk_notification():
                        f"{keyword}接口报告链接: {report_url}"
         }
     }
-    response = requests.post(dingtalk_webhook, json=message)
-    if response.status_code == 200:
-        print("钉钉消息发送成功")
-    else:
-        print(f"钉钉消息发送失败：{response.text}")
+    try:
+        response = requests.post(dingtalk_webhook, json=message)
+        if response.status_code == 200:
+            logger.info("钉钉消息发送成功")
+        else:
+            logger.error(f"钉钉消息发送失败：{response.text}")
+    except Exception as e:
+        logger.error(f"发送钉钉消息时发生异常：{e}")
 
 # 打包 Allure 报告成 ZIP 文件
 def zip_allure_report(source_path,target_zip):

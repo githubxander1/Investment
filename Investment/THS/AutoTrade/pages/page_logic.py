@@ -1,0 +1,309 @@
+# page_logic.py
+import pandas as pd
+import time
+
+from Investment.THS.AutoTrade.scripts.account_info import update_holding_info
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file, \
+    send_notification_log
+from Investment.THS.AutoTrade.utils.notification import send_notification
+
+logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
+
+class THSPage:
+    def __init__(self, d):
+        self.d = d
+        self.d.implicitly_wait(10)
+        self._current_stock_name = None  # 新增用于保存当前股票名称
+
+    def click_back(self):
+        click_back = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
+        click_back.click()
+        logger.info("点击返回按钮")
+
+    def click_trade_entry(self):
+        trade_entry = self.d(resourceId='com.hexin.plat.android:id/title', text='交易')
+        trade_entry.click()
+        logger.info("点击交易按钮")
+    def click_holding_stock_entry(self):
+        operate_entry = self.d(resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓')
+        operate_entry.click()
+        logger.info("点击持仓按钮")
+    def click_operate_entry(self,operation):
+        if operation == '买入':
+            buy_entry = self.d(resourceId='com.hexin.plat.android:id/menu_buy_text')
+            buy_entry.click()
+            logger.info("点击买入按钮")
+        elif operation == '卖出':
+            sale_entry = self.d(resourceId='com.hexin.plat.android:id/menu_sale_text')
+            sale_entry.click()
+            logger.info("点击卖出按钮")
+        else:
+            raise ValueError("Invalid operation")
+
+    def click_holding_stock_button(self):
+        holding_button = self.d(className='android.widget.TextView', text='持仓')
+        holding_button.click()
+        logger.info("点击持仓按钮")
+
+    def click_operate_button(self,operation):
+        operation_button = self.d(className='android.widget.TextView', text=operation)
+        operation_button.click()
+        logger.info(f'点击{operation}')
+
+    def click_refresh_button(self):
+        refresh_button = self.d(resourceId='com.hexin.plat.android:id/refresh_container')
+        refresh_button.click()
+        logger.info("点击刷新按钮")
+
+    def search_stock(self, stock_name):
+        stock_search = self.d(resourceId='com.hexin.plat.android:id/content_stock')
+        stock_search.click()
+        logger.info(f"点击股票搜索框")
+
+        auto_search = self.d(resourceId='com.hexin.plat.android:id/auto_stockcode', text='股票代码/简拼')
+        clear = self.d(resourceId='com.hexin.plat.android:id/clearable_edittext_btn_clear')
+        if clear.exists():
+            clear.click()
+            logger.info("清除股票代码")
+        time.sleep(1)
+
+        auto_search.send_keys(stock_name)
+        logger.info(f"输入股票名称: {stock_name}")
+        time.sleep(1)
+
+        # 如果clear按钮在，则点击匹配，如果找不到，则pass，继续下一步
+        if clear.exists():
+            recycler_view = self.d(resourceId='com.hexin.plat.android:id/recyclerView')
+            if recycler_view.exists:
+                first_item = recycler_view.child(index=0)
+                first_item.click()
+                logger.info("点击匹配的第一个股票")
+                time.sleep(1)
+            else:
+                logger.info("没有匹配到股票或已选中")
+        time.sleep(2)
+
+    def input_volume(self, volume):
+        volumn = self.d(className='android.widget.EditText')[2]
+        volumn.send_keys(volume)
+        logger.info(f"输入数量: {volume}手")
+
+    def half_volume(self):
+        volumn = self.d(resourceId='com.hexin.plat.android:id/tv_flashorder_cangwei', text='1/2仓')
+        volumn.click()
+        logger.info("输入数量: 半仓")
+
+    def total_volume(self):
+        volumn = self.d(resourceId='com.hexin.plat.android:id/tv_flashorder_cangwei', text='全仓')
+        volume = self.d(className='android.widget.EditText')[2]
+        # logger.info("获取买入数量")
+        if volume.get_text() != '0':
+            volumn.click()
+            logger.info("输入数量: 全仓")
+        else:
+            pass
+
+    # 输入数量后系统自动计算的价格
+    def get_price_by_volume(self):
+        price = self.d(resourceId='com.hexin.plat.android:id/couldbuy_volumn').get_text()
+        logger.info("获取价格: " + price)
+        return price
+
+    def click_button_by_operation(self, operation):
+        if operation == '买入':
+            operate_button = self.d(className='android.widget.TextView', text='买 入')
+        elif operation == '卖出':
+            operate_button = self.d(className='android.widget.TextView', text='卖 出')
+        else:
+            raise ValueError("Invalid operation")
+        operate_button.click()
+        logger.info(f"点击按钮: {operation}")
+
+    def _get_real_price(self):
+        """获取当前股票实时价格"""
+        for _ in range(3):  # 尝试3次
+            price = self.d(className='android.widget.EditText')[1].get_text()
+            try:
+                return float(price)
+            except ValueError:
+                logger.error("无法解析价格文本")
+                return None
+        raise ValueError("无法获取实时价格")
+
+    def _calculate_volume(self, operation: str, new_ratio: float = None):
+        """
+        根据当前持仓和策略动态计算交易数量
+        :param operation: '买入' 或 '卖出'
+        :param new_ratio: 新仓位比例（可选）
+        :return: tuple(success: bool, message: str, volume: int | None)
+        """
+        volume_max = 4000
+
+        logger.info('开始计算交易数量....')
+        if operation == "买入":
+            '''
+            最大买入4000元
+            如果可用金额小于4000，买入数量= 可用金额 / 实时价格
+            如果可用金额大于4000，买入数量= 4000 / 实时价格
+            '''
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据", thousands=',')
+
+            buy_available = float(holding_stock_df['可用'].iloc[0])
+            time.sleep(1)
+            real_price = self._get_real_price()
+            # logger.info(f"可用金额: {buy_available}")
+            logger.info(f"可用金额: {buy_available}, 实时价格: {real_price}")
+
+            if buy_available < volume_max:# 如果可用金额小于4000，则使用可用金额
+                volume = int(buy_available / real_price)
+            else:
+                volume = int(volume_max / real_price)
+
+            volume = (volume // 100) * 100
+            if volume < 100:
+                warning_info = f'数量不足100股'
+                logger.warning(f"{warning_info}")
+                return False, warning_info, "交易数量不足100股"  # 返回False表示交易失败
+            else:
+                logger.info(f"可用金额: {buy_available}, 实时价格: {real_price}, 可操作数量: {volume}")
+                return True, '数量计算成功', volume
+
+        elif operation == "卖出":
+            '''
+            先判断是否持仓
+            最大卖出：已持仓数
+            如果最新比例为0，则卖出全仓
+            如果最细比例不为0，则卖出半仓
+            '''
+            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
+
+            if self._current_stock_name in holding_stock_df['标的名称'].values:
+                sale_available = int(holding_stock_df[holding_stock_df['标的名称'] == self._current_stock_name]['持仓/可用'].str.split('/').str[1].iloc[0])
+                if sale_available is None or sale_available == 0:
+                    warning_info = '无可用数量'
+                    logger.warning(warning_info)
+                    #退出，不继续下一步，直接退出
+                    return False, warning_info, '无可用数量'
+                if new_ratio is not None and new_ratio != 0:
+                    volume = int(sale_available * 0.5)  # 半仓卖出
+                else:
+                    volume = sale_available  # 全部卖出
+
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    warning_info = f'数量小于100股'
+                    logger.warning(warning_info)
+                    return False, warning_info, '卖出数量不足100股'
+                else:
+                    logger.info(f"可操作数量: {volume} (共可用：{sale_available})")
+                    return True, '数量计算成功', volume
+            else:
+                warning_info = '不在持仓列表中'
+                logger.warning(f"计算数量错误：{warning_info} ")
+                return False, warning_info, '未持仓'
+
+        else:
+            logger.warning("未知操作类型")
+            return False, '失败', '未知操作'
+
+    def dialog_handle(self):
+        """处理交易后的各种弹窗情况"""
+        logger.info("开始处理弹窗")
+        #弹窗标题里有：委托买入确认
+        submit_success= self.d.xpath('//*[contains(@text,"委托已提交")]')
+        transfer_funds= self.d.xpath('//*[contains(@text,"转入资金")]')
+
+        dialog_title= self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+        prompt_content= self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+        scroll_content= self.d(className='//android.widget.TextView)[3]')  # 可用资金不足是[3]
+        # scroll_content_enougth= self.d(className='//android.widget.TextView)')  # 可用资金不足是[3]
+        # scroll_content_enougth= self.d.xpath('//*[@text="委托数量不符合交易规则。 A股最少买入100股，买入数量为100及其整数倍； '
+        #                                      '可转债最少买入10张，买入数量为10及其整数倍； 可转债以外的债券最少买入1000张，买入数量为1000及其整数倍； '
+        #                                      '科创板最少买入200股，后续买入允许1股增加，即201股下单；更多疑问请客服咨询委托数量。"]')
+        # confirm_button= self.d.xpath('//*[@resource-id="com.hexin.plat.android:id/ok_btn"]')
+        confirm_button= self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+        confirm_button_second= self.d(resourceId="com.hexin.plat.android:id/left_btn")
+
+        # 处理成功提交的情况
+        if '委托买入确认' or '委托卖出确认' in dialog_title.get_text():
+            logger.info("检测到'委托确认'提示")
+            confirm_button.click()
+            logger.info("点击确认按钮")
+            #逻辑待优化，处理当前时间不允许委托,买入不足100
+            warning_info = '当前时间不允许委托'
+            if warning_info in prompt_content.get_text():
+                logger.warning(warning_info)
+                confirm_button.click()
+                return False, warning_info
+            else:
+                confirm_button.click()
+                logger.info("委托已提交")
+            return True, "委托已提交"
+
+        else:
+            if prompt_content.exists:
+                error_info = prompt_content.get_text()
+                confirm_button.click()
+            elif scroll_content.exists:
+                error_info = scroll_content.get_text()
+                confirm_button.click()
+            else:
+                error_info = "未知错误"
+                # confirm_button.click()
+
+            return False, f"{error_info}"
+    def update_holding_info(self):
+        # self.click_holding_button()
+        self.click_refresh_button()
+        time.sleep(0.5)
+        update_holding_info()
+        logger.info("更新持仓信息")
+
+    def operate_stock(self,operation, stock_name, volume=None):
+        try:
+            '''交易-持仓(初始化)-买卖操作'''
+            self._current_stock_name = stock_name
+            #点击交易入口
+            self.click_trade_entry()
+            #点击买/卖按钮
+            self.click_operate_entry(operation)
+            #更新持仓数据
+            # 点击持仓按钮
+            self.click_holding_stock_button()
+            # 更新持仓数据
+            self.update_holding_info()
+            # 点击买/卖操作按钮
+            self.click_operate_button(operation)
+            # 搜索股票
+            self.search_stock(stock_name)
+
+            # 计算交易数量
+            success, msg, calculate_volume = self._calculate_volume(operation)
+            if not success:
+                logger.warning(f"{operation} {stock_name} 失败: {msg}")
+                return False, msg
+
+            # 交易开始，发送通知
+            send_notification(f"开始 {operation} 流程 {stock_name}  {volume}股")
+            # 输入交易数量
+            self.input_volume(int(volume))
+            # 点击交易按钮
+            self.click_button_by_operation(operation)
+            success, info = self.dialog_handle()
+            # 发送交易结果通知
+            logger.info(f"{operation} {stock_name}  {volume}股")
+            send_notification(f"{operation} {stock_name}  {volume}股 {success} {info}")
+            # 点击返回
+            self.click_back()
+            return success, info
+        except Exception as e:
+            logger.error(f"{operation} {stock_name} {volume} 股失败: {e}", exc_info=True)
+            return False, f"{operation} {stock_name} {volume} 股失败: {e}"
+
+if __name__ == '__main__':
+    d = uiautomator2.connect()
+    pom = THSPage(d)
+    pom.get_price_by_volume()
+#     # pom.sell_stock('中国电信','半仓')
+#     pom.sell_stock('英维克','半仓')

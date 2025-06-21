@@ -1,8 +1,8 @@
-# 账户持仓信息.py
+# account_info.py
 import pandas as pd
 import uiautomator2 as u2
 
-from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file
+from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file, account_xml_file
 # from Investment.THS.AutoTrade.utils import logger
 
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -11,17 +11,13 @@ logger = setup_logger("get_account_info")  # 创建日志实例
 # 连接设备
 try:
     d = u2.connect()
-    # 保存xml文件
-    ui_xml = d.dump_hierarchy(pretty=True)
-    with open('account_ui_xml.xml', 'w', encoding='utf-8') as f:
-        f.write(ui_xml)
+    # # 保存xml文件
+    # ui_xml = d.dump_hierarchy(pretty=True)
+    # with open(account_xml_file, 'w', encoding='utf-8') as f:
+    #     f.write(ui_xml)
 except Exception as e:
     print(f"连接设备失败: {e}")
     exit(1)
-
-# 获取UI层次结构
-# tree = d.dump_hierarchy()
-# print(tree)
 
 # 定义一个函数来查找特定resource-id的节点
 def find_node_by_resource_id(resource_id):
@@ -164,7 +160,7 @@ def extract_stock_info():
 
             # 检查“查看已清仓股票”按钮是否存在
             if qingcang.exists:
-                print("找到“查看已清仓股票”按钮，停止滑动")
+                # print("找到“查看已清仓股票”按钮，停止滑动")
                 break
 
             # 执行下滑操作，从屏幕底部滑动到顶部
@@ -191,23 +187,25 @@ def update_holding_info():
     # 提取表头信息
     header_info = extract_header_info()
     header_df = pd.DataFrame([header_info])
-    print("表头信息:")
-    print(header_df)
+    # print("表头信息:")
+    # print(header_df)
 
     # 提取股票信息
     stocks = extract_stock_info()
 
     # 打印当前股票列表
     stocks_df = pd.DataFrame(stocks)
-    print("当前股票列表:")
-    print(stocks_df)
+    # print("当前股票列表:")
+    # print(stocks_df)
 
     # 保存到Excel文件
     with pd.ExcelWriter(Account_holding_stockes_info_file) as writer:
-        header_df.to_excel(writer, index=False, sheet_name="表头数据")
-        logger.info('更新持仓 头部数据 成功')
-        stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
-        logger.info('更新持仓 持仓数据 成功')
+        try:
+            header_df.to_excel(writer, index=False, sheet_name="表头数据")
+            stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
+            logger.info(f'更新账户数据成功 {Account_holding_stockes_info_file}')
+        except Exception as e:
+            logger.error(f"更新账户数据失败: {e}")
 
 if __name__ == '__main__':
     update_holding_info()

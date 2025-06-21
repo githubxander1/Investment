@@ -2,6 +2,8 @@
 import pandas as pd
 
 # from Investment.THS.AutoTrade.utils.common_config import EXPECTED_COLUMNS
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+# logger = setup_logger('')
 
 
 # from common_config import EXPECTED_COLUMNS
@@ -82,24 +84,29 @@ def get_new_records(current_df, history_df):
     # 筛选新记录
     new_mask = ~current_df['_id'].isin(history_df['_id'])
     new_data = current_df[new_mask].copy()
-    print(f'新增记录：{new_data}')
+    if not new_data.empty:
+        new_data = standardize_dataframe(new_data)
+        from Investment.THS.AutoTrade.scripts.auto_trade_on_ths import logger
+        logger.info(f'新增记录：{new_data}')
+    # print(f'新增记录：{new_data}')
 
     return new_data.drop(columns=['_id'], errors='ignore') if not new_data.empty else new_data
 
 
 def standardize_dataframe(df):
-    """标准化DataFrame格式"""
-    # 列对齐
-    # df = df.reindex(columns=EXPECTED_COLUMNS, fill_value=None)
+    """标准化数据格式"""
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("输入必须是 pandas DataFrame")
 
-    # 格式标准化
-    if not df.empty:
-        # 清理代码字段
-        df['代码'] = df['代码'].astype(str).str.zfill(6)
+    # 使用 .loc 避免 SettingWithCopyWarning
+    df = df.copy()  # 创建副本以避免修改原始数据
 
-        # 清理时间字段
-        df['时间'] = df['时间'].astype(str).apply(normalize_time)
-        df['时间'] = df['时间'].replace('nan', '').replace('', None)
+    # if '代码' in df.columns:
+        # 先转为字符串，确保 zfill 操作不会触发类型警告
+        # df.loc[:, '代码'] = df['代码'].astype(str).str.zfill(6)
+
+    if '时间' in df.columns:
+        df.loc[:, '时间'] = df['时间'].astype(str).apply(normalize_time)
+        df.loc[:, '时间'] = df['时间'].replace('nan', '').replace('', None)
 
     return df
-

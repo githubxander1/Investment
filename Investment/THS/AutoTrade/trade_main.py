@@ -1,29 +1,27 @@
-# D:\Xander\PycharmProject\z_others\Investment\THS\AutoTrade\trade_main.py
+# trade_main.py
 import asyncio
 import sys
 import os
 import datetime
 from datetime import time as dt_time
-# from plogger import plogger
-from typing import Dict, Tuple
-
 
 from pathlib import Path
+
+from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash, check_files_modified_by_hash
+
+# 添加项目根目录到系统路径
 sys.path.append(Path(__file__).parent.as_posix())
 sys.path.append(Path(__file__).parent.parent.as_posix())
 sys.path.append(Path(__file__).parent.parent.parent.as_posix())
-# logger(sys.path)
 
-from Investment.THS.AutoTrade.config.settings import \
-    Strategy_portfolio_today, Combination_portfolio_today
-from Investment.THS.AutoTrade.utils.excel_handler import clear_csv
-
-# 模块导入 ========================================================
-from Investment.THS.AutoTrade.scripts.组合.Combination_portfolio_today import Combination_main
-from Investment.THS.AutoTrade.scripts.策略.Strategy_portfolio_today import strategy_main
+# 导入配置和工具
+from Investment.THS.AutoTrade.config.settings import Strategy_portfolio_today, Combination_portfolio_today, \
+    OPERATION_HISTORY_FILE
+from Investment.THS.AutoTrade.scripts.Combination_portfolio_today import Combination_main
+from Investment.THS.AutoTrade.scripts.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.utils.scheduler import Scheduler
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.scripts.自动化交易 import auto_main
+from Investment.THS.AutoTrade.scripts.auto_trade_on_ths import auto_main
 
 # 路径初始化 ======================================================
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,9 +39,9 @@ else:
 current_file_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = setup_logger(f"{current_file_name}.log")
 
-# 调度器配置 ======================================================
-SCHEDULE_CONFIG: Dict[str, Tuple[float, Tuple[int, int], Tuple[int, int]]] = {
-    "strategy": (1, (9, 29), (9, 33)),
+# 调度器配置
+SCHEDULE_CONFIG: dict[str, tuple[float, tuple[int, int], tuple[int, int]]] = {
+    "strategy": (1, (9, 29), (23, 33)),
     "etf_combo": (1, (9, 15), (23, 00)),
     "automation": (1, (9, 15), (23, 10))
 }
@@ -64,34 +62,32 @@ def create_scheduler(name: str, config: tuple, callback) -> Scheduler:
 # 任务包装器 ======================================================
 async def strategy_wrapper():
     """策略任务执行包装"""
-    if not strategy_main:
-        logger.warning("策略模块加载失败: strategy_main 为 None")
-        return
-
-    logger.info("[策略任务] 开始执行...")
     try:
-        await strategy_main()
-        next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
-        logger.info(f"\n[策略组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
-        print("--------------------------------------------------------------")
+        logger.info("[策略] 开始执行...")
+        result = await Strategy_main()
+        logger.info("[策略] 执行完成")
+        return result
     except Exception as e:
         logger.warning(f"[策略任务] 执行异常: {e}")
+        return False
+
 
 async def combination_wrapper():
     """组合任务执行包装"""
-    logger.info("\n[组合] 开始执行...")
     try:
-        await Combination_main()
-        next_run = datetime.datetime.now() + datetime.timedelta(seconds=60)
-        logger.info(f"\n[组合] 执行完成，下一次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
-        print("----------------------------------------------------")
+        logger.info("[组合] 开始执行...")
+        result = await Combination_main()
+        logger.info("[组合] 执行完成")
+        return result
     except Exception as e:
         logger.error(f"[组合] 执行异常: {e}")
+        return False
+
 
 async def automation_wrapper():
     """自动化交易执行包装"""
-    logger.info("\n[自动化交易] 开始执行...")
     try:
+        logger.info("[自动化交易] 开始执行...")
         await auto_main()
         logger.info("[自动化交易] 执行完成")
     except Exception as e:
@@ -99,35 +95,76 @@ async def automation_wrapper():
 
 # 主程序 =========================================================
 async def main():
-    """调度器主程序"""
+    """主程序：持续监听文件变化并调度任务"""
     try:
         # 初始化调度器
-        schedulers = [
-            create_scheduler(
-                name="策略调度",
-                config=SCHEDULE_CONFIG["strategy"],
-                callback=strategy_wrapper
-            ),
-            create_scheduler(
-                name="组合调度",
-                config=SCHEDULE_CONFIG["etf_combo"],
-                callback=combination_wrapper
-            ),
-            create_scheduler(
-                name='自动化交易',
-                config=SCHEDULE_CONFIG['automation'],
-                callback=automation_wrapper
-            )
+        portfolio_tasks = [
+            create_scheduler("策略调度", SCHEDULE_CONFIG["strategy"], strategy_wrapper),
+            create_scheduler("组合调度", SCHEDULE_CONFIG["etf_combo"], combination_wrapper),
         ]
 
-        # 启动所有调度任务
-        await asyncio.gather(
-            *(scheduler.start() for scheduler in schedulers)
-        )
+        auto_trade_tasks = [
+            create_scheduler("自动化交易", SCHEDULE_CONFIG["automation"], automation_wrapper),
+        ]
+
+        # 获取初始文件哈希
+        file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
+        last_hashes = [get_file_hash(fp) for fp in file_paths]
+        last_mod_times = {fp: os.path.getmtime(fp) for fp in file_paths}
+        logger.info(f"初始文件hash值: {last_hashes}")
+
+        while True:
+            now = datetime.datetime.now().time()
+
+            # 判断当前时间是否在交易时间段内
+            if not (dt_time(9, 0) <= now <= dt_time(23, 0)):
+                logger.info("当前不在交易时间段内，暂停监听...")
+                if dt_time(15, 30) <= now <= dt_time(23, 0):
+                    logger.info("下午3点已到，程序将自动退出。")
+                    break
+                await asyncio.sleep(60)
+                continue
+
+            # 只在 9:30 - 9:33 执行策略调度
+            if dt_time(9, 30) <= now <= dt_time(23, 33):
+                # await asyncio.gather(*(s.start() for s in portfolio[:1]))  # 只运行策略调度
+            # elif dt_time(9, 30) <= now <= dt_time(23, 33):
+                # 其他时间运行组合调度和自动化交易
+                # await asyncio.gather(
+                #     *(s.start() for s in portfolio),
+                    # *(s.start() for s in portfolio[1:]),
+                    # *(s.start() for s in auto_trade[1:])
+                # )
+                # 启动策略和组合任务（并行）
+                strategy_task = asyncio.create_task(strategy_wrapper())
+                combo_task = asyncio.create_task(combination_wrapper())
+                # strategy_updated = await Strategy_main()
+                # combo_updated = await Combination_main()
+
+                # 获取返回值
+                strategy_updated = await strategy_task
+                combo_updated = await combo_task
+
+                # 如果有新数据，启动自动化交易
+                if strategy_updated or combo_updated:
+                    logger.info("检测到策略或组合更新，准备启动自动化交易")
+                    await asyncio.gather(*(s.start() for s in auto_trade_tasks))
+
+                # # 检查文件是否有变更（作为备用触发机制）
+                # modified, new_hashes = check_files_modified_by_hash(file_paths, last_hashes)
+                # if modified:
+                #     logger.warning('[文件更新] 检测到文件有更新，开始执行交易任务')
+                #     await asyncio.gather(*(s.start() for s in auto_trade_tasks))
+                #     last_hashes = new_hashes
+                # else:
+                #     logger.info("[文件监控] 文件未发生改变，跳过处理")
+
+                await asyncio.sleep(60)  # 每分钟检查一次
 
     except Exception as e:
         logger.error(f"主程序异常终止: {str(e)}", exc_info=True)
         raise
+
 
 if __name__ == "__main__":
     try:
@@ -139,12 +176,11 @@ if __name__ == "__main__":
         # now_time = datetime.datetime.now()
         if now_time.hour == 15 and now_time.minute >= 30:
             logger.info("当前时间是下午3点，程序将自动退出。")
-            # clear_sheet(Combination_portfolio_today, '所有今天调仓')  # 清空昨天的数据
-            # clear_sheet(Strategy_portfolio_today, '策略今天调仓')  # 清空昨天的数据
+            from Investment.THS.AutoTrade.utils.excel_handler import clear_csv
             clear_csv(Strategy_portfolio_today)
             clear_csv(Combination_portfolio_today)
-
             sys.exit(0)
+
     except KeyboardInterrupt:
         logger.warning("用户主动终止程序")
     except Exception as e:

@@ -11,13 +11,15 @@ import requests
 from dotenv import load_dotenv
 from plyer import notification
 
-from Investment.THS.AutoTrade.utils import logger
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+# from Investment.THS.AutoTrade2.utils.logger import setup_logger
 
 # 加载 .venv 文件
 load_dotenv()
 
 # 设置日志记录
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
+logger = setup_logger('今日交易通知.log')
 
 def send_notification(message):
     if len(message) > 256:
@@ -31,7 +33,7 @@ def send_notification(message):
 
     # 新增钉钉通知
     send_dingtalk_notification(message)
-    logging.info(f'交易通知: {message}')
+    logger.warning(f'交易通知: {message}')
 
 def send_http_request(url, data):
     response = requests.post(url, json=data)

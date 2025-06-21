@@ -10,6 +10,7 @@ from fake_useragent import UserAgent
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids, OPRATION_RECORD_DONE_FILE
 from Investment.THS.AutoTrade.utils.determine_market import determine_market
+from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, clear_csv
@@ -25,7 +26,10 @@ async def get_latest_position_and_trade(strategy_id):
     headers = {"User-Agent": ua.random}
 
     try:
-        data = requests.get(url, headers=headers, timeout=10).json()
+        data = requests.get(url, headers=headers, timeout=10)
+        data.raise_for_status()
+        data = data.json()
+        logger.info(f"策略id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} 获取数据成功")
         # pprint(data)
     except requests.RequestException as e:
         print(f"请求失败 (Strategy ID: {strategy_id}): {e}")
@@ -36,12 +40,14 @@ async def get_latest_position_and_trade(strategy_id):
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
-    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    # 昨天
+    today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
     # print(today)
 
     result = []
     for trade_info in trade_stocks:
-        code = trade_info.get('stkCode', 'N/A').split('.')[0].zfill(6)
+        code = str(trade_info.get('stkCode', 'N/A').split('.')[0].zfill(6))
         name = trade_info.get('stkName', 'N/A')
         operation = '买入' if trade_info.get('operationType', 'N/A') == 'BUY' else '卖出'
         price = trade_info.get('tradePrice', 'N/A')
@@ -66,7 +72,7 @@ async def get_latest_position_and_trade(strategy_id):
     return result
 
 
-async def strategy_main():
+async def Strategy_main():
     all_today_trades = []
     for strategy_id in Strategy_ids:
         trades = await get_latest_position_and_trade(strategy_id)
@@ -84,7 +90,7 @@ async def strategy_main():
             all_today_trades_df.index + 1
         )  # 从1开始
     else:
-        print("⚠️ 当前无今日交易数据")
+        print("⚠️ 今日无交易数据")
         return
 
     # 标准化时间字段
@@ -93,7 +99,7 @@ async def strategy_main():
     # 过滤掉创业板、科创板股票的交易信息
     all_today_trades_df_without_sc = all_today_trades_df[all_today_trades_df['市场'].isin(['创业板', '科创板']) == False]
     # all_trades_df = [~(all_trades_df[all_trades_df['市场'].isin(['创业板', '科创板'])]
-    print(all_today_trades_df_without_sc)
+    logger.info(f'今日交易数据：\n{all_today_trades_df_without_sc}')
 
     # # 排序
     # all_trades_df = all_trades_df.sort_values(by='时间', ascending=False).reset_index(drop=True)
@@ -106,9 +112,9 @@ async def strategy_main():
     try:
         existing_data = pd.read_csv(existing_data_file)
         # 强制清理异常值
-        existing_data['代码'] = existing_data['代码'].astype(str).str.zfill(6)
-        existing_data['时间'] = existing_data['时间'].astype(str).apply(normalize_time)
-        existing_data = existing_data[existing_data['时间'].notna() & (existing_data['时间'] != '')]
+        # existing_data['代码'] = existing_data['代码'].astype(str).str.zfill(6)
+        # existing_data['时间'] = existing_data['时间'].astype(str).apply(normalize_time)
+        # existing_data = existing_data[existing_data['时间'].notna() & (existing_data['时间'] != '')]
     except (FileNotFoundError, pd.errors.EmptyDataError):
         existing_data = pd.DataFrame(columns=expected_columns)
         existing_data.to_csv(existing_data_file, index=False)
@@ -125,26 +131,27 @@ async def strategy_main():
 
     # 保存新增数据并通知
     if not new_data.empty:
-        with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
-            f.write('1')
-
-
+        # with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
+        #     f.write('1')
         # 打印并保存新增数据
         # new_data_without_sc = new_data.drop(columns=['理由'], errors='ignore')
-        print(f'发现{len(new_data)}条新增策略调仓:')
         # print(new_data_without_sc)
 
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
+        # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
+        # update_file_status(existing_data_file)
 
         # 发送通知
         new_data_print_without_header = all_today_trades_df_without_sc.to_string(index=False)
         send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
+        return True# 添加这一行：更新文件状态
     else:
-        print("今日无新增策略调仓")
+        print("---------------策略 无新增交易数据----------------")
+        return False
 
 
 
 if __name__ == '__main__':
     import asyncio
-    asyncio.run(strategy_main())
+    asyncio.run(Strategy_main())

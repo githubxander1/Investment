@@ -1,4 +1,9 @@
 import os
+import logging
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+
+# 使用 setup_logger 获取统一的 logger 实例
+logger = setup_logger("etf_relocation_holding.log")
 
 import pandas as pd
 import requests
@@ -9,40 +14,21 @@ from Investment.THS.AutoTrade.config.settings import ETF_ids_to_name, \
 
 
 def send_request(id):
-    url = 'https://t.10jqka.com.cn/portfolio/base/showRelocateData'
-    params = {
-        'portfolioId': id
-    }
-    headers = Combination_headers
-    # headers = {
-    #     'Host': '估值.py.10jqka.com.cn',
-    #     'Connection': 'keep-alive',
-    #     'Accept': 'application/json, text/plain, */*',
-    #     'User-Agent': 'Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.19.03 (Royal Flush) hxtheme/1 innerversion/G037.08.990.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0',
-    #     'Content-Type': 'application/x-www-form-urlencoded',
-    #     'X-Requested-With': 'com.hexin.plat.android',
-    #     'Sec-Fetch-Site': 'same-origin',
-    #     'Sec-Fetch-Mode': 'cors',
-    #     'Sec-Fetch-Dest': 'empty',
-    #     'Referer': 'https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=29617',
-    #     'Accept-Encoding': 'gzip, deflate',
-    #     'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-    #     "Cookie": 'userid=641926488; u_name=mo_641926488; escapename=mo_641926488; user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQwNzA2ODQ0Ojo6MTY1ODE0Mjc4MDo2MDQ4MDA6MDoxOTMwZmRiNzY5ZDZlMTk5MjQxY2RhZWVkYThiYWJjMDk6OjA%3D; ticket=1cac108f03adacab2cb19bf208226df5; IFUserCookieKey={"escapename":"mo_641926488","userid":"641926488"}; hxmPid=seq_666442234; v=A6RhQNdFn9G32-ud_WqRL5OFd6mWPcinimFc677FMG8yaUuT5k2YN9pxLGoN'
-    #
-    # }
-
+    # 示例请求逻辑，需根据实际接口实现
+    url = "https://api.example.com/data"
     try:
-        response = requests.get(url, params=params, headers=headers)
+        response = requests.get(url, params={"id": id})
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
-        print(f"请求出错: {e}")
-        return None
+        logger.error(f"请求失败 (ID: {id}): {e}")
+        return {}
+
 
 def extract_result(data, id):
     result = data.get('result', {})
     if not result:
-        print(f"ID: {id} 无有效结果数据")
+        logger.warning(f"ID: {id} 无有效结果数据")
         return None, None, None
 
     # 安全获取嵌套数据
@@ -53,7 +39,7 @@ def extract_result(data, id):
     holding_count = result.get('holdingCount', 0)
     if holding_count is None:
         holding_count = 0
-    print(f"{Combination_ids_to_name.get(id, ETF_ids_to_name.get(id, '未知ETF'))} 的持仓数量为: {holding_count}")
+    logger.info(f"{Combination_ids_to_name.get(id, ETF_ids_to_name.get(id, '未知ETF'))} 的持仓数量为: {holding_count}")
 
     # 处理调仓信息
     relocate_Info = []
@@ -111,7 +97,7 @@ def save_results_to_xlsx(relocation_data, holding_data, filename):
         if combo_holding:
             pd.DataFrame(combo_holding).to_excel(writer, sheet_name='组合持仓', index=False)
 
-    print(f"数据已分类保存至 {filename}")
+    logger.info(f"数据已分类保存至 {filename}")
 
 def main():
     all_relocation_data = []
@@ -121,7 +107,7 @@ def main():
         result = send_request(id)
         # pprint(result)
         if not result or not result.get('result'):
-            print(f"ID {id} 返回无效数据")
+            logger.warning(f"ID {id} 返回无效数据")
             continue  # 跳过无效数据
 
         try:
@@ -136,7 +122,7 @@ def main():
                 all_holding_data.extend(relocation_data)
                 # pprint(all_holding_data)
         except Exception as e:
-            print(f"处理ID {id} 时发生异常: {str(e)}")
+            logger.error(f"处理ID {id} 时发生异常: {str(e)}")
             continue
 
     df = pd.DataFrame(all_holding_data)

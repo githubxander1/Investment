@@ -323,7 +323,7 @@ def main():
     #     # 过滤掉创业板的调仓信息
     #     # today_trade_df_filtered = today_trade_df[~today_trade_df['股票代码'].str.startswith('300')]
     #     pprint(today_trade_df_print)
-    #     send_notification("今日调仓提醒", "发现今日有新的调仓操作！组合")
+    #     send_notification_log("今日调仓提醒", "发现今日有新的调仓操作！组合")
     # else:
     #     logging.info("没有今天的调仓数据可供打印")
 

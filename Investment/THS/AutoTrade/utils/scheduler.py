@@ -1,5 +1,6 @@
 # D:\Xander\PycharmProject\z_others\Investment\THS\AutoTrade\utils\scheduler.py
 import asyncio
+# import datetime, time as dt_time, time_delta
 from datetime import datetime, time as dt_time, timedelta
 from pprint import pprint
 
@@ -44,24 +45,10 @@ class Scheduler:
         except Exception as e:
             logger.error(f"任务执行异常: {str(e)}", exc_info=True)
 
-    # async def _calculate_next_run(self) -> datetime:
-    #     """计算下一次运行时间"""
-    #     now = datetime.now()
-    #     start_datetime = datetime(now.year, now.month, now.day, self.start_time.hour, self.start_time.minute, self.start_time.second)
-    #
-    #     # 如果当前时间已经过了开始时间，则从下一个间隔开始计算
-    #     if now.time() > self.start_time:
-    #         start_datetime += timedelta(minutes=self.interval)
-    #
-    #     # 确保下一次运行时间在调度时段内
-    #     while start_datetime.time() < self.start_time or start_datetime.time() > self.end_time:
-    #         start_datetime += timedelta(minutes=self.interval)
-    #
-    #     return start_datetime
-
     async def start(self):
         """启动调度器核心逻辑"""
-        pprint(f"调度器启动 | 时间窗口: {self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}")
+        print('\n')
+        logger.info(f"调度器启动 | 时间窗口: {self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}")
 
         while not self._shutdown.is_set():
             if self._within_time_window():
