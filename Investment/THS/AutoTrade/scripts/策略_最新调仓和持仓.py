@@ -10,7 +10,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("strategy_fetch.log", encoding="utf-8"),
+        logging.FileHandler("../../new/策略/strategy_fetch.log", encoding="utf-8"),
         logging.StreamHandler()
     ]
 )

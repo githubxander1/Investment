@@ -69,8 +69,8 @@ Combination_headers = {
         "Sec-Fetch-Dest": "empty",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        #20250509 9:42
-        "Cookie": 'uid=CvTgI2gv1Fl+Hy8sA+1IAg==; user_status=0; _clck=a5x9j2%7C2%7Cfw5%7C0%7C0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ3OTY1MTA1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTIwYzhhZDI3YWNjNTg0MTdhMmM1YTVhYmU4Yjc5MmRiOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=35e6f200b5574e9a48f426592dfebc57; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":"100113495581"}; hxmPid=sns_index_622697320.user.visitor.all.follow.show; v=A4s4Y_eCZxQtVbtA1FZzl07IGCR1IJ-iGTRjVv2IZ0ohHKTehfAv8ikE86wO'
+        #20250509 9:42 20250623
+        "Cookie": 'uid=CvQTumg397R8rXMQBSppAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ5ODA1MTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWU5NThhYTRmYjRiYzZlM2RhMmI5NzU0MDI0ZGYzODU0Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=d19d7223e7976c9acf0df29f2bcb2d69; user_status=0; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=AwzMLPM8iAfDvpx7o4R4cs9M1GE-RbDvsunEs2bNGLda8aNbjlWAfwL5lEm1'
     }
 
 Strategy_ids = ['155680', '136574', '137789']

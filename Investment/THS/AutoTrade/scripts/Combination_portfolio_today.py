@@ -136,8 +136,8 @@ async def Combination_main():
             all_today_trades_df.index + 1
         )  # 从1开始
     else:
-        print("⚠️ 当前无今日交易数据")
-        logger.info("⚠️ 当前无今日交易数据")
+        print("⚠️ 无今日交易数据")
+        logger.info("⚠️ 无今日交易数据")
         return
 
     # 打印时去掉‘理由’列

@@ -117,16 +117,16 @@ async def main():
             now = datetime.datetime.now().time()
 
             # 判断当前时间是否在交易时间段内
-            if not (dt_time(9, 0) <= now <= dt_time(23, 0)):
-                logger.info("当前不在交易时间段内，暂停监听...")
-                if dt_time(15, 30) <= now <= dt_time(23, 0):
-                    logger.info("下午3点已到，程序将自动退出。")
-                    break
-                await asyncio.sleep(60)
-                continue
+            # if not (dt_time(9, 0) <= now <= dt_time(15, 0)):
+            #     logger.info("当前不在交易时间段内，暂停监听...")
+            #     if dt_time(9, 30) <= now <= dt_time(15, 0):
+            #         logger.info("下午3点已到，程序将自动退出。")
+            #         break
+            #     await asyncio.sleep(60)
+            #     continue
 
             # 只在 9:30 - 9:33 执行策略调度
-            if dt_time(9, 30) <= now <= dt_time(23, 33):
+            if dt_time(9, 25) <= now <= dt_time(15, 00):
                 # await asyncio.gather(*(s.start() for s in portfolio[:1]))  # 只运行策略调度
             # elif dt_time(9, 30) <= now <= dt_time(23, 33):
                 # 其他时间运行组合调度和自动化交易
@@ -136,17 +136,18 @@ async def main():
                     # *(s.start() for s in auto_trade[1:])
                 # )
                 # 启动策略和组合任务（并行）
-                strategy_task = asyncio.create_task(strategy_wrapper())
+                # strategy_task = asyncio.create_task(strategy_wrapper())
                 combo_task = asyncio.create_task(combination_wrapper())
                 # strategy_updated = await Strategy_main()
                 # combo_updated = await Combination_main()
 
                 # 获取返回值
-                strategy_updated = await strategy_task
+                # strategy_updated = await strategy_task
                 combo_updated = await combo_task
 
                 # 如果有新数据，启动自动化交易
-                if strategy_updated or combo_updated:
+                # if strategy_updated or combo_updated:
+                if combo_updated:
                     logger.info("检测到策略或组合更新，准备启动自动化交易")
                     await asyncio.gather(*(s.start() for s in auto_trade_tasks))
 
