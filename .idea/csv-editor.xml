@@ -3,41 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\Investment\THS\AutoTrade2\scripts\财务\stock_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade2\scripts\财务\stock_final_score_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade2\scripts\财务\stock_profit_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade2\zothers\stock_statistics.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade2\zothers\持仓数据.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Investment\THS\AutoTrade\data\Combination_portfolio_today.csv">
           <value>
             <Attribute>
@@ -46,48 +11,6 @@
           </value>
         </entry>
         <entry key="\Investment\THS\AutoTrade\data\Strategy_portfolio_today.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade\scripts\财务\stock_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade\scripts\财务\stock_final_score_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade\scripts\财务\stock_finance_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade\scripts\财务\stock_profit_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade\zothers\stock_statistics.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\AutoTrade\zothers\持仓数据.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

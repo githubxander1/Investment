@@ -109,8 +109,8 @@ def fetch_and_extract_data(portfolio_id):
             }
 
             # 昨天日期
-            today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-            # today = datetime.date.today().strftime('%Y-%m-%d')
+            # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            today = datetime.date.today().strftime('%Y-%m-%d')
 
             if today == createAt.split()[0]:
                 today_trades.append(history_post)
@@ -143,7 +143,12 @@ async def Combination_main():
     # 打印时去掉‘理由’列
     # 去掉科创板和创业板的股票
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
-    all_today_trades_df_without_content = all_today_trades_df_without_content[~all_today_trades_df_without_content['市场'].str.contains('科创板|创业板')]
+    # 筛选‘沪深A股’的
+    # all_today_trades_df_without_content = all_today_trades_df_without_content[all_today_trades_df_without_content['市场'].str.contains('沪深A股')]
+    # ✅ 修改为列表形式
+    all_today_trades_df_without_content = all_today_trades_df_without_content[
+        all_today_trades_df_without_content['市场'].isin(['沪深A股'])]
+
     logger.info(f'今日交易数据：\n{all_today_trades_df_without_content}')
 
     # 读取历史数据

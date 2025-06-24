@@ -126,7 +126,7 @@ async def main():
             #     continue
 
             # 只在 9:30 - 9:33 执行策略调度
-            if dt_time(9, 25) <= now <= dt_time(15, 00):
+            if dt_time(9, 25) <= now <= dt_time(17, 00):
                 # await asyncio.gather(*(s.start() for s in portfolio[:1]))  # 只运行策略调度
             # elif dt_time(9, 30) <= now <= dt_time(23, 33):
                 # 其他时间运行组合调度和自动化交易

@@ -29,6 +29,7 @@ async def get_latest_position_and_trade(strategy_id):
         data = requests.get(url, headers=headers, timeout=10)
         data.raise_for_status()
         data = data.json()
+        pprint(data)
         logger.info(f"策略id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} 获取数据成功")
         # pprint(data)
     except requests.RequestException as e:
@@ -40,9 +41,9 @@ async def get_latest_position_and_trade(strategy_id):
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
-    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 昨天
-    today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
     # print(today)
 
     result = []

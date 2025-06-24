@@ -214,45 +214,47 @@ class THSPage:
         submit_success= self.d.xpath('//*[contains(@text,"委托已提交")]')
         transfer_funds= self.d.xpath('//*[contains(@text,"转入资金")]')
 
-        dialog_title= self.d(resourceId='com.hexin.plat.android:id/dialog_title')
-        prompt_content= self.d(resourceId='com.hexin.plat.android:id/prompt_content')
-        scroll_content= self.d(className='//android.widget.TextView)[3]')  # 可用资金不足是[3]
-        # scroll_content_enougth= self.d(className='//android.widget.TextView)')  # 可用资金不足是[3]
-        # scroll_content_enougth= self.d.xpath('//*[@text="委托数量不符合交易规则。 A股最少买入100股，买入数量为100及其整数倍； '
-        #                                      '可转债最少买入10张，买入数量为10及其整数倍； 可转债以外的债券最少买入1000张，买入数量为1000及其整数倍； '
-        #                                      '科创板最少买入200股，后续买入允许1股增加，即201股下单；更多疑问请客服咨询委托数量。"]')
-        # confirm_button= self.d.xpath('//*[@resource-id="com.hexin.plat.android:id/ok_btn"]')
-        confirm_button= self.d(resourceId="com.hexin.plat.android:id/ok_btn")
-        confirm_button_second= self.d(resourceId="com.hexin.plat.android:id/left_btn")
+        # 定位弹窗相关控件
+        dialog_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+        prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+        scroll_content = self.d.xpath('(//android.widget.TextView)[3]')  # 可用资金不足是[3]
+        confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+        confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn")
 
         # 处理成功提交的情况
-        if '委托买入确认' or '委托卖出确认' in dialog_title.get_text():
-            logger.info("检测到'委托确认'提示")
+        if dialog_title.exists:
+            title_text = dialog_title.get_text()
+            if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
+                logger.info("检测到'委托确认'提示")
+                confirm_button.click()
+                logger.info("点击确认按钮")
+
+                if prompt_content.exists:
+                    prompt_text = prompt_content.get_text()
+                    if '委托已提交' in prompt_text:
+                        confirm_button.click()
+                        logger.info("委托已提交")
+                        return True, "委托已提交"
+                    else:
+                        error_info = prompt_text
+                        confirm_button.click()
+                        logger.warning(error_info)
+                        return False, error_info
+
+        # 处理其他类型弹窗
+        if prompt_content.exists():
+            error_info = prompt_content.get_text()
             confirm_button.click()
-            logger.info("点击确认按钮")
-            #逻辑待优化，处理当前时间不允许委托,买入不足100
-            warning_info = '当前时间不允许委托'
-            if warning_info in prompt_content.get_text():
-                logger.warning(warning_info)
-                confirm_button.click()
-                return False, warning_info
-            else:
-                confirm_button.click()
-                logger.info("委托已提交")
-            return True, "委托已提交"
-
+            return False, error_info
+        elif scroll_content.exists():
+            error_info = scroll_content.get_text()
+            confirm_button.click()
+            return False, error_info
         else:
-            if prompt_content.exists:
-                error_info = prompt_content.get_text()
-                confirm_button.click()
-            elif scroll_content.exists:
-                error_info = scroll_content.get_text()
-                confirm_button.click()
-            else:
-                error_info = "未知错误"
-                # confirm_button.click()
+            error_info = "未知错误"
+            logger.warning(error_info)
+            return False, error_info
 
-            return False, f"{error_info}"
     def update_holding_info(self):
         # self.click_holding_button()
         self.click_refresh_button()
@@ -285,21 +287,21 @@ class THSPage:
                 return False, msg
 
             # 交易开始，发送通知
-            send_notification(f"开始 {operation} 流程 {stock_name}  {volume}股")
+            send_notification(f"开始 {operation} 流程 {stock_name}  {calculate_volume}股")
             # 输入交易数量
-            self.input_volume(int(volume))
+            self.input_volume(int(calculate_volume))
             # 点击交易按钮
             self.click_button_by_operation(operation)
             success, info = self.dialog_handle()
             # 发送交易结果通知
-            logger.info(f"{operation} {stock_name}  {volume}股")
-            send_notification(f"{operation} {stock_name}  {volume}股 {success} {info}")
+            logger.info(f"{operation} {stock_name}  {calculate_volume}股")
+            send_notification(f"{operation} {stock_name}  {calculate_volume}股 {success} {info}")
             # 点击返回
             self.click_back()
             return success, info
         except Exception as e:
-            logger.error(f"{operation} {stock_name} {volume} 股失败: {e}", exc_info=True)
-            return False, f"{operation} {stock_name} {volume} 股失败: {e}"
+            logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
+            return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
 
 if __name__ == '__main__':
     d = uiautomator2.connect()

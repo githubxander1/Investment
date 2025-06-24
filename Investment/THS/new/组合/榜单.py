@@ -65,15 +65,15 @@ def get_all_portfolio_rank_data(match_id):
 
 # 示例调用
 if __name__ == '__main__':
-    file_path = Combination_list_file.replace('.csv', '.xlsx')  # 修改为 xlsx 格式
+    file_path = Combination_list_file
     print(f'数据保存地址: {file_path}')
 
-   榜单配置 = {
+    list_config = {
         0: "全球总榜",
         14: "ETF榜单",
         15: "新比赛"
     }
 
     with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
-        for match_id, sheet_name in 榜单配置.items():
+        for match_id, sheet_name in list_config.items():
             fetch_and_save_to_sheet(writer, match_id, sheet_name)
