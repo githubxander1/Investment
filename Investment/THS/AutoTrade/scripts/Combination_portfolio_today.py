@@ -19,8 +19,9 @@ others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.
 sys.path.append(others_dir)
 # print(f'包路径：{sys.path}')
 
-from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today, Combination_headers, all_ids, id_to_name, \
-    OPRATION_RECORD_DONE_FILE
+from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today, Combination_headers, all_ids, \
+    id_to_name, \
+    OPRATION_RECORD_DONE_FILE, OPERATION_HISTORY_FILE
 from Investment.THS.AutoTrade.utils.determine_market import determine_market
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.data_processor import standardize_dataframe, get_new_records, normalize_time
@@ -131,7 +132,9 @@ async def Combination_main():
 
     # 只有在非空的情况下才进行字段处理
     if not all_today_trades_df.empty:
-        all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
+        # all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
+        all_today_trades_df['时间'] = all_today_trades_df['时间'].astype(str).apply(normalize_time)
+
         all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(
             all_today_trades_df.index + 1
         )  # 从1开始
@@ -162,14 +165,17 @@ async def Combination_main():
         # 显式创建带列名的空DataFrame
         existing_data = pd.DataFrame(columns=expected_columns)
         existing_data.to_csv(existing_data_file, index=False)
-        # logger.info(f'初始化历史记录文件: {existing_data_file}')
+        logger.info(f'初始化历史记录文件: {existing_data_file}')
 
     # 标准化数据格式
     all_today_trades_df = standardize_dataframe(all_today_trades_df)
     existing_data = standardize_dataframe(existing_data)
+    logger.info(f'标准化数据格式: \n{existing_data}')
 
     # 获取新增数据
     new_data = get_new_records(all_today_trades_df, existing_data)
+    logger.info(f'提取新增数据: {new_data}')
+    # pprint(new_data)
 
     # 保存新增数据
     if not new_data.empty:
@@ -181,16 +187,25 @@ async def Combination_main():
 
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
+        logger.info(f"保存新增交易数据到文件：{existing_data_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
         # update_file_status(existing_data_file)
         # new_file_hash = get_file_hash(existing_data_file)
+        # 写入成功后，触发自动化交易
 
 
         # 发送通知
         new_data_print_without_header = new_data_without_content.to_string(index=False)
         send_notification(f"{len(new_data)} 条新增交易：\n{new_data_print_without_header}")
-        return True
+        logger.info(f"✅ 保存新增调仓数据成功 {existing_data}")
+        # from Investment.THS.AutoTrade.utils.event_bus import event_bus
+        # event_bus.publish('new_trades_available', new_data)
+        # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled
+        #
+        # mark_new_trades_as_scheduled(new_data, OPERATION_HISTORY_FILE)
+
+        return True, new_data
     else:
         print("---------------组合 无新增交易数据----------------")
         return False

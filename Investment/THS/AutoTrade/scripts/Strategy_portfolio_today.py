@@ -8,7 +8,7 @@ import requests
 from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids, OPRATION_RECORD_DONE_FILE
+    Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids, OPRATION_RECORD_DONE_FILE, OPERATION_HISTORY_FILE
 from Investment.THS.AutoTrade.utils.determine_market import determine_market
 from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -29,7 +29,7 @@ async def get_latest_position_and_trade(strategy_id):
         data = requests.get(url, headers=headers, timeout=10)
         data.raise_for_status()
         data = data.json()
-        pprint(data)
+        # pprint(data)
         logger.info(f"策略id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} 获取数据成功")
         # pprint(data)
     except requests.RequestException as e:
@@ -86,7 +86,9 @@ async def Strategy_main():
 
     # 只有在非空的情况下才进行字段处理
     if not all_today_trades_df.empty:
-        all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
+        # all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
+        all_today_trades_df['时间'] = all_today_trades_df['时间'].astype(str).apply(normalize_time)
+
         all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(
             all_today_trades_df.index + 1
         )  # 从1开始
@@ -140,13 +142,21 @@ async def Strategy_main():
 
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
+        logger.info(f"✅ 保存新增调仓数据成功 {existing_data}")
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
         # update_file_status(existing_data_file)
 
         # 发送通知
         new_data_print_without_header = all_today_trades_df_without_sc.to_string(index=False)
         send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
-        return True# 添加这一行：更新文件状态
+        logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
+        # from Investment.THS.AutoTrade.utils.event_bus import event_bus
+        # event_bus.publish('new_trades_available', new_data)
+        # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled
+        #
+        # mark_new_trades_as_scheduled(new_data, OPERATION_HISTORY_FILE)
+
+        return True, new_data
     else:
         print("---------------策略 无新增交易数据----------------")
         return False

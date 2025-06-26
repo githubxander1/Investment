@@ -4,6 +4,23 @@ import hashlib
 import logging
 
 logger = logging.getLogger(__name__)
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+class FileChangeHandler(FileSystemEventHandler):
+    def __init__(self, file_path, callback):
+        self.file_path = file_path
+        self.callback = callback
+
+    def on_modified(self, event):
+        if event.src_path == self.file_path:
+            self.callback()
+
+def watch_file(file_path, callback):
+    event_handler = FileChangeHandler(file_path, callback)
+    observer = Observer()
+    observer.schedule(event_handler, os.path.dirname(file_path), recursive=False)
+    observer.start()
 
 def check_files_modified(file_paths, last_hashes=None, last_mod_times=None):
     current_hashes = {}
@@ -30,7 +47,7 @@ def check_files_modified(file_paths, last_hashes=None, last_mod_times=None):
 def get_file_hash(file_path: str) -> str | None:
     """计算文件内容的MD5哈希值"""
     if not os.path.exists(file_path):
-        logger.warning(f"文件不存在: {file_path}")
+        logger.warning(f"⚠️ 文件不存在: {file_path}")
         return None
     hash_md5 = hashlib.md5()
     with open(file_path, "rb") as f:
@@ -50,7 +67,7 @@ def check_files_modified_by_hash(file_paths, last_hashes=None) -> tuple[bool, di
 
         prev_hash = last_hashes.get(file_path)
         if prev_hash is not None and current_hash != prev_hash:
-            logger.info(f"[变动] 检测到文件内容变动: {file_path}")
+            logger.info(f"📌 检测到文件内容变动: {file_path}")
             modified = True
 
     return modified, current_hashes

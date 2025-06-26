@@ -1,3 +1,5 @@
+import asyncio
+
 import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.config.settings import (
@@ -7,10 +9,13 @@ from Investment.THS.AutoTrade.config.settings import (
 )
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
 from Investment.THS.AutoTrade.scripts.process_stocks_to_operate_data import process_excel_files
+from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash, check_files_modified_by_hash
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+import logging
+print(logging.getLogger().handlers)  # 查看当前 logger 是否绑定了 handlers
 
 # 初始化日志
-logger = setup_logger("自动化交易日志")
+logger = setup_logger("自动化交易日志.log")
 
 # 文件路径列表
 file_paths = [
@@ -54,60 +59,38 @@ async def initialize_device():
 
     return d
 
+# from Investment.THS.AutoTrade.utils.event_bus import event_bus
+#
+# async def on_new_trades(data):
+#     logger.info("🔔 收到新交易事件，准备执行自动化交易")
+#     await auto_main()
+#
+# # 在模块加载时注册监听
+# event_bus.subscribe('new_trades_available', on_new_trades)
 
 async def auto_main():
-    """
-    检测策略/组合文件是否更新 → 若有变化 → 启动自动化操作
-    """
-    logger.info("自动化交易程序开始运行")
+    logger.info("🚀 自动化交易程序开始运行")
 
-    # 获取设备实例
+    file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
+    logger.info(f"📁 监控的文件路径: {file_paths}")
+
     d = await initialize_device()
-    if not d:
-        raise Exception("设备初始化失败，无法继续执行")
+    if d is None:
+        logger.error("❌ 设备初始化失败")
+        return
 
     ths_page = THSPage(d)
 
-    # 执行交易逻辑
-    process_excel_files(
-        ths_page=ths_page,
-        file_paths=file_paths,
-        operation_history_file=OPERATION_HISTORY_FILE,
-        holding_stock_file=""
-    )
-    logger.info("文件处理完成")
+    # 获取初始哈希值
+    # last_hashes = {fp: get_file_hash(fp) for fp in file_paths}
 
-# if __name__ == '__main__':
-#     try:
-#         # 初始化文件路径和最后修改时间
-#         file_paths = [
-#             Strategy_portfolio_today,
-#             Combination_portfolio_today
-#         ]
-#         operation_history_file = OPERATION_HISTORY_FILE
-#         last_modification_times = get_file_modification_times(operation_history_file)
-#
-#         # 主循环，保持程序运行
-#         stop_time = datetime.time(18, 00)  # 设置停止时间为18:00
-#         while True:
-#             now = datetime.datetime.now().time()
-#
-#             # 检查是否达到停止时间
-#             if now.hour >= stop_time.hour and now.minute >= stop_time.minute:
-#                 logger.info("到达停止时间，自动化交易程序结束运行")
-#                 break
-#
-#             # 检查标志文件是否存在
-#             if not os.path.exists(OPRATION_RECORD_DONE_FILE):
-#                 logger.warning("标志文件不存在，跳过本次执行")
-#                 time.sleep(30)
-#                 continue
-#
-#             # 执行主逻辑
-#             asyncio.run(auto_main())
-#             time.sleep(30)  # 每分钟检查一次
-#
-#     except KeyboardInterrupt:
-#         logger.info("程序被手动终止")
-#     finally:
-#         logger.info("程序结束运行")
+    while True:
+        modified, new_hashes = check_files_modified_by_hash(file_paths, last_hashes)
+        if modified:
+            logger.info("🔔 检测到文件有更新，开始执行交易任务")
+            process_excel_files(ths_page, file_paths)
+            last_hashes = new_hashes  # 更新哈希
+        else:
+            logger.info("📄 文件未发生改变，跳过处理")
+
+        await asyncio.sleep(60)  # 每分钟检查一次

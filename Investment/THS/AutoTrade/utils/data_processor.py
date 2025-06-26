@@ -62,7 +62,7 @@ def get_new_records(current_df, history_df):
     current_df['时间'] = current_df['时间'].apply(normalize_time)
 
     # 创建唯一标识
-    current_df['_id'] = current_df['时间'].astype(str) + '_' + current_df['代码'].astype(str)
+    current_df['_id'] = current_df['时间'].astype(str) + '_' + current_df['代码'] + '_' + current_df['新比例%'].astype(str)
 
     # 处理历史数据为空的情况
     if history_df.empty:
@@ -71,7 +71,7 @@ def get_new_records(current_df, history_df):
     # 标准化历史数据
     history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
     history_df['时间'] = history_df['时间'].apply(normalize_time)
-    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'].astype(str)
+    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'] + '_' + current_df['新比例%'].astype(str)
 
     # 清洗异常 _id
     current_df = current_df[current_df['_id'].str.contains(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}_\d{6}$', regex=True)]
