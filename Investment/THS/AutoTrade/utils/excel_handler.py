@@ -5,7 +5,13 @@ from pprint import pprint
 import openpyxl
 import pandas as pd
 
+from Investment.THS.AutoTrade.config.settings import Strategy_portfolio_today, Account_holding_stockes_info_file
+# from Investment.THS.AutoTrade.scripts.process_stocks_to_operate_data import read_operation_history, \
+#     write_operation_history
+from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.scheduler import logger
+from Investment.THS.AutoTrade.utils.time_utils import normalize_time
+
 
 def create_empty_excel(file_path, sheet_name):
     if not os.path.exists(file_path):
@@ -28,14 +34,14 @@ def read_excel(file_path, sheet_name):
         return pd.DataFrame()
 
 def read_portfolio_record_history(file_path):
-    today = datetime.now().strftime('%Y%m%d')
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     if os.path.exists(file_path):
         try:
             with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
                 if today in operation_history_xlsx.sheet_names:
                     portfolio_record_history_df = pd.read_excel(operation_history_xlsx, sheet_name=today)
                     # 去重处理
-                    portfolio_record_history_df.drop_duplicates(subset=['标的名称', '操作', '新比例', '时间'], inplace=True)
+                    portfolio_record_history_df.drop_duplicates(subset=['标的名称', '操作', '新比例%', '时间'], inplace=True)
                     logger.info(f"读取去重后的操作历史文件完成\n{portfolio_record_history_df}")
                 else:
                     portfolio_record_history_df = pd.DataFrame(columns=["名称","操作","标的名称","代码","最新价","新比例%","市场","时间"])
@@ -51,25 +57,47 @@ def read_portfolio_record_history(file_path):
 def save_to_excel(df, filename, sheet_name, index=False):
     """追加保存DataFrame到Excel文件"""
     try:
+        # 调试：打印要保存的数据
+        print(f"即将保存的数据:\n{df}")
+
         # 检查文件是否存在
-        try:
-            with pd.ExcelFile(filename) as _:
-                # 文件存在，追加模式
-                with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
-                    # 检查表是否存在
-                    if sheet_name not in writer.book.sheetnames:
-                        df.to_excel(writer, sheet_name=sheet_name, index=index)
-                    else:
-                        df.to_excel(writer, sheet_name=sheet_name, index=index)
-                logger.info(f"成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
-        except FileNotFoundError:
+        if os.path.exists(filename):
+            # 文件存在，读取现有 sheet 数据并追加
+            with pd.ExcelFile(filename, engine='openpyxl') as xls:
+                if sheet_name in xls.sheet_names:
+                    existing_df = pd.read_excel(xls, sheet_name=sheet_name)
+                    combined_df = pd.concat([existing_df, df], ignore_index=True)
+                else:
+                    combined_df = df
+
+            # 写回整个 DataFrame 到指定 sheet
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                combined_df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
+        else:
             # 文件不存在，创建新文件
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-                df.to_excel(writer, sheet_name=sheet_name, index=index, header=True)
-            logger.info(f"成功创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
-    except Exception as e:
-        logger.error(f"保存数据到Excel文件失败: {e}")
+                df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
 
+    except Exception as e:
+        logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
+
+
+def verify_excel_file_update(filename, sheet_name, expected_rows):
+    if not os.path.exists(filename):
+        return False
+    try:
+        df = pd.read_excel(filename, sheet_name=sheet_name)
+        if len(df) > expected_rows:
+            logger.info("✅ 文件内容已更新")
+            return True
+        else:
+            logger.warning("⚠️ 文件未新增数据，请检查写入逻辑")
+            return False
+    except Exception as e:
+        logger.error(f"验证文件更新失败: {e}")
+        return False
 
 def process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file):
     for file_path in file_paths:
@@ -158,3 +186,9 @@ def clear_csv(filename):
             logger.warning(f"文件 {filename} 不存在，无需清空")
     except  Exception as e:
         logger.error(f"清空文件失败: {e}")
+
+
+if __name__ == '__main__':
+    # read_portfolio_record_history(Strategy_portfolio_today)
+    df = pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+    save_to_excel(df,Strategy_portfolio_today,'今天',index=True)

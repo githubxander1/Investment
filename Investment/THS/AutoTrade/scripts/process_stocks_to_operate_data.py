@@ -7,6 +7,7 @@ import pandas
 import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE
+from Investment.THS.AutoTrade.utils.excel_handler import read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.file_utils import get_file_hash, check_files_modified
 
@@ -66,7 +67,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
 
         try:
             # 读取要处理的文件
-            df = pd.read_csv(file_path)
+            df = read_portfolio_record_history(file_path)
             history_df = read_operation_history(history_file=operation_history_file)
             if df.empty:
                 logger.warning(f"文件 {file_path} 为空，跳过处理")

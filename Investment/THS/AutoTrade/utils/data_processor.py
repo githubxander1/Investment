@@ -3,7 +3,7 @@ import pandas as pd
 
 # from Investment.THS.AutoTrade.utils.common_config import EXPECTED_COLUMNS
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-# logger = setup_logger('')
+logger = setup_logger('data_process.log')
 
 
 # from common_config import EXPECTED_COLUMNS
@@ -39,10 +39,12 @@ def normalize_time(time_str):
 
 
 
-def create_unique_id(df, time_col='时间', code_col='代码'):
-    """为DataFrame添加唯一标识列"""
-    df['_id'] = df[time_col].astype(str) + '_' + df[code_col].astype(str)
+def create_unique_id(df):
+    df['代码'] = df['代码'].astype(str).str.zfill(6)
+    df['新比例%'] = df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
+    df['_id'] = df['时间'].astype(str) + '_' + df['代码'] + '_' + df['新比例%']
     return df
+
 
 def get_new_records(current_df, history_df):
     """通过 _id 字段获取新增记录"""
@@ -68,26 +70,36 @@ def get_new_records(current_df, history_df):
     if history_df.empty:
         return current_df.drop(columns=['_id'], errors='ignore')
 
+    print(f"{current_df}\n, current_df _id:", current_df['_id'].tolist())
     # 标准化历史数据
     history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
     history_df['时间'] = history_df['时间'].apply(normalize_time)
-    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'] + '_' + current_df['新比例%'].astype(str)
+    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'] + '_' + history_df['新比例%'].astype(str)
 
+    print(f"{history_df}\n历史记录 _id:", history_df['_id'].tolist())
+    # 清洗 _id 列，将 NaN 替换为空字符串
+    current_df['_id'] = current_df['_id'].fillna('')
+    history_df['_id'] = history_df['_id'].fillna('')
     # 清洗异常 _id
-    current_df = current_df[current_df['_id'].str.contains(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}_\d{6}$', regex=True)]
-    history_df = history_df[history_df['_id'].str.contains(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}_\d{6}$', regex=True)]
+    print("清洗前 current_df['_id']:", current_df['_id'].tolist())
+    print("清洗前 history_df['_id']:", history_df['_id'].tolist())
+
+    pattern = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}_\d{6}_\d+(\.\d+)?$'
+    current_df = current_df[current_df['_id'].str.contains(pattern, regex=True, na=False)]
+    history_df = history_df[history_df['_id'].str.contains(pattern, regex=True, na=False)]
 
     # 打印调试信息
-    # print("清洗后当前记录 _id:", current_df['_id'].tolist())
-    # print("清洗后历史记录 _id:", history_df['_id'].tolist())
+    print("清洗后 current_df['_id']:", current_df['_id'].tolist())
+    print("清洗后 history_df['_id']:", history_df['_id'].tolist())
 
     # 筛选新记录
     new_mask = ~current_df['_id'].isin(history_df['_id'])
     new_data = current_df[new_mask].copy()
-    if not new_data.empty:
-        new_data = standardize_dataframe(new_data)
-        from Investment.THS.AutoTrade.scripts.auto_trade_on_ths import logger
-        logger.info(f'新增记录：{new_data}')
+    print("新增数据 _id:", new_data['_id'].tolist() if not new_data.empty else "无新增数据")
+
+    # if not new_data.empty:
+    #     new_data = standardize_dataframe(new_data)
+    logger.info(f'新增记录：{new_data}')
     # print(f'新增记录：{new_data}')
 
     return new_data.drop(columns=['_id'], errors='ignore') if not new_data.empty else new_data

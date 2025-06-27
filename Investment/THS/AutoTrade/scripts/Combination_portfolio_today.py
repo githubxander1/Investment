@@ -10,6 +10,7 @@ import requests
 import sys
 import os
 
+from Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
@@ -139,18 +140,21 @@ async def Combination_main():
             all_today_trades_df.index + 1
         )  # 从1开始
     else:
-        print("⚠️ 无今日交易数据")
+        # print("⚠️ 无今日交易数据")
         logger.info("⚠️ 无今日交易数据")
         return
 
-    # 打印时去掉‘理由’列
     # 去掉科创板和创业板的股票
+    all_today_trades_df = all_today_trades_df[
+        ~all_today_trades_df['标的名称'].str.contains('科创板|创业板')
+        ]
+    # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
     # 筛选‘沪深A股’的
     # all_today_trades_df_without_content = all_today_trades_df_without_content[all_today_trades_df_without_content['市场'].str.contains('沪深A股')]
     # ✅ 修改为列表形式
-    all_today_trades_df_without_content = all_today_trades_df_without_content[
-        all_today_trades_df_without_content['市场'].isin(['沪深A股'])]
+    # all_today_trades_df_without_content = all_today_trades_df_without_content[
+    #     all_today_trades_df_without_content['市场'].isin(['沪深A股'])]
 
     logger.info(f'今日交易数据：\n{all_today_trades_df_without_content}')
 
@@ -160,11 +164,14 @@ async def Combination_main():
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:
-        existing_data = pd.read_csv(existing_data_file)
+        existing_data = read_portfolio_record_history(existing_data_file)
+        print(f'读取历史记录: {existing_data}')
     except (FileNotFoundError, pd.errors.EmptyDataError):
         # 显式创建带列名的空DataFrame
         existing_data = pd.DataFrame(columns=expected_columns)
-        existing_data.to_csv(existing_data_file, index=False)
+        # existing_data.to_csv(existing_data_file, index=False)
+        today = normalize_time(datetime.date.today().strftime('%Y%m%d'))
+        save_to_excel(existing_data, existing_data_file, f'{today}', index=False)
         logger.info(f'初始化历史记录文件: {existing_data_file}')
 
     # 标准化数据格式
@@ -186,8 +193,9 @@ async def Combination_main():
         # logger.info(new_data_without_content)
 
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
-        new_data.to_csv(existing_data_file, mode='a', header=header, index=False)
-        logger.info(f"保存新增交易数据到文件：{existing_data_file}")
+        today = normalize_time(datetime.date.today().strftime('%Y-%m-%d'))
+        save_to_excel(new_data, existing_data_file, f'{today}', index=False)
+        logger.info(f"保存新增数据到文件：{existing_data_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
         # update_file_status(existing_data_file)
