@@ -2,6 +2,8 @@
 import os
 from pprint import pprint
 
+from fake_useragent import UserAgent
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 package_name = 'com.hexin.plat.android'
@@ -10,32 +12,21 @@ LOGS_DIR = os.path.join(BASE_DIR, 'logs')
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 # 日志文件路径
-THS_AUTO_TRADE_LOG_FILE = os.path.join(LOGS_DIR, '自动化交易日志.log')
-THS_AUTO_TRADE_LOG_FILE_PAGE = os.path.join(LOGS_DIR, '自动化交易日志_page.log')
-STRATEGY_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, '策略_今天调仓.log')
-COMBINATION_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, '组合_今天调仓.log')
-ETF_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, 'ETF今天调仓.log')
-
-SCHEDULER_LOG_FILE = os.path.join(LOGS_DIR, '自动化交易定时任务.log')
-send_notification_log = os.path.join(LOGS_DIR, '发送通知.log')
-file_monitor_file = os.path.join(LOGS_DIR, '文件监控.log')
-trade_operations_log_file = os.path.join(LOGS_DIR, '自动化交易操作记录.log')
+THS_AUTO_TRADE_LOG_FILE_PAGE = os.path.join(LOGS_DIR, 'ths_page_logic.log')
+STRATEGY_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, 'strategy_portfolio_today.log')
+COMBINATION_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, 'combination_portfolio_today.log')
+trade_operations_log_file = os.path.join(LOGS_DIR, 'data_process.log')
 
 # 数据文件路径
 OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
-SUCCESSFUL_OPERATIONS_FILE = os.path.join(DATA_DIR, '自动化交易操作历史_成功.xlsx')
+
 
 Strategy_portfolio_today = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
 Combination_portfolio_today = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
-# COMBINATION_TODAY_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '组合今天调仓.csv')
 
-ETF_NEWEST_ADJUSTMENT_FILE = os.path.join(DATA_DIR, 'ETF最新调仓_所有.csv')
 Combination_holding_file = os.path.join(DATA_DIR, 'Combination_position.xlsx')
-Combination_info_file = os.path.join(DATA_DIR, '股票组合持仓_历史调仓_今天调仓.csv')
 
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
-# compare_Strategy_info_file = os.path.join(DATA_DIR, '策略信息.csv')
-compare_Combination_info_file = os.path.join(DATA_DIR, '股票组合对比.csv')
 
 Strategy_info_file = os.path.join(DATA_DIR, '策略信息.csv')
 Combination_list_file = os.path.join(DATA_DIR, '组合列表.xlsx')
@@ -46,14 +37,9 @@ Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
 Account_holding_stockes_info_file = os.path.join(DATA_DIR, 'account_info.xlsx')
 account_xml_file = os.path.join(DATA_DIR, 'account_info_xml.xml')
-TEMP_ADJUSTMENT_FILE = os.path.join(DATA_DIR, '调仓操作记录.csv')
 
-CLEAR_FLAG_FILE = os.path.join(DATA_DIR, '清仓昨天操作记录.flag')
 
-OPRATION_RECORD_DONE_FILE = os.path.join(DATA_DIR, '调仓操作记录完成.flag')
-
-# 监控文件夹
-WATCHED_FOLDER = os.path.join(DATA_DIR)
+fake_useragent = UserAgent()
 
 # API配置
 API_URL = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
@@ -61,7 +47,8 @@ Combination_headers = {
         # "Host": "dq.py.10jqka.com.cn",
         "Connection": "keep-alive",
         "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+        # "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+        "User-Agent": fake_useragent.random,
         "Content-Type": "application/x-www-form-urlencoded",
         "X-Requested-With": "com.hexin.plat.android",
         "Sec-Fetch-Site": "same-origin",

@@ -4,8 +4,7 @@ import time
 
 from Investment.THS.AutoTrade.scripts.account_info import update_holding_info
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file, \
-    send_notification_log
+from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)

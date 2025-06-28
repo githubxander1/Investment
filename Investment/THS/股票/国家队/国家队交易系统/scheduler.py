@@ -5,10 +5,10 @@ import traceback
 
 def job():
     print(f"【定时任务触发】{datetime.datetime.now()}")
-    print("执行 main.py 进行选股 + 回测 + 模拟交易")
+    print("执行 trade_main.py 进行选股 + 回测 + 模拟交易")
     try:
         result = subprocess.run(
-            ["python", "main.py"],
+            ["python", "trade_main.py"],
             capture_output=True,
             text=True,
             check=True

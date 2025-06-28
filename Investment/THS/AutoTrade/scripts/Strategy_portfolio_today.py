@@ -9,14 +9,12 @@ from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids, OPRATION_RECORD_DONE_FILE, OPERATION_HISTORY_FILE
-from Investment.THS.AutoTrade.scripts.process_stocks_to_operate_data import save_to_excel, read_portfolio_record_history
-from Investment.THS.AutoTrade.utils.determine_market import determine_market
-from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
+from Investment.THS.AutoTrade.scripts.data_process import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
-# from Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, read_portfolio_record_history
-from Investment.THS.AutoTrade.utils.data_processor import standardize_dataframe, get_new_records, normalize_time
-# from Investment.THS.AutoTrade.scripts.自动化交易 import logger
+from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
+    determine_market
+
 logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
 
 ua = UserAgent()
@@ -31,7 +29,7 @@ async def get_latest_position_and_trade(strategy_id):
         data.raise_for_status()
         data = data.json()
         # pprint(data)
-        logger.info(f"策略id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} 获取数据成功")
+        logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
         # pprint(data)
     except requests.RequestException as e:
         logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
@@ -42,10 +40,10 @@ async def get_latest_position_and_trade(strategy_id):
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
-    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 昨天
-    today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
-    print(today)
+    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+    # print(today)
 
     result = []
     for trade_info in trade_stocks:
@@ -97,12 +95,12 @@ async def Strategy_main():
         )  # 从1开始
     else:
         logger.info("⚠️ 今日无交易数据")
-        return
+        return False, None
 
     # 过滤掉创业板、科创板股票的交易信息
     all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['创业板', '科创板']) == False]
     # all_trades_df = [~(all_trades_df[all_trades_df['市场'].isin(['创业板', '科创板'])]
-    logger.info(f'今日交易数据：\n{all_today_trades_df}')
+    logger.info(f'今日交易数据：{len(all_today_trades_df)}条 \n{all_today_trades_df}')
 
     # # 排序
     # all_trades_df = all_trades_df.sort_values(by='时间', ascending=False).reset_index(drop=True)
@@ -145,7 +143,7 @@ async def Strategy_main():
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         save_to_excel(new_data,existing_data_file,f'{today}')
-        logger.info(f"✅ 保存新增调仓数据成功 {new_data}")
+        # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data}")
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
         # update_file_status(existing_data_file)
 
@@ -162,7 +160,7 @@ async def Strategy_main():
         return True, new_data
     else:
         logger.info("---------------策略 无新增交易数据----------------")
-        return False
+        return False, None
 
 
 

@@ -1,4 +1,4 @@
-#data_processor.py
+#format_data.py
 import pandas as pd
 
 # from Investment.THS.AutoTrade.utils.common_config import EXPECTED_COLUMNS
@@ -7,6 +7,18 @@ logger = setup_logger('data_process.log')
 
 
 # from common_config import EXPECTED_COLUMNS
+def determine_market(stock_code):
+    """根据股票代码判断市场"""
+    if stock_code.startswith(('60', '00')):
+        return '沪深A股'
+    elif stock_code.startswith('688'):
+        return '科创板'
+    elif stock_code.startswith('30'):
+        return '创业板'
+    elif stock_code.startswith(('4', '8')):
+        return '北交所'
+    else:
+        return '其他'
 
 def normalize_time(time_str):
     """统一时间格式为 YYYY-MM-DD HH:MM"""
@@ -81,7 +93,7 @@ def get_new_records(current_df, history_df):
     new_mask = ~current_df['_id'].isin(history_df['_id'])
     new_data = current_df[new_mask].copy()
 
-    logger.info(f'新增记录：{new_data}')
+    # logger.info(f'新增记录：{new_data}')
     return new_data.drop(columns=['_id'], errors='ignore') if not new_data.empty else new_data
 
 
@@ -94,8 +106,8 @@ def standardize_dataframe(df):
     # 使用 .loc 避免 SettingWithCopyWarning
     df = df.copy()  # 创建副本以避免修改原始数据
 
-    if '代码' in df.columns:
-        df.loc[:, '代码'] = df['代码'].astype(str).str.zfill(6)
+    # if '代码' in df.columns:
+    #     df.loc[:, '代码'] = df['代码'].astype(str).str.zfill(6)
 
     if '时间' in df.columns:
         df.loc[:, '时间'] = df['时间'].astype(str).apply(normalize_time)

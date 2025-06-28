@@ -1,6 +1,5 @@
-# process_stocks_to_operate_data.py
+# data_process.py
 import os
-import time
 from datetime import datetime, timedelta
 
 import pandas
@@ -8,15 +7,13 @@ import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Strategy_portfolio_today, Combination_portfolio_today
-from Investment.THS.AutoTrade.utils.data_processor import normalize_time
+from Investment.THS.AutoTrade.utils.format_data import normalize_time
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
 
 def read_portfolio_record_history(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
-    # 昨天
-    # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
     # print(f'读取调仓记录文件日期{today}')
     if os.path.exists(file_path):
         try:
@@ -41,7 +38,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
     """追加保存DataFrame到Excel文件"""
     try:
         # 调试：打印要保存的数据
-        logger.info(f"即将保存的数据:\n{df}")
+        # logger.info(f"即将保存的数据:\n{df}")
 
         # 检查文件是否存在
         if os.path.exists(filename):
@@ -50,18 +47,19 @@ def save_to_excel(df, filename, sheet_name, index=False):
                 if sheet_name in xls.sheet_names:
                     existing_df = pd.read_excel(xls, sheet_name=sheet_name)
                     combined_df = pd.concat([existing_df, df], ignore_index=True)
+                    combined_df.drop_duplicates(subset=['名称', '操作', '标的名称', '代码', '最新价', '新比例%'], inplace=True)
                 else:
                     combined_df = df
 
             # 写回整个 DataFrame 到指定 sheet
             with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
                 combined_df.to_excel(writer, sheet_name=sheet_name, index=index)
-            logger.info(f"✅ 成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
+            logger.info(f"✅ 成功追加数据到Excel文件: {filename}, 表名称: {sheet_name} \n{combined_df}")
         else:
             # 文件不存在，创建新文件
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
-            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
+            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name} \n{df}")
 
     except Exception as e:
         logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
@@ -189,7 +187,7 @@ if __name__ == '__main__':
     file_paths = [
         Strategy_portfolio_today,Combination_portfolio_today
     ]
-    from auto_trade_on_ths import THSPage
+    # from auto_trade_on_ths import THSPage
     import uiautomator2 as u2
     d = u2.connect()
     package_name = "com.hexin.plat.android"

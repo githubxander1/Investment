@@ -6,7 +6,7 @@ import uiautomator2 as u2
 from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
-logger = setup_logger("get_account_info")  # 创建日志实例
+logger = setup_logger("account_info.log")  # 创建日志实例
 
 # 连接设备
 try:

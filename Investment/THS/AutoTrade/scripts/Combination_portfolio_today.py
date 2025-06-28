@@ -2,7 +2,7 @@
 import asyncio
 import datetime
 import re
-from pprint import pprint
+# from pprint import pprint
 
 import pandas as pd
 import requests
@@ -10,9 +10,7 @@ import requests
 import sys
 import os
 
-from Investment.THS.AutoTrade.scripts.process_stocks_to_operate_data import read_portfolio_record_history, save_to_excel
-# from Investment.THS.AutoTrade.utils.proce import save_to_excel, read_portfolio_record_history
-from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
+from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_record_history, save_to_excel
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 # # 获取根目录
@@ -22,11 +20,10 @@ sys.path.append(others_dir)
 # print(f'包路径：{sys.path}')
 
 from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today, Combination_headers, all_ids, \
-    id_to_name, \
-    OPRATION_RECORD_DONE_FILE, OPERATION_HISTORY_FILE
-from Investment.THS.AutoTrade.utils.determine_market import determine_market
+    id_to_name
 from Investment.THS.AutoTrade.utils.notification import send_notification
-from Investment.THS.AutoTrade.utils.data_processor import standardize_dataframe, get_new_records, normalize_time
+from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
+    determine_market
 
 # 使用setup_logger获取统一的logger实例
 logger = setup_logger("组合_调仓日志.log")
@@ -40,7 +37,7 @@ def fetch_and_extract_data(portfolio_id):
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         response_json = response.json()
-        logger.info(f"组合id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} 获取数据成功")
+        logger.info(f"组合 获取数据成功id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} ")
         # pprint(response_json)
     except requests.RequestException as e:
         logger.error(f"请求出错 (ID: {portfolio_id}): {e}")
@@ -112,8 +109,8 @@ def fetch_and_extract_data(portfolio_id):
             }
 
             # 昨天日期
-            today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-            # today = datetime.date.today().strftime('%Y-%m-%d')
+            # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            today = datetime.date.today().strftime('%Y-%m-%d')
 
             if today == createAt.split()[0]:
                 today_trades.append(history_post)
@@ -140,7 +137,7 @@ async def Combination_main():
     else:
         # print("⚠️ 无今日交易数据")
         logger.info("⚠️ 今日无交易数据")
-        return
+        return False, None
 
     # 去掉科创板和创业板的股票
     all_today_trades_df = all_today_trades_df[
@@ -149,11 +146,11 @@ async def Combination_main():
     # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
 
-    logger.info(f'今日交易数据：\n{all_today_trades_df_without_content}')
+    logger.info(f'今日交易数据 {len(all_today_trades_df_without_content)} 条\n{all_today_trades_df_without_content}')
 
     # 读取历史数据
     existing_data_file = Combination_portfolio_today
-    existing_data_file_hash = get_file_hash(existing_data_file)
+    # existing_data_file_hash = get_file_hash(existing_data_file)
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:
@@ -169,11 +166,11 @@ async def Combination_main():
     # 标准化数据格式
     all_today_trades_df = standardize_dataframe(all_today_trades_df)
     existing_data = standardize_dataframe(existing_data)
-    logger.info(f'标准化数据格式: \n{existing_data}')
+    # logger.info(f'标准化数据格式: \n{existing_data}')
 
     # 获取新增数据
     new_data = get_new_records(all_today_trades_df, existing_data)
-    logger.info(f'提取新增数据: \n{new_data}')
+    # logger.info(f'提取新增数据: \n{new_data}')
     # pprint(new_data)
 
     # 保存新增数据
@@ -187,7 +184,7 @@ async def Combination_main():
         header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
         today = normalize_time(datetime.date.today().strftime('%Y-%m-%d'))
         save_to_excel(new_data, existing_data_file, f'{today}', index=False)
-        logger.info(f"保存新增数据到文件：{existing_data_file}")
+        # logger.info(f"保存新增数据到文件：{existing_data_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
         # update_file_status(existing_data_file)
@@ -197,8 +194,8 @@ async def Combination_main():
 
         # 发送通知
         new_data_print_without_header = new_data_without_content.to_string(index=False)
-        send_notification(f"{len(new_data)} 条新增交易：\n{new_data_print_without_header}")
-        logger.info(f"✅ 保存新增调仓数据成功 \n{existing_data}")
+        send_notification(f" 新增交易 {len(new_data)}条：\n{new_data_print_without_header}")
+        # logger.info(f"✅ 保存新增调仓数据成功 \n{existing_data}")
         # from Investment.THS.AutoTrade.utils.event_bus import event_bus
         # event_bus.publish('new_trades_available', new_data)
         # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled
@@ -207,8 +204,8 @@ async def Combination_main():
 
         return True, new_data
     else:
-        print("---------------组合 无新增交易数据----------------")
-        return False
+        logger.info("---------------组合 无新增交易数据----------------")
+        return False, None
 
 if __name__ == '__main__':
     asyncio.run(Combination_main())

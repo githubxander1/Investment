@@ -1,6 +1,6 @@
 from collector import fetch_data
 # from analyzer import generate_trading_signals
-# main.py
+# trade_main.py
 from collector import generate_trading_signals
 
 from strategy import run_backtest
