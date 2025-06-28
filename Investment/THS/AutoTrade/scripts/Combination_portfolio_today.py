@@ -10,7 +10,8 @@ import requests
 import sys
 import os
 
-from Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, read_portfolio_record_history
+from Investment.THS.AutoTrade.scripts.process_stocks_to_operate_data import read_portfolio_record_history, save_to_excel
+# from Investment.THS.AutoTrade.utils.proce import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
@@ -172,7 +173,7 @@ async def Combination_main():
 
     # 获取新增数据
     new_data = get_new_records(all_today_trades_df, existing_data)
-    logger.info(f'提取新增数据: {new_data}')
+    logger.info(f'提取新增数据: \n{new_data}')
     # pprint(new_data)
 
     # 保存新增数据
@@ -197,7 +198,7 @@ async def Combination_main():
         # 发送通知
         new_data_print_without_header = new_data_without_content.to_string(index=False)
         send_notification(f"{len(new_data)} 条新增交易：\n{new_data_print_without_header}")
-        logger.info(f"✅ 保存新增调仓数据成功 {existing_data}")
+        logger.info(f"✅ 保存新增调仓数据成功 \n{existing_data}")
         # from Investment.THS.AutoTrade.utils.event_bus import event_bus
         # event_bus.publish('new_trades_available', new_data)
         # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled

@@ -1,31 +1,23 @@
-# D:\Xander\PycharmProject\z_others\Investment\THS\AutoTrade\utils\scheduler.py
+# 优化后的 TradeScheduler 类
+from datetime import time as dt_time, datetime, timedelta
 import asyncio
-# import datetime, time as dt_time, time_delta
-from datetime import datetime, time as dt_time, timedelta
-from pprint import pprint
-
-# import pandas_market_calendars as mcal
-
-from Investment.THS.AutoTrade.config import settings
-from Investment.THS.AutoTrade.config.settings import SCHEDULER_LOG_FILE
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
-logger = setup_logger(SCHEDULER_LOG_FILE)
+logger = setup_logger("scheduler.log")
 
-# 调度器类 ======================================================
 class TradeScheduler:
     def __init__(
         self,
         interval: float,
         callback,
-        start_time: dt_time = dt_time(9, 0),   # 默认开始时间改为9点
-        end_time: dt_time = dt_time(15, 0)     # 默认结束时间改为15点
+        start_time: dt_time = dt_time(9, 0),
+        end_time: dt_time = dt_time(15, 0)
     ):
         """
         :param interval: 执行间隔（分钟）
         :param callback: 异步回调函数
-        :param start_time: 每日开始时间（强制设为9点）
-        :param end_time: 每日结束时间（强制设为15点）
+        :param start_time: 每日开始时间
+        :param end_time: 每日结束时间
         """
         self.interval = interval
         self.callback = callback
@@ -49,6 +41,19 @@ class TradeScheduler:
         # 这里可以对接交易所API或使用本地节假日数据
 
         return True
+def _is_trading_day(self):
+    """判断是否为中国股市交易日"""
+    today = datetime.now().date()
+
+    # 简单实现：排除周末
+    if today.weekday() >= 5:  # 5=Saturday, 6=Sunday
+        return False
+
+    # TODO: 可以添加具体节假日判断逻辑
+    # 这里可以对接交易所API或使用本地节假日数据
+
+    return True
+
 
     async def _execute_task(self):
         """简化版任务执行"""
@@ -59,13 +64,10 @@ class TradeScheduler:
 
     async def start(self):
         """启动调度器核心逻辑"""
-        print('\n')
         logger.info(f"调度器启动 | 时间窗口: {self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}")
 
         while not self._shutdown.is_set():
             if self._within_time_window():
-                # next_run = await self._calculate_next_run()
-                # print(f"下一次运行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
                 await self._execute_task()
 
             # 动态计算休眠时间
@@ -81,4 +83,4 @@ class TradeScheduler:
     async def stop(self):
         """优雅停止调度器"""
         self._shutdown.set()
-        pprint("调度器已停止")
+        logger.info("调度器已停止")

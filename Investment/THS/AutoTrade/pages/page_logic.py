@@ -46,6 +46,12 @@ class THSPage:
         holding_button.click()
         logger.info("点击持仓按钮")
 
+        # # 等待持仓页面加载完成
+        # self.a_hold = self.d(className='android.widget.TextView')[34]
+        # if not self.a_hold.wait.exists(timeout=5000):
+        #     logger.error("持仓页面加载失败")
+        #     return False
+
     def click_operate_button(self,operation):
         operation_button = self.d(className='android.widget.TextView', text=operation)
         operation_button.click()
@@ -139,73 +145,77 @@ class THSPage:
         :return: tuple(success: bool, message: str, volume: int | None)
         """
         volume_max = 4000
-
         logger.info('开始计算交易数量....')
-        if operation == "买入":
-            '''
-            最大买入4000元
-            如果可用金额小于4000，买入数量= 可用金额 / 实时价格
-            如果可用金额大于4000，买入数量= 4000 / 实时价格
-            '''
-            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据", thousands=',')
+        try:
+            if operation == "买入":
+                holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据", thousands=',')
+                '''
+                最大买入4000元
+                如果可用金额小于4000，买入数量= 可用金额 / 实时价格
+                如果可用金额大于4000，买入数量= 4000 / 实时价格
+                '''
 
-            buy_available = float(holding_stock_df['可用'].iloc[0])
-            time.sleep(1)
-            real_price = self._get_real_price()
-            # logger.info(f"可用金额: {buy_available}")
-            logger.info(f"可用金额: {buy_available}, 实时价格: {real_price}")
+                buy_available = float(holding_stock_df['可用'].iloc[0])
+                logger.info(f"可用金额: {buy_available}")
 
-            if buy_available < volume_max:# 如果可用金额小于4000，则使用可用金额
-                volume = int(buy_available / real_price)
-            else:
-                volume = int(volume_max / real_price)
+                time.sleep(1)
+                real_price = self._get_real_price()
+                # logger.info(f"可用金额: {buy_available}, 实时价格: {real_price}")
 
-            volume = (volume // 100) * 100
-            if volume < 100:
-                warning_info = f'数量不足100股'
-                logger.warning(f"{warning_info}")
-                return False, warning_info, "交易数量不足100股"  # 返回False表示交易失败
-            else:
-                logger.info(f"可用金额: {buy_available}, 实时价格: {real_price}, 可操作数量: {volume}")
-                return True, '数量计算成功', volume
-
-        elif operation == "卖出":
-            '''
-            先判断是否持仓
-            最大卖出：已持仓数
-            如果最新比例为0，则卖出全仓
-            如果最细比例不为0，则卖出半仓
-            '''
-            holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
-
-            if self._current_stock_name in holding_stock_df['标的名称'].values:
-                sale_available = int(holding_stock_df[holding_stock_df['标的名称'] == self._current_stock_name]['持仓/可用'].str.split('/').str[1].iloc[0])
-                if sale_available is None or sale_available == 0:
-                    warning_info = '无可用数量'
-                    logger.warning(warning_info)
-                    #退出，不继续下一步，直接退出
-                    return False, warning_info, '无可用数量'
-                if new_ratio is not None and new_ratio != 0:
-                    volume = int(sale_available * 0.5)  # 半仓卖出
+                if buy_available < volume_max:# 如果可用金额小于4000，则使用可用金额
+                    volume = int(buy_available / real_price)
                 else:
-                    volume = sale_available  # 全部卖出
+                    volume = int(volume_max / real_price)
 
                 volume = (volume // 100) * 100
                 if volume < 100:
-                    warning_info = f'数量小于100股'
-                    logger.warning(warning_info)
-                    return False, warning_info, '卖出数量不足100股'
+                    warning_info = '交易数量不足100股'
+                    logger.warning(f"{warning_info}")
+                    return False, warning_info, "交易数量不足100股"  # 返回False表示交易失败
                 else:
-                    logger.info(f"可操作数量: {volume} (共可用：{sale_available})")
+                    logger.info(f"实时价格: {real_price}, 操作数量: {volume}, 共{operation}: {real_price * volume}")
                     return True, '数量计算成功', volume
-            else:
-                warning_info = '不在持仓列表中'
-                logger.warning(f"计算数量错误：{warning_info} ")
-                return False, warning_info, '未持仓'
 
-        else:
-            logger.warning("未知操作类型")
-            return False, '失败', '未知操作'
+            elif operation == "卖出":
+                '''
+                先判断是否持仓
+                最大卖出：已持仓数
+                如果最新比例为0，则卖出全仓
+                如果最细比例不为0，则卖出半仓
+                '''
+                holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
+
+                if self._current_stock_name in holding_stock_df['标的名称'].values:
+                    sale_available = int(holding_stock_df[holding_stock_df['标的名称'] == self._current_stock_name]['持仓/可用'].str.split('/').str[1].iloc[0])
+                    if sale_available is None or sale_available == 0:
+                        warning_info = '无可用数量'
+                        logger.warning(warning_info)
+                        #退出，不继续下一步，直接退出
+                        return False, warning_info, '无可用数量'
+                    if new_ratio is not None and new_ratio != 0:
+                        volume = int(sale_available * 0.5)  # 半仓卖出
+                    else:
+                        volume = sale_available  # 全部卖出
+
+                    volume = (volume // 100) * 100
+                    if volume < 100:
+                        warning_info = f'数量小于100股'
+                        logger.warning(warning_info)
+                        return False, warning_info, '卖出数量不足100股'
+                    else:
+                        logger.info(f"{operation}数量: {volume} (共可用：{sale_available})")
+                        return True, '数量计算成功', volume
+                else:
+                    warning_info = '不在持仓列表中'
+                    logger.warning(f"计算数量错误：{warning_info} ")
+                    return False, warning_info, '未持仓'
+
+            else:
+                logger.warning("未知操作类型")
+                return False, '失败', '未知操作'
+        except Exception as e:
+            logger.error(f"数量计算失败: {e}", exc_info=True)
+            return False, '失败', '数量计算失败'
 
     def dialog_handle(self):
         """处理交易后的各种弹窗情况"""
@@ -268,8 +278,8 @@ class THSPage:
         logger.info("更新持仓信息")
 
     def operate_stock(self,operation, stock_name, volume=None):
+        """交易-持仓(初始化)-买卖操作"""
         try:
-            '''交易-持仓(初始化)-买卖操作'''
             self._current_stock_name = stock_name
             #点击交易入口
             self.click_trade_entry()
@@ -305,6 +315,7 @@ class THSPage:
             self.click_back()
             return success, info
         except Exception as e:
+            calculate_volume = "未知"
             logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
             return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
 

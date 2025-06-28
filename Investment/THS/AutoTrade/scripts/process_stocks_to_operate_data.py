@@ -9,9 +9,7 @@ import pandas as pd
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Strategy_portfolio_today, Combination_portfolio_today
 from Investment.THS.AutoTrade.utils.data_processor import normalize_time
-# from Investment.THS.AutoTrade.utils.excel_handler import read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.utils.file_utils import get_file_hash, check_files_modified
 
 logger = setup_logger(trade_operations_log_file)
 
@@ -19,7 +17,7 @@ def read_portfolio_record_history(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # 昨天
     # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-    print(f'读取调仓记录文件日期{today}')
+    # print(f'读取调仓记录文件日期{today}')
     if os.path.exists(file_path):
         try:
             with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
@@ -43,7 +41,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
     """追加保存DataFrame到Excel文件"""
     try:
         # 调试：打印要保存的数据
-        print(f"即将保存的数据:\n{df}")
+        logger.info(f"即将保存的数据:\n{df}")
 
         # 检查文件是否存在
         if os.path.exists(filename):
@@ -70,7 +68,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
 def write_operation_history(df):
     """将操作记录写入Excel文件，按日期作为sheet名"""
     today = datetime.now().strftime('%Y-%m-%d')
-    print(f"写入操作记录文件日期：{today}")
+    # print(f"写入操作记录文件日期：{today}")
 
     filename = OPERATION_HISTORY_FILE  # D:\...\data\trade_operation_history.xlsx
 
@@ -108,7 +106,7 @@ def read_operation_history(history_file):
     today = datetime.now().strftime('%Y-%m-%d')
     # 昨天
     # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-    print(f'读取历史文件日期：{today}')
+    # print(f'读取历史文件日期：{today}')
     if not os.path.exists(history_file):
         return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
 
@@ -127,7 +125,7 @@ def read_operation_history(history_file):
     return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
 
 
-def process_excel_files(ths_page, file_paths, operation_history_file, holding_stock_file):
+def process_excel_files(ths_page, file_paths, operation_history_file):
     for file_path in file_paths:
         logger.info(f"🔄 检测到文件更新，即将处理: {file_path}")
 

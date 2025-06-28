@@ -9,11 +9,12 @@ from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids, OPRATION_RECORD_DONE_FILE, OPERATION_HISTORY_FILE
+from Investment.THS.AutoTrade.scripts.process_stocks_to_operate_data import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.determine_market import determine_market
 from Investment.THS.AutoTrade.utils.file_monitor import get_file_hash
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
-from Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, read_portfolio_record_history
+# from Investment.THS.AutoTrade.utils.excel_handler import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.data_processor import standardize_dataframe, get_new_records, normalize_time
 # from Investment.THS.AutoTrade.scripts.自动化交易 import logger
 logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
