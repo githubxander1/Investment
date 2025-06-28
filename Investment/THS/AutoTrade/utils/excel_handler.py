@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from pprint import pprint
 
@@ -34,7 +34,10 @@ def read_excel(file_path, sheet_name):
         return pd.DataFrame()
 
 def read_portfolio_record_history(file_path):
-    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+    # today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+    # 昨天
+    today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    print(f'读取调仓记录文件日期{today}')
     if os.path.exists(file_path):
         try:
             with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
@@ -129,7 +132,6 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
 
                 #定义操作股数：如果operation=“买入”，则买入数量为4000除以价格，结果取整；如果为卖出，如果new_ratio不为0，则卖出半仓，如果为0，则卖出全部
                 holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据")
-                print(holding_stock_df)
                 holding_stock = holding_stock_df[holding_stock_df['标的名称'] == stock_name]
                 if not holding_stock.empty:
                     available = int(holding_stock['持仓/可用'].str.split('/').str[1].iloc[0])

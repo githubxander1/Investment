@@ -51,58 +51,39 @@ def get_new_records(current_df, history_df):
     if current_df.empty:
         return pd.DataFrame()
 
-    # # 标准化列名并补全缺失列
-    # expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
-    # for col in expected_columns:
-    #     if col not in current_df.columns:
-    #         current_df[col] = None
-    #     if col not in history_df.columns:
-    #         history_df[col] = None
-
-    # 确保字段存在
+    # 标准化列并创建唯一标识符
     current_df['代码'] = current_df['代码'].astype(str).str.zfill(6)
     current_df['时间'] = current_df['时间'].apply(normalize_time)
 
-    # 创建唯一标识
-    current_df['_id'] = current_df['时间'].astype(str) + '_' + current_df['代码'] + '_' + current_df['新比例%'].astype(str)
+    # 保留浮点数，并统一保留两位小数用于生成 _id
+    current_df['新比例%'] = current_df['新比例%'].round(2).astype(float)
+    current_df['_id'] = (
+        current_df['时间'].astype(str) + '_' +
+        current_df['代码'] + '_' +
+        current_df['新比例%'].map(lambda x: f"{x:.2f}")
+    )
 
     # 处理历史数据为空的情况
     if history_df.empty:
         return current_df.drop(columns=['_id'], errors='ignore')
 
-    print(f"{current_df}\n, current_df _id:", current_df['_id'].tolist())
-    # 标准化历史数据
+    # 同样处理历史数据
     history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
     history_df['时间'] = history_df['时间'].apply(normalize_time)
-    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'] + '_' + history_df['新比例%'].astype(str)
+    history_df['新比例%'] = history_df['新比例%'].round(2).astype(float)
+    history_df['_id'] = (
+        history_df['时间'].astype(str) + '_' +
+        history_df['代码'] + '_' +
+        history_df['新比例%'].map(lambda x: f"{x:.2f}")
+    )
 
-    print(f"{history_df}\n历史记录 _id:", history_df['_id'].tolist())
-    # 清洗 _id 列，将 NaN 替换为空字符串
-    current_df['_id'] = current_df['_id'].fillna('')
-    history_df['_id'] = history_df['_id'].fillna('')
-    # 清洗异常 _id
-    print("清洗前 current_df['_id']:", current_df['_id'].tolist())
-    print("清洗前 history_df['_id']:", history_df['_id'].tolist())
-
-    pattern = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}_\d{6}_\d+(\.\d+)?$'
-    current_df = current_df[current_df['_id'].str.contains(pattern, regex=True, na=False)]
-    history_df = history_df[history_df['_id'].str.contains(pattern, regex=True, na=False)]
-
-    # 打印调试信息
-    print("清洗后 current_df['_id']:", current_df['_id'].tolist())
-    print("清洗后 history_df['_id']:", history_df['_id'].tolist())
-
-    # 筛选新记录
+    # 找出新增记录
     new_mask = ~current_df['_id'].isin(history_df['_id'])
     new_data = current_df[new_mask].copy()
-    print("新增数据 _id:", new_data['_id'].tolist() if not new_data.empty else "无新增数据")
 
-    # if not new_data.empty:
-    #     new_data = standardize_dataframe(new_data)
     logger.info(f'新增记录：{new_data}')
-    # print(f'新增记录：{new_data}')
-
     return new_data.drop(columns=['_id'], errors='ignore') if not new_data.empty else new_data
+
 
 
 def standardize_dataframe(df):
@@ -113,9 +94,8 @@ def standardize_dataframe(df):
     # 使用 .loc 避免 SettingWithCopyWarning
     df = df.copy()  # 创建副本以避免修改原始数据
 
-    # if '代码' in df.columns:
-        # 先转为字符串，确保 zfill 操作不会触发类型警告
-        # df.loc[:, '代码'] = df['代码'].astype(str).str.zfill(6)
+    if '代码' in df.columns:
+        df.loc[:, '代码'] = df['代码'].astype(str).str.zfill(6)
 
     if '时间' in df.columns:
         df.loc[:, '时间'] = df['时间'].astype(str).apply(normalize_time)

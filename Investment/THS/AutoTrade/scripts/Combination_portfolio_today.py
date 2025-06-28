@@ -111,8 +111,8 @@ def fetch_and_extract_data(portfolio_id):
             }
 
             # 昨天日期
-            # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-            today = datetime.date.today().strftime('%Y-%m-%d')
+            today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            # today = datetime.date.today().strftime('%Y-%m-%d')
 
             if today == createAt.split()[0]:
                 today_trades.append(history_post)
@@ -127,13 +127,10 @@ async def Combination_main():
         all_today_trades.extend(today_trades)
 
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
-
-    # 转换成pd表格样式
     all_today_trades_df = pd.DataFrame(all_today_trades)
 
     # 只有在非空的情况下才进行字段处理
     if not all_today_trades_df.empty:
-        # all_today_trades_df['时间'] = all_today_trades_df['时间'].apply(normalize_time)
         all_today_trades_df['时间'] = all_today_trades_df['时间'].astype(str).apply(normalize_time)
 
         all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(
@@ -141,7 +138,7 @@ async def Combination_main():
         )  # 从1开始
     else:
         # print("⚠️ 无今日交易数据")
-        logger.info("⚠️ 无今日交易数据")
+        logger.info("⚠️ 今日无交易数据")
         return
 
     # 去掉科创板和创业板的股票
@@ -150,11 +147,6 @@ async def Combination_main():
         ]
     # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
-    # 筛选‘沪深A股’的
-    # all_today_trades_df_without_content = all_today_trades_df_without_content[all_today_trades_df_without_content['市场'].str.contains('沪深A股')]
-    # ✅ 修改为列表形式
-    # all_today_trades_df_without_content = all_today_trades_df_without_content[
-    #     all_today_trades_df_without_content['市场'].isin(['沪深A股'])]
 
     logger.info(f'今日交易数据：\n{all_today_trades_df_without_content}')
 
@@ -165,7 +157,6 @@ async def Combination_main():
 
     try:
         existing_data = read_portfolio_record_history(existing_data_file)
-        print(f'读取历史记录: {existing_data}')
     except (FileNotFoundError, pd.errors.EmptyDataError):
         # 显式创建带列名的空DataFrame
         existing_data = pd.DataFrame(columns=expected_columns)

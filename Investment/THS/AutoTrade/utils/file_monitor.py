@@ -4,23 +4,23 @@ import hashlib
 import logging
 
 logger = logging.getLogger(__name__)
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+# from watchdog.observers import Observer
+# from watchdog.events import FileSystemEventHandler
 
-class FileChangeHandler(FileSystemEventHandler):
-    def __init__(self, file_path, callback):
-        self.file_path = file_path
-        self.callback = callback
-
-    def on_modified(self, event):
-        if event.src_path == self.file_path:
-            self.callback()
-
-def watch_file(file_path, callback):
-    event_handler = FileChangeHandler(file_path, callback)
-    observer = Observer()
-    observer.schedule(event_handler, os.path.dirname(file_path), recursive=False)
-    observer.start()
+# class FileChangeHandler(FileSystemEventHandler):
+#     def __init__(self, file_path, callback):
+#         self.file_path = file_path
+#         self.callback = callback
+#
+#     def on_modified(self, event):
+#         if event.src_path == self.file_path:
+#             self.callback()
+#
+# def watch_file(file_path, callback):
+#     event_handler = FileChangeHandler(file_path, callback)
+#     observer = Observer()
+#     observer.schedule(event_handler, os.path.dirname(file_path), recursive=False)
+#     observer.start()
 
 def check_files_modified(file_paths, last_hashes=None, last_mod_times=None):
     current_hashes = {}

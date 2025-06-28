@@ -1,44 +1,114 @@
 # process_stocks_to_operate_data.py
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas
 import pandas as pd
 
-from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE
-from Investment.THS.AutoTrade.utils.excel_handler import read_portfolio_record_history
+from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
+    Strategy_portfolio_today, Combination_portfolio_today
+from Investment.THS.AutoTrade.utils.data_processor import normalize_time
+# from Investment.THS.AutoTrade.utils.excel_handler import read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.file_utils import get_file_hash, check_files_modified
 
 logger = setup_logger(trade_operations_log_file)
 
+def read_portfolio_record_history(file_path):
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+    # 昨天
+    # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    print(f'读取调仓记录文件日期{today}')
+    if os.path.exists(file_path):
+        try:
+            with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
+                if today in operation_history_xlsx.sheet_names:
+                    portfolio_record_history_df = pd.read_excel(operation_history_xlsx, sheet_name=today)
+                    # 去重处理
+                    portfolio_record_history_df.drop_duplicates(subset=['标的名称', '操作', '新比例%', '时间'], inplace=True)
+                    logger.info(f"读取去重后的操作历史文件完成, {len(portfolio_record_history_df)}条 \n{portfolio_record_history_df}")
+                else:
+                    portfolio_record_history_df = pd.DataFrame(columns=["名称","操作","标的名称","代码","最新价","新比例%","市场","时间"])
+                    logger.warning(f"历史文件{portfolio_record_history_df},表名称: {today}不存在")
+        except Exception as e:
+            logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
+            portfolio_record_history_df = pd.DataFrame(columns=['标的名称', '操作', '状态', '信息', '时间'])
+    else:
+        portfolio_record_history_df = pd.DataFrame(columns=["名称","操作","标的名称","代码","最新价","新比例%","市场","时间"])
+
+    return portfolio_record_history_df
+
+def save_to_excel(df, filename, sheet_name, index=False):
+    """追加保存DataFrame到Excel文件"""
+    try:
+        # 调试：打印要保存的数据
+        print(f"即将保存的数据:\n{df}")
+
+        # 检查文件是否存在
+        if os.path.exists(filename):
+            # 文件存在，读取现有 sheet 数据并追加
+            with pd.ExcelFile(filename, engine='openpyxl') as xls:
+                if sheet_name in xls.sheet_names:
+                    existing_df = pd.read_excel(xls, sheet_name=sheet_name)
+                    combined_df = pd.concat([existing_df, df], ignore_index=True)
+                else:
+                    combined_df = df
+
+            # 写回整个 DataFrame 到指定 sheet
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                combined_df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 成功追加数据到Excel文件: {filename}, 表名称: {sheet_name}")
+        else:
+            # 文件不存在，创建新文件
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name}")
+
+    except Exception as e:
+        logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
 def write_operation_history(df):
     """将操作记录写入Excel文件，按日期作为sheet名"""
-    today = datetime.now().strftime('%Y%m%d')
+    today = datetime.now().strftime('%Y-%m-%d')
+    print(f"写入操作记录文件日期：{today}")
+
+    filename = OPERATION_HISTORY_FILE  # D:\...\data\trade_operation_history.xlsx
 
     try:
-        file_exists = os.path.exists(OPERATION_HISTORY_FILE)
+        # 如果文件不存在，直接写入新文件
+        if not os.path.exists(filename):
+            save_to_excel(df, filename, sheet_name=today)
+            logger.info(f"成功写入操作记录到 {today} 表 {filename}")
+            return
 
-        with pd.ExcelWriter(OPERATION_HISTORY_FILE, mode='a', engine='openpyxl') as writer:
-            if today in writer.book.sheetnames:
-                old_df = pd.read_excel(writer.book, sheet_name=today)
+        # ✅ 正确做法：先读取已有数据（使用文件路径）
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            if today in xls.sheet_names:
+                old_df = pd.read_excel(xls, sheet_name=today)
                 combined_df = pd.concat([old_df, df], ignore_index=True)
             else:
-                combined_df = df
+                combined_df = df.copy()
 
-            # 去重
-            combined_df.drop_duplicates(subset=['标的名称', '操作', '新比例%'], keep='last', inplace=True)
+        # 去重
+        combined_df.drop_duplicates(subset=['标的名称', '操作', '新比例%'], keep='last', inplace=True)
 
+        # 再次写入（替换原 sheet）
+        with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
             combined_df.to_excel(writer, sheet_name=today, index=False)
-            logger.info(f"✅ 成功写入操作记录到 {today} 表")
+
+        logger.info(f"✅ 成功写入操作记录到 {today} 表 {filename}")
+
     except Exception as e:
         logger.error(f"❌ 写入操作记录失败: {e}")
+        raise
 
 
 def read_operation_history(history_file):
     """读取当日操作历史"""
-    today = datetime.now().strftime('%Y%m%d')
+    today = datetime.now().strftime('%Y-%m-%d')
+    # 昨天
+    # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    print(f'读取历史文件日期：{today}')
     if not os.path.exists(history_file):
         return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
 
@@ -50,6 +120,7 @@ def read_operation_history(history_file):
                 df['操作'] = df['操作'].astype(str).str.strip()
                 df['新比例%'] = df['新比例%'].astype(float).round(2)
                 df['_id'] = df.apply(lambda x: f"{x['标的名称']}_{x['操作']}_{x['新比例%']}", axis=1)
+                logger.info(f"✅ 读取操作历史成功，共 {len(df)} 条记录\n{df}")
                 return df
     except Exception as e:
         logger.warning(f"读取操作历史失败，可能文件被占用或损坏: {e}")
@@ -115,3 +186,16 @@ def process_excel_files(ths_page, file_paths, operation_history_file, holding_st
             logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
         except Exception as e:
             logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
+
+if __name__ == '__main__':
+    file_paths = [
+        Strategy_portfolio_today,Combination_portfolio_today
+    ]
+    from auto_trade_on_ths import THSPage
+    import uiautomator2 as u2
+    d = u2.connect()
+    package_name = "com.hexin.plat.android"
+    d.app_start(package_name, wait=True)
+    logger.info(f"启动App成功: {package_name}")
+    ths_page = THSPage(d)
+    process_excel_files(ths_page=ths_page, file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE, holding_stock_file=None)

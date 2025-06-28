@@ -29,6 +29,7 @@ def find_node_by_text(text):
 
 # 提取表头信息
 def extract_header_info():
+    logger.info('正在获取账户表头信息...')
     header_info = {}
 
     # 总资产
@@ -41,11 +42,12 @@ def extract_header_info():
 
     float_profit_loss_ = d(resourceId="com.hexin.plat.android:id/capital_cell_value",
                                className="android.widget.TextView", index=2)
+    header_info["浮动盈亏"] = float_profit_loss_.get_text() if float_profit_loss_.exists else "未找到"
     header_info["当日盈亏/盈亏率"] = float_profit_loss_node.get_text() if float_profit_loss_node.exists else "未找到"
 
     # 当日盈亏
-    # daily_profit_loss_node = d(resourceId="com.hexin.plat.android:id/dangri_yingkui_value", className="android.widget.TextView", index=0)
-    daily_profit_loss_node = d.xpath('//*[@resource-id="com.hexin.plat.android:id/two_text_value"]')
+    daily_profit_loss_node = d(resourceId="com.hexin.plat.android:id/dangri_yingkui_value", className="android.widget.TextView", index=0)
+    # daily_profit_loss_node = d.xpath('//*[@resource-id="com.hexin.plat.android:id/two_text_value"]')
     daily_profit_loss_rate_node = d(resourceId="com.hexin.plat.android:id/dangri_yingkuibi_value", className="android.widget.TextView", index=1)
     daily_profit_loss = daily_profit_loss_node.get_text() if daily_profit_loss_node.exists else "未找到"
     daily_profit_loss_rate = daily_profit_loss_rate_node.get_text() if daily_profit_loss_rate_node.exists else "未找到"
@@ -68,10 +70,13 @@ def extract_header_info():
     # available_for_withdrawal_node = d(resourceId="com.hexin.plat.android:id/capital_cell_value", className="android.widget.TextView", index=4)
     header_info["可取"] = available_for_withdrawal_node.get_text() if available_for_withdrawal_node.exists else "未找到"
 
-    return header_info
+    header_info_df = pd.DataFrame([header_info])
+    logger.info(f"账户表头信息完成: \n{header_info_df}")
+    return header_info_df
 
 def extract_stock_info():
     # 查找“查看已清仓股票”按钮
+    logger.info('正在获取账户持仓信息...')
     qingcang = d(text="查看已清仓股票")
 
     # 获取股票列表
@@ -168,7 +173,7 @@ def extract_stock_info():
 
             # 检查是否有新的股票项
             if len(new_stocks_df) == 0:
-                print("没有新的股票项，继续滑动")
+                logger.info("没有新的股票项，继续滑动")
         else:
             break
 
@@ -180,30 +185,31 @@ def extract_stock_info():
         # if not stock_list_node.child(className="android.widget.RelativeLayout").exists:
         if total_asset_node.exists:
             break
-
-    return stocks
+    stocks_df = pd.DataFrame(stocks)
+    logger.info(f'获取账户持仓信息完成')
+    return stocks_df
 
 def update_holding_info():
     # 提取表头信息
-    header_info = extract_header_info()
-    header_df = pd.DataFrame([header_info])
+    header_info_df = extract_header_info()
+    # header_df = pd.DataFrame([header_info])
     # print("表头信息:")
     # print(header_df)
 
     # 提取股票信息
-    stocks = extract_stock_info()
+    stocks_df = extract_stock_info()
 
     # 打印当前股票列表
-    stocks_df = pd.DataFrame(stocks)
+    # stocks_df = pd.DataFrame(stocks)
     # print("当前股票列表:")
     # print(stocks_df)
 
     # 保存到Excel文件
     with pd.ExcelWriter(Account_holding_stockes_info_file) as writer:
         try:
-            header_df.to_excel(writer, index=False, sheet_name="表头数据")
+            header_info_df.to_excel(writer, index=False, sheet_name="表头数据")
             stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
-            logger.info(f'更新账户数据成功 {Account_holding_stockes_info_file}')
+            logger.info(f'更新账户数据成功: {Account_holding_stockes_info_file}')
         except Exception as e:
             logger.error(f"更新账户数据失败: {e}")
 

@@ -41,10 +41,10 @@ async def get_latest_position_and_trade(strategy_id):
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
-    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 昨天
-    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
-    # print(today)
+    today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+    print(today)
 
     result = []
     for trade_info in trade_stocks:
@@ -69,7 +69,7 @@ async def get_latest_position_and_trade(strategy_id):
                 '市场': market,
                 '时间': normalize_time(str(stock_trade_date)),
             })
-
+        # pprint(f'{result}')
     return result
 
 
@@ -82,6 +82,13 @@ async def Strategy_main():
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
 
+    # 去重处理
+    all_today_trades_df = all_today_trades_df.drop_duplicates(
+        subset=['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间'],
+        keep='first'
+    )
+    # print(f'今日交易数据：\n{all_today_trades_df}')
+
     # 只有在非空的情况下才进行字段处理
     if not all_today_trades_df.empty:
         all_today_trades_df = all_today_trades_df.reset_index(drop=True).set_index(
@@ -92,9 +99,9 @@ async def Strategy_main():
         return
 
     # 过滤掉创业板、科创板股票的交易信息
-    all_today_trades_df_without_sc = all_today_trades_df[all_today_trades_df['市场'].isin(['创业板', '科创板']) == False]
+    all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['创业板', '科创板']) == False]
     # all_trades_df = [~(all_trades_df[all_trades_df['市场'].isin(['创业板', '科创板'])]
-    logger.info(f'今日交易数据：\n{all_today_trades_df_without_sc}')
+    logger.info(f'今日交易数据：\n{all_today_trades_df}')
 
     # # 排序
     # all_trades_df = all_trades_df.sort_values(by='时间', ascending=False).reset_index(drop=True)
@@ -109,16 +116,16 @@ async def Strategy_main():
         # 强制清理异常值
         existing_data['代码'] = existing_data['代码'].astype(str).str.zfill(6)
         existing_data['时间'] = existing_data['时间'].astype(str).apply(normalize_time)
-        print(f'读取历史记录: {existing_data}')
+        # print(f'读取历史记录: {existing_data}')
     except (FileNotFoundError, pd.errors.EmptyDataError):
         existing_data = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         save_to_excel(existing_data, existing_data_file, f'{today}', index=False)
         # existing_data.to_csv(existing_data_file, index=False)
-        print(f'初始化历史记录文件: {existing_data_file}')
+        # print(f'初始化历史记录文件: {existing_data_file}')
 
     # 标准化数据格式
-    all_today_trades_df = standardize_dataframe(all_today_trades_df_without_sc)
+    all_today_trades_df = standardize_dataframe(all_today_trades_df)
     existing_data = standardize_dataframe(existing_data)
     # print(f'读取历史记录: {existing_data}')
 
@@ -142,7 +149,7 @@ async def Strategy_main():
         # update_file_status(existing_data_file)
 
         # 发送通知
-        new_data_print_without_header = all_today_trades_df_without_sc.to_string(index=False)
+        new_data_print_without_header = all_today_trades_df.to_string(index=False)
         send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
         # logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
         # from Investment.THS.AutoTrade.utils.event_bus import event_bus

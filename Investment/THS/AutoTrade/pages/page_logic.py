@@ -222,38 +222,43 @@ class THSPage:
         confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn")
 
         # 处理成功提交的情况
-        if dialog_title.exists:
-            title_text = dialog_title.get_text()
-            if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
-                logger.info("检测到'委托确认'提示")
-                confirm_button.click()
-                logger.info("点击确认按钮")
+        # if dialog_title.exists:
+        title_text = dialog_title.get_text()
+        if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
+           logger.info("检测到'委托确认'提示")
+           confirm_button.click()
+           logger.info("点击确认按钮")
 
-                if prompt_content.exists:
-                    prompt_text = prompt_content.get_text()
-                    if '委托已提交' in prompt_text:
-                        confirm_button.click()
-                        logger.info("委托已提交")
-                        return True, "委托已提交"
-                    else:
-                        error_info = prompt_text
-                        confirm_button.click()
-                        logger.warning(error_info)
-                        return False, error_info
-
-        # 处理其他类型弹窗
-        if prompt_content.exists():
-            error_info = prompt_content.get_text()
-            confirm_button.click()
-            return False, error_info
-        elif scroll_content.exists():
-            error_info = scroll_content.get_text()
-            confirm_button.click()
-            return False, error_info
+           # if prompt_content.exists:
+           prompt_text = prompt_content.get_text()
+           logger.info(f"提示信息：{prompt_text}")
+           if '委托已提交' in prompt_text:
+               confirm_button.click()
+               logger.info("委托已提交")
+               return True, "委托已提交"
+           else:
+               error_info = prompt_text
+               confirm_button.click()
+               logger.warning(error_info)
+               return False, error_info
         else:
-            error_info = "未知错误"
-            logger.warning(error_info)
-            return False, error_info
+            warning_info = "未检测到'委托确认'提示"
+            logger.info(warning_info)
+            return False, warning_info
+
+        # # 处理其他类型弹窗
+        # if prompt_content.exists():
+        #     error_info = prompt_content.get_text()
+        #     confirm_button.click()
+        #     return False, error_info
+        # # elif scroll_content.exists():
+        # #     error_info = scroll_content.get_text()
+        # #     confirm_button.click()
+        # #     return False, error_info
+        # else:
+        #     error_info = "未知错误"
+        #     logger.warning(error_info)
+        #     return False, error_info
 
     def update_holding_info(self):
         # self.click_holding_button()
