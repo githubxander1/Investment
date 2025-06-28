@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 
 from Investment.THS.AutoTrade.config.settings import Combination_headers, Combination_list_file
-from Investment.THS.new.组合.组合_榜单排行榜数据 import extract_data
+from Investment.THS.组合.其他.组合_榜单排行榜数据 import extract_data
 
 
 def fetch_and_save_to_sheet(writer, match_id, sheet_name):

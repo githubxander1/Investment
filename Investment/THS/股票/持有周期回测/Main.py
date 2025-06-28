@@ -9,7 +9,7 @@ def main():
     # 设置数据路径
     data_dir = 'stock_data'
     # data_dir = '股票数据'
-    output_path = '../国家队/龙虎榜联动分析交易系统/backtest_results'
+    output_path = '../backtest_results'
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
