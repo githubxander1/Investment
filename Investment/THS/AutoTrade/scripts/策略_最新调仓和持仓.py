@@ -5,6 +5,8 @@ from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor
 import logging
 
+from Investment.THS.AutoTrade.utils.format_data import determine_market
+
 # 配置日志记录
 logging.basicConfig(
     level=logging.INFO,
@@ -17,7 +19,6 @@ logging.basicConfig(
 
 # 导入配置
 from Investment.THS.AutoTrade.config.settings import Strategy_ids, Strategy_id_to_name, Strategy_info_file
-from Investment.THS.AutoTrade.utils.determine_market import determine_market
 
 # 策略ID到策略名称的映射
 # strategy_id_to_name = {

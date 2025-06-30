@@ -60,44 +60,45 @@ async def main():
 
     ths_page = THSPage(d)
 
-    # 初始化变量，防止 UnboundLocalError
-    strategy_success = False
-    strategy_data = None
-    combination_success = False
-    combination_data = None
+    while True:
+        # 初始化变量，防止 UnboundLocalError
+        strategy_success = False
+        strategy_data = None
+        combination_success = False
+        combination_data = None
 
-    now = datetime.datetime.now().time()
+        now = datetime.datetime.now().time()
 
-    # 判断是否在策略任务时间窗口（9:30-9:33）
-    if dt_time(9, 30) <= now <= dt_time(9, 33):
-        logger.info("---------------------策略任务开始执行---------------------")
-        strategy_result = await Strategy_main()
-        if strategy_result:
-            strategy_success, strategy_data = strategy_result
+        # 判断是否在策略任务时间窗口（9:30-9:33）
+        if dt_time(9, 30) <= now <= dt_time(9, 33):
+            logger.info("---------------------策略任务开始执行---------------------")
+            strategy_result = await Strategy_main()
+            if strategy_result:
+                strategy_success, strategy_data = strategy_result
+            else:
+                logger.warning("⚠️ 策略任务返回空值，默认视为无更新")
+            logger.info(f"策略是否有新增数据: {strategy_success}\n---------------------策略任务执行结束---------------------")
+
+        # 判断是否在组合任务和自动化交易时间窗口（9:15-15:00）
+        if dt_time(9, 25) <= now <= dt_time(15, 00):
+            logger.info("---------------------组合任务开始执行---------------------")
+            combination_result = await Combination_main()
+            if combination_result:
+                combination_success, combination_data = combination_result
+            else:
+                logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
+            logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
+
+            # 如果有任何一个数据获取成功，则执行交易处理
+            if strategy_success or combination_success:
+                file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
+                process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE)
+
         else:
-            logger.warning("⚠️ 策略任务返回空值，默认视为无更新")
-        logger.info(f"策略是否有新增数据: {strategy_success}\n---------------------策略任务执行结束---------------------")
+            logger.info("当前时间不在任务执行窗口内 (9:15-15:00)，跳过任务执行")
 
-    # 判断是否在组合任务和自动化交易时间窗口（9:15-15:00）
-    if dt_time(9, 25) <= now <= dt_time(15, 00):
-        logger.info("---------------------组合任务开始执行---------------------")
-        combination_result = await Combination_main()
-        if combination_result:
-            combination_success, combination_data = combination_result
-        else:
-            logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
-        logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
-
-        # 如果有任何一个数据获取成功，则执行交易处理
-        if strategy_success or combination_success:
-            file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
-            process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE)
-
-    else:
-        logger.info("当前时间不在任务执行窗口内 (9:15-15:00)，跳过任务执行")
-
-    # 每隔1分钟执行一次
-    await asyncio.sleep(60)
+        # 每隔1分钟执行一次
+        await asyncio.sleep(60)
 
 if __name__ == '__main__':
     asyncio.run(main())

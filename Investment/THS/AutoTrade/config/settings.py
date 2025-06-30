@@ -31,12 +31,12 @@ compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
 Strategy_info_file = os.path.join(DATA_DIR, '策略信息.csv')
 Combination_list_file = os.path.join(DATA_DIR, '组合列表.xlsx')
 Strategy_list_file = os.path.join(DATA_DIR, '策略列表.csv')
-Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.csv')
+Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.xlsx')
 #ai诊断文件
 Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
 Account_holding_stockes_info_file = os.path.join(DATA_DIR, 'account_info.xlsx')
-account_xml_file = os.path.join(DATA_DIR, 'account_info_xml.xml')
+account_xml_file: str = os.path.join(DATA_DIR, 'account_info_xml.xml')
 
 
 fake_useragent = UserAgent()
@@ -57,12 +57,15 @@ Combination_headers = {
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         #20250509 9:42 20250623
-        "Cookie": 'uid=CvQTumg397R8rXMQBSppAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ5ODA1MTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWU5NThhYTRmYjRiYzZlM2RhMmI5NzU0MDI0ZGYzODU0Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=d19d7223e7976c9acf0df29f2bcb2d69; user_status=0; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=AwzMLPM8iAfDvpx7o4R4cs9M1GE-RbDvsunEs2bNGLda8aNbjlWAfwL5lEm1'
+        "Cookie": 'user_status=0; hxmPid=adm_sjpopfuceng_441325; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzUxMjQ2MTQxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWMzNWY3ZWZlZGIyZWYwNjliOGVkZTdlODEwNzdjM2EyOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=b5eafad7a376b45f8bc0e43df793dfbc; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=A_jcG90c5DqZ6Qi-GGN21lvXwK2KYVzhvsUwbzJpRDPmTZeX2nEsew7VAOaB'
+        # "Cookie": 'uid=CvQTumg397R8rXMQBSppAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ5ODA1MTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWU5NThhYTRmYjRiYzZlM2RhMmI5NzU0MDI0ZGYzODU0Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=d19d7223e7976c9acf0df29f2bcb2d69; user_status=0; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=AwzMLPM8iAfDvpx7o4R4cs9M1GE-RbDvsunEs2bNGLda8aNbjlWAfwL5lEm1'
     }
 
 Strategy_ids = ['155680', '136574', '137789']
 Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
+        '155259': 'TMT资金流入战法',#资金面，停留，最新250218
+        '155265': '中字头资金流入战法', #资金面
         '136574': '低价小市值股战法', #技术面
         # '136509': '缩量绩优小盘股战法', #技术面
 
@@ -80,9 +83,9 @@ Strategy_id_to_name = {
 
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = ['19347', '11094', '7152']
+Combination_ids = ['11094', '7152']
 Combination_ids_to_name = {
-    '19347': '超短稳定复利',
+    '19347': '超短稳定复利',# 变收费
     '11094': '低位题材埋伏',#胜率高，回撤小，收益高
     '7152': '中线龙头',#胜率低，收益高
     # '9564': '梦想二号',# 长期
@@ -102,10 +105,10 @@ ETF_ids_to_name = {
     '29684': '主题成长优选ETF',
     '29634': '主题轮动精选ETF',
 
-    '30463': '科技ETF高频',
-    '29669': '波段优选ETF',
-    '29656': '龙头驾到ETF',
-    '29617': 'ETF灵蛇智投',
+    # '30463': '科技ETF高频',
+    # '29669': '波段优选ETF',
+    # '29656': '龙头驾到ETF',
+    # '29617': 'ETF灵蛇智投',
     # '29734': '热点追击ETF',
 
     # '29678': '科技腾飞精选',
@@ -114,11 +117,13 @@ ETF_ids_to_name = {
     # '29646': '热点追踪猎手'
 }
 
-zhitou_ids = ['31672']
+zhitou_ids = ['31670','31672']
 zhitou_ids_to_name = {
-    "31672": "短线趋势题材",
+    '31670': '赛-情绪拐点龙头战法',
+    "31672": "赛-短线趋势题材",
+    "31519": "赛-KD跟踪策略",
     "31903": "太极擒龙免费组合",
-    "29774": "智投短线精选",
+    # "29774": "智投短线精选",
     "31816": "一只不休息的牛",
 }
 

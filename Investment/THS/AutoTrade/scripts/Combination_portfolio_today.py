@@ -80,6 +80,7 @@ def fetch_and_extract_data(portfolio_id):
         for infos in relocateList:
             name = infos.get('name', None)
             code = infos.get('code', None)
+
             if '***' in name:
                 logger.warning(
                     f"未订阅或标的名称显示异常 -组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")

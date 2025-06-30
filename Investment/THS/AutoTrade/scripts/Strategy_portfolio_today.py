@@ -8,7 +8,7 @@ import requests
 from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids, OPRATION_RECORD_DONE_FILE, OPERATION_HISTORY_FILE
+    Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids
 from Investment.THS.AutoTrade.scripts.data_process import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification

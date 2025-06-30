@@ -9,7 +9,8 @@ import requests
 #     ]
 # ids = ['7152']
 # ids = [6994, 18710,16281,13081, 14980,11094]
-from Investment.THS.AutoTrade.config.settings import ETF_ids, compare_ETF_info_file, Combination_ids
+from Investment.THS.AutoTrade.config.settings import ETF_ids, compare_ETF_info_file, Combination_ids, \
+    Combination_headers
 
 ids = Combination_ids
 # ids = ETF_ids
@@ -31,22 +32,23 @@ all_results = []
 
 def get_product_info(product_id):
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_portfolio_infos"
-    headers = {
-        "Host": "dq.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Origin": "https://t.10jqka.com.cn",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-site",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
-    }
+    # headers = {
+    #     # "Host": "dq.10jqka.com.cn",
+    #     "Connection": "keep-alive",
+    #     "Accept": "application/json, text/plain, */*",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "Origin": "https://t.10jqka.com.cn",
+    #     "X-Requested-With": "com.hexin.plat.android",
+    #     "Sec-Fetch-Site": "same-site",
+    #     "Sec-Fetch-Mode": "cors",
+    #     "Sec-Fetch-Dest": "empty",
+    #     "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+    #     "Accept-Encoding": "gzip, deflate",
+    #     "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    #     "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=AxLXmrX7ofaqkd2K73acRpPBYdP0Ixa9SCcK4dxrPkWw771JxLNmzRi3WvOv"
+    # }
+    headers = Combination_headers
     params = {
         "product_id": product_id,
         "product_type": "portfolio"
@@ -82,23 +84,24 @@ def get_position_income_info(portfolio_id):
     :return: 包含收益信息的字典或None
     """
     url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_income_info"
-    headers = {
-        "Host": "估值.py.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=Ax_acQjchI2vDoCRe4xZjXburHiphHMmjdh3GrFsu04VQDBiuVQDdp2oB2PC"
-    }
+    # headers = {
+    #     "Host": "估值.py.10jqka.com.cn",
+    #     "Connection": "keep-alive",
+    #     "Accept": "application/json, text/plain, */*",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "X-Requested-With": "com.hexin.plat.android",
+    #     "Sec-Fetch-Site": "same-origin",
+    #     "Sec-Fetch-Mode": "cors",
+    #     "Sec-Fetch-Dest": "empty",
+    #     "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+    #     "Accept-Encoding": "gzip, deflate",
+    #     "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    #     "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=Ax_acQjchI2vDoCRe4xZjXburHiphHMmjdh3GrFsu04VQDBiuVQDdp2oB2PC"
+    # }
+    headers = Combination_headers
+    params = {"id": portfolio_id}
     try:
-        params = {"id": portfolio_id}
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         data = response.json()
@@ -129,18 +132,19 @@ def get_package_feature_info(product_id):
     :return: 包含产品特性信息的字典或None
     """
     url = "https://dq.10jqka.com.cn/fuyao/tg_package/package/v1/get_package_feature_info"
-    headers = {
-        "Host": "dq.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "Origin": "https://t.10jqka.com.cn",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,en-US;q=0.9",
-        "X-Requested-With": "com.hexin.plat.android"
-    }
+    # headers = {
+    #     "Host": "dq.10jqka.com.cn",
+    #     "Connection": "keep-alive",
+    #     "Accept": "application/json, text/plain, */*",
+    #     "Origin": "https://t.10jqka.com.cn",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
+    #     "Accept-Encoding": "gzip, deflate",
+    #     "Accept-Language": "zh-CN,en-US;q=0.9",
+    #     "X-Requested-With": "com.hexin.plat.android"
+    # }
+    headers = Combination_headers
     params = {
         "product_id": product_id,
         "product_type": "portfolio"
@@ -185,17 +189,18 @@ def get_relocate_data_summary(portfolio_id):
     url = "https://t.10jqka.com.cn/portfolio/relocate/v2/get_relocate_data_summary"
 
     # 请求头
-    headers = {
-        "Host": "估值.py.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme=0 innerversion=G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/portfolioFront/historyTransfer.html?id=14533",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,en-US;q=0.9",
-        "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNj04ODoxNzMzMT0xMTExOjo6MTY1ODE0834NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_488; escapename=mo_488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_488\",\"userid\":\"641926488\"}; hxmPid=hqMarketPkgVersionControl; v=A2J0tXgycd9rQ22D-pDEtNQeuuPEs2bNGLda8az7jlWAfw1ZlEO23ehHqgJ_",
-    }
+    # headers = {
+    #     "Host": "估值.py.10jqka.com.cn",
+    #     "Connection": "keep-alive",
+    #     "Accept": "application/json, text/plain, */*",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme=0 innerversion=G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "Referer": "https://t.10jqka.com.cn/portfolioFront/historyTransfer.html?id=14533",
+    #     "Accept-Encoding": "gzip, deflate",
+    #     "Accept-Language": "zh-CN,en-US;q=0.9",
+    #     "Cookie": "user_status=0; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNj04ODoxNzMzMT0xMTExOjo6MTY1ODE0834NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_488; escapename=mo_488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_488\",\"userid\":\"641926488\"}; hxmPid=hqMarketPkgVersionControl; v=A2J0tXgycd9rQ22D-pDEtNQeuuPEs2bNGLda8az7jlWAfw1ZlEO23ehHqgJ_",
+    # }
+    headers = Combination_headers
     params = {
         "id": portfolio_id,
     }
@@ -223,21 +228,22 @@ def get_position_industry_info(portfolio_id):
     :return: 包含持仓行业信息的字典或None
     """
     url = "https://t.10jqka.com.cn/portfolio/v2/position/get_position_industry_info"
-    headers = {
-        "Host": "估值.py.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-Requested-With": "com.hexin.plat.android",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=A8oP8g1DmV6iqRXyZ91U_qvpGbtsu04VQD_CuVQDdp2oB2VhPEueJRDPEsAn"
-    }
+    # headers = {
+    #     "Host": "估值.py.10jqka.com.cn",
+    #     "Connection": "keep-alive",
+    #     "Accept": "application/json, text/plain, */*",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 10; Redmi Note 7 Pro Build/QKQ1.190915.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.101 Mobile Safari/537.36 Hexin_Gphone/11.16.10 (Royal Flush) hxtheme/1 innerversion/G037.08.980.1.32 followPhoneSystemTheme/1 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "X-Requested-With": "com.hexin.plat.android",
+    #     "Sec-Fetch-Site": "same-origin",
+    #     "Sec-Fetch-Mode": "cors",
+    #     "Sec-Fetch-Dest": "empty",
+    #     "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=19483",
+    #     "Accept-Encoding": "gzip, deflate",
+    #     "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    #     "Cookie": "IFUserCookieKey={}; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzM0MDUzNTg5Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE3MTRjYTYwODhjNjRmYzZmNDFlZDRkOTJhMDU3NTMwOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=58d0f4bf66d65411bb8d8aa431e00721; user_status=0; hxmPid=sns_my_pay_new; v=A8oP8g1DmV6iqRXyZ91U_qvpGbtsu04VQD_CuVQDdp2oB2VhPEueJRDPEsAn"
+    # }
+    headers = Combination_headers
     params = {"id": portfolio_id}
     try:
         response = requests.get(url, params=params, headers=headers)
@@ -256,17 +262,18 @@ def get_portfolio_profitability_period_win_hs300(portfolio_id):
     :return: 包含收益对比信息的字典或None
     """
     url = "https://t.10jqka.com.cn/portfolioedge/calculate/v1/get_portfolio_profitability"
-    headers = {
-        "Host": "估值.py.10jqka.com.cn",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "zh-CN,en-US;q=0.9",
-        "X-Requested-With": "com.hexin.plat.android"
-    }
+    # headers = {
+    #     "Host": "估值.py.10jqka.com.cn",
+    #     "Connection": "keep-alive",
+    #     "Accept": "application/json, text/plain, */*",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme/0 userid/641926488 getHXAPPAccessibilityMode/0 hxNewFont/1 isVip/0 getHXAPPFontSetting/normal getHXAPPAdaptOldSetting/0",
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "Referer": "https://t.10jqka.com.cn/pkgfront/tgService.html?type=portfolio&id=14533",
+    #     "Accept-Encoding": "gzip, deflate",
+    #     "Accept-Language": "zh-CN,en-US;q=0.9",
+    #     "X-Requested-With": "com.hexin.plat.android"
+    # }
+    headers = Combination_headers
     params = {
         "id": portfolio_id
     }
@@ -306,18 +313,19 @@ def get_popular_advisors():
     :return: 包含人气投顾userId的列表
     """
     url = "https://t.10jqka.com.cn/event/rank/popularity/v2"
-    headers = {
-        # "Host": "估值.py.10jqka.com.cn",
-        # "Connection": "keep-alive",
-        # "Accept": "application/json, text/plain, */*",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
-        # "Content-Type": "application/x-www-form-urlencoded",
-        # "Referer": "https://t.10jqka.com.cn/tgactivity/portfolioSquare.html",
-        # "Accept-Encoding": "gzip, deflate",
-        # "Accept-Language": "zh-CN,en-US;q=0.9",
-        "Cookie": "user_status=0; user=MDptb18yNDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0,ExLDQwOzYsMSw0MDs1,ExsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1,ExsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_481926488; escapename=mo_481926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_481926488\",\"userid\":\"641926488\"}; hxmPid=sns_service_video_choice_detail_85853; v=Aw0bNHuLVti5yPKcsT7DJecHFSKH6kHtyxWlkE-SSIIT6SJYFzpRjFtutUDc",
-        # "X-Requested-With": "com.hexin.plat.android"
-    }
+    # headers = {
+    #     # "Host": "估值.py.10jqka.com.cn",
+    #     # "Connection": "keep-alive",
+    #     # "Accept": "application/json, text/plain, */*",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 9; ASUS_I003DD Build/PI; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.70 Mobile Safari/537.36 Hexin_Gphone/11.17.03 (Royal Flush) hxtheme/0 innerversion/G037.08.983.1.32 followPhoneSystemTheme=0 userid=641926488 getHXAPPAccessibilityMode=0 hxNewFont=1 isVip=0 getHXAPPFontSetting=normal getHXAPPAdaptOldSetting=0",
+    #     # "Content-Type": "application/x-www-form-urlencoded",
+    #     # "Referer": "https://t.10jqka.com.cn/tgactivity/portfolioSquare.html",
+    #     # "Accept-Encoding": "gzip, deflate",
+    #     # "Accept-Language": "zh-CN,en-US;q=0.9",
+    #     "Cookie": "user_status=0; user=MDptb18yNDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3,ExMTExMTExMTExLDQwOzQ0,ExLDQwOzYsMSw0MDs1,ExsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1,ExsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzMzMTQxMTExOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWEwZGI0MTE4MTk4NThiZDE2MDFjMDVmNDQ4N2M4ZjcxOjox; userid=641926488; u_name=mo_481926488; escapename=mo_481926488; ticket=c9840d8b7eefc37ee4c5aa8dd6b90656; IFUserCookieKey={\"escapename\":\"mo_481926488\",\"userid\":\"641926488\"}; hxmPid=sns_service_video_choice_detail_85853; v=Aw0bNHuLVti5yPKcsT7DJecHFSKH6kHtyxWlkE-SSIIT6SJYFzpRjFtutUDc",
+    #     # "X-Requested-With": "com.hexin.plat.android"
+    # }
+    headers = Combination_headers
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()

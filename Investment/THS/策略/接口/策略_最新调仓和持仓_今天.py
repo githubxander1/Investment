@@ -161,24 +161,25 @@ def main():
     last_positions_df = pd.DataFrame(all_positions_info)
     today_trades_df = pd.DataFrame(all_today_trades_info)
 
+    strategy_file_path = '策略最新持仓_所有.xlsx'
     # 检查是否有数据并保存
     if not last_positions_df.empty:
-        positions_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
+        positions_file_path = strategy_file_path
         save_to_excel(last_positions_df, positions_file_path, '策略最新持仓')
     else:
         print("No position testdata to save.")
 
     if not last_trades_df.empty:
-        trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略最新持仓_所有.xlsx'
+        trades_file_path = strategy_file_path
         save_to_excel(last_trades_df, trades_file_path, '策略最新调仓')
     else:
         print("No trade testdata to save.")
 
     if not today_trades_df.empty:
-        today_trades_file_path = r'D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\策略今天调仓_所有.xlsx'
+        today_trades_file_path = strategy_file_path
         save_to_excel(today_trades_df, today_trades_file_path, '策略今天调仓')
     else:
-        print("No today's trade testdata to save.")
+        print("No today's trade testdata available.")
 
     # 打印当天交易信息到控制台
     print("\n当天交易信息:")

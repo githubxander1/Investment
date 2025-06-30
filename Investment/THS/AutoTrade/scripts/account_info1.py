@@ -86,20 +86,15 @@ def extract_stock_info(max_swipe_attempts=5, retry_top=3):
     stocks = []
     seen_stocks = set()  # 用于记录已添加的股票名称，避免重复
 
-    # 定位股票列表 RecyclerView
-    stock_list_node = d(resourceId="com.hexin.plat.android:id/recyclerview_id")
-    if not stock_list_node.exists:
-        logger.error("未找到股票列表节点，请确认是否在正确页面。")
-        return pd.DataFrame()
-
     for _ in range(max_swipe_attempts):
+        if not stock_list_node.exists:
+            break
         try:
-            # 获取当前页的所有股票项 RelativeLayout
             stock_items = stock_list_node.child(className="android.widget.RelativeLayout")
 
             for stock_item in stock_items:
-                # 标的名称 TextView（位于第一个 TextView）
-                stock_name_node = stock_item.child(className="android.widget.TextView", instance=0)
+                # 获取标的名称
+                stock_name_node = stock_item.child(className="android.widget.TextView", index=0)
                 stock_name = stock_name_node.get_text() if stock_name_node.exists else "None"
                 if stock_name in ["隐藏", "新标准券", "None"]:
                     continue
@@ -107,49 +102,44 @@ def extract_stock_info(max_swipe_attempts=5, retry_top=3):
                     continue
                 seen_stocks.add(stock_name)
 
-                # 市值 TextView（位于第二个 TextView）
-                market_value_node = stock_item.child(className="android.widget.TextView", instance=1)
+                # 获取市值
+                market_value_node = stock_item.child(className="android.widget.TextView", index=1)
                 market_value = market_value_node.get_text() if market_value_node.exists else "None"
 
-                # HorizontalScrollView 内容
+                # 获取HorizontalScrollView中的LinearLayout
                 horizontal_scrollview = stock_item.child(className="android.widget.HorizontalScrollView")
-                if not horizontal_scrollview.exists:
-                    logger.warning(f"未找到HorizontalScrollView，跳过该条目: {stock_name}")
-                    continue
+                daily_profit_loss = profit_loss = cost = current_price = position_available = "None"
+                daily_profit_loss_rate = profit_loss_rate = "None"
 
-                linear_layouts = horizontal_scrollview.child(className="android.widget.LinearLayout")
-                # if len(linear_layouts) < 5:
-                #     logger.warning(f"LinearLayout 不足，跳过该条目: {stock_name}")
-                #     continue
+                if horizontal_scrollview.exists:
+                    linear_layouts = horizontal_scrollview.child(className="android.widget.LinearLayout")
+                    if len(linear_layouts) >= 5:
 
-                # 盈亏/盈亏率 (linear_layouts[1])
-                profit_loss_nodes = linear_layouts[1].child(className="android.widget.TextView")
-                profit_loss = profit_loss_rate = "None"
-                if len(profit_loss_nodes) >= 2:
-                    profit_loss = profit_loss_nodes[0].get_text()
-                    profit_loss_rate = profit_loss_nodes[1].get_text()
+                        # 盈亏/盈亏率
+                        profit_loss_node = linear_layouts[1].child(className="android.widget.TextView", index=0)
+                        profit_loss_rate_node = linear_layouts[1].child(className="android.widget.TextView", index=1)
+                        profit_loss = profit_loss_node.get_text() if profit_loss_node.exists else "None"
+                        profit_loss_rate = profit_loss_rate_node.get_text() if profit_loss_rate_node.exists else "None"
 
-                # 当日盈亏/盈亏率 (linear_layouts[2])
-                daily_profit_loss_nodes = linear_layouts[2].child(className="android.widget.TextView")
-                daily_profit_loss = daily_profit_loss_rate = "None"
-                if len(daily_profit_loss_nodes) >= 2:
-                    daily_profit_loss = daily_profit_loss_nodes[0].get_text()
-                    daily_profit_loss_rate = daily_profit_loss_nodes[1].get_text()
+                        # 当日盈亏/盈亏率
+                        daily_profit_loss_node = linear_layouts[2].child(className="android.widget.TextView", index=0)
+                        daily_profit_loss_rate_node = linear_layouts[2].child(className="android.widget.TextView", index=1)
+                        daily_profit_loss = daily_profit_loss_node.get_text() if daily_profit_loss_node.exists else "None"
+                        daily_profit_loss_rate = daily_profit_loss_rate_node.get_text() if daily_profit_loss_rate_node.exists else "None"
 
-                # 成本/现价 (linear_layouts[3])
-                cost_nodes = linear_layouts[3].child(className="android.widget.TextView")
-                cost = current_price = "None"
-                if len(cost_nodes) >= 2:
-                    cost = cost_nodes[0].get_text()
-                    current_price = cost_nodes[1].get_text()
+                        # 成本/现价
+                        cost_node = linear_layouts[3].child(className="android.widget.TextView", index=0)
+                        current_price_node = linear_layouts[3].child(className="android.widget.TextView", index=1)
+                        cost = cost_node.get_text() if cost_node.exists else "None"
+                        current_price = current_price_node.get_text() if current_price_node.exists else "None"
 
-                # 持仓/可用 (linear_layouts[4])
-                position_available_nodes = linear_layouts[4].child(className="android.widget.TextView")
-                position_available = "None"
-                if len(position_available_nodes) >= 2:
-                    position_available = f"{position_available_nodes[0].get_text()}/{position_available_nodes[1].get_text()}"
+                        # 持仓/可用
+                        position_available_node1 = linear_layouts[4].child(className="android.widget.TextView", index=0)
+                        position_available_node2 = linear_layouts[4].child(className="android.widget.TextView", index=1)
+                        position_available = f"{position_available_node1.get_text()}/{position_available_node2.get_text()}" \
+                            if position_available_node1.exists and position_available_node2.exists else "None"
 
-                # 构造字典
+                # 构造字典时，将“None”替换为空字符串，便于后续处理
                 stocks.append({
                     "标的名称": stock_name,
                     "市值": market_value,
@@ -158,7 +148,6 @@ def extract_stock_info(max_swipe_attempts=5, retry_top=3):
                     "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
                     "成本/现价": f"{cost}/{current_price}",
                 })
-
         except Exception as e:
             logger.error(f"处理股票信息失败: {e}")
             time.sleep(1)

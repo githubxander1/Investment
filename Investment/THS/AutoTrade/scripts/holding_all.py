@@ -1,9 +1,9 @@
 import pandas as pd
 import requests
-from Investment.THS.AutoTrade.utils.determine_market import determine_market
 
 from Investment.THS.AutoTrade.config.settings import Combination_holding_file, \
     all_ids, id_to_name
+from Investment.THS.AutoTrade.utils.format_data import determine_market
 
 
 def get_portfolio_holding_data(id):

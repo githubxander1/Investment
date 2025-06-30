@@ -198,7 +198,7 @@ def main():
         important_info = extract_important_info(position_data, strategy_id)
         all_important_info.extend(important_info)
 
-    file_path = r"D:\1document\1test\PycharmProject_gitee\others\量化投资\THS\策略\策略保存的数据\历史持仓信息_所有.xlsx"
+    file_path = '../../策略/接口/历史持仓信息_所有.xlsx'
     save_data_to_excel(all_important_info, strategy_ids, file_path)
     print("历史持仓信息已成功保存到 '历史持仓信息_所有.xlsx' 文件中。")
 
