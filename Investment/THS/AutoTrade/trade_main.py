@@ -61,13 +61,18 @@ async def main():
     ths_page = THSPage(d)
 
     while True:
+        now = datetime.datetime.now().time()
+
+        # 如果当前时间超过 15:00，停止运行
+        if now >= dt_time(15, 0):
+            logger.info("当前时间超过 15:00，停止运行")
+            break
+
         # 初始化变量，防止 UnboundLocalError
         strategy_success = False
         strategy_data = None
         combination_success = False
         combination_data = None
-
-        now = datetime.datetime.now().time()
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
         if dt_time(9, 30) <= now <= dt_time(9, 33):
