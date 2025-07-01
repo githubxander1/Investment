@@ -101,6 +101,7 @@ def extract_stock_info(max_swipe_attempts=5, retry_top=3):
                 # 标的名称 TextView（位于第一个 TextView）
                 stock_name_node = stock_item.child(className="android.widget.TextView", instance=0)
                 stock_name = stock_name_node.get_text() if stock_name_node.exists else "None"
+                stock_name = stock_name.strip().replace(" ", "")  # 去除前后空格和中
                 if stock_name in ["隐藏", "新标准券", "None"]:
                     continue
                 if stock_name in seen_stocks:
@@ -149,15 +150,20 @@ def extract_stock_info(max_swipe_attempts=5, retry_top=3):
                 if len(position_available_nodes) >= 2:
                     position_available = f"{position_available_nodes[0].get_text()}/{position_available_nodes[1].get_text()}"
 
+                # 标的名称标准化
+                stock_name = stock_name.strip().replace(" ", "") if stock_name else ""
+
+                # 只要有一个关键字段存在，就尝试保留数据
+                if stock_name or market_value or position_available:
                 # 构造字典
-                stocks.append({
-                    "标的名称": stock_name,
-                    "市值": market_value,
-                    "盈亏/盈亏率": f"{profit_loss}/{profit_loss_rate}",
-                    "持仓/可用": position_available,
-                    "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
-                    "成本/现价": f"{cost}/{current_price}",
-                })
+                    stocks.append({
+                        "标的名称": stock_name,
+                        "市值": market_value,
+                        "盈亏/盈亏率": f"{profit_loss}/{profit_loss_rate}",
+                        "持仓/可用": position_available,
+                        "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
+                        "成本/现价": f"{cost}/{current_price}",
+                    })
 
         except Exception as e:
             logger.error(f"处理股票信息失败: {e}")

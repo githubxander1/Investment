@@ -78,7 +78,8 @@ def fetch_and_extract_data(portfolio_id):
         clean_reason = clean_content(raw_content)
 
         for infos in relocateList:
-            name = infos.get('name', None)
+            name = infos.get('name', None).replace('\n', '').strip() or '无'
+
             code = infos.get('code', None)
 
             if '***' in name:

@@ -2,6 +2,8 @@
 import pandas as pd
 import time
 
+import uiautomator2
+
 from Investment.THS.AutoTrade.scripts.account_info import update_holding_info
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
@@ -148,6 +150,8 @@ class THSPage:
         try:
             if operation == "买入":
                 holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="表头数据", thousands=',')
+                #holding_stock_df['持仓/可用'] = holding_stock_df['持仓/可用'].astype(str)
+
                 '''
                 最大买入4000元
                 如果可用金额小于4000，买入数量= 可用金额 / 实时价格
@@ -159,6 +163,8 @@ class THSPage:
 
                 time.sleep(1)
                 real_price = self._get_real_price()
+                if not real_price:
+                    return False, "无法获取实时价格", None
                 # logger.info(f"可用金额: {buy_available}, 实时价格: {real_price}")
 
                 if buy_available < volume_max:# 如果可用金额小于4000，则使用可用金额
@@ -176,42 +182,65 @@ class THSPage:
                     return True, '数量计算成功', volume
 
             elif operation == "卖出":
-                '''
-                先判断是否持仓
-                最大卖出：已持仓数
-                如果最新比例为0，则卖出全仓
-                如果最细比例不为0，则卖出半仓
-                '''
-                holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据", thousands=',')
 
-                if self._current_stock_name in holding_stock_df['标的名称'].values:
-                    sale_available = int(holding_stock_df[holding_stock_df['标的名称'] == self._current_stock_name]['持仓/可用'].str.split('/').str[1].iloc[0])
-                    if sale_available is None or sale_available == 0:
-                        warning_info = '无可用数量'
-                        logger.warning(warning_info)
-                        #退出，不继续下一步，直接退出
-                        return False, warning_info, '无可用数量'
-                    if new_ratio is not None and new_ratio != 0:
-                        volume = int(sale_available * 0.5)  # 半仓卖出
-                    else:
-                        volume = sale_available  # 全部卖出
+                # 获取持仓数据
+                holding_stock_df = pd.read_excel(Account_holding_stockes_info_file, sheet_name="持仓数据",
+                                                 thousands=',')
+                # 打印列名用于调试
+                logger.info("持仓数据列名：" + str(holding_stock_df.columns.tolist()))
+                normalized_stock_name = self._current_stock_name.replace(" ", "")
+                holding_stock_df['标的名称'] = holding_stock_df['标的名称'].str.replace(" ", "")
 
-                    volume = (volume // 100) * 100
-                    if volume < 100:
-                        warning_info = f'数量小于100股'
-                        logger.warning(warning_info)
-                        return False, warning_info, '卖出数量不足100股'
-                    else:
-                        logger.info(f"{operation}数量: {volume} (共可用：{sale_available})")
-                        return True, '数量计算成功', volume
-                else:
+                # 安全提取行
+                target_row = holding_stock_df[holding_stock_df['标的名称'] == normalized_stock_name]
+                if target_row.empty:
                     warning_info = '不在持仓列表中'
-                    logger.warning(f"计算数量错误：{warning_info} ")
-                    return False, warning_info, '未持仓'
+                    logger.warning(warning_info)
+                    return False, warning_info, None
+
+                # 安全提取持仓/可用字段
+                position_available = target_row['持仓/可用'].iloc[0]
+
+                # 判断类型：如果是字符串，则尝试 split；否则直接取整数
+                if isinstance(position_available, str):
+                    parts = position_available.strip().split('/')
+                    if len(parts) < 2:
+                        logger.error(f"持仓/可用字段格式错误: {position_available}")
+                        return False, f"持仓/可用字段异常: {position_available}", None
+                    try:
+                        sale_available = int(float(parts[1]))
+                    except ValueError as e:
+                        logger.error(f"解析持仓/可用字段失败: {e}")
+                        return False, f"持仓/可用字段解析失败: {position_available}", None
+                elif isinstance(position_available, (int, float)):
+                    sale_available = int(float(position_available))
+                else:
+                    logger.error(f"未知类型: {type(position_available)}")
+                    return False, f"持仓/可用字段类型错误: {position_available}", None
+
+                if sale_available <= 0:
+                    warning_info = '无可用数量'
+                    logger.warning(warning_info)
+                    return False, warning_info, None
+
+                if new_ratio is not None and new_ratio != 0:
+                    volume = int(sale_available * 0.5)  # 半仓卖出
+                else:
+                    volume = sale_available  # 全部卖出
+
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    warning_info = '卖出数量不足100股'
+                    logger.warning(warning_info)
+                    return False, warning_info, None
+
+                logger.info(f"{operation}数量: {volume} (共可用：{sale_available})")
+                return True, '数量计算成功', volume
 
             else:
                 logger.warning("未知操作类型")
                 return False, '失败', '未知操作'
+
         except Exception as e:
             logger.error(f"数量计算失败: {e}", exc_info=True)
             return False, '失败', '数量计算失败'
@@ -319,8 +348,10 @@ class THSPage:
             return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
 
 if __name__ == '__main__':
+    # pass
     d = uiautomator2.connect()
-    pom = THSPage(d)
-    pom.get_price_by_volume()
+    d.screenshot("screenshot1.png")
+    # pom = THSPage(d)
+    # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')
 #     pom.sell_stock('英维克','半仓')

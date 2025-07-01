@@ -1,10 +1,12 @@
 # account_info.py
 import time
+import xml.etree.ElementTree as ET
 import pandas as pd
 import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file, account_xml_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.config.settings import account_xml_file
 
 logger = setup_logger("account_info.log")  # 创建日志实例
 
@@ -35,6 +37,90 @@ def return_to_top(retry=3):
         time.sleep(1)
     # logger.warning("未能成功返回顶部，请检查UI状态")
     return False
+
+def parse_stock_from_xml(xml_path):
+    """
+    解析持仓股票信息：标的名称、市值、持仓/可用、盈亏/盈亏率
+    """
+    try:
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+
+        # 打印部分 XML 内容用于调试
+        with open(xml_path, 'r', encoding='utf-8') as f:
+            content = f.read(2000)  # 读取前 2000 字符
+        logger.debug(f"XML 片段:\n{content}")
+
+        stocks = []
+
+        # 定位 RecyclerView
+        parent = root.find(".//node[@resource-id='com.hexin.plat.android:id/recyclerview_id']")
+        if parent is None:
+            logger.warning("未找到 recyclerview_id 节点")
+            return []
+
+        # 遍历所有子节点
+        for item in parent.findall(".//node[@class='android.widget.RelativeLayout']"):
+            name_node = item.find(".//*[@class='android.widget.TextView'][@index='0']")
+            market_value_node = item.find(".//*[@class='android.widget.TextView'][@index='1']")
+            h_scroll = item.find(".//*[@class='android.widget.HorizontalScrollView']")
+
+            if h_scroll is None:
+                continue
+
+            ll_list = h_scroll.findall(".//*[@class='android.widget.LinearLayout']")
+            if len(ll_list) < 5:
+                continue
+
+            # 提取各个字段
+            stock_name = name_node.attrib.get('text', '') if name_node is not None else ''
+            market_value = market_value_node.attrib.get('text', '') if market_value_node is not None else ''
+
+            profit_loss_nodes = ll_list[1].findall(".//*[@class='android.widget.TextView']")
+            profit_loss = profit_loss_rate = ""
+            if len(profit_loss_nodes) >= 2:
+                profit_loss = profit_loss_nodes[0].attrib.get('text', '')
+                profit_loss_rate = profit_loss_nodes[1].attrib.get('text', '')
+
+            position_available_nodes = ll_list[2].findall(".//*[@class='android.widget.TextView']")
+            position = available = ""
+            if len(position_available_nodes) >= 2:
+                position = position_available_nodes[0].attrib.get('text', '')
+                available = position_available_nodes[1].attrib.get('text', '')
+
+            cost_nodes = ll_list[3].findall(".//*[@class='android.widget.TextView']")
+            cost = current_price = ""
+            if len(cost_nodes) >= 2:
+                cost = cost_nodes[0].attrib.get('text', '')
+                current_price = cost_nodes[1].attrib.get('text', '')
+
+            if any(kw in stock_name for kw in ["清仓", "新标准券", "隐藏"]):
+                continue
+
+            if not stock_name or stock_name == "None":
+                continue
+
+            stocks.append({
+                "标的名称": stock_name,
+                "市值": market_value,
+                "持仓": position,
+                "可用": available,
+                "成本价": cost,
+                "当前价": current_price,
+                "盈亏金额": profit_loss,
+                "盈亏比例": profit_loss_rate
+            })
+
+        return stocks
+
+    except Exception as e:
+        logger.error(f"解析 XML 失败: {e}")
+        return []
+
+
+
+
+
 
 def extract_header_info():
     """提取账户表头信息：总资产、浮动盈亏、总市值、可用、可取"""
@@ -77,95 +163,81 @@ def extract_header_info():
         return pd.DataFrame()
 
 
-def extract_stock_info(max_swipe_attempts=5, retry_top=3):
+def scroll_and_dump(retry=3, min_stocks=3):
+    """
+    滑动并重新 dump XML，直到获取足够多的持仓数据
+    :param retry: 最大重试次数
+    :param min_stocks: 最小持仓数
+    :return: 成功解析的股票列表
+    """
+    for i in range(retry):
+        # 保存当前页面的 XML
+        xml_content = d.dump_hierarchy(pretty=True)
+        with open(account_xml_file, 'w', encoding='utf-8') as f:
+            f.write(xml_content)
+
+        # 解析持仓
+        stocks = parse_stock_from_xml(account_xml_file)
+        logger.info(f"第 {i + 1} 次尝试，共提取到 {len(stocks)} 条持仓信息")
+
+        if len(stocks) >= min_stocks:
+            logger.info("✅ 已获取足够持仓信息")
+            return stocks
+
+        # 向上滑动（模拟加载更多）
+        logger.info("🔄 页面持仓不足，开始滑动加载...")
+        d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.5)
+        time.sleep(2)  # 等待加载
+
+    logger.warning("⚠️ 达到最大重试次数，持仓数据仍不足")
+    return stocks
+
+
+def extract_stock_info(max_swipe_attempts=5):
     """提取持仓股票信息，支持滑动加载更多，并过滤无效条目"""
     logger.info('正在获取账户持仓信息...')
 
-    qingcang = d(text="查看已清仓股票")
-    stock_list_node = d(resourceId="com.hexin.plat.android:id/recyclerview_id")
     stocks = []
-    seen_stocks = set()  # 用于记录已添加的股票名称，避免重复
+    seen_stocks = set()
 
-    for _ in range(max_swipe_attempts):
-        if not stock_list_node.exists:
-            break
+    for attempt in range(max_swipe_attempts):
         try:
-            stock_items = stock_list_node.child(className="android.widget.RelativeLayout")
+            xml_content = d.dump_hierarchy(pretty=True)
+            with open(account_xml_file, 'w', encoding='utf-8') as f:
+                f.write(xml_content)
 
-            for stock_item in stock_items:
-                # 获取标的名称
-                stock_name_node = stock_item.child(className="android.widget.TextView", index=0)
-                stock_name = stock_name_node.get_text() if stock_name_node.exists else "None"
-                if stock_name in ["隐藏", "新标准券", "None"]:
+            parsed_stocks = parse_stock_from_xml(account_xml_file)
+            new_count = 0
+
+            for stock in parsed_stocks:
+                name = stock["标的名称"]
+                if name in seen_stocks or any(kw in name for kw in ["清仓", "新标准券", "隐藏", "持仓管理"]):
                     continue
-                if stock_name in seen_stocks:
-                    continue
-                seen_stocks.add(stock_name)
+                seen_stocks.add(name)
+                stocks.append(stock)
+                new_count += 1
 
-                # 获取市值
-                market_value_node = stock_item.child(className="android.widget.TextView", index=1)
-                market_value = market_value_node.get_text() if market_value_node.exists else "None"
+            logger.info(f"第 {attempt + 1} 次尝试新增 {new_count} 条有效持仓")
 
-                # 获取HorizontalScrollView中的LinearLayout
-                horizontal_scrollview = stock_item.child(className="android.widget.HorizontalScrollView")
-                daily_profit_loss = profit_loss = cost = current_price = position_available = "None"
-                daily_profit_loss_rate = profit_loss_rate = "None"
+            qingcang = d(text="查看已清仓股票")
+            if qingcang.exists:
+                logger.info("检测到‘查看已清仓股票’，已加载全部持仓")
+                break
 
-                if horizontal_scrollview.exists:
-                    linear_layouts = horizontal_scrollview.child(className="android.widget.LinearLayout")
-                    if len(linear_layouts) >= 5:
+            d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+            time.sleep(1.5)
 
-                        # 盈亏/盈亏率
-                        profit_loss_node = linear_layouts[1].child(className="android.widget.TextView", index=0)
-                        profit_loss_rate_node = linear_layouts[1].child(className="android.widget.TextView", index=1)
-                        profit_loss = profit_loss_node.get_text() if profit_loss_node.exists else "None"
-                        profit_loss_rate = profit_loss_rate_node.get_text() if profit_loss_rate_node.exists else "None"
-
-                        # 当日盈亏/盈亏率
-                        daily_profit_loss_node = linear_layouts[2].child(className="android.widget.TextView", index=0)
-                        daily_profit_loss_rate_node = linear_layouts[2].child(className="android.widget.TextView", index=1)
-                        daily_profit_loss = daily_profit_loss_node.get_text() if daily_profit_loss_node.exists else "None"
-                        daily_profit_loss_rate = daily_profit_loss_rate_node.get_text() if daily_profit_loss_rate_node.exists else "None"
-
-                        # 成本/现价
-                        cost_node = linear_layouts[3].child(className="android.widget.TextView", index=0)
-                        current_price_node = linear_layouts[3].child(className="android.widget.TextView", index=1)
-                        cost = cost_node.get_text() if cost_node.exists else "None"
-                        current_price = current_price_node.get_text() if current_price_node.exists else "None"
-
-                        # 持仓/可用
-                        position_available_node1 = linear_layouts[4].child(className="android.widget.TextView", index=0)
-                        position_available_node2 = linear_layouts[4].child(className="android.widget.TextView", index=1)
-                        position_available = f"{position_available_node1.get_text()}/{position_available_node2.get_text()}" \
-                            if position_available_node1.exists and position_available_node2.exists else "None"
-
-                # 构造字典时，将“None”替换为空字符串，便于后续处理
-                stocks.append({
-                    "标的名称": stock_name,
-                    "市值": market_value,
-                    "盈亏/盈亏率": f"{profit_loss}/{profit_loss_rate}",
-                    "持仓/可用": position_available,
-                    "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
-                    "成本/现价": f"{cost}/{current_price}",
-                })
         except Exception as e:
-            logger.error(f"处理股票信息失败: {e}")
+            logger.error(f"处理持仓信息失败: {e}", exc_info=True)
             time.sleep(1)
             continue
 
-        # 检查是否到底（是否有“查看已清仓股票”按钮）
-        if qingcang.exists:
-            break
+    df = pd.DataFrame(stocks).drop_duplicates(subset=["标的名称"])
+    df.replace("", pd.NA, inplace=True)
+    logger.info(f"✅ 成功提取持仓数据，共 {len(df)} 条:\n{df}")
+    return df
 
-        # 向下滑动
-        d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
-        time.sleep(0.5)
 
-    # 数据清洗：移除“None”的字段
-    stocks_df = pd.DataFrame(stocks).drop_duplicates(subset=["标的名称"])
-    stocks_df.replace("None", "", inplace=True)
-    logger.info(f'获取账户持仓信息完成，共 {len(stocks_df)} 条有效数据,\n{stocks_df}')
-    return stocks_df
 
 
 
@@ -182,24 +254,48 @@ def update_holding_info(retries=3):
                 time.sleep(2)
                 continue
 
-            # 保存到 Excel 文件
+            # 保存到 Excel
             with pd.ExcelWriter(Account_holding_stockes_info_file, engine='openpyxl') as writer:
                 header_info_df.to_excel(writer, index=False, sheet_name="表头数据")
                 stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
                 logger.info(f"✅ 账户信息成功保存至 {Account_holding_stockes_info_file}")
 
-            # 返回顶部
             return_to_top()
             return True
 
         except Exception as e:
             logger.error(f"第 {attempt + 1} 次尝试失败: {e}")
-            logger.warning(f"解析字段时发生异常: {e}")
-            profit_loss = profit_loss_rate = daily_profit_loss = daily_profit_loss_rate = cost = current_price = position_available = "None"
 
     logger.error("❌ 更新账户数据失败，超过最大重试次数")
     return False
 
 
+
 if __name__ == '__main__':
     update_holding_info()
+    # d = uiautomator2.connect()
+    # d.screenshot("screenshot1.png")
+    #
+    # import os
+    # import subprocess
+    # import time
+    #
+    #
+    # def capture_screen_adb(save_path="screenshot.png", retry=3):
+    #     for i in range(retry):
+    #         try:
+    #             # 执行 ADB 命令截图并拉取到本地
+    #             subprocess.run("adb shell where adb", check=True)
+    #             subprocess.run("adb shell screencap -p /sdcard/screenshot.png", check=True)
+    #             subprocess.run(f"adb pull /sdcard/screenshot.png {save_path}", check=True)
+    #             if os.path.exists(save_path) and os.path.getsize(save_path) > 0:
+    #                 print(f"✅ 截图成功: {save_path}")
+    #                 return save_path
+    #             else:
+    #                 print("❌ 截图失败或文件为空，重试中...")
+    #                 time.sleep(1)
+    #         except Exception as e:
+    #             print(f"❌ 截图异常: {e}")
+    #     return None
+    #
+    # capture_screen_adb()
