@@ -20,12 +20,20 @@ def determine_market(stock_code):
     else:
         return '其他'
 
+from datetime import datetime
+
 def normalize_time(time_str):
     """统一时间格式为 YYYY-MM-DD HH:MM"""
     if not time_str or time_str == 'N/A':
         return ''
 
     try:
+        # 新增：处理时间戳（如 1751419860000）
+        if isinstance(time_str, (int, float)) and str(time_str).isdigit():
+            timestamp = int(time_str) / 1000  # 毫秒转秒
+            dt = datetime.fromtimestamp(timestamp)
+            return dt.strftime("%Y-%m-%d %H:%M")
+
         # 处理 float 类型（如 20250509.0）
         if isinstance(time_str, float) and not pd.isna(time_str):
             time_str = str(int(time_str))
@@ -48,6 +56,16 @@ def normalize_time(time_str):
     except Exception as e:
         print(f"时间标准化失败: {e}")
         return ''
+
+    #         date_part, time_part = time_str.split(" ", 1)
+    #         time_part = ":".join(time_part.split(":")[:2])  # 只取小时和分钟
+    #         return f"{date_part} {time_part}"
+    #     else:
+    #         return time_str
+    # except Exception as e:
+    #     print(f"时间标准化失败: {e}")
+    #     return ''
+
 
 
 

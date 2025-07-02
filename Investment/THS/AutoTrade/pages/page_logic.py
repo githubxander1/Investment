@@ -4,7 +4,7 @@ import time
 
 import uiautomator2
 
-from Investment.THS.AutoTrade.scripts.account_info import update_holding_info
+from Investment.THS.AutoTrade.scripts.account_info1 import update_holding_info
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
 from Investment.THS.AutoTrade.utils.notification import send_notification
@@ -129,14 +129,23 @@ class THSPage:
 
     def _get_real_price(self):
         """获取当前股票实时价格"""
-        for _ in range(3):  # 尝试3次
-            price = self.d(className='android.widget.EditText')[1].get_text()
+        # price = self.d(className='android.widget.EditText')[1].get_text()
+        price_layout = self.d(resourceId="com.hexin.plat.android:id/stockprice")
+        #获取layout下方的edittext里的文本
+        price_edit = price_layout.child(className='android.widget.EditText')
+        for _ in range(3):
             try:
-                return float(price)
-            except ValueError:
-                logger.error("无法解析价格文本")
-                return None
+                price_text = price_edit.get_text()
+                if price_text and price_text != 'None':
+                    return float(price_text)
+                else:
+                    logger.warning("价格为空，等待刷新...")
+                    time.sleep(1)
+            except (ValueError, TypeError) as e:
+                logger.warning(f"解析价格失败: {e}")
+                time.sleep(1)
         raise ValueError("无法获取实时价格")
+        # return None
 
     def _calculate_volume(self, operation: str, new_ratio: float = None):
         """
