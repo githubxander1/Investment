@@ -26,12 +26,12 @@ def fetch_and_save_to_sheet(writer, match_id, sheet_name):
         print(f"✅ [{sheet_name}] 数据已保存")
 
         # 保存前20条数据
-        top20_data = out_put_data[:20]
-        if top20_data:
-            df_top20 = pd.DataFrame(top20_data)
-            top20_sheet_name = f"{sheet_name}_前二十"
-            df_top20.to_excel(writer, sheet_name=top20_sheet_name, index=False)
-            print(f"✅ [{top20_sheet_name}] 数据已保存")
+        # top20_data = out_put_data[:20]
+        # if top20_data:
+        #     df_top20 = pd.DataFrame(top20_data)
+        #     top20_sheet_name = f"{sheet_name}_前二十"
+        #     df_top20.to_excel(writer, sheet_name=top20_sheet_name, index=False)
+        #     print(f"✅ [{top20_sheet_name}] 数据已保存")
     else:
         print(f"❌ {sheet_name} 数据为空")
 
@@ -49,7 +49,7 @@ def get_all_portfolio_rank_data(match_id):
 
     params = {
         "offset": 0,
-        "page_size": 20,
+        "page_size": 100,
         "match_id": match_id,
         "block_id": 0,
         "list_type": 4
