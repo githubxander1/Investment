@@ -4,7 +4,7 @@ import time
 
 import uiautomator2
 
-from Investment.THS.AutoTrade.scripts.account_info1 import update_holding_info
+from Investment.THS.AutoTrade.scripts.account_info import update_holding_info
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE, Account_holding_stockes_info_file
 from Investment.THS.AutoTrade.utils.notification import send_notification
@@ -276,7 +276,6 @@ class THSPage:
            confirm_button.click()
            logger.info("点击确认按钮")
 
-           # if prompt_content.exists:
            prompt_text = prompt_content.get_text()
            logger.info(f"提示信息：{prompt_text}")
            if '委托已提交' in prompt_text:
@@ -314,7 +313,7 @@ class THSPage:
         update_holding_info()
         logger.info("更新持仓信息")
 
-    def operate_stock(self,operation, stock_name, volume=None):
+    def operate_stock(self,operation, stock_name):
         """交易-持仓(初始化)-买卖操作"""
         try:
             self._current_stock_name = stock_name
@@ -344,12 +343,13 @@ class THSPage:
             self.input_volume(int(calculate_volume))
             # 点击交易按钮
             self.click_button_by_operation(operation)
+            # 处理弹窗
             success, info = self.dialog_handle()
-            # 发送交易结果通知
-            logger.info(f"{operation} {stock_name}  {calculate_volume}股")
-            send_notification(f"{operation} {stock_name}  {calculate_volume}股 {success} {info}")
             # 点击返回
             self.click_back()
+            # 发送交易结果通知
+            send_notification(f"{operation} {stock_name}  {calculate_volume}股 {success} {info}")
+            logger.info(f"{operation} {stock_name} {calculate_volume}股 {success} {info}")
             return success, info
         except Exception as e:
             calculate_volume = "未知"

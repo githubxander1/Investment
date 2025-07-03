@@ -55,7 +55,7 @@ async def get_latest_position_and_trade(strategy_id):
         market = determine_market(code)
         stock_trade_date = trade_info.get('tradeDate', 'N/A')
         # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
-        print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(stock_trade_date)}")
+        # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(stock_trade_date)}")
 
         # 只保留当天记录
         if trade_date == today:
