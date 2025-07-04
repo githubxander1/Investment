@@ -22,6 +22,10 @@ except Exception as e:
     logger.error(f"连接设备失败: {e}")
     exit(1)
 
+def click_holding_stock_button(self):
+    holding_button = self.d(className='android.widget.TextView', text='持仓')
+    holding_button.click()
+    logger.info("点击持仓按钮")
 def return_to_top(retry=3):
     # if return_to_top():
     #     return True
@@ -217,6 +221,7 @@ def extract_stock_info(max_swipe_attempts=5):
             qingcang = d(text="查看已清仓股票")
             if qingcang.exists:
                 logger.info("检测到‘查看已清仓股票’，已加载全部持仓")
+                return_to_top()
                 break
 
             # 向下滑动
@@ -235,40 +240,127 @@ def extract_stock_info(max_swipe_attempts=5):
     return df
 
 
+# def get_header_info(retries=3):
+#     """仅提取账户表头信息（不处理持仓）"""
+#     logger.info("开始获取账户表头信息...")
+#     for attempt in range(retries):
+#         try:
+#             header_info_df = extract_header_info()
+#             if not header_info_df.empty:
+#                 return header_info_df.to_dict(orient='records')[0]
+#             time.sleep(2)
+#         except Exception as e:
+#             logger.error(f"第 {attempt + 1} 次尝试失败: {e}")
+#     logger.error("❌ 获取账户表头信息失败")
+#     return None
 
 
+def get_buying_power():
+    """获取可用资金"""
+    try:
+        header_info = extract_header_info()
+        if header_info.empty:
+            return None
+        buy_available = float(header_info["可用"].iloc[0].replace(',', ''))
+        return buy_available
+    except Exception as e:
+        logger.error(f"获取可用资金失败: {e}")
+        return None
 
 
-def update_holding_info(retries=3):
-    """更新持仓信息到Excel文件"""
+def get_stock_available(stock_name):
+    """获取指定股票的持仓/可用数量"""
+    try:
+        stock_holding_df = extract_stock_info()
+        stock_row = stock_holding_df[stock_holding_df["标的名称"] == stock_name]
+
+        if not stock_row.empty:
+            # 确保 stock_row 为单行数据
+            stock_row = stock_row.iloc[0]
+
+            position_available = stock_row.get("持仓/可用", "")
+            if isinstance(position_available, str):
+                parts = position_available.strip().split('/')
+                if len(parts) >= 2:
+                    position = float(parts[0])
+                    available = float(parts[1])
+                    return available
+                else:
+                    logger.warning(f"持仓/可用字段格式错误: {position_available}")
+                    return None
+            else:
+                logger.warning(f"持仓/可用字段不是字符串: {position_available}")
+                return None
+        else:
+            logger.warning(f"{stock_name} 不在持仓中")
+            return None
+    except Exception as e:
+        logger.error(f"获取持仓失败: {e}")
+        return None
+
+def update_holding_info():
+    """
+    获取当前账户持仓信息，并保存到 Excel 文件
+    """
     logger.info("开始更新账户持仓信息...")
-    for attempt in range(retries):
-        try:
-            header_info_df = extract_header_info()
-            stocks_df = extract_stock_info()
+    try:
+        header_info_df = extract_header_info()
+        stocks_df = extract_stock_info()
 
-            if header_info_df.empty or stocks_df.empty:
-                logger.warning(f"第 {attempt + 1} 次尝试：获取的数据为空，跳过保存。")
-                print(header_info_df)
-                time.sleep(2)
-                continue
+        if header_info_df.empty or stocks_df.empty:
+            logger.warning("无法保存持仓信息：数据为空")
+            return False
 
-            # 保存到 Excel
-            with pd.ExcelWriter(Account_holding_stockes_info_file, engine='openpyxl') as writer:
-                header_info_df.to_excel(writer, index=False, sheet_name="表头数据")
-                stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
-                logger.info(f"✅ 账户信息成功保存至 {Account_holding_stockes_info_file}")
+        with pd.ExcelWriter(Account_holding_stockes_info_file, engine='openpyxl') as writer:
+            header_info_df.to_excel(writer, index=False, sheet_name="表头数据")
+            stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
 
-            return_to_top()
-            return True
+        logger.info(f"✅ 账户持仓信息已更新并保存至 {Account_holding_stockes_info_file}")
+        return True
+    except Exception as e:
+        logger.error(f"❌ 保存持仓信息失败: {e}", exc_info=True)
+        return False
 
-        except Exception as e:
-            logger.error(f"第 {attempt + 1} 次尝试失败: {e}")
-
-    logger.error("❌ 更新账户数据失败，超过最大重试次数")
-    return False
 
 
 
 if __name__ == '__main__':
-    update_holding_info()
+    # get_stock_holding('中国电信')
+    # header_info = extract_header_info()
+    # buy_available = float(header_info["可用"].iloc[0].replace(',', ''))
+    # print(f"可用金额: {buy_available}")
+
+    _current_stock_name = '中国银行'
+    # print(get_stock_available(_current_stock_name))
+    print(get_buying_power())
+    # stock_holding = get_stock_holding(_current_stock_name)
+    # if not stock_holding:
+    #     print(f'{_current_stock_name} 没有持仓')
+    # else:
+    #     position_available = stock_holding.get("持仓/可用", "")
+    #     print(f"持仓/可用: {position_available}")
+    #     print(f"可用为: {position_available}")
+    #
+    #     if isinstance(position_available, str):
+    #         parts = position_available.strip().split('/')
+    #         if len(parts) >= 2:
+    #             position = float(parts[0])
+    #             available = float(parts[1])
+    #             print(f"持仓: {position}, 可用: {available}")
+
+    # # 判断类型：如果是字符串，则尝试 split；否则直接取整数
+    # if isinstance(position_available, str):
+    #     parts = position_available.strip().split('/')
+    #     if len(parts) < 2:
+    #         logger.error(f"持仓/可用字段格式错误: {position_available}")
+    #         return False, f"持仓/可用字段异常: {position_available}", None
+    #     try:
+    #         sale_available = int(float(parts[1]))
+    #     except ValueError as e:
+    #         logger.error(f"解析持仓/可用字段失败: {e}")
+    #         return False, f"持仓/可用字段解析失败: {position_available}", None
+    # elif isinstance(position_available, (int, float)):
+    #     sale_available = int(float(position_available))
+    # else:
+    #     logger.error(f"未知类型: {type(position_available)}")
+    #     return False, f"持仓/可用字段类型错误: {position_available}", None

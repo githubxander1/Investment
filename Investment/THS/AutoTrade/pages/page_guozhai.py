@@ -1,4 +1,5 @@
 # page_guozhai.py
+import time
 
 import uiautomator2 as u2
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -32,28 +33,47 @@ def guozhai_operation(d):
         d(resourceId="com.hexin.plat.android:id/btn_jiechu").click()
         logger.info("点击‘借出’按钮")
 
+        '''
+        资金够：
+            确认委托弹窗，点确认
+            已委托，再点确认
+        资金不够或时间不对
+            
+            
+        '''
+        # 获取 content_layout 里的所有 TextView 内容
+        content_layout = d(resourceId="com.hexin.plat.android:id/content_layout")
         # 检查弹窗内容，判断是否为资金不足的情况
         if prompt_content.exists:
             prompt_text = prompt_content.get_text()
             if not '委托已提交' in prompt_text:
                 logger.warning(f"委托失败: {prompt_text}")
+                time.sleep(1)
                 confirm_button.click()
                 back_button.click()
                 back_button.click()
                 send_notification(f"国债逆回购任务失败: {prompt_text}")
                 return False, prompt_text
 
-        # 获取 content_layout 里的所有 TextView 内容
-        content_layout = d(resourceId="com.hexin.plat.android:id/content_layout")
-        if content_layout.exists:
+        elif content_layout.exists:
             text_views = content_layout.child(className="android.widget.TextView")
             content_texts = []
             for tv in text_views:
                 content_texts.append(tv.get_text())
             # print(f"弹窗内容: {content_texts}")
-            if '委托已提交' in content_texts:
+            if '您是否确认以上委托？' in content_texts:
                 confirm_button.click()
-                logger.info(f"国债逆回购委托成功：{content_texts}")
+                if prompt_content.exists:
+                    prompt_text = prompt_content.get_text()
+                    if not '委托已提交' in prompt_text:
+                        logger.warning(f"委托失败: {prompt_text}")
+                        confirm_button.click()
+                        back_button.click()
+                        back_button.click()
+                        send_notification(f"国债逆回购任务失败: {prompt_text}")
+                        return False, prompt_text
+                    confirm_button.click()
+                    logger.info(f"国债逆回购委托成功：{content_texts}")
             else:
                 logger.warning("委托失败")
                 return False, f"委托失败: {content_texts}"
@@ -75,12 +95,13 @@ def guozhai_operation(d):
         # if prompt_content.exists:
         #     print(f"弹窗内容: {prompt_content.get_text()}")
 
-        # 返回上级页面
-        if back_button.exists:
-            back_button.click()
-            logger.info("返回上级页面")
-        else:
-            logger.warning("返回按钮不存在")
+        # # 返回上级页面
+        # if back_button.exists:
+        #     back_button.click()
+        #     back_button.click()
+        #     logger.info("返回上级页面")
+        # else:
+        #     logger.warning("返回按钮不存在")
 
         logger.info("---------------------国债逆回购任务执行完毕---------------------")
         return True, "操作成功"

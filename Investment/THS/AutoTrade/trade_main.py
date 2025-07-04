@@ -63,12 +63,14 @@ async def main():
 
     ths_page = THSPage(d)
 
+    # 国债逆回购任务只执行一次
+    guozhai_success = False
     while True:
         now = datetime.datetime.now().time()
 
-        # 如果当前时间超过 15:00，停止运行
-        if now >= dt_time(15, 0):
-            logger.info("当前时间超过 15:00，停止运行")
+        # 如果当前时间超过 15:30，停止运行
+        if now >= dt_time(15, 30):
+            logger.info("当前时间超过 15:30，停止运行")
             break
 
         # 初始化变量，防止 UnboundLocalError
@@ -102,17 +104,24 @@ async def main():
                 file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
                 process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE)
 
-        # 在组合任务结束后执行国债逆回购操作
-        if dt_time(14, 56) <= now <= dt_time(15, 30):
-            # logger.info("---------------------国债逆回购任务开始执行---------------------")
-            guozhai_operation(d)
-            # logger.info("---------------------国债逆回购任务执行结束---------------------")
-
-        else:
-            logger.info("当前时间不在任务执行窗口内 (9:15-15:00)，跳过任务执行")
-
         # 每隔1分钟执行一次
         await asyncio.sleep(60)
+
+        # 在组合任务结束后执行国债逆回购操作（只执行一次）
+        if not guozhai_success and dt_time(14, 56) <= now <= dt_time(15, 30):
+            logger.info("---------------------国债逆回购任务开始执行---------------------")
+            success, message = guozhai_operation(d)
+            if success:
+                logger.info("国债逆回购成功")
+                guozhai_success = True  # 标记国债逆回购任务已执行
+            else:
+                logger.info(f"国债逆回购失败: {message}")
+            logger.info("---------------------国债逆回购任务执行结束---------------------")
+
+        elif not guozhai_success:
+            logger.info("当前时间不在国债逆回购任务执行窗口内 (14:56-15:30)，跳过 国债逆回购 任务执行")
+
+
 
 if __name__ == '__main__':
     asyncio.run(main())

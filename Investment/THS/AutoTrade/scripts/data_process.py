@@ -35,34 +35,56 @@ def read_portfolio_record_history(file_path):
     return portfolio_record_history_df
 
 def save_to_excel(df, filename, sheet_name, index=False):
-    """追加保存DataFrame到Excel文件"""
+    """追加保存DataFrame到Excel文件，默认今天的在第一张表"""
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))  # 获取今天的日期
+
     try:
-        # 调试：打印要保存的数据
-        # logger.info(f"即将保存的数据:\n{df}")
-
-        # 检查文件是否存在
-        if os.path.exists(filename):
-            # 文件存在，读取现有 sheet 数据并追加
-            with pd.ExcelFile(filename, engine='openpyxl') as xls:
-                if sheet_name in xls.sheet_names:
-                    existing_df = pd.read_excel(xls, sheet_name=sheet_name)
-                    combined_df = pd.concat([existing_df, df], ignore_index=True)
-                    combined_df.drop_duplicates(subset=['名称', '操作', '标的名称', '代码', '最新价', '新比例%'], inplace=True)
-                else:
-                    combined_df = df
-
-            # 写回整个 DataFrame 到指定 sheet
-            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-                combined_df.to_excel(writer, sheet_name=sheet_name, index=index)
-            logger.info(f"✅ 成功追加数据到Excel文件: {filename}, 表名称: {sheet_name} \n{combined_df}")
-        else:
-            # 文件不存在，创建新文件
+        # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
+        if not os.path.exists(filename):
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=today, index=index)
+            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {today} \n{df}")
+            return
+
+        # 文件存在，读取现有数据
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            existing_sheets = xls.sheet_names
+
+        # 如果今天的数据需要保存到第一个 sheet
+        if sheet_name == today:
+            # 读取现有第一个 sheet 的数据（如果存在）
+            if existing_sheets and existing_sheets[0] == today:
+                existing_df = pd.read_excel(filename, sheet_name=today)
+                combined_df = pd.concat([existing_df, df], ignore_index=True)
+                combined_df.drop_duplicates(subset=['名称', '操作', '标的名称', '代码', '最新价', '新比例%'], inplace=True)
+            else:
+                combined_df = df
+
+            # 保存到第一个 sheet
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                combined_df.to_excel(writer, sheet_name=today, index=index)
+
+            # 读取并保存其他 sheet 的数据
+            other_sheets_data = {}
+            for sheet in existing_sheets:
+                if sheet != today:
+                    other_sheets_data[sheet] = pd.read_excel(filename, sheet_name=sheet)
+
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
+                combined_df.to_excel(writer, sheet_name=today, index=index)
+                for sheet, data in other_sheets_data.items():
+                    data.to_excel(writer, sheet_name=sheet, index=index)
+
+            logger.info(f"✅ 成功追加数据到Excel文件的第一个sheet: {filename}, 表名称: {today} \n{combined_df}")
+        else:
+            # 对于非今天的 sheet，直接追加或替换
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
-            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {sheet_name} \n{df}")
+            logger.info(f"✅ 成功追加数据到Excel文件的指定sheet: {filename}, 表名称: {sheet_name} \n{df}")
 
     except Exception as e:
         logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
+
 def write_operation_history(df):
     """将操作记录写入Excel文件，按日期作为sheet名"""
     today = datetime.now().strftime('%Y-%m-%d')
@@ -161,7 +183,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 # return new_to_operate
                 # 执行交易逻辑
                 logger.info(f"🚀 开始交易: {operation} {stock_name}")
-                status, info = ths_page.operate_stock(operation, stock_name, volume=None)
+                status, info = ths_page.operate_stock(operation, stock_name)
 
                 # 构造记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
