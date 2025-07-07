@@ -2,12 +2,15 @@
 import time
 
 import uiautomator2 as u2
+
+from Investment.THS.AutoTrade.pages.page_logic import THSPage
+from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger('nihuigou.log')
 
-
+d = u2.connect()
 
 def guozhai_operation(d):
     logger.info("---------------------国债逆回购任务开始执行---------------------")
@@ -17,6 +20,8 @@ def guozhai_operation(d):
 
     try:
         # 点击右上角第二个图标（通常是国债逆回购入口）
+        ths = THSPage(d)
+        ths.click_holding_stock_button()
         d(resourceId="com.hexin.plat.android:id/title_right_image")[1].click()
         logger.info("点击国债逆回购入口")
 

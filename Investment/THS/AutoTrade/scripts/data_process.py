@@ -41,6 +41,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
     try:
         # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
         if not os.path.exists(filename):
+            print(f"保存的df {df}")
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=today, index=index)
             logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {today} \n{df}")

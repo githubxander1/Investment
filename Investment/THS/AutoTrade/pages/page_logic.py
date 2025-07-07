@@ -27,7 +27,7 @@ class THSPage:
         trade_entry = self.d(resourceId='com.hexin.plat.android:id/title', text='交易')
         trade_entry.click()
         logger.info("点击交易按钮")
-    def click_holding_stock_entry(self):
+    def click_holding_stock_entry(self): #持仓-入口处
         operate_entry = self.d(resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓')
         operate_entry.click()
         logger.info("点击持仓按钮")
@@ -43,7 +43,7 @@ class THSPage:
         else:
             raise ValueError("Invalid operation")
 
-    def click_holding_stock_button(self):
+    def click_holding_stock_button(self): # 持仓-里面
         holding_button = self.d(className='android.widget.TextView', text='持仓')
         holding_button.click()
         logger.info("点击持仓按钮")
@@ -298,7 +298,6 @@ class THSPage:
         # confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn")
 
         # 处理成功提交的情况
-        # if dialog_title.exists:
         title_text = dialog_title.get_text()
         if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
            logger.info("检测到'委托确认'提示")
@@ -321,7 +320,12 @@ class THSPage:
             logger.info(warning_info)
             return False, warning_info
 
-    def update_holding_info(self):
+    def update_holding_info_all(self):
+        """
+        点击持仓按钮（里）
+        点击刷新
+        开始更新
+        """
         self.click_holding_stock_button()
         self.click_refresh_button()
         time.sleep(0.5)
@@ -362,17 +366,118 @@ class THSPage:
             # 处理弹窗
             success, info = self.dialog_handle()
             # 点击返回
-            self.click_back()
+            # self.click_back()
             # 发送交易结果通知
             send_notification(f"{operation} {stock_name}  {calculate_volume}股 {success} {info}")
             if success:
-                update_holding_info()
+                self.update_holding_info_all()
             logger.info(f"{operation} {stock_name} {calculate_volume}股 {success} {info}")
             return success, info
         except Exception as e:
             calculate_volume = "未知"
             logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
             return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
+
+    def guozhai_operation(self):
+        logger.info("---------------------国债逆回购任务开始执行---------------------")
+        prompt_content = self.d(resourceId="com.hexin.plat.android:id/prompt_content")
+        confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+        back_button = self.d(resourceId="com.hexin.plat.android:id/title_bar_img")
+        try:
+            self.click_holding_stock_button()
+            # 点击右上角第二个图标（通常是国债逆回购入口）
+            self.d(resourceId="com.hexin.plat.android:id/title_right_image")[1].click()
+            logger.info("点击国债逆回购入口")
+
+            # 下滑到出现“沪市”位置，然后点击 stock_list 下的第一个 LinearLayout
+            self.d.swipe(0.5, 0.8, 0.5, 0.2)
+            logger.info("下滑到‘沪市’")
+
+            # 点击第一个线性布局（通常为第一个国债逆回购选项）
+            yitianqi = self.d(className="android.widget.LinearLayout")[20]
+            yitianqi.click()
+            logger.info("点击‘一天期’")
+
+            # 点击“借出”按钮
+            self.d(resourceId="com.hexin.plat.android:id/btn_jiechu").click()
+            logger.info("点击‘借出’按钮")
+
+            '''
+            资金够：
+                确认委托弹窗，点确认
+                已委托，再点确认
+            资金不够或时间不对
+
+
+            '''
+            # 获取 content_layout 里的所有 TextView 内容
+            content_layout = self.d(resourceId="com.hexin.plat.android:id/content_layout")
+            # 检查弹窗内容，判断是否为资金不足的情况
+            if prompt_content.exists:
+                prompt_text = prompt_content.get_text()
+                if not '委托已提交' in prompt_text:
+                    logger.warning(f"委托失败: {prompt_text}")
+                    time.sleep(1)
+                    confirm_button.click()
+                    back_button.click()
+                    back_button.click()
+                    send_notification(f"国债逆回购任务失败: {prompt_text}")
+                    return False, prompt_text
+
+            elif content_layout.exists:
+                text_views = content_layout.child(className="android.widget.TextView")
+                content_texts = []
+                for tv in text_views:
+                    content_texts.append(tv.get_text())
+                # print(f"弹窗内容: {content_texts}")
+                if '您是否确认以上委托？' in content_texts:
+                    confirm_button.click()
+                    if prompt_content.exists:
+                        prompt_text = prompt_content.get_text()
+                        if not '委托已提交' in prompt_text:
+                            logger.warning(f"委托失败: {prompt_text}")
+                            confirm_button.click()
+                            back_button.click()
+                            back_button.click()
+                            send_notification(f"国债逆回购任务失败: {prompt_text}")
+                            return False, prompt_text
+                        confirm_button.click()
+                        logger.info(f"国债逆回购委托成功：{content_texts}")
+                else:
+                    logger.warning("委托失败")
+                    return False, f"委托失败: {content_texts}"
+            else:
+                error_info = "弹窗不存在"
+                logger.warning(error_info)
+                return False, error_info
+
+            # # 点击“确认借出”按钮
+            # if confirm_button.exists:
+            #     confirm_button.click()
+            #     logger.info("点击‘确认借出’按钮")
+            # else:
+            #     error_info = "确定按钮不存在"
+            #     logger.warning(error_info)
+            #     return False, error_info
+
+            # # 获取提示内容并打印（如果需要）
+            # if prompt_content.exists:
+            #     print(f"弹窗内容: {prompt_content.get_text()}")
+
+            # # 返回上级页面
+            # if back_button.exists:
+            #     back_button.click()
+            #     back_button.click()
+            #     logger.info("返回上级页面")
+            # else:
+            #     logger.warning("返回按钮不存在")
+
+            logger.info("---------------------国债逆回购任务执行完毕---------------------")
+            return True, "操作成功"
+
+        except Exception as e:
+            logger.error(f"错误: {e}")
+            return False, str(e)
 
 if __name__ == '__main__':
     # pass
