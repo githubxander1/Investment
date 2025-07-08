@@ -6,7 +6,7 @@ from datetime import time as dt_time
 import uiautomator2 as u2
 from Investment.THS.AutoTrade.scripts.Combination_portfolio_today import Combination_main
 from Investment.THS.AutoTrade.scripts.Strategy_portfolio_today import Strategy_main
-from Investment.THS.AutoTrade.pages.page_guozhai import guozhai_operation  # 导入国债逆回购操作
+from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage  # 导入国债逆回购操作
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
 from Investment.THS.AutoTrade.scripts.data_process import process_excel_files
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -69,7 +69,7 @@ async def main():
         now = datetime.datetime.now().time()
 
         # 如果当前时间超过 15:30，停止运行
-        if now >= dt_time(15, 30):
+        if now >= dt_time(18, 30):
             logger.info("当前时间超过 15:30，停止运行")
             break
 
@@ -108,10 +108,10 @@ async def main():
         await asyncio.sleep(60)
 
         # 在组合任务结束后执行国债逆回购操作（只执行一次）
-        if not guozhai_success and dt_time(14, 56) <= now <= dt_time(15, 30):
+        if not guozhai_success and dt_time(14, 56) <= now <= dt_time(18, 30):
             logger.info("---------------------国债逆回购任务开始执行---------------------")
-            # ths = THSPage(d)
-            success, message = guozhai_operation(d)
+            guozhai = GuozhaiPage(d)
+            success, message = guozhai.guozhai_operation()
             if success:
                 logger.info("国债逆回购成功")
                 guozhai_success = True  # 标记国债逆回购任务已执行
