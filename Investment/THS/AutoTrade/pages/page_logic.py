@@ -3,9 +3,11 @@ import pandas as pd
 import time
 
 import uiautomator2
-from Demos.RegCreateKeyTransacted import classname
 
-from Investment.THS.AutoTrade.scripts.account_info import update_holding_info, get_buying_power, get_stock_available
+# from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
+# from Demos.RegCreateKeyTransacted import classname
+
+from Investment.THS.AutoTrade.scripts.account_info import update_holding_info_all, get_buying_power, get_stock_available
 from Investment.THS.AutoTrade.scripts.volume_calculate import calculate_buy_volume, calculate_sell_volume
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
@@ -19,7 +21,59 @@ class THSPage:
         self.d = d
         self.d.implicitly_wait(10)
         self._current_stock_name = None  # 新增用于保存当前股票名称
+        self._current_account = None
         # back_button = self.d('com.hexin.plat.android:id/title_bar_left_container')
+
+    def change_account(self, to_account):
+        current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
+
+        if self._current_account == to_account:
+            logger.info(f"当前已是 {to_account} 账户，无需切换")
+            return True
+
+        account_dialog = self.d(resourceId="com.hexin.plat.android:id/wt_multi_data_item_qs_name", text=to_account)
+        loggin_button = self.d(resourceId="com.hexin.plat.android:id/weituo_btn_login")
+        password_input = self.d(resourceId="com.hexin.plat.android:id/weituo_edit_trade_password")
+        keeplogin_checkbox = self.d(resourceId="com.hexin.plat.android:id/rtv_keeplogin_tips")
+        keeplogin_24h = self.d(resourceId="com.hexin.plat.android:id/tv_keeplogin_24h")
+
+        password_changcheng = '660493'
+        password_chuangcai = '170212'
+
+        current_account_name = current_account.get_text()
+
+        if current_account_name != to_account:
+            current_account.click()
+            account_dialog.click()
+
+            if loggin_button.exists():
+                loggin_button.click()
+
+                if to_account == '长城证券':
+                    password_input.set_text(password_changcheng)
+                else:
+                    password_input.set_text(password_chuangcai)
+
+                keeplogin_checkbox.click()
+                if keeplogin_24h.exists():
+                    keeplogin_24h.click()
+
+                loggin_button.click()
+                time.sleep(1)
+
+            current_account_name2 = current_account.get_text()
+            if current_account_name2 == to_account:
+                self._current_account = to_account
+                logger.info(f"✅ 成功切换至账户: {to_account}")
+                return True
+            else:
+                logger.warning(f"⚠️ 切换账户失败，当前仍为: {current_account_name2}")
+                return False
+        else:
+            self._current_account = current_account_name
+            logger.info(f"📌 当前登录账户名称: {current_account_name}")
+            return True
+
 
     def click_back(self):
         back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
@@ -200,9 +254,6 @@ class THSPage:
     def dialog_handle(self):
         """处理交易后的各种弹窗情况"""
         logger.info("开始处理弹窗")
-        #弹窗标题里有：委托买入确认
-        # submit_success= self.d.xpath('//*[contains(@text,"委托已提交")]')
-        # transfer_funds= self.d.xpath('//*[contains(@text,"转入资金")]')
 
         # 定位弹窗相关控件
         dialog_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
@@ -243,11 +294,29 @@ class THSPage:
         self.click_holding_stock_button()
         self.click_refresh_button()
         time.sleep(0.5)
-        update_holding_info()
+        update_holding_info_all()
         logger.info("更新持仓信息")
-
+    def ensure_on_holding_page(self, max_retry=5):
+        """确保当前在持仓页"""
+        moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
+        back_button = self.d(resourceId=self.back_button_id)
+        for _ in range(max_retry):
+            if self.is_on_holding_list_page():
+                return True
+            if moni.exists():
+                ths = THSPage(d)
+                ths.click_holding_stock_entry()
+                return True
+            if back_button.exists():
+                back_button.click()
+                time.sleep(1)
+            else:
+                break
+        return False
     def operate_stock(self,operation, stock_name):
         """交易-持仓(初始化)-买卖操作"""
+        # ths = GuozhaiPage(d)
+        self.ensure_on_holding_page()
         try:
             self._current_stock_name = stock_name
             #点击交易入口
@@ -303,130 +372,10 @@ class THSPage:
         """判断是否在首页"""
         return self.d(resourceId="com.hexin.plat.android:id/tab_mn").exists()
 
-    def is_on_guozhai_list_page(self):
-        """判断是否在国债逆回购列表页"""
-        return self.d(text="我要回购").exists()
-
     def is_on_holding_list_page(self):
         """判断是否在持仓列表页"""
         return self.d(text="可用").exists()
 
-    # def guozhai_operation(self):
-    #     logger.info("---------------------国债逆回购任务开始执行---------------------")
-    #     prompt_content = self.d(resourceId="com.hexin.plat.android:id/prompt_content")
-    #     confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
-    #     back_button = self.d(resourceId="com.hexin.plat.android:id/title_bar_img")
-    #     try:
-    #         while not self.is_on_holding_page():
-    #             if back_button.exists():
-    #                 back_button.click()
-    #                 time.sleep(1)
-    #             else:
-    #                 logger.error("无法返回到持仓页")
-    #                 return False, "无法返回到持仓页"
-    #         # 点击持仓按钮（里）
-    #         self.click_holding_stock_button()
-    #         # 点击右上角第二个图标（通常是国债逆回购入口）
-    #         self.d(resourceId="com.hexin.plat.android:id/title_right_image")[1].click()
-    #
-    #         if not self.is_on_guozhai_page():
-    #             back_button.click()
-    #             logger.error("不在‘国债逆回购’页面，点击返回")
-    #
-    #         # 下滑到出现“沪市”位置，然后点击 stock_list 下的第一个 LinearLayout
-    #         self.d.swipe(0.5, 0.8, 0.5, 0.2)
-    #         logger.info("下滑到‘沪市’")
-    #
-    #         # 点击第一个线性布局（通常为第一个国债逆回购选项）
-    #         # yitianqi = self.d(resourceId="com.hexin.plat.android:id/stockName")[6]
-    #         # yitianqi_text = self.d(className="android.widget.TextView",text='1天期')[2]
-    #         yitianqi = d(className="android.widget.LinearLayout")[20]
-    #         # yitianqi_text = self.d(text='1天')
-    #         # if yitianqi_text.exists():
-    #         #     print("‘国债逆回购’页面有‘一天期’选项")
-    #         yitianqi.click()
-    #         logger.info("点击‘一天期’")
-    #
-    #         # 点击“借出”按钮
-    #         self.d(resourceId="com.hexin.plat.android:id/btn_jiechu").click()
-    #         logger.info("点击‘借出’按钮")
-    #
-    #         '''
-    #         资金够：
-    #             确认委托弹窗，点确认
-    #             已委托，再点确认
-    #         资金不够或时间不对
-    #
-    #
-    #         '''
-    #         # 获取 content_layout 里的所有 TextView 内容
-    #         content_layout = self.d(resourceId="com.hexin.plat.android:id/content_layout")
-    #         # 检查弹窗内容，判断是否为资金不足的情况
-    #         if prompt_content.exists:
-    #             prompt_text = prompt_content.get_text()
-    #             if not '委托已提交' in prompt_text:
-    #                 logger.warning(f"委托失败: {prompt_text}")
-    #                 time.sleep(1)
-    #                 confirm_button.click()
-    #                 back_button.click()
-    #                 back_button.click()
-    #                 send_notification(f"国债逆回购任务失败: {prompt_text}")
-    #                 return False, prompt_text
-    #
-    #         elif content_layout.exists:
-    #             text_views = content_layout.child(className="android.widget.TextView")
-    #             content_texts = []
-    #             for tv in text_views:
-    #                 content_texts.append(tv.get_text())
-    #             # print(f"弹窗内容: {content_texts}")
-    #             if '您是否确认以上委托？' in content_texts:
-    #                 confirm_button.click()
-    #                 if prompt_content.exists:
-    #                     prompt_text = prompt_content.get_text()
-    #                     if not '委托已提交' in prompt_text:
-    #                         logger.warning(f"委托失败: {prompt_text}")
-    #                         confirm_button.click()
-    #                         back_button.click()
-    #                         back_button.click()
-    #                         send_notification(f"国债逆回购任务失败: {prompt_text}")
-    #                         return False, prompt_text
-    #                     confirm_button.click()
-    #                     logger.info(f"国债逆回购委托成功：{content_texts}")
-    #             else:
-    #                 logger.warning("委托失败")
-    #                 return False, f"委托失败: {content_texts}"
-    #         else:
-    #             error_info = "弹窗不存在"
-    #             logger.warning(error_info)
-    #             return False, error_info
-    #
-    #         # # 点击“确认借出”按钮
-    #         # if confirm_button.exists:
-    #         #     confirm_button.click()
-    #         #     logger.info("点击‘确认借出’按钮")
-    #         # else:
-    #         #     error_info = "确定按钮不存在"
-    #         #     logger.warning(error_info)
-    #         #     return False, error_info
-    #
-    #         # # 获取提示内容并打印（如果需要）
-    #         # if prompt_content.exists:
-    #         #     print(f"弹窗内容: {prompt_content.get_text()}")
-    #
-    #         # # 返回上级页面
-    #         # if back_button.exists:
-    #         #     back_button.click()
-    #         #     back_button.click()
-    #         #     logger.info("返回上级页面")
-    #         # else:
-    #         #     logger.warning("返回按钮不存在")
-    #
-    #         logger.info("---------------------国债逆回购任务执行完毕---------------------")
-    #         return True, "操作成功"
-
-        # except Exception as e:
-        #     logger.error(f"错误: {e}")
-        #     return False, str(e)
 
 if __name__ == '__main__':
     # pass
@@ -434,7 +383,9 @@ if __name__ == '__main__':
 
     # d.screenshot("screenshot1.png")
     pom = THSPage(d)
-    pom.guozhai_operation()
+    # pom.guozhai_operation()
+    pom.change_account("长城证券")
+    # pom.change_account("川财证券")
     # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')
 #     pom.sell_stock('英维克','半仓')

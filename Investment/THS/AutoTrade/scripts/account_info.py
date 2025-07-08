@@ -4,9 +4,9 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import uiautomator2 as u2
 
-from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file, account_xml_file
+from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file,account_xml_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.config.settings import account_xml_file
+# from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 
 logger = setup_logger("account_info.log")  # 创建日志实例
 
@@ -298,11 +298,13 @@ def get_stock_available(stock_name):
         logger.error(f"获取持仓失败: {e}")
         return None
 
-def update_holding_info():
+def update_holding_info_all():
     """
     获取当前账户持仓信息，并保存到 Excel 文件
     """
     logger.info("开始更新账户持仓信息...")
+    # ths = GuozhaiPage(d)
+    # ths.ensure_on_holding_page()
     try:
         header_info_df = extract_header_info()
         stocks_df = extract_stock_info()

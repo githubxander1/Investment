@@ -4,6 +4,7 @@ import logging
 import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
+from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
@@ -143,11 +144,16 @@ class GuozhaiPage(THSPage):
         back_button.click()
         return False, prompt_text
 
-    def _ensure_on_holding_page(self, max_retry=5):
+    def ensure_on_holding_page(self, max_retry=5):
         """确保当前在持仓页"""
+        moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
         back_button = self.d(resourceId=self.back_button_id)
         for _ in range(max_retry):
             if self.is_on_holding_list_page():
+                return True
+            if moni.exists():
+                ths = THSPage(d)
+                ths.click_holding_stock_entry()
                 return True
             if back_button.exists():
                 back_button.click()
@@ -161,7 +167,7 @@ class GuozhaiPage(THSPage):
         logger.info("---------------------国债逆回购任务开始执行---------------------")
         try:
             # 1. 确保在持仓页
-            if not self._ensure_on_holding_page():
+            if not self.ensure_on_holding_page():
                 return False, "无法返回持仓列表页"
 
             # 2. 进入国债逆回购入口
@@ -177,7 +183,7 @@ class GuozhaiPage(THSPage):
                 back_button = self.d(resourceId=self.back_button_id)
                 back_button.click()
                 return False, "当前页面不是 GC001(1天期)"
-
+            time.sleep(1)
             # 5. 执行借出操作
             if not self._perform_borrow_operation():
                 return False, "借出操作失败"

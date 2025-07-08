@@ -7,6 +7,7 @@ import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Strategy_portfolio_today, Combination_portfolio_today
+from Investment.THS.AutoTrade.scripts.account_info import update_holding_info_all
 from Investment.THS.AutoTrade.utils.format_data import normalize_time
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
@@ -163,10 +164,21 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 logger.warning(f"文件 {file_path} 为空，跳过处理")
                 continue
 
+            # 默认账户（非 AI市场追踪策略 时使用）
+            default_account = "川财证券"
+
             for index, row in df.iterrows():
+                strategy_name = row['名称'].strip()
                 stock_name = row['标的名称'].strip()
                 operation = row['操作'].strip()
                 new_ratio = float(row['新比例%'])
+
+                # 根据策略切换账户
+                if strategy_name == "AI市场追踪策略":
+                    logger.info("检测到 AI市场追踪策略，切换账户为 长城证券")
+                    ths_page.change_account("长城证券")
+                else:
+                    ths_page.change_account(default_account)
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
 
@@ -180,10 +192,10 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                     logger.info(f"✅ 已处理过: {stock_name}")
                     continue
 
-                # new_to_operate = [~(exists['标的名称'] == stock_name) & (exists['操作'] == operation) & (exists['新比例%'] == round(new_ratio, 2))]
-                # return new_to_operate
-                # 执行交易逻辑
                 logger.info(f"🚀 开始交易: {operation} {stock_name}")
+                update_holding_info_all()
+                logger.info("更新持仓信息完成")
+
                 status, info = ths_page.operate_stock(operation, stock_name)
 
                 # 构造记录

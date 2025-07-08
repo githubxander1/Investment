@@ -142,9 +142,10 @@ async def Combination_main():
         return False, None
 
     # 去掉科创板和创业板的股票
-    all_today_trades_df = all_today_trades_df[
-        ~all_today_trades_df['市场'].str.contains('科创板|创业板')
-        ]
+    # all_today_trades_df = all_today_trades_df[
+    #     ~all_today_trades_df['市场'].str.contains('科创板|创业板')
+    #     ]
+    all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['沪深A股']) == True]
     # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
 

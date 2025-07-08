@@ -30,7 +30,7 @@ async def get_latest_position_and_trade(strategy_id):
         data = data.json()
         # pprint(data)
         logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
-        # pprint(data)
+        pprint(data)
     except requests.RequestException as e:
         logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
@@ -42,7 +42,7 @@ async def get_latest_position_and_trade(strategy_id):
 
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 昨天
-    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
     # print(today)
 
     result = []
@@ -101,7 +101,9 @@ async def Strategy_main():
         return False, None
 
     # 过滤掉创业板、科创板股票的交易信息
-    all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['创业板', '科创板']) == False]
+    all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['沪深A股']) == True]
+    # 去掉标的名称含st的
+    all_today_trades_df = all_today_trades_df[~all_today_trades_df['标的名称'].str.contains('ST')]
     # all_trades_df = [~(all_trades_df[all_trades_df['市场'].isin(['创业板', '科创板'])]
     logger.info(f'今日交易数据：{len(all_today_trades_df)}条 \n{all_today_trades_df}')
 
@@ -152,7 +154,7 @@ async def Strategy_main():
 
         # 发送通知
         new_data_print_without_header = all_today_trades_df.to_string(index=False)
-        send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
+        # send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
         # logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
         # from Investment.THS.AutoTrade.utils.event_bus import event_bus
         # event_bus.publish('new_trades_available', new_data)

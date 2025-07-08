@@ -69,7 +69,7 @@ async def main():
         now = datetime.datetime.now().time()
 
         # 如果当前时间超过 15:30，停止运行
-        if now >= dt_time(18, 30):
+        if now >= dt_time(20, 30):
             logger.info("当前时间超过 15:30，停止运行")
             break
 
