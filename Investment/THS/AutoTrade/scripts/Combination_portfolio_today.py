@@ -79,7 +79,8 @@ def fetch_and_extract_data(portfolio_id):
             name_match = re.search(r'([\u4e00-\u9fa5]{2,4}[A-Za-z0-9\u3000-\u303F\uFF00-\uFF60]*)', text)
             extracted_name = name_match.group(1) if name_match else '无'
 
-            return (extracted_name, clean_reasons)
+            # return (extracted_name, clean_reasons)
+            return (clean_reasons, extracted_name)
 
 
 

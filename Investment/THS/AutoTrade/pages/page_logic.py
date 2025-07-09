@@ -25,54 +25,70 @@ class THSPage:
         # back_button = self.d('com.hexin.plat.android:id/title_bar_left_container')
 
     def change_account(self, to_account):
-        current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
-
-        if self._current_account == to_account:
-            logger.info(f"当前已是 {to_account} 账户，无需切换")
-            return True
-
-        account_dialog = self.d(resourceId="com.hexin.plat.android:id/wt_multi_data_item_qs_name", text=to_account)
-        loggin_button = self.d(resourceId="com.hexin.plat.android:id/weituo_btn_login")
-        password_input = self.d(resourceId="com.hexin.plat.android:id/weituo_edit_trade_password")
-        keeplogin_checkbox = self.d(resourceId="com.hexin.plat.android:id/rtv_keeplogin_tips")
-        keeplogin_24h = self.d(resourceId="com.hexin.plat.android:id/tv_keeplogin_24h")
-
-        password_changcheng = '660493'
-        password_chuangcai = '170212'
-
-        current_account_name = current_account.get_text()
-
-        if current_account_name != to_account:
-            current_account.click()
-            account_dialog.click()
-
-            if loggin_button.exists():
-                loggin_button.click()
-
-                if to_account == '长城证券':
-                    password_input.set_text(password_changcheng)
-                else:
-                    password_input.set_text(password_chuangcai)
-
-                keeplogin_checkbox.click()
-                if keeplogin_24h.exists():
-                    keeplogin_24h.click()
-
-                loggin_button.click()
-                time.sleep(1)
-
-            current_account_name2 = current_account.get_text()
-            if current_account_name2 == to_account:
-                self._current_account = to_account
-                logger.info(f"✅ 成功切换至账户: {to_account}")
-                return True
-            else:
-                logger.warning(f"⚠️ 切换账户失败，当前仍为: {current_account_name2}")
-                return False
+        if not self.is_on_holding_list_page():
+            self.click_back()
+            # A股
+        Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
+        moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
+        if to_account == "模拟":
+            self.click_back()
+            moni.click()
+            self.click_holding_stock_entry()
         else:
-            self._current_account = current_account_name
-            logger.info(f"📌 当前登录账户名称: {current_account_name}")
-            return True
+            self.click_back()
+            Agu.click()
+            self.click_holding_stock_entry()
+
+            current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
+
+            if self._current_account == to_account:
+                logger.info(f"当前已是 {to_account} 账户，无需切换")
+                return True
+
+            account_dialog = self.d(resourceId="com.hexin.plat.android:id/wt_multi_data_item_qs_name", text=to_account)
+            loggin_button = self.d(resourceId="com.hexin.plat.android:id/weituo_btn_login")
+            password_input = self.d(resourceId="com.hexin.plat.android:id/weituo_edit_trade_password")
+            keeplogin_checkbox = self.d(resourceId="com.hexin.plat.android:id/rtv_keeplogin_tips")
+            keeplogin_24h = self.d(resourceId="com.hexin.plat.android:id/tv_keeplogin_24h")
+
+            password_changcheng = '660493'
+            password_chuangcai = '170212'
+
+            current_account_name = current_account.get_text()
+
+            if current_account_name != to_account:
+
+                current_account.click()
+                account_dialog.click()
+
+                if loggin_button.exists():
+                    loggin_button.click()
+
+                    if to_account == '长城证券':
+                        time.sleep(1)
+                        password_input.set_text(password_changcheng)
+                    else:
+                        password_input.set_text(password_chuangcai)
+
+                    keeplogin_checkbox.click()
+                    if keeplogin_24h.exists():
+                        keeplogin_24h.click()
+
+                    loggin_button.click()
+                    time.sleep(1)
+
+                current_account_name2 = current_account.get_text()
+                if current_account_name2 == to_account:
+                    self._current_account = to_account
+                    logger.info(f"✅ 成功切换至账户: {to_account}")
+                    return True
+                else:
+                    logger.warning(f"⚠️ 切换账户失败，当前仍为: {current_account_name2}")
+                    return False
+            else:
+                self._current_account = current_account_name
+                logger.info(f"📌 当前登录账户名称: {current_account_name}")
+                return True
 
 
     def click_back(self):
@@ -87,7 +103,7 @@ class THSPage:
     def click_holding_stock_entry(self): #持仓-入口处
         operate_entry = self.d(resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓')
         operate_entry.click()
-        logger.info("点击持仓按钮")
+        logger.info("点击持仓按钮(入口)")
     def click_operate_entry(self,operation):
         if operation == '买入':
             buy_entry = self.d(resourceId='com.hexin.plat.android:id/menu_buy_text')
@@ -177,9 +193,12 @@ class THSPage:
 
     def click_button_by_operation(self, operation):
         if operation == '买入':
-            operate_button = self.d(className='android.widget.TextView', text='买 入')
+            # operate_button = self.d(className='android.widget.TextView', text='买 入')
+            #换成包含文本‘买 入’的定位方式
+            operate_button = self.d(className='android.widget.TextView', textMatches='.*买 入.*')
         elif operation == '卖出':
-            operate_button = self.d(className='android.widget.TextView', text='卖 出')
+            # operate_button = self.d(className='android.widget.TextView', text='卖 出')
+            operate_button = self.d(className='android.widget.TextView', textMatches='.*卖 出.*')
         else:
             raise ValueError("Invalid operation")
         operate_button.click()
@@ -384,8 +403,9 @@ if __name__ == '__main__':
     # d.screenshot("screenshot1.png")
     pom = THSPage(d)
     # pom.guozhai_operation()
-    pom.change_account("长城证券")
+    # pom.change_account("长城证券")
     # pom.change_account("川财证券")
+    pom.change_account("模拟")
     # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')
 #     pom.sell_stock('英维克','半仓')

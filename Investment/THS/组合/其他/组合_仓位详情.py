@@ -180,7 +180,8 @@ def process_showRelocateData_ids(ids):
 if __name__ == '__main__':
 
     # combination_ids = [6994, 7152,18710, 16281, 19347, 13081, 14980]
-    combination_ids = Combination_ids
+    # combination_ids = Combination_ids
+    combination_ids = '9800'
 
     id_to_name = Combination_ids_to_name
 

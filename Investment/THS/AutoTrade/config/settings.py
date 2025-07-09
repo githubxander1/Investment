@@ -85,9 +85,10 @@ Strategy_id_to_name = {
 
 
 # 组合 手动创建组合ID到组合名称的映射
-# Combination_ids = ['11094', '7152', '19347']
-Combination_ids = ['19347']
+Combination_ids = ['9800']
+# Combination_ids = ['19347']
 Combination_ids_to_name = {
+    '9800': '组-逻辑为王',#胜率低，收益高
     '7152': '组-中线龙头',#胜率低，收益高
     '11094': '组-低位题材埋伏',#胜率高，回撤小，收益高
     # '9564': '梦想二号',# 长期
