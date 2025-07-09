@@ -28,6 +28,15 @@ def normalize_time(time_str):
         return ''
 
     try:
+        # 新增：处理 ISO 格式时间（如 2025-07-09 10:03）
+        if isinstance(time_str, str) and '-' in time_str and ':' in time_str:
+            parts = time_str.split()
+            if len(parts) >= 2:
+                date_part = parts[0]
+                time_part = parts[1].split('.')[0]  # 去除毫秒
+                time_part = ":".join(time_part.split(":")[:2])  # 只取小时和分钟
+                return f"{date_part} {time_part}"
+
         # 新增：处理时间戳（如 1751419860000）
         if isinstance(time_str, (int, float)) and str(time_str).isdigit():
             timestamp = int(time_str) / 1000  # 毫秒转秒
@@ -53,6 +62,7 @@ def normalize_time(time_str):
             return f"{date_part} {time_part}"
         else:
             return time_str
+
     except Exception as e:
         print(f"时间标准化失败: {e}")
         return ''
@@ -100,20 +110,26 @@ def get_new_records(current_df, history_df):
     # 同样处理历史数据
     history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
     history_df['时间'] = history_df['时间'].apply(normalize_time)
-    history_df['新比例%'] = history_df['新比例%'].round(2).astype(float)
+
+    # 强制保留两位小数字符串
+    current_df['新比例%'] = current_df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
+    history_df['新比例%'] = history_df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
     history_df['_id'] = (
         history_df['时间'].astype(str) + '_' +
-        history_df['代码'] + '_' +
-        history_df['新比例%'].map(lambda x: f"{x:.2f}")
+        history_df['代码'].astype(str).str.zfill(6) + '_' +
+        history_df['新比例%']
     )
+
+    # 生成唯一ID
+    current_df['_id'] = current_df['时间'].astype(str) + '_' + current_df['代码'] + '_' + current_df['新比例%']
+    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'] + '_' + history_df['新比例%']
 
     # 找出新增记录
     new_mask = ~current_df['_id'].isin(history_df['_id'])
     new_data = current_df[new_mask].copy()
 
     # logger.info(f'新增记录：{new_data}')
-    return new_data.drop(columns=['_id'], errors='ignore') if not new_data.empty else new_data
-
+    return current_df[new_mask].drop(columns=['_id'], errors='ignore')
 
 
 def standardize_dataframe(df):

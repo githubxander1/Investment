@@ -152,7 +152,7 @@ class GuozhaiPage(THSPage):
             if self.is_on_holding_list_page():
                 return True
             if moni.exists():
-                ths = THSPage(d)
+                ths = THSPage(self.d)
                 ths.click_holding_stock_entry()
                 return True
             if back_button.exists():

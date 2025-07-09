@@ -30,7 +30,7 @@ async def get_latest_position_and_trade(strategy_id):
         data = data.json()
         # pprint(data)
         logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
-        pprint(data)
+        # pprint(data)
     except requests.RequestException as e:
         logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
