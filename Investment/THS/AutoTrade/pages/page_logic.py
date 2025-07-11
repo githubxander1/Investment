@@ -4,6 +4,7 @@ import time
 
 import uiautomator2
 
+from Investment.THS.AutoTrade.pages.page_common import ensure_on_account_page, where_page
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 # from Demos.RegCreateKeyTransacted import classname
 
@@ -19,9 +20,10 @@ class THSPage:
 
     def __init__(self, d):
         self.d = d
-        self.d.implicitly_wait(10)
+        self.d.implicitly_wait(20)
         self._current_stock_name = None  # 新增用于保存当前股票名称
         self._current_account = None
+        self._current_page = None
 
         # back_button = self.d('com.hexin.plat.android:id/title_bar_left_container')
         self.trade_button_entry = self.d(resourceId="com.hexin.plat.android:id/icon")[3]
@@ -32,131 +34,140 @@ class THSPage:
         self.Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
         self.current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
 
+        # 账户页
         self.keyong = self.d(resourceId="com.hexin.plat.android:id/capital_cell_title")[4]
+        self.current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
+        self.share_button = self.d(resourceId="com.hexin.plat.android:id/share_container")
+        self.search_button = self.d(resourceId="com.hexin.plat.android:id/search_container")
+
     #判断当前在哪个页面
-    def where_page(self):
-        application_store = self.d(resourceId="com.hexin.plat.android:id/textView")[12]
-        moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
-        current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
-        guozhailist = self.d(text="我要回购").exists()
-        guozhaipingzhong = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
-
-        if application_store.exists():
-            return "首页"
-        elif moni.exists():
-            return "交易页"
-        elif current_text.exists():
-            return "账户页"
-        elif guozhailist:
-            return "国债列表页"
-        elif guozhaipingzhong:
-            return "国债品种页"
-        else:
-            return "其他"
-
-
-    def change_account(self, to_account):
-        """
-            切换账户，必须在交易页执行
-            :param to_account: 目标账户名称（如 "模拟" / "川财证券" / "长城证券"）
-            :return: 成功与否
-            """
-        current_page = self.where_page()
-        logger.info(f"当前页面: {current_page}, 正在尝试切换至账户: {to_account}")
-
-        # 确保在交易页
-        if current_page != "交易页":
-            logger.warning("不在交易页，尝试返回交易页...")
-            if current_page == "首页":
-                # trade_button = self.d(resourceId="com.hexin.plat.android:id/icon")[4]
-                self.trade_button_entry.click()
-            elif current_page == "账户页":
-                self.click_back()
-            elif current_page == "国债列表页":
-                self.click_back()
-                self.click_back()
-            elif current_page == "国债品种页":
-                self.click_back()
-                self.click_back()
-                self.click_back()
-            else:
-                logger.error("无法返回交易页，切换账户失败")
-                return False
-
-            # self._navigate_to_home_page()
-
-        # 确保进入交易页
-        if self.where_page() != "交易页":
-            logger.error("无法返回交易页，切换账户失败")
-            return False
-        # Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
-            # 切换账户逻辑
-        if to_account == "模拟":
-            # moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
-            if not self.moni.exists(timeout=3):
-                logger.error("找不到模拟账户入口")
-                return False
-            self.moni.click()
-            self.click_holding_stock_entry()
-            logger.info("切换至模拟账户成功")
-            return True
-        else:
-            # self.click_back()
-            # Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
-            self.Agu.click()
-            time.sleep(1)
-            self.click_holding_stock_entry()
-
-            # current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
-
-            if self._current_account == to_account:
-                logger.info(f"当前已是 {to_account} 账户，无需切换")
-                return True
-
-            account_dialog = self.d(resourceId="com.hexin.plat.android:id/wt_multi_data_item_qs_name", text=to_account)
-            loggin_button = self.d(resourceId="com.hexin.plat.android:id/weituo_btn_login")
-            password_input = self.d(resourceId="com.hexin.plat.android:id/weituo_edit_trade_password")
-            keeplogin_checkbox = self.d(resourceId="com.hexin.plat.android:id/rtv_keeplogin_tips")
-            keeplogin_24h = self.d(resourceId="com.hexin.plat.android:id/tv_keeplogin_24h")
-
-            password_changcheng = '660493'
-            password_chuangcai = '170212'
-
-            current_account_name = self.current_account.get_text()
-
-            if current_account_name != to_account:
-
-                self.current_account.click()
-                account_dialog.click()
-
-                if loggin_button.exists():
-                    loggin_button.click()
-
-                    if to_account == '长城证券':
-                        time.sleep(1)
-                        password_input.set_text(password_changcheng)
-                    else:
-                        password_input.set_text(password_chuangcai)
-
-                    keeplogin_checkbox.click()
-                    if keeplogin_24h.exists():
-                        keeplogin_24h.click()
-
-                    loggin_button.click()
-                    time.sleep(1)
-
-                current_account_name2 = self.current_account.get_text()
-                if current_account_name2 == to_account:
-                    self._current_account = to_account
-                    logger.info(f"✅ 成功切换至账户: {to_account}")
-                    return True
-                else:
-                    logger.warning(f"⚠️ 切换账户失败，当前仍为: {current_account_name2}")
-                    return False
-            else:
-                self._current_account = current_account_name
-                logger.info(f"📌 当前登录账户名称: {current_account_name}")
-                return True
+    # def where_page(self):
+    #     application_store = self.d(resourceId="com.hexin.plat.android:id/textView")[12]
+    #     moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
+    #     current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
+    #     guozhailist = self.d(text="我要回购")
+    #     guozhaipingzhong = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
+    #
+    #     if application_store.exists():
+    #         # logger.info("当前页面: 首页")
+    #         return "首页"
+    #     elif self.moni.exists():
+    #         # logger.info("当前页面: 交易页")
+    #         return "交易页"
+    #     elif self.search_button.exists():
+    #         # logger.info("当前页面: 账户页")
+    #         return "账户页"
+    #     elif guozhailist.exists():
+    #         # logger.info("当前页面: 国债列表页")
+    #         return "国债列表页"
+    #     elif guozhaipingzhong.exists():
+    #         # logger.info("当前页面: 国债品种页")
+    #         return "国债品种页"
+    #     else:
+    #         return "当前在未知页"
+    #
+    #
+    # def change_account(self, to_account):
+    #     """
+    #     切换账户，必须在交易页执行
+    #     :param to_account: 目标账户名称（如 "模拟" / "川财证券" / "长城证券"）
+    #     :return: 成功与否
+    #     """
+    #     current_page = self.where_page()
+    #     logger.info(f"当前页面: {current_page}, 正在尝试切换至账户: {to_account}")
+    #
+    #     # 确保在交易页
+    #     if current_page != "交易页":
+    #         logger.warning("不在交易页，尝试返回交易页...")
+    #         if current_page == "首页":
+    #             # trade_button = self.d(resourceId="com.hexin.plat.android:id/icon")[4]
+    #             self.trade_button_entry.click()
+    #         elif current_page == "账户页":
+    #             self.click_back()
+    #         elif current_page == "国债列表页":
+    #             self.click_back()
+    #             self.click_back()
+    #         elif current_page == "国债品种页":
+    #             self.click_back()
+    #             self.click_back()
+    #             self.click_back()
+    #         else:
+    #             logger.error("无法返回交易页，切换账户失败")
+    #             return False
+    #
+    #
+    #     # 确保进入交易页
+    #     if self.where_page() != "交易页":
+    #         logger.error("无法返回交易页，切换账户失败")
+    #         return False
+    #     # Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
+    #         # 切换账户逻辑
+    #     if to_account == "模拟":
+    #         # moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
+    #         if not self.moni.exists(timeout=3):
+    #             logger.error("找不到模拟账户入口")
+    #             return False
+    #         self.moni.click()
+    #         self.click_holding_stock_entry()
+    #         logger.info("切换至模拟账户成功")
+    #         return True
+    #     else:
+    #         # self.click_back()
+    #         # Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
+    #         self.Agu.click()
+    #         time.sleep(1)
+    #         self.click_holding_stock_entry()
+    #
+    #         # current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
+    #
+    #         if self._current_account == to_account:
+    #             logger.info(f"当前已是 {to_account} 账户，无需切换")
+    #             return True
+    #
+    #         account_dialog = self.d(resourceId="com.hexin.plat.android:id/wt_multi_data_item_qs_name", text=to_account)
+    #         loggin_button = self.d(resourceId="com.hexin.plat.android:id/weituo_btn_login")
+    #         password_input = self.d(resourceId="com.hexin.plat.android:id/weituo_edit_trade_password")
+    #         keeplogin_checkbox = self.d(resourceId="com.hexin.plat.android:id/rtv_keeplogin_tips")
+    #         keeplogin_24h = self.d(resourceId="com.hexin.plat.android:id/tv_keeplogin_24h")
+    #
+    #         password_changcheng = '660493'
+    #         password_chuangcai = '170212'
+    #
+    #         current_account_name = self.current_account.get_text()
+    #
+    #         if current_account_name != to_account:
+    #
+    #             self.current_account.click()
+    #             account_dialog.click()
+    #
+    #             if loggin_button.exists():
+    #                 loggin_button.click()
+    #
+    #                 if to_account == '长城证券':
+    #                     time.sleep(1)
+    #                     password_input.set_text(password_changcheng)
+    #                 else:
+    #                     password_input.set_text(password_chuangcai)
+    #
+    #                 keeplogin_checkbox.click()
+    #                 if keeplogin_24h.exists():
+    #                     keeplogin_24h.click()
+    #
+    #                 loggin_button.click()
+    #                 time.sleep(1)
+    #
+    #             current_account_name2 = self.current_account.get_text()
+    #             if current_account_name2 == to_account:
+    #                 self._current_account = to_account
+    #                 logger.info(f"✅ 成功切换至账户: {to_account}")
+    #                 return True
+    #             else:
+    #                 logger.warning(f"⚠️ 切换账户失败，当前仍为: {current_account_name2}")
+    #                 return False
+    #         else:
+    #             self._current_account = current_account_name
+    #             logger.info(f"📌 当前登录账户名称: {current_account_name}")
+    #             return True
 
 
     def click_back(self):
@@ -167,38 +178,32 @@ class THSPage:
     def click_trade_entry(self):
         trade_entry = self.d(resourceId='com.hexin.plat.android:id/title', text='交易')
         trade_entry.click()
-        logger.info("点击交易按钮")
+        logger.info("点击交易按钮(外)")
     def click_holding_stock_entry(self): #持仓-入口处
         operate_entry = self.d(resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓')
         operate_entry.click()
-        logger.info("点击持仓按钮(入口)")
+        logger.info("点击持仓按钮(外)")
     def click_operate_entry(self,operation):
         if operation == '买入':
             buy_entry = self.d(resourceId='com.hexin.plat.android:id/menu_buy_text')
             buy_entry.click()
-            logger.info("点击买入按钮")
+            logger.info("点击买入按钮(外)")
         elif operation == '卖出':
             sale_entry = self.d(resourceId='com.hexin.plat.android:id/menu_sale_text')
             sale_entry.click()
-            logger.info("点击卖出按钮")
+            logger.info("点击卖出按钮(外)")
         else:
-            raise ValueError("Invalid operation")
+            raise ValueError("未知操作")
 
     def click_holding_stock_button(self): # 持仓-里面
         holding_button = self.d(className='android.widget.TextView', text='持仓')
         holding_button.click()
-        logger.info("点击持仓按钮")
-
-        # # 等待持仓页面加载完成
-        # self.a_hold = self.d(className='android.widget.TextView')[34]
-        # if not self.a_hold.wait.exists(timeout=5000):
-        #     logger.error("持仓页面加载失败")
-        #     return False
+        logger.info("点击持仓按钮(里)")
 
     def click_operate_button(self,operation):
         operation_button = self.d(className='android.widget.TextView', text=operation)
         operation_button.click()
-        logger.info(f'点击{operation}')
+        logger.info(f'点击{operation} (提交)')
 
     def click_refresh_button(self):
         refresh_button = self.d(resourceId='com.hexin.plat.android:id/refresh_container')
@@ -263,14 +268,14 @@ class THSPage:
         if operation == '买入':
             # operate_button = self.d(className='android.widget.TextView', text='买 入')
             #换成包含文本‘买 入’的定位方式
-            operate_button = self.d(className='android.widget.TextView', textMatches='.*买 入.*')
+            submit_button = self.d(className='android.widget.TextView', textMatches='.*买 入.*')
         elif operation == '卖出':
             # operate_button = self.d(className='android.widget.TextView', text='卖 出')
-            operate_button = self.d(className='android.widget.TextView', textMatches='.*卖 出.*')
+            submit_button = self.d(className='android.widget.TextView', textMatches='.*卖 出.*')
         else:
             raise ValueError("Invalid operation")
-        operate_button.click()
-        logger.info(f"点击按钮: {operation}")
+        submit_button.click()
+        logger.info(f"点击按钮: {operation} (提交)")
 
     def _get_real_price(self):
         """获取当前股票实时价格"""
@@ -383,26 +388,33 @@ class THSPage:
         time.sleep(0.5)
         update_holding_info_all()
         logger.info("更新持仓信息")
-    def ensure_on_account_page(self, max_retry=5):
+    def ensure_on_account_page(self):
         """确保当前在账户页"""
-        current_page = self.where_page()
+        current_page = where_page()
         logger.info(f"当前页面: {current_page}")
 
         # 确保在账户页
-        if current_page == "首页":
-            self.trade_button_entry.click()
-            # 如果没有可用按钮，则点击持仓入口
-            if not self.keyong.exists:
+        if not current_page == "账户页":
+            if current_page == "首页":
+                # 如果没有可用按钮，则点击持仓入口
+                self.trade_button_entry.click()
+                time.sleep(1)
+                if not self.search_button.exists:
+                    print("没有分享按钮")
+                    self.click_holding_stock_entry()
+            elif current_page == "交易页":
                 self.click_holding_stock_entry()
-        elif current_page == "国债列表页":
-            self.click_back()
-        elif current_page == "国债品种页":
-            self.click_back()
-            self.click_back()
+            elif current_page == "国债列表页":
+                self.click_back()
+            elif current_page == "国债品种页":
+                self.click_back()
+                self.click_back()
+            else:
+                logger.error("无法返回账户页")
+                return False
+            logger.info("已切换至: 账户页")
         else:
-            logger.error("无法返回账户页")
-            return False
-        return False
+            return True
     def operate_stock(self,operation, stock_name):
         """交易-持仓(初始化)-买卖操作"""
         self.ensure_on_account_page()
@@ -425,12 +437,12 @@ class THSPage:
             if not success:
                 logger.warning(f"{operation} {stock_name} 失败: {msg}")
                 return False, msg
+            # 点击买/卖操作按钮
+            self.click_operate_button(operation)
 
             # 交易开始，发送通知
             # send_notification(f"开始 {operation} 流程 {stock_name}  {calculate_volume}股")
 
-            # 点击买/卖操作按钮
-            self.click_operate_button(operation)
             # 输入交易数量
             self.input_volume(int(calculate_volume))
             # 点击交易按钮
@@ -473,16 +485,17 @@ if __name__ == '__main__':
     # d.screenshot("screenshot1.png")
     ths = THSPage(d)
     # pom.guozhai_operation()
-    # if pom.trade_button_entry.exists():
-    #     pom.trade_button_entry.click()
-    #     print("点击交易按钮成功")
-    # else:
-    #     print("没有交易按钮")
+    if ths.search_button.exists():
+        # ths.trade_button_entry.click()
+        print("已在账户页")
+    else:
+        print("没有该按钮")
     # pom.trade_button_entry.click()
     # pom.change_account("长城证券")
     # pom.change_account("川财证券")
     # pom.change_account("模拟")
-    ths.ensure_on_account_page()
+    # ths.ensure_on_account_page()
+    ths.operate_stock("买入", "中国平安")
     # print(pom.where_page())
     # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')

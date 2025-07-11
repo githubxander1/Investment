@@ -3,6 +3,7 @@ import time
 import logging
 import uiautomator2 as u2
 
+from Investment.THS.AutoTrade.pages.page_common import ensure_on_account_page
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
 from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -10,40 +11,22 @@ from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger('nihuigou.log')
 
+# ths = THSPage(u2.connect())
+
 class GuozhaiPage(THSPage):
     def __init__(self, d):
         super().__init__(d)
         # 移除提前初始化的冗余元素，改用动态获取
-        self.back_button_id = "com.hexin.plat.android:id/title_bar_img"
-        self.confirm_button_id = "com.hexin.plat.android:id/ok_btn"
-        self.prompt_content_id = "com.hexin.plat.android:id/prompt_content"
+        self.back_button = self.d(resourceId="com.hexin.plat.android:id/title_bar_img")
+        self.confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+        self.prompt_content = self.d(resourceId="com.hexin.plat.android:id/prompt_content")
+        self.ths = THSPage(d)
 
-    def is_on_home_page(self):
-        """判断是否在首页"""
-        return self.d(resourceId="com.hexin.plat.android:id/tab_mn").exists()
+        self.guozhai_entry_button = self.d(resourceId="com.hexin.plat.android:id/title_right_image")[1]
+        self.guozhailist_assert_button = d(text="我要回购")
 
-    def is_on_guozhai_list_page(self):
-        """判断是否在国债逆回购列表页"""
-        return self.d(text="我要回购").exists()
+        self.borrow_btn = self.d(resourceId="com.hexin.plat.android:id/btn_jiechu")
 
-    def is_on_holding_list_page(self):
-        """判断是否在持仓列表页"""
-        return self.d(text="可用").exists()
-
-    def _enter_guozhai_page(self):
-        """进入国债逆回购页面"""
-        if self.is_on_guozhai_list_page():
-            return True
-
-        # 点击持仓按钮
-        self.click_holding_stock_button()
-
-        # 点击国债逆回购入口
-        right_icons = self.d(resourceId="com.hexin.plat.android:id/title_right_image")
-        if right_icons.count >= 2:
-            right_icons[1].click()
-            return self.wait_for_element(self.d(text="我要回购"), timeout=5)
-        return False
 
     def _find_and_click_product(self, target_name, max_swipe=5, direction='vertical'):
         """
@@ -53,43 +36,44 @@ class GuozhaiPage(THSPage):
         :param direction: 'vertical' 或 'horizontal'
         """
         for _ in range(max_swipe):
-            elements = self.d(text=target_name)
-            if elements:
-                elements[0].click()
-                return True
-
             # 自适应滑动方向
             if direction == 'vertical':
                 self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
             else:
                 self.d.swipe(0.8, 0.5, 0.2, 0.5)  # 横向滑动
 
+            elements = self.d(text=target_name)
+            if elements:
+                elements[0].click()
+                return True
+
             time.sleep(1)
         return False
 
-    def wait_for_element(self, selector, timeout=10):
-        """
-        显式等待元素出现
-        :param selector: 元素定位器
-        :param timeout: 超时时间
-        :return: 是否找到
-        """
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            if selector.exists():
-                return True
-            time.sleep(0.5)
-        return False
+    # def wait_for_element(self, selector, timeout=10):
+    #     """
+    #     显式等待元素出现
+    #     :param selector: 元素定位器
+    #     :param timeout: 超时时间
+    #     :return: 是否找到
+    #     """
+    #     start_time = time.time()
+    #     while time.time() - start_time < timeout:
+    #         if selector.exists():
+    #             return True
+    #         time.sleep(0.5)
+    #     return False
 
-    def assert_on_gc001_page(self, timeout=10):
+    def assert_on_gc001_page(self):
         """
         使用XPath模糊匹配断言当前页面为 GC001(1天期)
         :param timeout: 最大等待时间
         :return: 成功返回 True，失败返回 False
         """
         try:
-            # element = self.d.xpath('//android.widget.TextView[contains(@text, "GC001(1天期)")]')
-            element = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
+            element = self.d.xpath('//android.widget.TextView[contains(@text, "GC001(1天期)")]')
+            # element = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
+            time.sleep(1)
             if element.exists:
                 logger.info("当前页面为 GC001(1天期)")
                 return True
@@ -99,102 +83,113 @@ class GuozhaiPage(THSPage):
             logger.error(f"断言失败: {e}", exc_info=True)
             return False
 
-    def _perform_borrow_operation(self, timeout=5):
-        """执行借出操作"""
-        borrow_btn = self.d(resourceId="com.hexin.plat.android:id/btn_jiechu")
-        if not self.wait_for_element(borrow_btn, timeout):
-            logger.error("借出按钮未出现")
-            return False
-
-        borrow_btn.click()
-        # 点击确认
-        ok_button = self.d(resourceId=self.confirm_button_id)
-        if not self.wait_for_element(ok_button, timeout=3):
-            logger.error("确认按钮未出现")
-            return False
-
-        ok_button.click()
-        return True
+    # def _perform_borrow_operation(self, timeout=5):
+    #     """执行借出操作"""
+    #     borrow_btn = self.d(resourceId="com.hexin.plat.android:id/btn_jiechu")
+    #     if not self.wait_for_element(borrow_btn, timeout):
+    #         logger.error("借出按钮未出现")
+    #         return False
+    #
+    #     self.borrow_btn.click()
+    #     # 点击确认
+    #     # ok_button = self.d(resourceId=self.confirm_button)
+    #     # if not self.wait_for_element(ok_button, timeout=3):
+    #     # logger.error("确认按钮未出现")
+    #     # return False
+    #
+    #     self.confirm_button.click()
+    #     return True
 
     def _handle_transaction_confirm(self):
         """处理交易确认流程"""
-        prompt_content = self.d(resourceId=self.prompt_content_id)
-        confirm_button = self.d(resourceId=self.confirm_button_id)
-        back_button = self.d(resourceId=self.back_button_id)
+        # prompt_content = self.d(resourceId=self.prompt_content)
+        # confirm_button = self.d(resourceId=self.confirm_button)
+        # back_button = self.d(resourceId=self.back_button)
 
-        if not self.wait_for_element(prompt_content, timeout=10):
-            logger.warning("未检测到操作结果弹窗")
-            return False, "未检测到操作结果"
+        # if not self.wait_for_element(prompt_content, timeout=10):
+        #     logger.warning("未检测到操作结果弹窗")
+        #     return False, "未检测到操作结果"
 
-        prompt_text = prompt_content.get_text()
+        prompt_text = self.prompt_content.get_text()
         logger.info(f"操作提示: {prompt_text}")
 
         if '委托已提交' in prompt_text:
-            confirm_button.click()
+            self.confirm_button.click()
             logger.info("交易成功")
             return True, "操作成功"
 
         # 错误处理
         logger.warning(f"交易失败: {prompt_text}")
-        confirm_button.click()
+        self.confirm_button.click()
 
         # 返回持仓页
-        back_button.click()
+        self.back_button.click()
         time.sleep(1)
-        back_button.click()
+        self.back_button.click()
         return False, prompt_text
 
-    def ensure_on_account_page(self, max_retry=5):
-        """确保当前在账户页"""
-        current_page = self.where_page()
-        logger.info(f"当前页面: {current_page}")
-
-        # 确保在账户页
-        if current_page == "首页":
-            self.trade_button_entry.click()
-            # 如果没有可用按钮，则点击持仓入口
-            if not self.keyong.exists:
-                self.click_holding_stock_entry()
-        elif current_page == "国债列表页":
-            self.click_back()
-        elif current_page == "国债品种页":
-            self.click_back()
-            self.click_back()
-        else:
-            logger.error("无法返回账户页")
-            return False
-        return False
+    # def ensure_on_account_page(self, max_retry=5):
+    #     """确保当前在账户页"""
+    #     current_page = self.where_page()
+    #     logger.info(f"当前页面: {current_page}")
+    #
+    #     # 确保在账户页
+    #     if current_page == "首页":
+    #         self.trade_button_entry.click()
+    #         # 如果没有可用按钮，则点击持仓入口
+    #         if not self.keyong.exists:
+    #             self.click_holding_stock_entry()
+    #     elif current_page == "国债列表页":
+    #         self.click_back()
+    #     elif current_page == "国债品种页":
+    #         self.click_back()
+    #         self.click_back()
+    #     else:
+    #         logger.error("无法返回账户页")
+    #         return False
+    #     return False
 
     def guozhai_operation(self):
         """国债逆回购主流程"""
         logger.info("---------------------国债逆回购任务开始执行---------------------")
         try:
             # 1. 确保在账户页
-            if not self.ensure_on_account_page():
+            time.sleep(1)
+            if not ensure_on_account_page():
+                # print(ensure_on_account_page())
                 return False, "无法返回持仓列表页"
 
             # 2. 进入国债逆回购入口
-            if not self._enter_guozhai_page():
+            if not self.guozhai_entry_button.exists():
                 return False, "进入国债逆回购入口失败"
+            else:
+                self.guozhai_entry_button.click()
 
             # 3. 查找并点击产品
             if not self._find_and_click_product("1天期"):
                 return False, "未找到目标产品"
 
+
             # 4. 验证页面匹配
             if not self.assert_on_gc001_page():
-                back_button = self.d(resourceId=self.back_button_id)
-                back_button.click()
+                self.back_button.click()
+                time.sleep(1)
+                self.back_button.click()
                 return False, "当前页面不是 GC001(1天期)"
+
             time.sleep(1)
             # 5. 执行借出操作
-            if not self._perform_borrow_operation():
+            if not self.borrow_btn.exists():
                 return False, "借出操作失败"
+            else:
+                self.borrow_btn.click()
 
             # 6. 处理交易确认
             result = self._handle_transaction_confirm()
             logger.info(f"---------------------国债逆回购任务执行完毕---------------------")
             return result
+            # else:
+            #     return False, "当前页面不是 GC001(1天期)"
 
         except Exception as e:
             logger.error(f"操作失败: {str(e)}", exc_info=True)
