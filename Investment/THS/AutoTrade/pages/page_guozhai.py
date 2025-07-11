@@ -144,30 +144,33 @@ class GuozhaiPage(THSPage):
         back_button.click()
         return False, prompt_text
 
-    def ensure_on_holding_page(self, max_retry=5):
-        """确保当前在持仓页"""
-        moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
-        back_button = self.d(resourceId=self.back_button_id)
-        for _ in range(max_retry):
-            if self.is_on_holding_list_page():
-                return True
-            if moni.exists():
-                ths = THSPage(self.d)
-                ths.click_holding_stock_entry()
-                return True
-            if back_button.exists():
-                back_button.click()
-                time.sleep(1)
-            else:
-                break
+    def ensure_on_account_page(self, max_retry=5):
+        """确保当前在账户页"""
+        current_page = self.where_page()
+        logger.info(f"当前页面: {current_page}")
+
+        # 确保在账户页
+        if current_page == "首页":
+            self.trade_button_entry.click()
+            # 如果没有可用按钮，则点击持仓入口
+            if not self.keyong.exists:
+                self.click_holding_stock_entry()
+        elif current_page == "国债列表页":
+            self.click_back()
+        elif current_page == "国债品种页":
+            self.click_back()
+            self.click_back()
+        else:
+            logger.error("无法返回账户页")
+            return False
         return False
 
     def guozhai_operation(self):
         """国债逆回购主流程"""
         logger.info("---------------------国债逆回购任务开始执行---------------------")
         try:
-            # 1. 确保在持仓页
-            if not self.ensure_on_holding_page():
+            # 1. 确保在账户页
+            if not self.ensure_on_account_page():
                 return False, "无法返回持仓列表页"
 
             # 2. 进入国债逆回购入口

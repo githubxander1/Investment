@@ -85,7 +85,7 @@ Strategy_id_to_name = {
 
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = ['9800']
+Combination_ids = ['19347','9800']
 # Combination_ids = ['19347']
 Combination_ids_to_name = {
     '9800': '组-逻辑为王',#胜率低，收益高

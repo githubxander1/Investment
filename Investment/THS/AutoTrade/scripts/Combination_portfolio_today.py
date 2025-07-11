@@ -30,6 +30,91 @@ from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, ge
 # 使用setup_logger获取统一的logger实例
 logger = setup_logger("组合_调仓日志.log")
 
+from bs4 import BeautifulSoup
+
+def clean_content(text):
+    if not isinstance(text, str):
+        return '无', '无'
+
+    # 使用BeautifulSoup解析HTML
+    soup = BeautifulSoup(text, 'lxml')
+
+    # 移除 HTML 标签，获取纯文本
+    clean_text = soup.get_text().strip()
+
+    # 如果没有结构化 div 标签，返回 clean_text 作为理由，'无' 作为名称
+    if not soup.find('div', class_='change_reason') and not soup.find('div', class_='change_content'):
+        return (clean_text or '无', '无')
+
+    # 提取 change_content 内容（基础理由）
+    content_div = soup.find('div', class_='change_content')
+    base_reasons = content_div.get_text(strip=True) if content_div else '无'
+
+    # 提取 change_quota_content 内容（附加理由）
+    quota_content_div = soup.find('div', class_='change_quota_content')
+    additional_reasons = quota_content_div.get_text(strip=True) if quota_content_div else ''
+
+    # 合并基础理由和附加理由
+    clean_reasons = f"{base_reasons} {additional_reasons}".strip()
+
+    # 提取标的名称：匹配 "调仓理由" 前面的内容
+    reason_div = soup.find('div', class_='change_reason')
+    if reason_div:
+        name_match = re.search(r'^(.+?)\s*调仓理由', reason_div.get_text(strip=True))
+        extracted_name = name_match.group(1).strip() if name_match else '无'
+    else:
+        # 新增二级提取方案：尝试从纯文本中提取
+        fallback_match = re.search(r'^(.+?)\s*调仓理由', clean_text)
+        extracted_name = fallback_match.group(1).strip() if fallback_match else '无'
+
+    return (extracted_name, clean_reasons)
+
+
+def clean_content1(text):
+    if not isinstance(text, str):
+        return '无', '无'
+
+    # 移除 HTML 标签
+    clean_text = re.sub(r'<[^>]+>', '', text).strip()
+
+    # 如果没有结构化 div 标签，返回 clean_text 作为理由，'无' 作为名称
+    if 'class="change_reason"' not in text and 'class="change_content"' not in text:
+        return (clean_text or '无', '无')  # ✅ 返回两个值
+
+    # 提取 change_content 内容（基础理由）
+    content_pattern = r'<div class="change_content">(.*?)</div>'
+    content_matches = re.findall(content_pattern, text, re.DOTALL)
+    base_reasons = '\n'.join([content.strip() for content in content_matches]) if content_matches else '无'
+    print(f"基础理由：{base_reasons}")
+    # 提取 change_quota_content 内容（附加理由）
+    quota_content_pattern = r'<div class="change_quota_content">(.*?)</div>'
+    quota_content_matches = re.findall(quota_content_pattern, text, re.DOTALL)
+    additional_reasons = '\n'.join([content.strip() for content in quota_content_matches]) if quota_content_matches else ''
+    print(f"附加理由：{additional_reasons}")
+    # 合并基础理由和附加理由
+    clean_reasons = f"{base_reasons} {additional_reasons}".strip()
+
+    # 提取标的名称：匹配 "调仓理由" 前面的内容
+    name_match = re.search(
+        r'<div class="change_reason">[^<]*?(\S+?)调仓理由',
+        text,
+        re.DOTALL
+    )
+    if name_match:
+        name = name_match.group(1).strip()
+        # 清理全角字母数字为半角（可选）
+        extracted_name = name.translate(str.maketrans(
+            'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９',
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        ))
+    else:
+        # ✅ 新增二级提取方案：尝试从纯文本中提取
+        text_only = re.sub(r'<[^>]+>', '', text)
+        fallback_match = re.search(r'^(.+?)调仓理由', text_only)
+        extracted_name = fallback_match.group(1).strip() if fallback_match else '无'
+
+    return (clean_reasons,extracted_name)
+
 
 def fetch_and_extract_data(portfolio_id):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
@@ -54,39 +139,12 @@ def fetch_and_extract_data(portfolio_id):
         raw_content = item.get('content', '') or ''  # 防止空值
         relocateList = item.get('relocateList', [])
 
-        # 优化内容提取逻辑
-        def clean_content(text):
-            if not isinstance(text, str):
-                return '无', '无'
-
-            # 移除 HTML 标签
-            clean_text = re.sub(r'<[^>]+>', '', text).strip()
-
-            # 如果没有结构化 div 标签，返回 clean_text 作为理由，'无' 作为名称
-            if 'class="change_reason"' not in text and 'class="change_content"' not in text:
-                return (clean_text or '无', '无')  # ✅ 返回两个值
-
-            # 提取 change_content 内容
-            content_pattern = r'<div class="change_content">(.*?)</div>'
-            content_matches = re.findall(content_pattern, text, re.DOTALL)
-            clean_reasons = '\n'.join([content.strip() for content in content_matches]) if content_matches else '无'
-
-            # 去除空白并合并多个理由（支持多条调仓理由）
-            clean_reasons = [content.strip() for content in content_matches]
-            clean_reasons = '\n'.join(clean_reasons)
-
-            # 提取标的名称（更宽松的匹配规则）
-            name_match = re.search(r'([\u4e00-\u9fa5]{2,4}[A-Za-z0-9\u3000-\u303F\uFF00-\uFF60]*)', text)
-            extracted_name = name_match.group(1) if name_match else '无'
-
-            # return (extracted_name, clean_reasons)
-            return (clean_reasons, extracted_name)
 
 
 
         # 使用安全的内容清洗
-        clean_reason, extracted_name = clean_content(raw_content)
-        print(clean_content(raw_content))
+        extracted_name, clean_reason= clean_content(raw_content)
+        # print(clean_content(raw_content))
 
         for infos in relocateList:
             code = str(infos.get('code', None)).zfill(6)
@@ -229,3 +287,7 @@ async def Combination_main():
 
 if __name__ == '__main__':
     asyncio.run(Combination_main())
+    # text1 = '<div class="change_reason">保利发展调仓理由</div><div class="change_content">调仓换票</div><div class="change_quota">引用</div><div class="change_quota_content" user-data="https://news.10jqka.com.cn/20250710/c669540344.shtml">国泰海通：上半年存量土地收购有序推进 多地收购存量商品房项目落地</div>'
+    # text2 = '<div class="change_reason">新亚强调仓理由</div><div class="change_content">有机硅</div><div class="change_quota">引用</div><div class="change_quota_content" user-data="https://www.iwencai.com/unifiedmobile/?q=603155.SH%E4%B8%BB%E5%8A%9B%E8%B5%84%E9%87%91%E6%B5%81%E5%90%91">新亚强2025年07月11日主力资金流出</div>'
+    # text3 = '<div class="change_reason">粤宏远Ａ调仓理由</div><div class="change_content">减仓</div><div class="change_quota">引用</div><div class="change_quota_content" user-data="https://www.iwencai.com/unifiedmobile/?q=000573.SZ%E4%B8%BB%E5%8A%9B%E8%B5%84%E9%87%91%E6%B5%81%E5%90%91">粤宏远A2025年07月10日主力资金流</div>'
+    # print(clean_content(text3))

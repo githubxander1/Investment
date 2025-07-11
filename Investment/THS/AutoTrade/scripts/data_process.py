@@ -88,33 +88,38 @@ def save_to_excel(df, filename, sheet_name, index=False):
         logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
 
 def write_operation_history(df):
-    """将操作记录写入Excel文件，按日期作为sheet名"""
+    """将操作记录写入Excel文件，按日期作为sheet名，并确保今日sheet位于第一个"""
     today = datetime.now().strftime('%Y-%m-%d')
-    # print(f"写入操作记录文件日期：{today}")
-
-    filename = OPERATION_HISTORY_FILE  # D:\...\data\trade_operation_history.xlsx
+    filename = OPERATION_HISTORY_FILE
 
     try:
         # 如果文件不存在，直接写入新文件
         if not os.path.exists(filename):
-            save_to_excel(df, filename, sheet_name=today)
+            save_to_excel(df, filename, sheet_name=today, index=False)
             logger.info(f"成功写入操作记录到 {today} 表 {filename}")
             return
 
-        # ✅ 正确做法：先读取已有数据（使用文件路径）
+        # ✅ 先读取已有数据
         with pd.ExcelFile(filename, engine='openpyxl') as xls:
-            if today in xls.sheet_names:
-                old_df = pd.read_excel(xls, sheet_name=today)
-                combined_df = pd.concat([old_df, df], ignore_index=True)
-            else:
-                combined_df = df.copy()
+            existing_sheets = xls.sheet_names
+            old_df = pd.read_excel(xls, sheet_name=today) if today in existing_sheets else pd.DataFrame()
 
-        # 去重
+        # 合并新旧数据并去重
+        combined_df = pd.concat([old_df, df], ignore_index=True)
         combined_df.drop_duplicates(subset=['标的名称', '操作', '新比例%'], keep='last', inplace=True)
 
-        # 再次写入（替换原 sheet）
-        with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        # 读取其他 sheet 的数据
+        other_sheets_data = {}
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            for sheet in xls.sheet_names:
+                if sheet != today:
+                    other_sheets_data[sheet] = pd.read_excel(xls, sheet_name=sheet)
+
+        # 重新写入所有 sheet，确保 today 是第一个
+        with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
             combined_df.to_excel(writer, sheet_name=today, index=False)
+            for sheet, data in other_sheets_data.items():
+                data.to_excel(writer, sheet_name=sheet, index=False)
 
         logger.info(f"✅ 成功写入操作记录到 {today} 表 {filename}")
 
@@ -176,7 +181,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 # 根据策略切换账户
                 if strategy_name == "AI市场追踪策略":
                     logger.info("检测到 AI市场追踪策略，切换账户为 长城证券")
-                    ths_page.change_account("长城证券")
+                    ths_page.change_account("模拟")
                 else:
                     ths_page.change_account(default_account)
 
