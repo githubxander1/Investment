@@ -129,7 +129,7 @@ def get_new_records(current_df, history_df):
     new_data = current_df[new_mask].copy()
 
     # logger.info(f'新增记录：{new_data}')
-    return current_df[new_mask].drop(columns=['_id'], errors='ignore')
+    return current_df[new_data].drop(columns=['_id'], errors='ignore')
 
 
 def standardize_dataframe(df):
