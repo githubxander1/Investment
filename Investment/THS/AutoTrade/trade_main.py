@@ -105,7 +105,7 @@ async def main():
                 process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE)
 
         # 每隔1分钟执行一次
-        await asyncio.sleep(60)
+        # await asyncio.sleep(60)
 
         # 在组合任务结束后执行国债逆回购操作（只执行一次）
         if not guozhai_success and dt_time(14, 56) <= now <= dt_time(18, 30):

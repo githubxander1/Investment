@@ -1,17 +1,20 @@
 # page_guozhai.py
 import time
-import logging
+# import logging
 import uiautomator2 as u2
 
-from Investment.THS.AutoTrade.pages.page_common import ensure_on_account_page
+from Investment.THS.AutoTrade.pages.page_common import ChangeAccount
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
-from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
+# from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
+
+# from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger('nihuigou.log')
 
 # ths = THSPage(u2.connect())
+change_account = ChangeAccount()
 
 class GuozhaiPage(THSPage):
     def __init__(self, d):
@@ -27,24 +30,37 @@ class GuozhaiPage(THSPage):
 
         self.borrow_btn = self.d(resourceId="com.hexin.plat.android:id/btn_jiechu")
 
+        #弹窗
+        self.diolog_title = self.d(resourceId="com.hexin.plat.android:id/dialog_title")
 
-    def _find_and_click_product(self, target_name, max_swipe=5, direction='vertical'):
+        self.content_layout = d(resourceId="com.hexin.plat.android:id/content_layout")
+    def _find_and_click_product(self, target_name, max_swipe=5):
         """
         支持方向控制的滑动查找
         :param target_name: 目标文本
         :param max_swipe: 最大滑动次数
         :param direction: 'vertical' 或 'horizontal'
         """
+        target = self.d(text=target_name)
+        # rate = self.d(resourceId="com.hexin.plat.android:id/nianhuayilv")[2]
+        more = self.d(resourceId="com.hexin.plat.android:id/more")[2]
         for _ in range(max_swipe):
             # 自适应滑动方向
-            if direction == 'vertical':
+            while True:
                 self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
-            else:
-                self.d.swipe(0.8, 0.5, 0.2, 0.5)  # 横向滑动
+                if more.exists():
+                    logger.info(f"滑动到 {target_name}")
+                    break
+                # if direction == 'vertical':
+                # else:
+                #     self.d.swipe(0.8, 0.5, 0.2, 0.5)  # 横向滑动
+                time.sleep(1.5)
 
-            elements = self.d(text=target_name)
-            if elements:
-                elements[0].click()
+
+            if target:
+                time.sleep(1.5)
+                target[0].click()
+                logger.info(f"点击 {target_name} 成功")
                 return True
 
             time.sleep(1)
@@ -102,52 +118,118 @@ class GuozhaiPage(THSPage):
 
     def _handle_transaction_confirm(self):
         """处理交易确认流程"""
-        # prompt_content = self.d(resourceId=self.prompt_content)
-        # confirm_button = self.d(resourceId=self.confirm_button)
-        # back_button = self.d(resourceId=self.back_button)
+        # logger.info(f"操作提示: {prompt_text}")
 
-        # if not self.wait_for_element(prompt_content, timeout=10):
-        #     logger.warning("未检测到操作结果弹窗")
-        #     return False, "未检测到操作结果"
+        # 获取 content_layout 里的所有 TextView 内容
+        if self.diolog_title.exists():
+            dialog_title_text = self.diolog_title.get_text()
+            if '借出资金确认' in dialog_title_text:
+                text_views = self.content_layout.child(className="android.widget.TextView")
+                content_texts = []
+                for tv in text_views:
+                    content_texts.append(tv.get_text())
+                self.confirm_button.click()
+                # logger.info(f": {content_texts}")
+                prompt_text = self.prompt_content.get_text()
+                if '委托已提交' in prompt_text:
+                    self.confirm_button.click()
+                    logger.info(f"委托成功: {prompt_text}, 内容:{content_texts}")
+                    return True
+                else:
+                    time.sleep(1)
+                    self.confirm_button.click()
+                    self.back_button.click()
+                    self.back_button.click()
+                    logger.warning(f"委托失败: {prompt_text}, 返回账户页")
+                    send_notification(f"国债逆回购任务失败: {prompt_text}")
+                    return False, prompt_text
+            else:
+                logger.error(f"非委托弹窗")
+        else:
+            logger.warning("无法找到弹窗标题")
+            # # 资金够，确认委托
+            # elif self.content_layout.exists:
+            #     text_views = self.content_layout.child(className="android.widget.TextView")
+            #     content_texts = []
+            #     for tv in text_views:
+            #         content_texts.append(tv.get_text())
+            #     # print(f"弹窗内容: {content_texts}")
+            #     if '您是否确认以上委托？' in content_texts:
+            #         self.confirm_button.click()
+            #         if self.prompt_content.exists:
+            #             prompt_text = self.prompt_content.get_text()
+            #             if not '委托已提交' in prompt_text:
+            #                 logger.warning(f"委托失败: {prompt_text}")
+            #                 self.confirm_button.click()
+            #                 self.back_button.click()
+            #                 self.back_button.click()
+            #                 send_notification(f"国债逆回购任务失败: {prompt_text}")
+            #                 return False, prompt_text
+            #             self.confirm_button.click()
+            #             logger.info(f"国债逆回购委托成功：{content_texts}")
+            #         else:
+            #             logger.info("非委托成功弹窗")
+            #     else:
+            #         logger.warning("非确认委托弹窗")
+            #         return False, f"委托失败: {content_texts}"
+        # # 检查弹窗内容，判断是否为资金不足的情况
+        # if self.prompt_content.exists:
+        #     # prompt_text = self.prompt_content.get_text()
+        #     if not '委托已提交' in prompt_text:
+        #         logger.warning(f"委托失败: {prompt_text}")
+        #         time.sleep(1)
+        #         self.confirm_button.click()
+        #         self.back_button.click()
+        #         self.back_button.click()
+        #         send_notification(f"国债逆回购任务失败: {prompt_text}")
+        #         return False, prompt_text
+        #     else:
+        #         logger.info(f"委托成功: {prompt_text}")
+        # # 资金够，确认委托
+        # elif self.content_layout.exists:
+        #     text_views = self.content_layout.child(className="android.widget.TextView")
+        #     content_texts = []
+        #     for tv in text_views:
+        #         content_texts.append(tv.get_text())
+        #     # print(f"弹窗内容: {content_texts}")
+        #     if '您是否确认以上委托？' in content_texts:
+        #         self.confirm_button.click()
+        #         if self.prompt_content.exists:
+        #             prompt_text = self.prompt_content.get_text()
+        #             if not '委托已提交' in prompt_text:
+        #                 logger.warning(f"委托失败: {prompt_text}")
+        #                 self.confirm_button.click()
+        #                 self.back_button.click()
+        #                 self.back_button.click()
+        #                 send_notification(f"国债逆回购任务失败: {prompt_text}")
+        #                 return False, prompt_text
+        #             self.confirm_button.click()
+        #             logger.info(f"国债逆回购委托成功：{content_texts}")
+        #         else:
+        #             logger.info("非委托成功弹窗")
+        #     else:
+        #         logger.warning("非确认委托弹窗")
+        #         return False, f"委托失败: {content_texts}"
+        # else:
+        #     error_info = "弹窗不存在"
+        #     logger.warning(error_info)
+        #     return False, error_info
 
-        prompt_text = self.prompt_content.get_text()
-        logger.info(f"操作提示: {prompt_text}")
-
-        if '委托已提交' in prompt_text:
-            self.confirm_button.click()
-            logger.info("交易成功")
-            return True, "操作成功"
-
-        # 错误处理
-        logger.warning(f"交易失败: {prompt_text}")
-        self.confirm_button.click()
-
-        # 返回持仓页
-        self.back_button.click()
-        time.sleep(1)
-        self.back_button.click()
-        return False, prompt_text
-
-    # def ensure_on_account_page(self, max_retry=5):
-    #     """确保当前在账户页"""
-    #     current_page = self.where_page()
-    #     logger.info(f"当前页面: {current_page}")
-    #
-    #     # 确保在账户页
-    #     if current_page == "首页":
-    #         self.trade_button_entry.click()
-    #         # 如果没有可用按钮，则点击持仓入口
-    #         if not self.keyong.exists:
-    #             self.click_holding_stock_entry()
-    #     elif current_page == "国债列表页":
-    #         self.click_back()
-    #     elif current_page == "国债品种页":
-    #         self.click_back()
-    #         self.click_back()
-    #     else:
-    #         logger.error("无法返回账户页")
-    #         return False
-    #     return False
+        # if '委托已提交' in prompt_text:
+        #     self.confirm_button.click()
+        #     logger.info("逆回购交易成功")
+        #     return True, "操作成功"
+        #
+        # # 错误处理
+        # self.confirm_button.click()
+        # logger.warning(f"交易失败: {prompt_text}")
+        #
+        # # 返回持仓页
+        # self.back_button.click()
+        # time.sleep(1)
+        # self.back_button.click()
+        # logger.info("已返回持仓列表页")
+        # return False, prompt_text
 
     def guozhai_operation(self):
         """国债逆回购主流程"""
@@ -155,8 +237,7 @@ class GuozhaiPage(THSPage):
         try:
             # 1. 确保在账户页
             time.sleep(1)
-            if not ensure_on_account_page():
-                # print(ensure_on_account_page())
+            if not change_account.goto_account_page():
                 return False, "无法返回持仓列表页"
 
             # 2. 进入国债逆回购入口
@@ -164,6 +245,7 @@ class GuozhaiPage(THSPage):
                 return False, "进入国债逆回购入口失败"
             else:
                 self.guozhai_entry_button.click()
+                logger.info("已进入: 国债逆回购入口")
 
             # 3. 查找并点击产品
             if not self._find_and_click_product("1天期"):
@@ -182,7 +264,9 @@ class GuozhaiPage(THSPage):
             if not self.borrow_btn.exists():
                 return False, "借出操作失败"
             else:
+                # pass
                 self.borrow_btn.click()
+                logger.info("已点击: 借出按钮")
 
             # 6. 处理交易确认
             result = self._handle_transaction_confirm()

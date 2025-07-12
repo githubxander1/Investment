@@ -7,12 +7,14 @@ import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Strategy_portfolio_today, Combination_portfolio_today
+from Investment.THS.AutoTrade.pages.page_common import ChangeAccount
+from Investment.THS.AutoTrade.pages.page_logic import THSPage
 from Investment.THS.AutoTrade.scripts.account_info import update_holding_info_all
 from Investment.THS.AutoTrade.utils.format_data import normalize_time
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
-
+change_account = ChangeAccount()
 def read_portfolio_record_history(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # print(f'读取调仓记录文件日期{today}')
@@ -42,7 +44,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
     try:
         # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
         if not os.path.exists(filename):
-            print(f"保存的df {df}")
+            # print(f"保存的df {df}")
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=today, index=index)
             logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {today} \n{df}")
@@ -180,10 +182,12 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
 
                 # 根据策略切换账户
                 if strategy_name == "AI市场追踪策略":
-                    logger.info("检测到 AI市场追踪策略，切换账户为 长城证券")
-                    ths_page.change_account("模拟")
+                    logger.info("检测到 AI市场追踪策略，切换账户为 模拟")
+                    change_account.change_account("模拟炒股")
                 else:
-                    ths_page.change_account(default_account)
+                    change_account.change_account(default_account)
+
+                    # change_account(default_account)
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
 

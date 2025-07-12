@@ -4,7 +4,7 @@ import time
 
 import uiautomator2
 
-from Investment.THS.AutoTrade.pages.page_common import ensure_on_account_page, where_page
+from Investment.THS.AutoTrade.pages.page_common import ChangeAccount
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 # from Demos.RegCreateKeyTransacted import classname
 
@@ -15,6 +15,8 @@ from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAG
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
+
+change_account = ChangeAccount()
 
 class THSPage:
 
@@ -390,7 +392,7 @@ class THSPage:
         logger.info("更新持仓信息")
     def ensure_on_account_page(self):
         """确保当前在账户页"""
-        current_page = where_page()
+        current_page = change_account.where_page()
         logger.info(f"当前页面: {current_page}")
 
         # 确保在账户页

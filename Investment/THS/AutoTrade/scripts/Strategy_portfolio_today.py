@@ -40,9 +40,9 @@ async def get_latest_position_and_trade(strategy_id):
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
-    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 昨天
-    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
+    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
     # print(today)
 
     result = []
@@ -118,8 +118,8 @@ async def Strategy_main():
     try:
         existing_data = read_portfolio_record_history(existing_data_file)
         # 强制清理异常值
-        existing_data['代码'] = existing_data['代码'].astype(str).str.zfill(6)
-        existing_data['时间'] = existing_data['时间'].astype(str).apply(normalize_time)
+        # existing_data['代码'] = existing_data['代码'].astype(str).str.zfill(6)
+        # existing_data['时间'] = existing_data['时间'].astype(str).apply(normalize_time)
         # print(f'读取历史记录: {existing_data}')
     except (FileNotFoundError, pd.errors.EmptyDataError):
         existing_data = pd.DataFrame(columns=expected_columns)
@@ -154,7 +154,7 @@ async def Strategy_main():
 
         # 发送通知
         new_data_print_without_header = all_today_trades_df.to_string(index=False)
-        # send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
+        send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
         # logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
         # from Investment.THS.AutoTrade.utils.event_bus import event_bus
         # event_bus.publish('new_trades_available', new_data)
