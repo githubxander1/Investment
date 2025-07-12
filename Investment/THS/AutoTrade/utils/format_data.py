@@ -79,11 +79,11 @@ def normalize_time(time_str):
 
 
 
-def create_unique_id(df):
-    df['代码'] = df['代码'].astype(str).str.zfill(6)
-    df['新比例%'] = df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
-    df['_id'] = df['时间'].astype(str) + '_' + df['代码'] + '_' + df['新比例%']
-    return df
+# def create_unique_id(df):
+#     df['代码'] = df['代码'].astype(str).str.zfill(6)
+#     df['新比例%'] = df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
+#     df['_id'] = df['时间'].astype(str) + '_' + df['代码'] + '_' + df['新比例%']
+#     return df
 
 
 def get_new_records(current_df, history_df):

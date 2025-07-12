@@ -134,9 +134,9 @@ def fetch_and_extract_data(portfolio_id):
     data = response_json.get('data', [])
     # pprint(data)
     for item in data:
-        createAt = item.get('createAt', '') or ''  # 防止空值
+        createAt = item.get('createAt', None) or None  # 防止空值
         # print(f"时间: {createAt}")
-        raw_content = item.get('content', '') or ''  # 防止空值
+        raw_content = item.get('content', None) or None  # 防止空值
         relocateList = item.get('relocateList', [])
 
 
@@ -148,7 +148,7 @@ def fetch_and_extract_data(portfolio_id):
 
         for infos in relocateList:
             code = str(infos.get('code', None)).zfill(6)
-            name = (infos.get('name') or '').replace('\n', '').strip() or '无'
+            name = (infos.get('name') or None).replace('\n', None).strip() or '无'
 
             # 如果名称被隐藏，使用提取的名称
             if '***' in name:
