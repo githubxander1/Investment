@@ -42,7 +42,7 @@ account_xml_file: str = os.path.join(DATA_DIR, 'account_info_xml.xml')
 fake_useragent = UserAgent()
 
 # API配置
-API_URL = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
+# API_URL = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"
 Combination_headers = {
         # "Host": "dq.py.10jqka.com.cn",
         "Connection": "keep-alive",
@@ -138,3 +138,22 @@ id_to_name = {**Combination_ids_to_name, **ETF_ids_to_name, **zhitou_ids_to_name
 # pprint(id_to_name)
 # for id in ETF_ids:
 #     print(ETF_ids_to_name.get(id,'未知'))
+
+from datetime import time as dt_time
+# 时间窗口设置
+STRATEGY_WINDOW_START = dt_time(9, 30)
+STRATEGY_WINDOW_END = dt_time(9, 35)
+REPO_TIME_START = dt_time(14, 59)
+REPO_TIME_END = dt_time(15, 1)
+
+# 文件路径
+# Strategy_portfolio_today = "path/to/strategy.xlsx"
+# Combination_portfolio_today = "path/to/combination.xlsx"
+# OPERATION_HISTORY_FILE = "path/to/history.json"
+
+# 延迟范围（秒）
+MIN_DELAY = 50
+MAX_DELAY = 70
+
+# 最大运行时间（小时）
+MAX_RUN_TIME = 5

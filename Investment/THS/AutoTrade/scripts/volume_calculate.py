@@ -3,7 +3,7 @@
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 logger = setup_logger('volume_calculate.log')
 
-VOLUME_MAX_BUY = 4500
+VOLUME_MAX_BUY = 5000
 
 def calculate_buy_volume(real_price, buying_power):
     """
