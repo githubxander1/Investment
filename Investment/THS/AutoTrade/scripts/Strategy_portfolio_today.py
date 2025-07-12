@@ -41,8 +41,8 @@ async def get_latest_position_and_trade(strategy_id):
     trade_stocks = latest_trade.get('tradeStocks', [])
 
     # 昨天
-    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-    today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
+    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
     # print(today)
 
     result = []

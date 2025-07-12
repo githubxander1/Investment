@@ -178,9 +178,8 @@ def fetch_and_extract_data(portfolio_id):
             }
 
             # 昨天日期
-            today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-            # 修改 fetch_and_extract_data 中的 today 定义
-            # today = datetime.datetime.now().strftime('%Y-%m-%d')
+            # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            today = datetime.datetime.now().strftime('%Y-%m-%d')
 
             if today == createAt.split()[0]:
                 # print(f"提取{createAt.split()[0]}")
