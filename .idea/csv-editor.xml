@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\THS\大决策app\advisor_ranking.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\大决策app\策略列表.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\THS\股票\北向资金\data.csv">
           <value>
             <Attribute>
