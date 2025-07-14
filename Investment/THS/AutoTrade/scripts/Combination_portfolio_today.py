@@ -134,9 +134,9 @@ def fetch_and_extract_data(portfolio_id):
     data = response_json.get('data', [])
     # pprint(data)
     for item in data:
-        createAt = item.get('createAt', None) or None  # 防止空值
+        createAt = item.get('createAt', '') or ''  # 防止空值
         # print(f"时间: {createAt}")
-        raw_content = item.get('content', None) or None  # 防止空值
+        raw_content = item.get('content', '') or ''  # 防止空值
         relocateList = item.get('relocateList', [])
 
 
@@ -147,8 +147,8 @@ def fetch_and_extract_data(portfolio_id):
         # print(clean_content(raw_content))
 
         for infos in relocateList:
-            code = str(infos.get('code', None)).zfill(6)
-            name = (infos.get('name') or None).replace('\n', None).strip() or '无'
+            code = str(infos.get('code', '')).zfill(6)
+            name = (infos.get('name') or '').replace('\n', '').strip() or '无'
 
             # 如果名称被隐藏，使用提取的名称
             if '***' in name:
@@ -200,6 +200,8 @@ async def Combination_main():
 
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
+    # 打印各列数据类型
+    print(f"今日数据列的数据类型:{all_today_trades_df.dtypes}")
     # print(f"[调试] 合并后数据: {all_today_trades_df.to_string()}")
 
     # 只有在非空的情况下才进行字段处理
@@ -226,27 +228,34 @@ async def Combination_main():
     logger.info(f'今日交易数据 {len(all_today_trades_df_without_content)} 条\n{all_today_trades_df_without_content}')
 
     # 读取历史数据
-    existing_data_file = Combination_portfolio_today
-    # existing_data_file_hash = get_file_hash(existing_data_file)
+    history_df_file = Combination_portfolio_today
+    # history_df_file_hash = get_file_hash(history_df_file)
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:
-        existing_data = read_portfolio_record_history(existing_data_file)
+        history_df = read_portfolio_record_history(history_df_file)
+        print(f'历史数据各列数据类型: {history_df.dtypes}')
+
+        # ✅ 显式转换关键列类型
+        history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
+        history_df['新比例%'] = history_df['新比例%'].astype(float).round(2)
+        history_df['最新价'] = history_df['最新价'].astype(float).round(2)
+
     except (FileNotFoundError, pd.errors.EmptyDataError):
         # 显式创建带列名的空DataFrame
-        existing_data = pd.DataFrame(columns=expected_columns)
-        # existing_data.to_csv(existing_data_file, index=False)
+        history_df = pd.DataFrame(columns=expected_columns)
+        # history_df.to_csv(history_df_file, index=False)
         today = normalize_time(datetime.date.today().strftime('%Y%m%d'))
-        save_to_excel(existing_data, existing_data_file, f'{today}', index=False)
-        logger.info(f'初始化历史记录文件: {existing_data_file}')
+        save_to_excel(history_df, history_df_file, f'{today}', index=False)
+        logger.info(f'初始化历史记录文件: {history_df_file}')
 
     # 标准化数据格式
     all_today_trades_df = standardize_dataframe(all_today_trades_df)
-    existing_data = standardize_dataframe(existing_data)
-    # logger.info(f'标准化数据格式: \n{existing_data}')
+    history_df = standardize_dataframe(history_df)
+    # logger.info(f'标准化数据格式: \n{history_df}')
 
     # 获取新增数据
-    new_data = get_new_records(all_today_trades_df, existing_data)
+    new_data = get_new_records(all_today_trades_df, history_df)
     # logger.info(f'提取新增数据: \n{new_data}')
     # pprint(new_data)
 
@@ -258,21 +267,21 @@ async def Combination_main():
         new_data_without_content = new_data.drop(columns=['理由'], errors='ignore')
         # logger.info(new_data_without_content)
 
-        header = not os.path.exists(existing_data_file) or os.path.getsize(existing_data_file) == 0
+        header = not os.path.exists(history_df_file) or os.path.getsize(history_df_file) == 0
         today = normalize_time(datetime.date.today().strftime('%Y-%m-%d'))
-        save_to_excel(new_data, existing_data_file, f'{today}', index=False)
-        # logger.info(f"保存新增数据到文件：{existing_data_file}")
+        save_to_excel(new_data, history_df_file, f'{today}', index=False)
+        # logger.info(f"保存新增数据到文件：{history_df_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
-        # update_file_status(existing_data_file)
-        # new_file_hash = get_file_hash(existing_data_file)
+        # update_file_status(history_df_file)
+        # new_file_hash = get_file_hash(history_df_file)
         # 写入成功后，触发自动化交易
 
 
         # 发送通知
         new_data_print_without_header = new_data_without_content.to_string(index=False)
         send_notification(f" 新增交易 {len(new_data)}条：\n{new_data_print_without_header}")
-        # logger.info(f"✅ 保存新增调仓数据成功 \n{existing_data}")
+        # logger.info(f"✅ 保存新增调仓数据成功 \n{history_df}")
         # from Investment.THS.AutoTrade.utils.event_bus import event_bus
         # event_bus.publish('new_trades_available', new_data)
         # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled

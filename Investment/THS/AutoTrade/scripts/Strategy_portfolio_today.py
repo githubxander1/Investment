@@ -35,22 +35,28 @@ async def get_latest_position_and_trade(strategy_id):
         return []
 
     latest_trade = data.get('result', {}).get('latestTrade', {})
-    trade_date = normalize_time(latest_trade.get('tradeDate', None))
+    trade_date = normalize_time(latest_trade.get('tradeDate', ''))
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
 
     result = []
     for trade_info in trade_stocks:
-        # code = str(trade_info.get('stkCode', None).split('.')[0].zfill(6))
-        code = str(trade_info.get('code', None).zfill(6))
+        # code = str(trade_info.get('stkCode', '').split('.')[0].zfill(6))
+        code = str(trade_info.get('code', '').zfill(6))
         # print(f"标的代码: {code}")
-        name = trade_info.get('stkName', None)
-        operation = '买入' if trade_info.get('operationType', None) == 'BUY' else '卖出'
-        price = trade_info.get('tradePrice', None)
+        name = trade_info.get('stkName', '')
+        operation = '买入' if trade_info.get('operationType', '') == 'BUY' else '卖出'
+        price = trade_info.get('tradePrice', '')
         ratio = round(trade_info.get('position', 0) * 100, 2)
         market = determine_market(code)
-        stock_trade_date = normalize_time(trade_info.get('tradeDate', None))
+        # 显式转换时间戳为整数
+        timestamp = trade_info.get('tradeDate', '')
+        if isinstance(timestamp, (int, float)):
+            timestamp = str(int(timestamp))  #
+        stock_trade_date = normalize_time(timestamp)
+
+        # stock_trade_date = normalize_time(trade_info.get('tradeDate', ''))
         # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
 
         # 只保留当天记录
@@ -59,16 +65,17 @@ async def get_latest_position_and_trade(strategy_id):
         # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
         # print(today)
         if trade_date == today:
-            result.append({
+                result.append({
                 '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
-                '操作': operation,
-                '标的名称': name,
-                '代码': code,
-                '最新价': price,
-                '新比例%': ratio,
-                '市场': market,
-                '时间': stock_trade_date
+                '操作': '买入' if trade_info.get('operationType') == 'BUY' else '卖出',
+                '标的名称': trade_info.get('stkName', ''),
+                '代码': str(trade_info.get('code', '')).zfill(6),
+                '最新价': round(float(trade_info.get('tradePrice', 0)), 2),
+                '新比例%': round(float(trade_info.get('position', 0)) * 100, 2),
+                '市场': determine_market(trade_info.get('code', '')),
+                '时间': normalize_time(trade_info.get('tradeDate', ''))
             })
+
     return result
 
 
@@ -76,10 +83,13 @@ async def Strategy_main():
     all_today_trades = []
     for strategy_id in Strategy_ids:
         trades = await get_latest_position_and_trade(strategy_id)
+        # pprint(trades)
         all_today_trades.extend(trades)
 
     # all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
+    # 打印所有列的数据类型
+    print(f'今日数据列的数据类型:\n{all_today_trades_df.dtypes}')
 
     if all_today_trades_df.empty:
         logger.info("⚠️ 今日无交易数据")
@@ -106,8 +116,12 @@ async def Strategy_main():
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
     try:
         history_data = read_portfolio_record_history(history_data_file)
-        # print(f'读取历史记录: {history_data}')
-    except (FileNotFoundError, pd.errors.EmptyDataError):
+        # 打印数据列的数据类型
+        print(f'历史数据列的数据类型:\n{history_data.dtypes}')
+        history_data = read_portfolio_record_history(history_data_file)
+        history_data['代码'] = history_data['代码'].astype(str).str.zfill(6)  # 立即转为 str
+        history_data['新比例%'] = history_data['新比例%'].round(2).astype(float)
+    except Exception:
         history_data = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         save_to_excel(history_data, history_data_file, f'{today}', index=False)
@@ -142,6 +156,7 @@ async def Strategy_main():
 
     # 发送通知
     new_data_print_without_header = all_today_trades_df.to_string(index=False)
+    print(f"新增的数据各列数据类型：\n{all_today_trades_df.dtypes}")
     send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
     # logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
     # from Investment.THS.AutoTrade.utils.event_bus import event_bus

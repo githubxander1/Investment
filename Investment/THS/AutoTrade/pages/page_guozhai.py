@@ -51,19 +51,15 @@ class GuozhaiPage(THSPage):
                 if more.exists():
                     logger.info(f"滑动到 {target_name}")
                     break
-                # if direction == 'vertical':
-                # else:
-                #     self.d.swipe(0.8, 0.5, 0.2, 0.5)  # 横向滑动
                 time.sleep(1.5)
 
+                if target[0].exists():
+                    time.sleep(1.5)
+                    target.click()
+                    logger.info(f"点击 {target_name} 成功")
+                    return True
 
-            if target:
-                time.sleep(1.5)
-                target[0].click()
-                logger.info(f"点击 {target_name} 成功")
-                return True
-
-            time.sleep(1)
+                time.sleep(1)
         return False
 
     # def wait_for_element(self, selector, timeout=10):

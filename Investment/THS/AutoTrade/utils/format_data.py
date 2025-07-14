@@ -28,6 +28,12 @@ def normalize_time(time_str):
         return ''
 
     try:
+        # 新增：处理字符串类型的时间戳
+        if isinstance(time_str, str) and time_str.isdigit() and len(time_str) == 13:
+            timestamp = int(time_str) / 1000  # 毫秒转秒
+            dt = datetime.fromtimestamp(timestamp)
+            return dt.strftime('%Y-%m-%d %H:%M')
+
         # 新增：处理 ISO 格式时间（如 2025-07-09 10:03）
         if isinstance(time_str, str) and '-' in time_str and ':' in time_str:
             parts = time_str.split()
@@ -85,21 +91,63 @@ def normalize_time(time_str):
 #     df['_id'] = df['时间'].astype(str) + '_' + df['代码'] + '_' + df['新比例%']
 #     return df
 
+# def validate_dataframe(df, required_columns=None):
+#     """验证并清理DataFrame"""
+#     if required_columns is None:
+#         required_columns = ['名称', '操作', '标的名称', '代码', '时间']
+#
+#         # 确保字段存在并填充默认值
+#     for col in required_columns:
+#         if col not in df.columns:
+#             df[col] = 0.0 if col in ['新比例%', '最新价'] else ''
+#
+#     df = df.fillna({
+#     col: '' if col in ['名称', '操作', '标的名称', '代码', '市场', '时间'] else 0.0
+#     for col in required_columns
+# })
+#
+#
+#     # 确保所有必需列存在
+#     for col in required_columns:
+#         if col not in df.columns:
+#             df[col] = ''
+#
+#     # 标准化代码列
+#     if '代码' in df.columns:
+#         df['代码'] = df['代码'].astype(str).str.zfill(6)
+#
+#     # 标准化时间列
+#     if '时间' in df.columns:
+#         df['时间'] = df['时间'].astype(str).apply(normalize_time)
+#
+#     # 标准化数值列
+#     numeric_cols = ['新比例%', '最新价']
+#     for col in numeric_cols:
+#         if col in df.columns:
+#             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0).round(2)
+#
+#     # 标准化字符串列
+#     str_cols = ['名称', '操作', '标的名称', '市场']
+#     for col in str_cols:
+#         if col in df.columns:
+#             df[col] = df[col].astype(str).str.strip()
+#
+#     return df[required_columns]
 
 def get_new_records(current_df, history_df):
     """通过 _id 字段获取新增记录"""
     if current_df.empty:
         return pd.DataFrame()
 
-    # 标准化列并创建唯一标识符
+    # 统一代码类型为 str 并填充前导 0
     current_df['代码'] = current_df['代码'].astype(str).str.zfill(6)
-    current_df['时间'] = current_df['时间'].apply(normalize_time)
 
-    # 保留浮点数，并统一保留两位小数用于生成 _id
+    # 统一新比例%为 float 类型并保留两位小数
     current_df['新比例%'] = current_df['新比例%'].round(2).astype(float)
+
+    # 生成唯一ID
     current_df['_id'] = (
-        current_df['时间'].astype(str) + '_' +
-        current_df['代码'] + '_' +
+        current_df['代码'].astype(str) + '_' +
         current_df['新比例%'].map(lambda x: f"{x:.2f}")
     )
 
@@ -107,29 +155,25 @@ def get_new_records(current_df, history_df):
     if history_df.empty:
         return current_df.drop(columns=['_id'], errors='ignore')
 
-    # 同样处理历史数据
+    # 统一历史数据类型
     history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
-    history_df['时间'] = history_df['时间'].apply(normalize_time)
-
-    # 强制保留两位小数字符串
-    current_df['新比例%'] = current_df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
-    history_df['新比例%'] = history_df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
+    history_df['新比例%'] = history_df['新比例%'].round(2).astype(float)
     history_df['_id'] = (
-        history_df['时间'].astype(str) + '_' +
-        history_df['代码'].astype(str).str.zfill(6) + '_' +
-        history_df['新比例%']
+        history_df['代码'].astype(str) + '_' +
+        history_df['新比例%'].map(lambda x: f"{x:.2f}")
     )
-
-    # 生成唯一ID
-    current_df['_id'] = current_df['时间'].astype(str) + '_' + current_df['代码'] + '_' + current_df['新比例%']
-    history_df['_id'] = history_df['时间'].astype(str) + '_' + history_df['代码'] + '_' + history_df['新比例%']
 
     # 找出新增记录
     new_mask = ~current_df['_id'].isin(history_df['_id'])
-    new_data = current_df[new_mask].copy()
+    return current_df[new_mask].drop(columns=['_id'], errors='ignore')
 
-    # logger.info(f'新增记录：{new_data}')
-    return current_df[new_data].drop(columns=['_id'], errors='ignore')
+    # 添加调试信息
+    logger.debug(f"新记录总数: {len(current_df)}")
+    logger.debug(f"历史记录总数: {len(history_df)}")
+    logger.debug(f"匹配到新增记录: {len(new_data)}")
+
+    return new_data.drop(columns=['_id'], errors='ignore')
+
 
 
 def standardize_dataframe(df):

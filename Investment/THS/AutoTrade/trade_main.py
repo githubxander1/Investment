@@ -97,7 +97,7 @@ async def main():
             break
 
         # 检查是否超过每日结束时间
-        if now >= dt_time(15, 30):
+        if now >= dt_time(19, 30):
             logger.info("当前时间超过 15:30，停止运行")
             break
 
@@ -128,7 +128,8 @@ async def main():
             else:
                 logger.warning("⚠️ 策略任务返回空值，默认视为无更新")
             logger.info(f"策略是否有新增数据: {strategy_success}\n---------------------策略任务执行结束---------------------")
-
+        else:
+            logger.debug("尚未进入策略任务时间窗口，跳过执行")
         # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
         if dt_time(9, 25) <= now <= dt_time(14, 55):
             logger.info("---------------------组合任务开始执行---------------------")
@@ -143,9 +144,10 @@ async def main():
             if strategy_success or combination_success:
                 file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
                 process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE)
-
+        else:
+            logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
         # 国债逆回购操作（只执行一次）
-        if not guozhai_success and dt_time(14,56) <= now <= dt_time(14,59):
+        if not guozhai_success and dt_time(14,56) <= now <= dt_time(17,30):
             logger.info("---------------------国债逆回购任务开始执行---------------------")
             guozhai = GuozhaiPage(d)
             success, message = guozhai.guozhai_operation()
@@ -156,7 +158,7 @@ async def main():
                 logger.info(f"国债逆回购失败: {message}")
             logger.info("---------------------国债逆回购任务执行结束---------------------")
 
-        elif not guozhai_success and now < dt_time(14, 59):
+        else:# not guozhai_success and now < dt_time(14, 59):
             logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
 
         # 随机等待，降低请求频率规律性

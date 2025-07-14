@@ -36,7 +36,7 @@ Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.xlsx')
 Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
 Account_holding_stockes_info_file = os.path.join(DATA_DIR, 'account_info.xlsx')
-account_xml_file: str = os.path.join(DATA_DIR, 'account_info_xml.xml')
+account_xml_file: str = os.path.join(DATA_DIR, 'xml','account_info_xml.xml')
 
 
 fake_useragent = UserAgent()

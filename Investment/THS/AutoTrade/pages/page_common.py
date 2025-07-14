@@ -1,3 +1,4 @@
+from uiautomator2 import UiObjectNotFoundError
 import time
 
 import uiautomator2
@@ -7,13 +8,13 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 logger = setup_logger("page.log")
 
 class ChangeAccount:
-    
+
     def __init__(self):
         self.d = uiautomator2.connect()
         self.back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
         # trade_button_entry = self.d(className="android.widget.RelativeLayout")[24]
         self.application_store = self.d(resourceId="com.hexin.plat.android:id/textView")[12]
-        
+
         # 交易页
         self.trade_button_entry = self.d(resourceId="com.hexin.plat.android:id/icon")[3]
         self.moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
@@ -30,14 +31,26 @@ class ChangeAccount:
         self.share_button = self.d(resourceId="com.hexin.plat.android:id/share_container")
         self.search_button = self.d(resourceId="com.hexin.plat.android:id/search_container")
         self.moni_account = self.d(resourceId="com.hexin.plat.android:id/division_name_text")
-    
+
     # 国债列表
-    
+
+    def safe_click(self, element, timeout=3):
+        try:
+            if element.wait(timeout=timeout):
+                element.click()
+                return True
+            else:
+                logger.warning("点击失败：元素不存在")
+                return False
+        except UiObjectNotFoundError:
+            logger.error("元素未找到")
+            return False
+
     # 判断当前在哪个页面
     def where_page(self):
         moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
         current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
-        guozhailist = self.d(text="我要回购")
+        guozhailist = self.d(text="我要回购").exists(timeout=3)
         guozhaipingzhong = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
     
         if self.application_store.exists():
