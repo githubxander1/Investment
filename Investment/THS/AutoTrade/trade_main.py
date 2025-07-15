@@ -97,7 +97,7 @@ async def main():
             break
 
         # 检查是否超过每日结束时间
-        if now >= dt_time(19, 30):
+        if now >= dt_time(end_time_hour, end_time_minute):
             logger.info("当前时间超过 15:30，停止运行")
             break
 
@@ -147,7 +147,7 @@ async def main():
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
         # 国债逆回购操作（只执行一次）
-        if not guozhai_success and dt_time(14,56) <= now <= dt_time(17,30):
+        if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
             logger.info("---------------------国债逆回购任务开始执行---------------------")
             guozhai = GuozhaiPage(d)
             success, message = guozhai.guozhai_operation()
@@ -186,5 +186,7 @@ if __name__ == '__main__':
     #
     # # 最大运行时间（小时）
     # MAX_RUN_TIME = 8
+    end_time_hour = 15
+    end_time_minute = 50
 
     asyncio.run(main())

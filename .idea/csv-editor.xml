@@ -52,7 +52,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\THS\大决策app\大决策投顾策略详情.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\THS\大决策app\策略列表.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\大决策app\顾问排名.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

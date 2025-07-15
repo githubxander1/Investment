@@ -50,7 +50,7 @@ class ChangeAccount:
     def where_page(self):
         moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
         current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
-        guozhailist = self.d(text="我要回购").exists(timeout=3)
+        guozhailist = self.d(text="我要回购")
         guozhaipingzhong = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
     
         if self.application_store.exists():
@@ -61,7 +61,7 @@ class ChangeAccount:
         elif self.search_button.exists():
             # logger.info("当前页面: 账户页")
             return "账户页"
-        elif guozhailist.exists():
+        elif guozhailist.exists(timeout=3):
             # logger.info("当前页面: 国债列表页")
             return "国债列表页"
         elif guozhaipingzhong.exists():
@@ -76,29 +76,38 @@ class ChangeAccount:
             time.sleep(1)
             current_page = self.where_page()
             logger.info(f"当前页面: {current_page}")
-    
+
             # 确保在账户页
-            if not current_page == "账户页":
-                if current_page == "首页":
-                    # 如果没有可用按钮，则点击持仓入口
-                    self.trade_button_entry.click()
-                    time.sleep(1)
-                    if not self.search_button.exists:
-                        # print("没有分享按钮")
-                        self.holding_entry.click()
-                elif current_page == "交易页":
-                    self.holding_entry.click()
-                elif current_page == "国债列表页":
-                    self.back_button.click()
-                elif current_page == "国债品种页":
-                    self.back_button.click()
-                    self.back_button.click()
-                else:
-                    logger.error("无法返回账户页")
-                    return False
-                logger.info("已切换至: 账户页")
-            else:
+            if current_page == "账户页":
                 return True
+
+            # 确保在账户页
+            # if not current_page == "账户页":
+            elif current_page == "首页":
+                # 如果没有可用按钮，则点击持仓入口
+                self.trade_button_entry.click()
+                time.sleep(1)
+                if not self.search_button.exists:
+                    # print("没有分享按钮")
+                    self.holding_entry.click()
+            elif current_page == "交易页":
+                self.holding_entry.click()
+            elif current_page == "国债列表页":
+                self.back_button.click()
+            elif current_page == "国债品种页":
+                self.back_button.click()
+                self.back_button.click()
+            else:
+                logger.error("无法返回账户页")
+                return False
+
+            # 再次确认是否已进入账户页
+            if self.where_page() == "账户页":
+                logger.info("✅ 已切换至: 账户页")
+                return True
+            else:
+                logger.error("❌ 无法返回账户页")
+                return False
     def goto_trade_page(self,max_retry=3):
         for _ in range(max_retry):
             current_page = self.where_page()

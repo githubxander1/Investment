@@ -110,6 +110,7 @@ def create_ranking_dataframe(data):
     """创建并返回排名DataFrame"""
     parsed_data = parse_ranking_data(data)
     df = pd.DataFrame(parsed_data)
+    df.to_csv('顾问排名.csv', index=False)
 
     # 设置显示格式
     pd.set_option('display.max_columns', None)
