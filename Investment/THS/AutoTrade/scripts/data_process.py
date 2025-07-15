@@ -50,7 +50,7 @@ def read_portfolio_record_history(file_path):
             "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
         ])
 
-    print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
+    # print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
     return portfolio_record_history_df
 def safe_concat(history_df, new_df):
     """安全的DataFrame拼接"""
@@ -77,6 +77,12 @@ def save_to_excel(df, filename, sheet_name, index=False):
     """追加保存DataFrame到Excel文件，默认今天的在第一张表"""
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))  # 获取今天的日期
 
+    # 统一数据类型
+    df['新比例%'] = df['新比例%'].astype(float).round(2)
+    df['最新价'] = df['最新价'].astype(float).round(2)
+    df['代码'] = df['代码'].astype(str).str.zfill(6)
+
+    # 保存到 Excel
     try:
         # 标准化数据类型
         df = df.astype(object).fillna('')
@@ -101,7 +107,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
             if history_sheets and history_sheets[0] == today:
                 history_df = pd.read_excel(filename, sheet_name=today)
                 # 读取的数据类型
-                print(f"保存时，读取的数据类型: \n{history_df.dtypes}")
+                # print(f"保存时，读取的数据类型: \n{history_df.dtypes}")
                 combined_df = safe_concat(history_df, df)
                 # 显式清理无效值
                 combined_df = combined_df.replace(['nan', 'NaN', 'N/A', 'None', None], '')

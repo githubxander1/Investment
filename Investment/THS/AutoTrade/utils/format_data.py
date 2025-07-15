@@ -1,5 +1,6 @@
 #format_data.py
 import pandas as pd
+from dateutil.utils import today
 
 # from Investment.THS.AutoTrade.utils.common_config import EXPECTED_COLUMNS
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -139,6 +140,10 @@ def get_new_records(current_df, history_df):
     if current_df.empty:
         return pd.DataFrame()
 
+    # 处理历史数据为空的情况
+    if history_df.empty:
+        return current_df.drop(columns=['_id'], errors='ignore')
+
     # 统一代码类型为 str 并填充前导 0
     current_df['代码'] = current_df['代码'].astype(str).str.zfill(6)
 
@@ -148,31 +153,39 @@ def get_new_records(current_df, history_df):
     # 生成唯一ID
     current_df['_id'] = (
         current_df['代码'].astype(str) + '_' +
-        current_df['新比例%'].map(lambda x: f"{x:.2f}")
+        current_df['新比例%'].map(lambda x: f"{x:.2f}")+ '_' +
+        current_df['时间'].apply(normalize_time)
     )
 
-    # 处理历史数据为空的情况
-    if history_df.empty:
-        return current_df.drop(columns=['_id'], errors='ignore')
 
     # 统一历史数据类型
     history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
     history_df['新比例%'] = history_df['新比例%'].round(2).astype(float)
     history_df['_id'] = (
         history_df['代码'].astype(str) + '_' +
-        history_df['新比例%'].map(lambda x: f"{x:.2f}")
+        history_df['新比例%'].map(lambda x: f"{x:.2f}") + '_' +
+        history_df['时间'].apply(normalize_time)
     )
 
     # 找出新增记录
-    new_mask = ~current_df['_id'].isin(history_df['_id'])
-    return current_df[new_mask].drop(columns=['_id'], errors='ignore')
+    new_mask_df = ~current_df['_id'].isin(history_df['_id'])
+
+    # 合并并找到新增记录
+    # merged_df = pd.merge(current_df, history_df, how='left', indicator=True)
+    # new_records = merged_df[merged_df['_merge'] == 'left_only'].drop(columns=['_merge'])
 
     # 添加调试信息
-    logger.debug(f"新记录总数: {len(current_df)}")
-    logger.debug(f"历史记录总数: {len(history_df)}")
-    logger.debug(f"匹配到新增记录: {len(new_data)}")
+    logger.debug(f"新记录总数: {len(current_df)} {current_df}")
+    logger.debug(f"历史记录总数: {len(history_df)} {history_df}")
+    logger.debug(f"匹配到新增记录: {len(new_mask_df)} {new_mask_df}")
 
-    return new_data.drop(columns=['_id'], errors='ignore')
+    new_data_df = current_df[new_mask_df].drop(columns=['_id'], errors='ignore')
+    return new_data_df
+
+
+    # new_data_df = new_data.drop(columns=['_id'], errors='ignore')
+    #
+    # return new_data_df
 
 
 

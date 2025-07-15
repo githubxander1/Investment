@@ -44,7 +44,7 @@ def clean_content(text):
 
     # 如果没有结构化 div 标签，返回 clean_text 作为理由，'无' 作为名称
     if not soup.find('div', class_='change_reason') and not soup.find('div', class_='change_content'):
-        return (clean_text or '无', '无')
+        return ('无', clean_text or '无')
 
     # 提取 change_content 内容（基础理由）
     content_div = soup.find('div', class_='change_content')
@@ -69,53 +69,6 @@ def clean_content(text):
 
     return (extracted_name, clean_reasons)
 
-
-def clean_content1(text):
-    if not isinstance(text, str):
-        return '无', '无'
-
-    # 移除 HTML 标签
-    clean_text = re.sub(r'<[^>]+>', '', text).strip()
-
-    # 如果没有结构化 div 标签，返回 clean_text 作为理由，'无' 作为名称
-    if 'class="change_reason"' not in text and 'class="change_content"' not in text:
-        return (clean_text or '无', '无')  # ✅ 返回两个值
-
-    # 提取 change_content 内容（基础理由）
-    content_pattern = r'<div class="change_content">(.*?)</div>'
-    content_matches = re.findall(content_pattern, text, re.DOTALL)
-    base_reasons = '\n'.join([content.strip() for content in content_matches]) if content_matches else '无'
-    print(f"基础理由：{base_reasons}")
-    # 提取 change_quota_content 内容（附加理由）
-    quota_content_pattern = r'<div class="change_quota_content">(.*?)</div>'
-    quota_content_matches = re.findall(quota_content_pattern, text, re.DOTALL)
-    additional_reasons = '\n'.join([content.strip() for content in quota_content_matches]) if quota_content_matches else ''
-    print(f"附加理由：{additional_reasons}")
-    # 合并基础理由和附加理由
-    clean_reasons = f"{base_reasons} {additional_reasons}".strip()
-
-    # 提取标的名称：匹配 "调仓理由" 前面的内容
-    name_match = re.search(
-        r'<div class="change_reason">[^<]*?(\S+?)调仓理由',
-        text,
-        re.DOTALL
-    )
-    if name_match:
-        name = name_match.group(1).strip()
-        # 清理全角字母数字为半角（可选）
-        extracted_name = name.translate(str.maketrans(
-            'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９',
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        ))
-    else:
-        # ✅ 新增二级提取方案：尝试从纯文本中提取
-        text_only = re.sub(r'<[^>]+>', '', text)
-        fallback_match = re.search(r'^(.+?)调仓理由', text_only)
-        extracted_name = fallback_match.group(1).strip() if fallback_match else '无'
-
-    return (clean_reasons,extracted_name)
-
-
 def fetch_and_extract_data(portfolio_id):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = Combination_headers
@@ -124,7 +77,7 @@ def fetch_and_extract_data(portfolio_id):
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         response_json = response.json()
-        logger.info(f"组合 获取数据成功id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} ")
+        logger.info(f"组合 获取数据成功 id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} ")
         # pprint(response_json)
     except requests.RequestException as e:
         logger.error(f"请求出错 (ID: {portfolio_id}): {e}")
@@ -137,10 +90,7 @@ def fetch_and_extract_data(portfolio_id):
         createAt = item.get('createAt', '') or ''  # 防止空值
         # print(f"时间: {createAt}")
         raw_content = item.get('content', '') or ''  # 防止空值
-        relocateList = item.get('relocateList', [])
-
-
-
+        relocateList = item.get('relocateList', [])  # 用于获取标的名称，比例等
 
         # 使用安全的内容清洗
         extracted_name, clean_reason= clean_content(raw_content)
@@ -161,7 +111,13 @@ def fetch_and_extract_data(portfolio_id):
             # 计算操作类型
             current_ratio = infos.get('currentRatio', 0)
             new_ratio = infos.get('newRatio', 0)
-            operation = '买入' if new_ratio > current_ratio else '卖出'
+            operation = infos.get('operation', '')
+            operation = '买入' if operation == 1 else '卖出'
+            # if operation == 1:
+            #     operation = '买入'
+            # elif operation == 2:
+            #     operation = '卖出'
+            # operation = '买入' if new_ratio > current_ratio else '卖出'
             market = determine_market(code)
 
             history_post = {
@@ -180,8 +136,13 @@ def fetch_and_extract_data(portfolio_id):
             # 昨天日期
             # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             today = datetime.datetime.now().strftime('%Y-%m-%d')
+            # from dateutil.parser import parse
+            # today = datetime.datetime.now().date()
+            # createAt = parse(createAt).date()
+            # print(f"当前日期: {today}, createAt: {createAt}, createAt日期部分: {createAt}")
 
             if today == createAt.split()[0]:
+            # if today == createAt:
                 # print(f"提取{createAt.split()[0]}")
                 # print(f"今天{today}")
                 today_trades.append(history_post)
@@ -193,16 +154,27 @@ def fetch_and_extract_data(portfolio_id):
 
 async def Combination_main():
     all_today_trades = []
+    portfolio_stats = {}
     for portfolio_id in all_ids:
         today_trades = fetch_and_extract_data(portfolio_id)
+        trade_count = len(today_trades)
+        portfolio_stats[portfolio_id] = trade_count
+        logger.info(f"组合ID: {portfolio_id} - 获取到 {trade_count} 条交易数据")
+
         # print(f"组合id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} 数据：{today_trades}")
         all_today_trades.extend(today_trades)
+
+    # 输出每个组合的数据统计
+    # logger.info("📊 每个组合的数据统计:")
+    # for pid, count in portfolio_stats.items():
+    #     logger.info(f"组合ID: {pid}, 名称: {id_to_name.get(str(pid), '未知组合')}, 数据条数: {count}")
 
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
     # 打印各列数据类型
     print(f"今日数据列的数据类型:{all_today_trades_df.dtypes}")
     # print(f"[调试] 合并后数据: {all_today_trades_df.to_string()}")
+    logger.info(f"今日交易数据（DataFrame）:\n{all_today_trades_df}")
 
     # 只有在非空的情况下才进行字段处理
     if not all_today_trades_df.empty:
@@ -234,7 +206,9 @@ async def Combination_main():
 
     try:
         history_df = read_portfolio_record_history(history_df_file)
-        print(f'历史数据各列数据类型: {history_df.dtypes}')
+        # print(f'历史数据各列数据类型: {history_df.dtypes}')
+        # 获取新增数据前
+        logger.info(f"历史数据（DataFrame）:\n{history_df}")
 
         # ✅ 显式转换关键列类型
         history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
@@ -257,7 +231,7 @@ async def Combination_main():
     # 获取新增数据
     new_data = get_new_records(all_today_trades_df, history_df)
     # logger.info(f'提取新增数据: \n{new_data}')
-    # pprint(new_data)
+    pprint(new_data)
 
     # 保存新增数据
     if not new_data.empty:

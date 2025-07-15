@@ -47,7 +47,7 @@ def get_dk_note_list():
         "list_type": "4",
         "pageNo": "1",
         "sign": "教学",
-        "pageSize": "5",
+        "pageSize": "1",
         "noteAuthorid": "22",
         "note_type": "1,3,5,6"
     }
@@ -75,15 +75,15 @@ def extract_and_merge_data(data,html_content):
     """
     # 1. 提取策略概要信息
     strategy_summary = {
-        # "策略名称": [data['data']['noteTitle'][1:-1]],
-        # "策略ID": [data['data']['id']],
-        # "作者编号": [data['data']['noteAuthorid']],
-        # "持仓股票": [', '.join(data['noteStocks'])],
-        "策略简介": [data['noteSummary']],
-        "发布时间": [pd.to_datetime(data['noteTime'], unit='ms')],
-        "更新时间": [pd.to_datetime(data['updateTime'], unit='ms')],
-        "创建时间": [pd.to_datetime(data['createTime'], unit='ms')],
-        "删除理由": [data.get('deleteReason', '无')],
+        # "策略名称": [data.get('data']['noteTitle'][1:-1]],
+        # "策略ID": [data.get('data']['id']],
+        # "作者编号": [data.get('data']['noteAuthorid']],
+        # "持仓股票": [', '.join(data.get('noteStocks'])],
+        "策略简介": data.get('noteSummary', '无'),
+        "发布时间": pd.to_datetime(data.get('noteTime', 0), unit='ms') if data.get('noteTime') else pd.NaT,
+        "更新时间": pd.to_datetime(data.get('updateTime', 0), unit='ms') if data.get('updateTime') else pd.NaT,
+        "创建时间": pd.to_datetime(data.get('createTime', 0), unit='ms') if data.get('createTime') else pd.NaT,
+        # "删除理由": [data.get('deleteReason', '无')],
     }
     strategy_df = pd.DataFrame(strategy_summary)
 
