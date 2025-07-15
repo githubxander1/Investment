@@ -85,7 +85,7 @@ def extract_and_merge_data(data,html_content):
         "创建时间": pd.to_datetime(data.get('createTime', 0), unit='ms') if data.get('createTime') else pd.NaT,
         # "删除理由": [data.get('deleteReason', '无')],
     }
-    strategy_df = pd.DataFrame(strategy_summary)
+    strategy_df = pd.DataFrame(strategy_summary, index=[0])
 
     # 2. 提取结构化信息 from HTML
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -133,6 +133,7 @@ if __name__ == "__main__":
     if note_data:
         print("笔记列表数据:")
         pprint(note_data)
+
         for idx, item in enumerate(note_data):
             print(f"--- 第 {idx + 1} 条笔记 ---")
             pprint(item)  # 打印每条笔记内容
@@ -140,11 +141,12 @@ if __name__ == "__main__":
             # 提取 noteContent 字段
             note_content = item.get('noteContent', '')
             pprint(note_content)
-            merged_df = extract_and_merge_data(note_data, note_content)
-            #显示完整的，不省略
+
+            # 正确调用 extract_and_merge_data 函数，传入单个笔记数据（字典）
+            merged_df = extract_and_merge_data(item, note_content)  # 修改这里
+
+            # 显示完整的，不省略
             pd.set_option('display.max_columns', None)
 
             merged_df.to_csv(f'策略列表_{idx + 1}.csv', index=False)
             print(merged_df)
-
-
