@@ -172,7 +172,7 @@ async def Combination_main():
     all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
     # 打印各列数据类型
-    print(f"今日数据列的数据类型:{all_today_trades_df.dtypes}")
+    # print(f"今日数据列的数据类型:{all_today_trades_df.dtypes}")
     # print(f"[调试] 合并后数据: {all_today_trades_df.to_string()}")
     logger.info(f"今日交易数据（DataFrame）:\n{all_today_trades_df}")
 
@@ -231,7 +231,7 @@ async def Combination_main():
     # 获取新增数据
     new_data = get_new_records(all_today_trades_df, history_df)
     # logger.info(f'提取新增数据: \n{new_data}')
-    pprint(new_data)
+    # pprint(new_data)
 
     # 保存新增数据
     if not new_data.empty:

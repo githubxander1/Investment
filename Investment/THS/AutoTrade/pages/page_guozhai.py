@@ -2,7 +2,7 @@
 import time
 import uiautomator2 as u2
 
-from Investment.THS.AutoTrade.pages.page_common import ChangeAccount
+from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
 # from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -10,7 +10,7 @@ from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger('nihuigou.log')
 
-change_account = ChangeAccount()
+common_page = CommonPage()
 
 class GuozhaiPage(THSPage):
     def __init__(self, d):
@@ -107,7 +107,8 @@ class GuozhaiPage(THSPage):
                 prompt_text = self.prompt_content.get_text()
                 if '委托已提交' in prompt_text:
                     self.confirm_button.click()
-                    # send_notification(f"国债逆回购任务成功: {content_texts}")
+                    self.back_button.click()
+                    self.back_button.click()
                     logger.info(f"委托成功: {prompt_text}, 内容:{content_texts}")
                     return True, '委托成功'
                 else:
@@ -137,10 +138,11 @@ class GuozhaiPage(THSPage):
         try:
             # 1. 确保在账户页
             time.sleep(1)
-            if not change_account.goto_account_page():
+            if not common_page.goto_account_page():
                 error_msg = "无法返回账户页"
                 logger.error(error_msg)
                 send_notification(f"国债逆回购任务失败: {error_msg}")
+                self.back_button()
                 return False, error_msg
 
             # 2. 进入国债逆回购入口

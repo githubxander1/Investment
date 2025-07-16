@@ -29,15 +29,16 @@ def get_portfolio_holding_data(id):
             market = determine_market(code)  # 每个 code 都是字符串
             # 构造每一行的数据
             df = pd.DataFrame({
-                "组合名称": id_to_name.get(id, '未知组合'),
-                "股票代码": str(code).zfill(6),
+                "名称": id_to_name.get(id, '未知组合'),
+                "操作": '买入',
                 "标的名称": position.get("name", ""),
+                "代码": str(code).zfill(6),
+                "最新价": position["price"],#当前价格
+                "新比例%": position.get("positionRealRatio", 0) * 100,#实际持仓比例(%)
                 "市场": market,
                 "成本价": position["costPrice"],
-                "当前价格": position["price"],
                 "收益率(%)": position.get("incomeRate", 0) * 100,
                 "盈亏比例(%)": position.get("profitLossRate", 0) * 100,
-                "实际持仓比例(%)": position.get("positionRealRatio", 0) * 100,
             }, index=[0])  # 添加 index=[0] 以避免空索引警告
             all_dfs.append(df)
         # market = determine_market(code)
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 
     # 保存为Excel文件
     file_path = Combination_holding_file
-    final_df.to_excel(file_path, sheet_name='持仓数据',index=False)
+    final_df.to_excel(file_path, sheet_name='Combination_holding',index=False)
     print("数据已保存到Excel文件：", file_path)
 
     # 打印最终的DataFrame

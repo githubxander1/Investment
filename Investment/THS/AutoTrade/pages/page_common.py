@@ -7,7 +7,7 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger("page.log")
 
-class ChangeAccount:
+class CommonPage:
 
     def __init__(self):
         self.d = uiautomator2.connect()
@@ -162,6 +162,7 @@ class ChangeAccount:
 
         elif to_account == "模拟练习区":
             self.moni.click()
+            time.sleep(1)
             self.holding_entry.click()
             logger.info("切换至模拟账户成功")
             return True
@@ -209,7 +210,7 @@ class ChangeAccount:
                 logger.info(f"📌 当前登录账户名称: {self.current_account_trade.get_text()}")
                 return True
 if __name__ == '__main__':
-    c = ChangeAccount()
+    c = CommonPage()
     c.change_account("川财证券")
     c.change_account("长城证券")
     c.change_account("模拟练习区")

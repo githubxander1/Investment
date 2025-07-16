@@ -4,7 +4,7 @@ import time
 
 import uiautomator2
 
-from Investment.THS.AutoTrade.pages.page_common import ChangeAccount
+from Investment.THS.AutoTrade.pages.page_common import CommonPage
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 # from Demos.RegCreateKeyTransacted import classname
 
@@ -16,7 +16,7 @@ from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 
-change_account = ChangeAccount()
+common_page = CommonPage()
 
 class THSPage:
 
@@ -69,7 +69,7 @@ class THSPage:
     #         return "当前在未知页"
     #
     #
-    # def change_account(self, to_account):
+    # def common_page(self, to_account):
     #     """
     #     切换账户，必须在交易页执行
     #     :param to_account: 目标账户名称（如 "模拟" / "川财证券" / "长城证券"）
@@ -186,6 +186,7 @@ class THSPage:
         operate_entry.click()
         logger.info("点击持仓按钮(外)")
     def click_operate_entry(self,operation):
+        """外面入口处的操作按钮"""
         if operation == '买入':
             buy_entry = self.d(resourceId='com.hexin.plat.android:id/menu_buy_text')
             buy_entry.click()
@@ -203,9 +204,24 @@ class THSPage:
         logger.info("点击持仓按钮(里)")
 
     def click_operate_button(self,operation):
-        operation_button = self.d(className='android.widget.TextView', text=operation)
-        operation_button.click()
-        logger.info(f'点击{operation} (提交)')
+        """里面的tab栏"""
+        if operation == '买入':
+            buy_button = self.d(className='android.widget.TextView', text='买入')
+            buy_button.click()
+            logger.info("点击买入按钮(里)")
+            return True
+        elif operation == '卖出':
+            sale_button = self.d(className='android.widget.TextView', text='卖出')
+            sale_button.click()
+            logger.info("点击卖出按钮(里)")
+            return True
+        else:
+            raise ValueError("未知操作")
+
+    def click_submit_button(self,operation):
+        operation_submit_button = self.d(className='android.widget.TextView', text=operation)
+        operation_submit_button.click()
+        logger.info(f'点击 {operation} (提交)')
 
     def click_refresh_button(self):
         refresh_button = self.d(resourceId='com.hexin.plat.android:id/refresh_container')
@@ -230,8 +246,10 @@ class THSPage:
 
         # 如果clear按钮在，则点击匹配，如果找不到，则pass，继续下一步
         if clear.exists():
+            time.sleep(1)
             recycler_view = self.d(resourceId='com.hexin.plat.android:id/recyclerView')
             if recycler_view.exists:
+                time.sleep(1)
                 first_item = recycler_view.child(index=0)
                 first_item.click()
                 logger.info("点击匹配的第一个股票")
@@ -266,7 +284,7 @@ class THSPage:
         logger.info("获取价格: " + price)
         return price
 
-    def click_button_by_operation(self, operation):
+    def click_submit_button(self, operation):
         if operation == '买入':
             # operate_button = self.d(className='android.widget.TextView', text='买 入')
             #换成包含文本‘买 入’的定位方式
@@ -392,7 +410,7 @@ class THSPage:
         logger.info("更新持仓信息")
     def ensure_on_account_page(self):
         """确保当前在账户页"""
-        current_page = change_account.where_page()
+        current_page = common_page.where_page()
         logger.info(f"当前页面: {current_page}")
 
         # 确保在账户页
@@ -423,9 +441,9 @@ class THSPage:
         try:
             self._current_stock_name = stock_name
             #点击交易入口
-            self.click_trade_entry()
+            # self.click_trade_entry()
             #点击买/卖按钮
-            self.click_operate_entry(operation)
+            self.click_operate_button(operation)
             #更新持仓数据
             # 点击持仓按钮
             # self.click_holding_stock_button()
@@ -439,16 +457,16 @@ class THSPage:
             if not success:
                 logger.warning(f"{operation} {stock_name} 失败: {msg}")
                 return False, msg
-            # 点击买/卖操作按钮
-            self.click_operate_button(operation)
+            # # 点击提交按钮 买/卖操作按钮
+            # self.click_submit_button(operation)
 
             # 交易开始，发送通知
             # send_notification(f"开始 {operation} 流程 {stock_name}  {calculate_volume}股")
 
             # 输入交易数量
             self.input_volume(int(calculate_volume))
-            # 点击交易按钮
-            self.click_button_by_operation(operation)
+            # 点击提交按钮
+            self.click_submit_button(operation)
             # 处理弹窗
             success, info = self.dialog_handle()
             # 点击返回
@@ -493,9 +511,9 @@ if __name__ == '__main__':
     else:
         print("没有该按钮")
     # pom.trade_button_entry.click()
-    # pom.change_account("长城证券")
-    # pom.change_account("川财证券")
-    # pom.change_account("模拟")
+    # pom.common_page("长城证券")
+    # pom.common_page("川财证券")
+    # pom.common_page("模拟")
     # ths.ensure_on_account_page()
     ths.operate_stock("买入", "中国平安")
     # print(pom.where_page())

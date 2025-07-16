@@ -6,15 +6,16 @@ import pandas
 import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
-    Strategy_portfolio_today, Combination_portfolio_today
-from Investment.THS.AutoTrade.pages.page_common import ChangeAccount
+    Strategy_portfolio_today, Combination_portfolio_today, Account_holding_file, Strategy_holding_file, \
+    Combination_holding_file
+from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
 from Investment.THS.AutoTrade.scripts.account_info import update_holding_info_all
 from Investment.THS.AutoTrade.utils.format_data import normalize_time
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
-change_account = ChangeAccount()
+common_page = CommonPage()
 def read_portfolio_record_history(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # print(f'读取调仓记录文件日期{today}')
@@ -85,7 +86,9 @@ def save_to_excel(df, filename, sheet_name, index=False):
     # 保存到 Excel
     try:
         # 标准化数据类型
-        df = df.astype(object).fillna('')
+        # df = df.astype(object).fillna('')
+        df = df.astype(object).fillna('').infer_objects(copy=False)
+
         # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
         if not os.path.exists(filename):
             # print(f"保存的df {df}")
@@ -110,7 +113,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
                 # print(f"保存时，读取的数据类型: \n{history_df.dtypes}")
                 combined_df = safe_concat(history_df, df)
                 # 显式清理无效值
-                combined_df = combined_df.replace(['nan', 'NaN', 'N/A', 'None', None], '')
+                combined_df = combined_df.replace(['nan', 'NaN', 'N/A', 'None', None], '').infer_objects(copy=False)
 
                 # 重新排序并设置索引
                 # combined_df = combined_df[expected_columns]
@@ -186,9 +189,13 @@ def write_operation_history(df):
         logger.error(f"❌ 写入操作记录失败: {e}")
         raise
 
-
+_operation_history_cache = None
 def read_operation_history(history_file):
     """读取当日操作历史"""
+    global _operation_history_cache
+    if _operation_history_cache is not None:
+        return _operation_history_cache
+
     today = datetime.now().strftime('%Y-%m-%d')
     # 昨天
     # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -199,19 +206,81 @@ def read_operation_history(history_file):
     try:
         with pd.ExcelFile(history_file, engine='openpyxl') as f:
             if today in f.sheet_names:
-                df = pd.read_excel(f, sheet_name=today)
-                df['标的名称'] = df['标的名称'].astype(str).str.strip()
-                df['操作'] = df['操作'].astype(str).str.strip()
-                df['新比例%'] = df['新比例%'].astype(float).round(2)
-                df['_id'] = df.apply(lambda x: f"{x['标的名称']}_{x['操作']}_{x['新比例%']}", axis=1)
-                logger.info(f"✅ 读取操作历史成功，共 {len(df)} 条记录\n{df}")
-                return df
+                history_df = pd.read_excel(f, sheet_name=today)
+                history_df['标的名称'] = history_df['标的名称'].astype(str).str.strip()
+                history_df['操作'] = history_df['操作'].astype(str).str.strip()
+                history_df['新比例%'] = history_df['新比例%'].astype(float).round(2)
+                history_df['_id'] = history_df.apply(lambda x: f"{x['标的名称']}_{x['操作']}_{x['新比例%']}", axis=1)
+                logger.info(f"✅ 读取操作历史成功，共 {len(history_df)} 条记录\n{history_df}")
+                _operation_history_cache = history_df
+                return history_df
     except Exception as e:
         logger.warning(f"读取操作历史失败，可能文件被占用或损坏: {e}")
     return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
 
+# 对比account_info文件和Strategy_holding以及Combination_holding文件,如果account_info里有其他两个文件里没有的股票标的，则卖出操作，反之买入（除了工商银行，中国电信，可转债ETF，国债证金债ETF）
+def get_difference_holding():
+    """
+    对比账户持仓与策略/组合持仓数据，找出差异：
+        - 需要卖出：在账户中存在，但在策略/组合中不存在；
+        - 需要买入：在策略/组合中存在，但在账户中不存在；
+    """
+    try:
+        # 读取持仓数据
+        account_df = pd.read_excel(Account_holding_file, sheet_name="持仓数据")
+        strategy_df = pd.read_excel(Strategy_holding_file)
+        combination_df = pd.read_excel(Combination_holding_file)
 
-def process_excel_files(ths_page, file_paths, operation_history_file):
+        logger.info(f"账户持仓数据:\n{account_df[['标的名称']]}\n")
+        logger.info(f"策略持仓数据:\n{strategy_df[['标的名称']]}\n")
+        logger.info(f"组合持仓数据:\n{combination_df[['标的名称']]}\n")
+
+        # 合并策略和组合中的所有标的名称
+        combined_holdings = pd.concat([
+            strategy_df[['标的名称']],
+            combination_df[['标的名称']]
+        ]).drop_duplicates().reset_index(drop=True)
+
+        # 需要排除的标的名称
+        excluded_holdings = ["工商银行","中国电信","可转债ETF","国债政金债ETF"]
+
+        # 1.找出需要卖出的标的（在账户中存在，但不在策略 / 组合中，且不在排除列表中）
+        to_sell_candidates = account_df[~account_df['标的名称'].isin(combined_holdings['标的名称'])]
+        to_sell = to_sell_candidates[~to_sell_candidates['标的名称'].isin(excluded_holdings)]
+
+        if not to_sell.empty:
+            logger.warning("⚠️ 发现需卖出的标的:")
+            print("需卖出的标的:")
+            print(to_sell[['标的名称', '持仓/可用']])
+        else:
+            logger.info("✅ 当前无需卖出的标的")
+
+        # 2. 找出需要买入的标的（在策略/组合中存在，但不在账户中）
+        to_buy_candidates = combined_holdings[~combined_holdings['标的名称'].isin(account_df['标的名称'])]
+        to_buy = to_buy_candidates
+        if not to_buy.empty:
+            logger.warning("⚠️ 发现需买入的标的:")
+            print("需买入的标的:")
+            print(to_buy[['标的名称']])
+        else:
+            logger.info("✅ 当前无需买入的标的")
+
+        # 构建完整差异报告
+        difference_report = {
+            "to_sell": to_sell,
+            "to_buy": to_buy
+        }
+
+        return difference_report
+
+    except Exception as e:
+        logger.error(f"处理持仓差异时发生错误: {e}", exc_info=True)
+        return {"error": str(e)}
+
+def process_excel_files(ths_page, file_paths, operation_history_file, history_df=None):
+    if history_df is None:
+        history_df = read_operation_history(operation_history_file)
+
     for file_path in file_paths:
         logger.info(f"🔄 检测到文件更新，即将处理: {file_path}")
 
@@ -223,7 +292,6 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
         try:
             # 读取要处理的文件
             df = read_portfolio_record_history(file_path)
-            history_df = read_operation_history(history_file=operation_history_file)
             if df.empty:
                 logger.warning(f"文件 {file_path} 为空，跳过处理")
                 continue
@@ -240,13 +308,11 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
                 # 根据策略切换账户
                 if strategy_name == "AI市场追踪策略":
                     logger.info("检测到 AI市场追踪策略，切换账户为 模拟")
-                    change_account.change_account("模拟炒股")
+                    common_page.change_account("模拟练习区")
                 elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
-                    change_account.change_account("长城证券")
+                    common_page.change_account("长城证券")
                 else:
-                    change_account.change_account(default_account)
-
-                    # change_account(default_account)
+                    common_page.change_account(default_account)
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
 
@@ -262,7 +328,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
 
                 logger.info(f"🚀 开始交易: {operation} {stock_name}")
                 # update_holding_info_all()
-                logger.info("更新持仓信息完成")
+                # logger.info("更新持仓信息完成")
 
                 status, info = ths_page.operate_stock(operation, stock_name)
 
@@ -287,14 +353,26 @@ def process_excel_files(ths_page, file_paths, operation_history_file):
             logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
 
 if __name__ == '__main__':
-    file_paths = [
-        Strategy_portfolio_today,Combination_portfolio_today
-    ]
-    # from auto_trade_on_ths import THSPage
-    import uiautomator2 as u2
-    d = u2.connect()
-    package_name = "com.hexin.plat.android"
-    d.app_start(package_name, wait=True)
-    logger.info(f"启动App成功: {package_name}")
-    ths_page = THSPage(d)
-    process_excel_files(ths_page=ths_page, file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE, holding_stock_file=None)
+    diff_result = get_difference_holding()
+
+    if 'error' in diff_result:
+        print("持仓差异分析失败，请查看日志。")
+    else:
+        if not diff_result['to_sell'].empty:
+            print("💡 发现需卖出的股票：")
+            print(diff_result['to_sell'][['标的名称', '持仓/可用']])
+        if not diff_result['to_buy'].empty:
+            print("💡 发现需买入的股票：")
+            print(diff_result['to_buy'][['标的名称']])
+
+    # file_paths = [
+    #     Strategy_portfolio_today,Combination_portfolio_today
+    # ]
+    # # from auto_trade_on_ths import THSPage
+    # import uiautomator2 as u2
+    # d = u2.connect()
+    # package_name = "com.hexin.plat.android"
+    # d.app_start(package_name, wait=True)
+    # logger.info(f"启动App成功: {package_name}")
+    # ths_page = THSPage(d)
+    # process_excel_files(ths_page=ths_page, file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE, holding_stock_file=None)

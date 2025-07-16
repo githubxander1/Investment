@@ -11,7 +11,8 @@ from Investment.THS.AutoTrade.scripts.Combination_portfolio_today import Combina
 from Investment.THS.AutoTrade.scripts.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 from Investment.THS.AutoTrade.pages.page_logic import THSPage
-from Investment.THS.AutoTrade.scripts.data_process import process_excel_files
+from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history, \
+    get_difference_holding
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import (
     Strategy_portfolio_today,
@@ -80,13 +81,16 @@ async def main():
         logger.error("❌ 设备初始化失败")
         return
 
-    ths_page = THSPage(d)
+    # ths_page = THSPage(d)
 
     # 初始化国债逆回购状态
     guozhai_success = False
 
     # 记录开始时间，用于最大运行时长控制
     start_time = datetime.datetime.now()
+
+    # 1. 提前读取历史记录
+    history_df = read_operation_history(OPERATION_HISTORY_FILE)
 
     while True:
         now = datetime.datetime.now().time()
@@ -113,6 +117,7 @@ async def main():
         # 更新页面对象引用
         ths_page = THSPage(d)
 
+        # 2. 处理组合和策略文件
         # 初始化变量
         strategy_success = False
         strategy_data = None
@@ -120,7 +125,10 @@ async def main():
         combination_data = None
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
-        if dt_time(9, 30) <= now <= dt_time(9, 35):
+        if dt_time(9, 30) <= now <= dt_time(12, 35):
+            differences_holding = get_difference_holding()
+
+
             logger.info("---------------------策略任务开始执行---------------------")
             strategy_result = await Strategy_main()
             if strategy_result:
@@ -143,7 +151,8 @@ async def main():
             # 如果有任何一个数据获取成功，则执行交易处理
             if strategy_success or combination_success:
                 file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
-                process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE)
+                process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
+
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
         # 国债逆回购操作（只执行一次）

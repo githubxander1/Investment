@@ -24,18 +24,18 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
 Strategy_portfolio_today = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
 Combination_portfolio_today = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
 
+Strategy_holding_file = os.path.join(DATA_DIR, 'Strategy_position.xlsx')
 Combination_holding_file = os.path.join(DATA_DIR, 'Combination_position.xlsx')
+Account_holding_file = os.path.join(DATA_DIR, 'account_info.xlsx')
 
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
 
-Strategy_info_file = os.path.join(DATA_DIR, '策略信息.csv')
 Combination_list_file = os.path.join(DATA_DIR, '组合列表.xlsx')
 Strategy_list_file = os.path.join(DATA_DIR, '策略列表.csv')
 Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.xlsx')
 #ai诊断文件
 Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
-Account_holding_stockes_info_file = os.path.join(DATA_DIR, 'account_info.xlsx')
 account_xml_file: str = os.path.join(DATA_DIR, 'xml','account_info_xml.xml')
 
 
@@ -66,7 +66,7 @@ Strategy_ids = ['155680', '136574', '137789', '156275']
 Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
         '156275': "AI市场追踪策略",
-        '155265': '中字头资金流入战法', #资金面
+        # '155265': '中字头资金流入战法', #资金面
         '136574': '低价小市值股战法', #技术面
         # '136509': '缩量绩优小盘股战法', #技术面
 

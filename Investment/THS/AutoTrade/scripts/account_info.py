@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import uiautomator2 as u2
 
-from Investment.THS.AutoTrade.config.settings import Account_holding_stockes_info_file,account_xml_file
+from Investment.THS.AutoTrade.config.settings import Account_holding_file,account_xml_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 
@@ -105,7 +105,7 @@ def parse_stock_from_xml(xml_path):
             stocks.append({
                 "标的名称": stock_name,
                 "市值": market_value,
-                "盈亏/盈亏率": f"{profit_loss_text}/{profit_loss_rate_text}",
+                "当日盈亏/盈亏率": f"{profit_loss_text}/{profit_loss_rate_text}",
                 "持仓/可用": f"{position}/{available}",
                 # "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
                 "成本/现价": f"{cost}/{current_price}",
@@ -313,11 +313,11 @@ def update_holding_info_all():
             logger.warning("无法保存持仓信息：数据为空")
             return False
 
-        with pd.ExcelWriter(Account_holding_stockes_info_file, engine='openpyxl') as writer:
+        with pd.ExcelWriter(Account_holding_file, engine='openpyxl') as writer:
             header_info_df.to_excel(writer, index=False, sheet_name="表头数据")
             stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
 
-        logger.info(f"✅ 账户持仓信息已更新并保存至 {Account_holding_stockes_info_file}")
+        logger.info(f"✅ 账户持仓信息已更新并保存至 {Account_holding_file}")
         return True
     except Exception as e:
         logger.error(f"❌ 保存持仓信息失败: {e}", exc_info=True)
@@ -327,14 +327,15 @@ def update_holding_info_all():
 
 
 if __name__ == '__main__':
+    update_holding_info_all()
     # get_stock_holding('中国电信')
     # header_info = extract_header_info()
     # buy_available = float(header_info["可用"].iloc[0].replace(',', ''))
     # print(f"可用金额: {buy_available}")
 
-    _current_stock_name = '中国银行'
+    # _current_stock_name = '中国银行'
     # print(get_stock_available(_current_stock_name))
-    print(get_buying_power())
+    # print(get_buying_power())
     # stock_holding = get_stock_holding(_current_stock_name)
     # if not stock_holding:
     #     print(f'{_current_stock_name} 没有持仓')

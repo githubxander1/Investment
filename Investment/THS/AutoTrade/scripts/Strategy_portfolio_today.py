@@ -89,7 +89,7 @@ async def Strategy_main():
     # all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
     # 打印所有列的数据类型
-    print(f'今日数据列的数据类型:\n{all_today_trades_df.dtypes}')
+    # print(f'今日数据列的数据类型:\n{all_today_trades_df.dtypes}')
 
     if all_today_trades_df.empty:
         logger.info("⚠️ 今日无交易数据")
@@ -115,57 +115,59 @@ async def Strategy_main():
     history_data_file = Strategy_portfolio_today
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
     try:
-        history_data = read_portfolio_record_history(history_data_file)
         # 打印数据列的数据类型
-        print(f'历史数据列的数据类型:\n{history_data.dtypes}')
-        history_data = read_portfolio_record_history(history_data_file)
-        history_data['代码'] = history_data['代码'].astype(str).str.zfill(6)  # 立即转为 str
-        history_data['新比例%'] = history_data['新比例%'].round(2).astype(float)
-    except Exception:
-        history_data = pd.DataFrame(columns=expected_columns)
+        history_data_df = read_portfolio_record_history(history_data_file)
+        # print(f'历史数据列的数据类型:\n{history_data_df.dtypes}')
+        if not history_data_df.empty:
+            history_data_df['代码'] = history_data_df['代码'].astype(str).str.zfill(6)  # 立即转为 str
+            history_data_df['新比例%'] = history_data_df['新比例%'].round(2).astype(float)
+        else:
+            history_data_df = pd.DataFrame(columns=expected_columns)
+    except Exception: #读取历史数据失败，初始化保存一个
+        history_data_df = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        save_to_excel(history_data, history_data_file, f'{today}', index=False)
-        # history_data.to_csv(history_data_file, index=False)
-        # print(f'初始化历史记录文件: {history_data_file}')
+        save_to_excel(history_data_df, history_data_file, f'{today}', index=False)
+        # history_data_df.to_csv(history_data_df_file, index=False)
+        # print(f'初始化历史记录文件: {history_data_df_file}')
 
     # 标准化数据格式
     all_today_trades_df = standardize_dataframe(all_today_trades_df)
-    history_data = standardize_dataframe(history_data)
-    # print(f'读取历史记录: {history_data}')
+    history_data_df = standardize_dataframe(history_data_df)
+    # print(f'读取历史记录: {history_data_df}')
 
     # 获取新增数据
-    new_data = get_new_records(all_today_trades_df, history_data)
-    # print(f'获取新增数据: new_data)')
+    new_data_df = get_new_records(all_today_trades_df, history_data_df)
+    # print(f'获取新增数据: new_data_df)')
 
     # 保存新增数据并通知
-    if new_data.empty:
+    if new_data_df.empty:
         logger.info("---------------策略 无新增交易数据----------------")
         return False, None
     # with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
     #     f.write('1')
     # 打印并保存新增数据
-    # new_data_without_sc = new_data.drop(columns=['理由'], errors='ignore')
-    # print(new_data_without_sc)
+    # new_data_df_without_sc = new_data_df.drop(columns=['理由'], errors='ignore')
+    # print(new_data_df_without_sc)
 
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     header = not os.path.exists(history_data_file) or os.path.getsize(history_data_file) == 0
-    save_to_excel(new_data,history_data_file,f'{today}')
-    # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data}")
+    save_to_excel(new_data_df,history_data_file,f'{today}')
+    # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data_df}")
     # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
-    # update_file_status(history_data_file)
+    # update_file_status(history_data_df_file)
 
     # 发送通知
-    new_data_print_without_header = all_today_trades_df.to_string(index=False)
-    print(f"新增的数据各列数据类型：\n{all_today_trades_df.dtypes}")
-    send_notification(f"{len(new_data)} 条新增策略调仓：\n{new_data_print_without_header}")
+    new_data_df_print_without_header = all_today_trades_df.to_string(index=False)
+    # print(f"新增的数据各列数据类型：\n{all_today_trades_df.dtypes}")
+    send_notification(f"{len(new_data_df)} 条新增策略调仓：\n{new_data_df_print_without_header}")
     # logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
     # from Investment.THS.AutoTrade.utils.event_bus import event_bus
-    # event_bus.publish('new_trades_available', new_data)
+    # event_bus.publish('new_trades_available', new_data_df)
     # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled
     #
-    # mark_new_trades_as_scheduled(new_data, OPERATION_HISTORY_FILE)
+    # mark_new_trades_as_scheduled(new_data_df, OPERATION_HISTORY_FILE)
 
-    return True, new_data
+    return True, new_data_df
     # else:
 
 
