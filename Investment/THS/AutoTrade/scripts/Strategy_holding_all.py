@@ -154,13 +154,14 @@ def Ai_strategy_main():
         save_to_excel_by_date(all_positions_info, Strategy_holding_file)  # 按日期保存
         datas = compare_today_yesterday(Strategy_holding_file)  # 对比数据
         print(type(datas))
-        return datas
+        return True, datas
 
         # 保存完整数据
         # positions_df.to_excel(Strategy_holding_file, sheet_name="Strategy_holding",index=False)
         # save_to_csv(positions_df, Strategy_holding_file)
     else:
         logging.info("没有获取到任何持仓数据需要保存")
+        return False, None
 def save_to_excel_by_date(df, file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
 

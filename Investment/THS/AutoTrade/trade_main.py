@@ -26,7 +26,7 @@ from Investment.THS.AutoTrade.config.settings import (
     STRATEGY_WINDOW_START,
     STRATEGY_WINDOW_END,
     REPO_TIME_START,
-    REPO_TIME_END, DATA_DIR,
+    REPO_TIME_END, DATA_DIR, Strategy_holding_file,
 )
 
 # 设置日志
@@ -121,6 +121,7 @@ async def main():
 
         # 2. 处理组合和策略文件
         # 初始化变量
+        holding_success = False
         strategy_success = False
         strategy_data = None
         combination_success = False
@@ -128,7 +129,7 @@ async def main():
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
         if dt_time(9, 30) <= now <= dt_time(12, 35):
-            ai_datas = Ai_strategy_main()
+            holding_success, ai_datas = Ai_strategy_main()
 
             to_sell = ai_datas.get("to_sell")
             to_buy = ai_datas.get("to_buy")
@@ -198,8 +199,8 @@ async def main():
             logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
 
             # 如果有任何一个数据获取成功，则执行交易处理
-            if strategy_success or combination_success:
-                file_paths = [Strategy_portfolio_today, Combination_portfolio_today]
+            if strategy_success or combination_success or holding_success:
+                file_paths = [Strategy_portfolio_today, Combination_portfolio_today, Strategy_holding_file]
                 process_excel_files(ths_page, file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
 
         else:
