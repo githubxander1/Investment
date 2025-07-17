@@ -259,7 +259,8 @@ class THSPage:
         time.sleep(2)
 
     def input_volume(self, volume):
-        volumn_input = self.d(className='android.widget.EditText')[2]
+        # volumn_input = self.d(className='android.widget.EditText')[3]
+        volumn_input = self.d(resourceId="com.hexin.plat.android:id/stockvolume").child(index=0)
         volumn_input.send_keys(volume)
         logger.info(f"输入数量: {volume}手")
 
@@ -317,7 +318,9 @@ class THSPage:
         raise ValueError("无法获取实时价格")
         # return None
 
-    def _calculate_volume(self, operation: str, new_ratio: float = None):
+    # def calculate_volume(self,amount, real_price):
+
+    def _calculate_volume(self, operation: str, new_ratio: float = None, real_price=None, buy_available=None, sale_available=None):
         """
         根据当前持仓和策略动态计算交易数量
         :param operation: '买入' 或 '卖出'
@@ -326,12 +329,12 @@ class THSPage:
         """
         try:
             if operation == "买入":
-                real_price = self._get_real_price()
+                # real_price = self._get_real_price()
                 if not real_price:
                     return False, "无法获取实时价格", None
 
-                self.click_holding_stock_button()
-                buy_available = get_buying_power()
+                # self.click_holding_stock_button()
+                # buy_available = get_buying_power()
                 if not buy_available:
                     return False, "无法获取可用资金", None
 
@@ -343,8 +346,8 @@ class THSPage:
                 return True, '数量计算成功', volume
 
             elif operation == "卖出":
-                self.click_holding_stock_button()
-                sale_available = get_stock_available(self._current_stock_name)
+                # self.click_holding_stock_button()
+                # sale_available = get_stock_available(self._current_stock_name)
                 if not sale_available:
                     return False, f'{self._current_stock_name} 没有可用持仓', None
 
@@ -440,25 +443,35 @@ class THSPage:
         self.ensure_on_account_page()
         try:
             self._current_stock_name = stock_name
+
+            # 初始化资金
+            self.click_holding_stock_button()
+            buy_available = get_buying_power()
+            # self.click_holding_stock_button()
+            sale_available = get_stock_available(self._current_stock_name)
             #点击交易入口
             # self.click_trade_entry()
             #点击买/卖按钮
-            self.click_operate_button(operation)
             #更新持仓数据
             # 点击持仓按钮
             # self.click_holding_stock_button()
             # 更新持仓数据
             # self.update_holding_info()
+            # # 点击按钮 买/卖 操作按钮
+            self.click_operate_button(operation)
             # 搜索股票
             self.search_stock(stock_name)
 
+            real_price = self._get_real_price()
+            if not real_price:
+                return False, "无法获取实时价格", None
+
             # 计算交易数量
-            success, msg, calculate_volume = self._calculate_volume(operation)
+            success, msg, calculate_volume = self._calculate_volume(operation, real_price,buy_available,sale_available)
             if not success:
                 logger.warning(f"{operation} {stock_name} 失败: {msg}")
                 return False, msg
-            # # 点击提交按钮 买/卖操作按钮
-            # self.click_submit_button(operation)
+            self.click_submit_button(operation)
 
             # 交易开始，发送通知
             # send_notification(f"开始 {operation} 流程 {stock_name}  {calculate_volume}股")
@@ -466,7 +479,7 @@ class THSPage:
             # 输入交易数量
             self.input_volume(int(calculate_volume))
             # 点击提交按钮
-            self.click_submit_button(operation)
+            # self.click_submit_button(operation)
             # 处理弹窗
             success, info = self.dialog_handle()
             # 点击返回
@@ -505,17 +518,17 @@ if __name__ == '__main__':
     # d.screenshot("screenshot1.png")
     ths = THSPage(d)
     # pom.guozhai_operation()
-    if ths.search_button.exists():
+    if ths.operate_stock('买入', '东方创业'):
         # ths.trade_button_entry.click()
-        print("已在账户页")
+        print("True")
     else:
-        print("没有该按钮")
+        print("False")
     # pom.trade_button_entry.click()
     # pom.common_page("长城证券")
     # pom.common_page("川财证券")
     # pom.common_page("模拟")
     # ths.ensure_on_account_page()
-    ths.operate_stock("买入", "中国平安")
+    # ths.operate_stock("买入", "中国平安")
     # print(pom.where_page())
     # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')

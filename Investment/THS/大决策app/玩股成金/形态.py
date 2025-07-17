@@ -2,7 +2,7 @@ import requests
 import json
 
 def send_morphology_logs_request():
-    url = "https://strategy.api.traderwin.com/api/strategy/morphology/logs/list.json"
+    url = "http://strategy.api.traderwin.com/api/strategy/morphology/logs/list.json"
 
     headers = {
         "Content-Type": "application/json",

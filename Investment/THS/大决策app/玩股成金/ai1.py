@@ -1,7 +1,7 @@
 import requests
 
 def send_post_request():
-    url = "https://ai.api.traderwin.com/api/ai/signal/rank.json"
+    url = "http://ai.api.traderwin.com/api/ai/signal/rank.json"
 
     headers = {
         "Content-Type": "application/json",

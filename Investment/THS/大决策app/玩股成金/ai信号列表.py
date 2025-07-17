@@ -7,7 +7,7 @@ import json
 def get_ai_signal_rank():
     """获取AI信号排名数据（POST请求）"""
     # 请求URL
-    url = "https://ai.api.traderwin.com/api/ai/signal/rank.json"
+    url = "http://ai.api.traderwin.com/api/ai/signal/rank.json"
 
     # 请求头
     headers = {

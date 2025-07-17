@@ -194,6 +194,8 @@ async def Combination_main():
     #     ]
     # all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['沪深A股']) == True]
     all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'] == '沪深A股']
+    # 去掉标的名称为‘无’的
+    all_today_trades_df = all_today_trades_df[all_today_trades_df['标的名称'] != '无']
     # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
 

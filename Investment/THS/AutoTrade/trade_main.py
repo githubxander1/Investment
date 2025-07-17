@@ -1,6 +1,7 @@
 # trade_main.py
 
 import asyncio
+import os
 import random
 import datetime
 from datetime import time as dt_time
@@ -8,9 +9,10 @@ import uiautomator2 as u2
 
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.Combination_portfolio_today import Combination_main
+from Investment.THS.AutoTrade.scripts.Strategy_holding_all import compare_today_yesterday, Ai_strategy_main
 from Investment.THS.AutoTrade.scripts.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
-from Investment.THS.AutoTrade.pages.page_logic import THSPage
+from Investment.THS.AutoTrade.pages.page_logic import THSPage, common_page
 from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history, \
     get_difference_holding
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -24,7 +26,7 @@ from Investment.THS.AutoTrade.config.settings import (
     STRATEGY_WINDOW_START,
     STRATEGY_WINDOW_END,
     REPO_TIME_START,
-    REPO_TIME_END,
+    REPO_TIME_END, DATA_DIR,
 )
 
 # 设置日志
@@ -126,7 +128,54 @@ async def main():
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
         if dt_time(9, 30) <= now <= dt_time(12, 35):
-            differences_holding = get_difference_holding()
+            ai_datas = Ai_strategy_main()
+
+            to_sell = ai_datas.get("to_sell")
+            to_buy = ai_datas.get("to_buy")
+            print("to_sell:", to_sell)
+            print("to_buy:", to_buy)
+
+            if not to_sell.empty or not to_buy.empty:
+                logger.warning("发现持仓差异，准备执行模拟账户交易操作")
+
+                # 初始化设备
+                d = await initialize_device()
+                if not d:
+                    logger.error("❌ 设备初始化失败，跳过模拟账户操作")
+                else:
+                    ths_page = THSPage(d)
+
+                    # 切换到模拟账户
+                    common_page.change_account("模拟练习区")
+                    logger.info("✅ 已切换至模拟账户")
+
+                    # 构造临时文件用于 process_excel_files
+                    from tempfile import NamedTemporaryFile
+                    import pandas as pd
+
+                    temp_file_path = os.path.join(DATA_DIR, "temp_strategy_diff.xlsx")
+
+                    # 将 to_sell 和 to_buy 合并为一个 DataFrame
+                    to_sell['操作'] = '卖出'
+                    to_buy['操作'] = '买入'
+
+                    combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
+                                            ignore_index=True)
+                    combined_df['新比例%'] = None  # 可根据需要设置默认值
+
+                    # 写入临时文件
+                    combined_df.to_excel(temp_file_path, index=False)
+
+                    # 执行交易
+                    process_excel_files(
+                        ths_page=ths_page,
+                        file_paths=[temp_file_path],
+                        operation_history_file=OPERATION_HISTORY_FILE
+                    )
+
+                    logger.info("✅ 模拟账户持仓差异处理完成")
+            else:
+                logger.info("✅ 当前无持仓差异，无需执行模拟账户操作")
 
 
             logger.info("---------------------策略任务开始执行---------------------")
@@ -156,19 +205,19 @@ async def main():
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
         # 国债逆回购操作（只执行一次）
-        if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
-            logger.info("---------------------国债逆回购任务开始执行---------------------")
-            guozhai = GuozhaiPage(d)
-            success, message = guozhai.guozhai_operation()
-            if success:
-                logger.info("国债逆回购成功")
-                guozhai_success = True  # 标记国债逆回购任务已执行
-            else:
-                logger.info(f"国债逆回购失败: {message}")
-            logger.info("---------------------国债逆回购任务执行结束---------------------")
-
-        else:# not guozhai_success and now < dt_time(14, 59):
-            logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
+        # if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
+        #     logger.info("---------------------国债逆回购任务开始执行---------------------")
+        #     guozhai = GuozhaiPage(d)
+        #     success, message = guozhai.guozhai_operation()
+        #     if success:
+        #         logger.info("国债逆回购成功")
+        #         guozhai_success = True  # 标记国债逆回购任务已执行
+        #     else:
+        #         logger.info(f"国债逆回购失败: {message}")
+        #     logger.info("---------------------国债逆回购任务执行结束---------------------")
+        #
+        # else:# not guozhai_success and now < dt_time(14, 59):
+        #     logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
 
         # 随机等待，降低请求频率规律性
         delay = random.uniform(50, 70)
