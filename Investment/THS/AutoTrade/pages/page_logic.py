@@ -8,7 +8,7 @@ from Investment.THS.AutoTrade.pages.page_common import CommonPage
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 # from Demos.RegCreateKeyTransacted import classname
 
-from Investment.THS.AutoTrade.scripts.account_info import update_holding_info_all, get_buying_power, get_stock_available
+from Investment.THS.AutoTrade.scripts.account_info import AccountInfo
 from Investment.THS.AutoTrade.scripts.volume_calculate import calculate_buy_volume, calculate_sell_volume
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
@@ -42,141 +42,13 @@ class THSPage:
         self.share_button = self.d(resourceId="com.hexin.plat.android:id/share_container")
         self.search_button = self.d(resourceId="com.hexin.plat.android:id/search_container")
 
-    #判断当前在哪个页面
-    # def where_page(self):
-    #     application_store = self.d(resourceId="com.hexin.plat.android:id/textView")[12]
-    #     moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
-    #     current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
-    #     guozhailist = self.d(text="我要回购")
-    #     guozhaipingzhong = self.d(resourceId="com.hexin.plat.android:id/stock_pinzhong")
-    #
-    #     if application_store.exists():
-    #         # logger.info("当前页面: 首页")
-    #         return "首页"
-    #     elif self.moni.exists():
-    #         # logger.info("当前页面: 交易页")
-    #         return "交易页"
-    #     elif self.search_button.exists():
-    #         # logger.info("当前页面: 账户页")
-    #         return "账户页"
-    #     elif guozhailist.exists():
-    #         # logger.info("当前页面: 国债列表页")
-    #         return "国债列表页"
-    #     elif guozhaipingzhong.exists():
-    #         # logger.info("当前页面: 国债品种页")
-    #         return "国债品种页"
-    #     else:
-    #         return "当前在未知页"
-    #
-    #
-    # def common_page(self, to_account):
-    #     """
-    #     切换账户，必须在交易页执行
-    #     :param to_account: 目标账户名称（如 "模拟" / "川财证券" / "长城证券"）
-    #     :return: 成功与否
-    #     """
-    #     current_page = self.where_page()
-    #     logger.info(f"当前页面: {current_page}, 正在尝试切换至账户: {to_account}")
-    #
-    #     # 确保在交易页
-    #     if current_page != "交易页":
-    #         logger.warning("不在交易页，尝试返回交易页...")
-    #         if current_page == "首页":
-    #             # trade_button = self.d(resourceId="com.hexin.plat.android:id/icon")[4]
-    #             self.trade_button_entry.click()
-    #         elif current_page == "账户页":
-    #             self.click_back()
-    #         elif current_page == "国债列表页":
-    #             self.click_back()
-    #             self.click_back()
-    #         elif current_page == "国债品种页":
-    #             self.click_back()
-    #             self.click_back()
-    #             self.click_back()
-    #         else:
-    #             logger.error("无法返回交易页，切换账户失败")
-    #             return False
-    #
-    #
-    #     # 确保进入交易页
-    #     if self.where_page() != "交易页":
-    #         logger.error("无法返回交易页，切换账户失败")
-    #         return False
-    #     # Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
-    #         # 切换账户逻辑
-    #     if to_account == "模拟":
-    #         # moni = self.d(resourceId="com.hexin.plat.android:id/tab_mn")
-    #         if not self.moni.exists(timeout=3):
-    #             logger.error("找不到模拟账户入口")
-    #             return False
-    #         self.moni.click()
-    #         self.click_holding_stock_entry()
-    #         logger.info("切换至模拟账户成功")
-    #         return True
-    #     else:
-    #         # self.click_back()
-    #         # Agu = self.d(resourceId="com.hexin.plat.android:id/tab_a")
-    #         self.Agu.click()
-    #         time.sleep(1)
-    #         self.click_holding_stock_entry()
-    #
-    #         # current_account = self.d(resourceId="com.hexin.plat.android:id/page_title_view")
-    #
-    #         if self._current_account == to_account:
-    #             logger.info(f"当前已是 {to_account} 账户，无需切换")
-    #             return True
-    #
-    #         account_dialog = self.d(resourceId="com.hexin.plat.android:id/wt_multi_data_item_qs_name", text=to_account)
-    #         loggin_button = self.d(resourceId="com.hexin.plat.android:id/weituo_btn_login")
-    #         password_input = self.d(resourceId="com.hexin.plat.android:id/weituo_edit_trade_password")
-    #         keeplogin_checkbox = self.d(resourceId="com.hexin.plat.android:id/rtv_keeplogin_tips")
-    #         keeplogin_24h = self.d(resourceId="com.hexin.plat.android:id/tv_keeplogin_24h")
-    #
-    #         password_changcheng = '660493'
-    #         password_chuangcai = '170212'
-    #
-    #         current_account_name = self.current_account.get_text()
-    #
-    #         if current_account_name != to_account:
-    #
-    #             self.current_account.click()
-    #             account_dialog.click()
-    #
-    #             if loggin_button.exists():
-    #                 loggin_button.click()
-    #
-    #                 if to_account == '长城证券':
-    #                     time.sleep(1)
-    #                     password_input.set_text(password_changcheng)
-    #                 else:
-    #                     password_input.set_text(password_chuangcai)
-    #
-    #                 keeplogin_checkbox.click()
-    #                 if keeplogin_24h.exists():
-    #                     keeplogin_24h.click()
-    #
-    #                 loggin_button.click()
-    #                 time.sleep(1)
-    #
-    #             current_account_name2 = self.current_account.get_text()
-    #             if current_account_name2 == to_account:
-    #                 self._current_account = to_account
-    #                 logger.info(f"✅ 成功切换至账户: {to_account}")
-    #                 return True
-    #             else:
-    #                 logger.warning(f"⚠️ 切换账户失败，当前仍为: {current_account_name2}")
-    #                 return False
-    #         else:
-    #             self._current_account = current_account_name
-    #             logger.info(f"📌 当前登录账户名称: {current_account_name}")
-    #             return True
-
 
     def click_back(self):
         back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
         back_button.click()
         logger.info("点击返回按钮")
 
+    # 交易入口页
     def click_trade_entry(self):
         trade_entry = self.d(resourceId='com.hexin.plat.android:id/title', text='交易')
         trade_entry.click()
@@ -198,6 +70,7 @@ class THSPage:
         else:
             raise ValueError("未知操作")
 
+    # 账户页
     def click_holding_stock_button(self): # 持仓-里面
         holding_button = self.d(className='android.widget.TextView', text='持仓')
         holding_button.click()
@@ -218,10 +91,10 @@ class THSPage:
         else:
             raise ValueError("未知操作")
 
-    def click_submit_button(self,operation):
-        operation_submit_button = self.d(className='android.widget.TextView', text=operation)
-        operation_submit_button.click()
-        logger.info(f'点击 {operation} (提交)')
+    # def click_submit_button(self,operation):
+    #     operation_submit_button = self.d(className='android.widget.TextView', text=operation)
+    #     operation_submit_button.click()
+    #     logger.info(f'点击 {operation} (提交)')
 
     def click_refresh_button(self):
         refresh_button = self.d(resourceId='com.hexin.plat.android:id/refresh_container')
@@ -318,23 +191,23 @@ class THSPage:
         raise ValueError("无法获取实时价格")
         # return None
 
-    # def calculate_volume(self,amount, real_price):
 
-    def _calculate_volume(self, operation: str, new_ratio: float = None, real_price=None, buy_available=None, sale_available=None):
+
+    def _calculate_volume(self, operation: str, real_price=None, buy_available=None, sale_available=None, new_ratio: float = None, ):
         """
         根据当前持仓和策略动态计算交易数量
         :param operation: '买入' 或 '卖出'
         :param new_ratio: 新仓位比例（可选）
+        :param real_price: 实时价格
+        :param buy_available: 可用资金
+        :param sale_available: 可卖数量
         :return: tuple(success: bool, message: str, volume: int | None)
         """
         try:
             if operation == "买入":
-                # real_price = self._get_real_price()
                 if not real_price:
                     return False, "无法获取实时价格", None
 
-                # self.click_holding_stock_button()
-                # buy_available = get_buying_power()
                 if not buy_available:
                     return False, "无法获取可用资金", None
 
@@ -346,8 +219,6 @@ class THSPage:
                 return True, '数量计算成功', volume
 
             elif operation == "卖出":
-                # self.click_holding_stock_button()
-                # sale_available = get_stock_available(self._current_stock_name)
                 if not sale_available:
                     return False, f'{self._current_stock_name} 没有可用持仓', None
 
@@ -409,7 +280,7 @@ class THSPage:
         self.click_holding_stock_button()
         self.click_refresh_button()
         time.sleep(0.5)
-        update_holding_info_all()
+        account_info.iupdate_holding_info_all()
         logger.info("更新持仓信息")
     def ensure_on_account_page(self):
         """确保当前在账户页"""
@@ -438,77 +309,98 @@ class THSPage:
             logger.info("已切换至: 账户页")
         else:
             return True
-    def operate_stock(self,operation, stock_name):
-        """交易-持仓(初始化)-买卖操作"""
-        self.ensure_on_account_page()
-        try:
-            self._current_stock_name = stock_name
+    # def operate_stock(self, operation, stock_name):
+    #     """
+    #     确保在账户页
+    #     更新账户数据：买入时的可用自己，卖出时的可用数量
+    #     且换到买卖tab
+    #     搜索标的
+    #     获取实时价格
+    #     计算数量
+    #     提交
+    #     发送通知
+    #     """
+    #     # self.goto_account_page()
+    #     self.ensure_on_account_page()
+    #     try:
+    #         self._current_stock_name = stock_name
+    #         account_info = AccountInfo()
+    #
+    #         # 初始化资金: 可用资金,可卖数量,卖出比例
+    #         buy_available = None
+    #         sale_available = None
+    #         new_ratio = None
+    #
+    #         self.click_holding_stock_button()
+    #         if operation == "买入":
+    #             buy_available = account_info.get_buying_power()
+    #         else:
+    #             stock_exist, sale_available = account_info.get_stock_available(self._current_stock_name)
+    #             if not stock_exist:
+    #                 error_info = f"{self._current_stock_name} 没有持仓"
+    #                 return False, error_info
+    #
+    #             new_ratio = 10
+    #             volume = calculate_sell_volume(sale_available, new_ratio)
+    #
+    #
+    #
+    #         # # 点击按钮 买/卖 操作按钮（tab)
+    #         self.click_operate_button(operation)
+    #         # 搜索股票
+    #         self.search_stock(stock_name)
+    #
+    #         if operation == "买入":
+    #             # 获取实时价格
+    #             real_price = self._get_real_price()
+    #             if not real_price:
+    #                 return False, "无法获取实时价格", None
+    #
+    #             volume = calculate_buy_volume(real_price, buy_available)
+    #
+    #         # # 计算交易数量
+    #         # success, msg, calculate_volume = self._calculate_volume(operation, real_price, buy_available, sale_available, new_ratio)
+    #         # if not success:
+    #         #     logger.warning(f"{operation} {stock_name} 失败: {msg}")
+    #         #     return False, msg
+    #         # self.click_submit_button(operation)
+    #
+    #         # 交易开始，发送通知
+    #         # send_notification(f"开始 {operation} 流程 {stock_name}  {calculate_volume}股")
+    #
+    #         # 输入交易数量
+    #         self.input_volume(int(volume))
+    #         # 点击提交按钮
+    #         self.click_submit_button(operation)
+    #         # 处理弹窗
+    #         success, info = self.dialog_handle()
+    #         # 点击返回
+    #         # self.click_back()
+    #         # 发送交易结果通知
+    #         # send_notification(f"{operation} {stock_name} {calculate_volume}股 {success} {info}")
+    #         # if success:
+    #         #     time.sleep(1)
+    #         #     self.update_holding_info_all()
+    #         logger.info(f"{operation} {stock_name} {volume}股 {success} {info}")
+    #         return success, info
+    #     except Exception as e:
+    #         calculate_volume = "未知"
+    #         logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
+    #         return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
 
-            # 初始化资金
-            self.click_holding_stock_button()
-            buy_available = get_buying_power()
-            # self.click_holding_stock_button()
-            sale_available = get_stock_available(self._current_stock_name)
-            #点击交易入口
-            # self.click_trade_entry()
-            #点击买/卖按钮
-            #更新持仓数据
-            # 点击持仓按钮
-            # self.click_holding_stock_button()
-            # 更新持仓数据
-            # self.update_holding_info()
-            # # 点击按钮 买/卖 操作按钮
-            self.click_operate_button(operation)
-            # 搜索股票
-            self.search_stock(stock_name)
-
-            real_price = self._get_real_price()
-            if not real_price:
-                return False, "无法获取实时价格", None
-
-            # 计算交易数量
-            success, msg, calculate_volume = self._calculate_volume(operation, real_price,buy_available,sale_available)
-            if not success:
-                logger.warning(f"{operation} {stock_name} 失败: {msg}")
-                return False, msg
-            self.click_submit_button(operation)
-
-            # 交易开始，发送通知
-            # send_notification(f"开始 {operation} 流程 {stock_name}  {calculate_volume}股")
-
-            # 输入交易数量
-            self.input_volume(int(calculate_volume))
-            # 点击提交按钮
-            # self.click_submit_button(operation)
-            # 处理弹窗
-            success, info = self.dialog_handle()
-            # 点击返回
-            # self.click_back()
-            # 发送交易结果通知
-            send_notification(f"{operation} {stock_name}  {calculate_volume}股 {success} {info}")
-            if success:
-                time.sleep(1)
-                self.update_holding_info_all()
-            logger.info(f"{operation} {stock_name} {calculate_volume}股 {success} {info}")
-            return success, info
-        except Exception as e:
-            calculate_volume = "未知"
-            logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
-            return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
-
-    def is_on_guozhai_page(self):
-        return self.d(text="我要回购").exists()
-    def is_on_jiechu_page(self):
-        return self.d(resourceId="com.hexin.plat.android:id/btn_jie_chu").exists()
-    def is_on_holding_page(self):
-        return self.d(resourceId="com.hexin.plat.android:id/menu_holdings_text", text="持仓").exists()
-    def is_on_home_page(self):
-        """判断是否在首页"""
-        return self.d(resourceId="com.hexin.plat.android:id/tab_mn").exists()
-
-    def is_on_holding_list_page(self):
-        """判断是否在持仓列表页"""
-        return self.d(text="可用").exists()
+    # def is_on_guozhai_page(self):
+    #     return self.d(text="我要回购").exists()
+    # def is_on_jiechu_page(self):
+    #     return self.d(resourceId="com.hexin.plat.android:id/btn_jie_chu").exists()
+    # def is_on_holding_page(self):
+    #     return self.d(resourceId="com.hexin.plat.android:id/menu_holdings_text", text="持仓").exists()
+    # def is_on_home_page(self):
+    #     """判断是否在首页"""
+    #     return self.d(resourceId="com.hexin.plat.android:id/tab_mn").exists()
+    #
+    # def is_on_holding_list_page(self):
+    #     """判断是否在持仓列表页"""
+    #     return self.d(text="可用").exists()
 
 
 if __name__ == '__main__':
@@ -518,7 +410,7 @@ if __name__ == '__main__':
     # d.screenshot("screenshot1.png")
     ths = THSPage(d)
     # pom.guozhai_operation()
-    if ths.operate_stock('买入', '东方创业'):
+    if ths.operate_stock('卖出', '东方创业'):
         # ths.trade_button_entry.click()
         print("True")
     else:

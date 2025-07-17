@@ -70,7 +70,33 @@ class CommonPage:
         else:
             self.back_button.click()
             return "当前在未知页,尝试返回"
-    
+    # def ensure_on_account_page(self):
+    #     """确保当前在账户页"""
+    #     current_page = common_page.where_page()
+    #     logger.info(f"当前页面: {current_page}")
+    #
+    #     # 确保在账户页
+    #     if not current_page == "账户页":
+    #         if current_page == "首页":
+    #             # 如果没有可用按钮，则点击持仓入口
+    #             self.trade_button_entry.click()
+    #             time.sleep(1)
+    #             if not self.search_button.exists:
+    #                 print("没有分享按钮")
+    #                 self.click_holding_stock_entry()
+    #         elif current_page == "交易页":
+    #             self.click_holding_stock_entry()
+    #         elif current_page == "国债列表页":
+    #             self.click_back()
+    #         elif current_page == "国债品种页":
+    #             self.click_back()
+    #             self.click_back()
+    #         else:
+    #             logger.error("无法返回账户页")
+    #             return False
+    #         logger.info("已切换至: 账户页")
+    #     else:
+    #         return True
     def goto_account_page(self):
             """确保当前在账户页"""
             time.sleep(1)
