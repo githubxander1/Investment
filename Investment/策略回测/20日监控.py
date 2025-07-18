@@ -183,8 +183,8 @@ def schedule_daily_task(target_time="15:00"):
 if __name__ == '__main__':
     # 要监控的股票
     MONITORED_STOCKS = {
-        "sh600000": "浦发银行",
-        "sz000001": "平安银行"
+        "sh000573": "粤宏远A",
+        "sz600570": "恒生电子"
     }
     # 要监控的 ETF
     MONITORED_ETFS = {
