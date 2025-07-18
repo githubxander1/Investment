@@ -60,6 +60,7 @@ def extract_data(response_data):
 
 def main():
     # 请求参数
+    # url = "http://ai.api.traderwin.com/api/ai/robot/get.json?token=5a66427c4cc7054622909acafc31d2a6"
     url = "http://ai.api.traderwin.com/api/ai/robot/get.json?token=5a66427c4cc7054622909acafc31d2a6"
 
     payload = json.dumps({
