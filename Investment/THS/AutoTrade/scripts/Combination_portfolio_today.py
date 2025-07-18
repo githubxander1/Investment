@@ -1,10 +1,8 @@
-# Combination_portfolio_today.py
+# Combination_portfolio_today_file.py
 import asyncio
 import datetime
 import re
 from pprint import pprint
-
-# from pprint import pprint
 
 import pandas as pd
 import requests
@@ -21,7 +19,7 @@ others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.
 sys.path.append(others_dir)
 # print(f'包路径：{sys.path}')
 
-from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today, Combination_headers, all_ids, \
+from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today_file, Combination_headers, all_ids, \
     id_to_name
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
@@ -136,10 +134,6 @@ def fetch_and_extract_data(portfolio_id):
             # 昨天日期
             # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             today = datetime.datetime.now().strftime('%Y-%m-%d')
-            # from dateutil.parser import parse
-            # today = datetime.datetime.now().date()
-            # createAt = parse(createAt).date()
-            # print(f"当前日期: {today}, createAt: {createAt}, createAt日期部分: {createAt}")
 
             if today == createAt.split()[0]:
             # if today == createAt:
@@ -160,9 +154,9 @@ async def Combination_main():
         trade_count = len(today_trades)
         portfolio_stats[portfolio_id] = trade_count
         logger.info(f"组合ID: {portfolio_id} - 获取到 {trade_count} 条交易数据")
+        all_today_trades.extend(today_trades)
 
         # print(f"组合id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} 数据：{today_trades}")
-        all_today_trades.extend(today_trades)
 
     # 输出每个组合的数据统计
     # logger.info("📊 每个组合的数据统计:")
@@ -174,7 +168,7 @@ async def Combination_main():
     # 打印各列数据类型
     # print(f"今日数据列的数据类型:{all_today_trades_df.dtypes}")
     # print(f"[调试] 合并后数据: {all_today_trades_df.to_string()}")
-    logger.info(f"今日交易数据（DataFrame）:\n{all_today_trades_df}")
+    # logger.info(f"今日交易数据（DataFrame）:\n{all_today_trades_df}")
 
     # 只有在非空的情况下才进行字段处理
     if not all_today_trades_df.empty:
@@ -202,7 +196,7 @@ async def Combination_main():
     logger.info(f'今日交易数据 {len(all_today_trades_df_without_content)} 条\n{all_today_trades_df_without_content}')
 
     # 读取历史数据
-    history_df_file = Combination_portfolio_today
+    history_df_file = Combination_portfolio_today_file
     # history_df_file_hash = get_file_hash(history_df_file)
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
@@ -210,7 +204,7 @@ async def Combination_main():
         history_df = read_portfolio_record_history(history_df_file)
         # print(f'历史数据各列数据类型: {history_df.dtypes}')
         # 获取新增数据前
-        logger.info(f"历史数据（DataFrame）:\n{history_df}")
+        # logger.info(f"历史数据（DataFrame）:\n{history_df}")
 
         # ✅ 显式转换关键列类型
         history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)

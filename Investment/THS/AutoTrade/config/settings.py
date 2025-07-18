@@ -21,8 +21,11 @@ trade_operations_log_file = os.path.join(LOGS_DIR, 'data_process.log')
 OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
 
 
-Strategy_portfolio_today = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
-Combination_portfolio_today = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
+Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'Strategy_portfolio_today_file.xlsx')
+Combination_portfolio_today_file = os.path.join(DATA_DIR, 'Combination_portfolio_today_file.xlsx')
+
+Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'Ai_Strategy_position.xlsx')
+ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")
 
 Strategy_holding_file = os.path.join(DATA_DIR, 'Strategy_position.xlsx')
 Combination_holding_file = os.path.join(DATA_DIR, 'Combination_position.xlsx')
@@ -147,8 +150,8 @@ REPO_TIME_START = dt_time(14, 59)
 REPO_TIME_END = dt_time(15, 1)
 
 # 文件路径
-# Strategy_portfolio_today = "path/to/strategy.xlsx"
-# Combination_portfolio_today = "path/to/combination.xlsx"
+# Strategy_portfolio_today_file = "path/to/strategy.xlsx"
+# Combination_portfolio_today_file = "path/to/combination.xlsx"
 # OPERATION_HISTORY_FILE = "path/to/history.json"
 
 # 延迟范围（秒）

@@ -1,5 +1,4 @@
-# page_logic.py
-import pandas as pd
+# page.py
 import time
 
 import uiautomator2
@@ -8,16 +7,16 @@ from Investment.THS.AutoTrade.pages.page_common import CommonPage
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 # from Demos.RegCreateKeyTransacted import classname
 
-from Investment.THS.AutoTrade.scripts.account_info import AccountInfo
-from Investment.THS.AutoTrade.scripts.volume_calculate import calculate_buy_volume, calculate_sell_volume
+from Investment.THS.AutoTrade.pages.account_info import AccountInfo
+from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
-from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 
 common_page = CommonPage()
-
+account_info =  AccountInfo()
+trader = TradeLogic()
 class THSPage:
 
     def __init__(self, d):
@@ -41,6 +40,22 @@ class THSPage:
         self.current_text = self.d(resourceId="com.hexin.plat.android:id/currency_text", text="人民币账户 A股")
         self.share_button = self.d(resourceId="com.hexin.plat.android:id/share_container")
         self.search_button = self.d(resourceId="com.hexin.plat.android:id/search_container")
+
+        # 国债
+        self.back_button = self.d(resourceId="com.hexin.plat.android:id/title_bar_img")
+        self.confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+        self.prompt_content = self.d(resourceId="com.hexin.plat.android:id/prompt_content")
+        self.ths = THSPage(d)
+
+        self.guozhai_entry_button = self.d(resourceId="com.hexin.plat.android:id/title_right_image")[1]
+        self.guozhailist_assert_button = d(text="我要回购")
+
+        self.borrow_btn = self.d(resourceId="com.hexin.plat.android:id/btn_jiechu")
+
+        # 弹窗
+        self.diolog_title = self.d(resourceId="com.hexin.plat.android:id/dialog_title")
+
+        self.content_layout = d(resourceId="com.hexin.plat.android:id/content_layout")
 
 
     def click_back(self):
@@ -137,12 +152,12 @@ class THSPage:
         volumn_input.send_keys(volume)
         logger.info(f"输入数量: {volume}手")
 
-    def half_volume(self):
+    def click_half_volume(self):
         volumn = self.d(resourceId='com.hexin.plat.android:id/tv_flashorder_cangwei', text='1/2仓')
         volumn.click()
         logger.info("输入数量: 半仓")
 
-    def total_volume(self):
+    def click_total_volume(self):
         volumn = self.d(resourceId='com.hexin.plat.android:id/tv_flashorder_cangwei', text='全仓')
         volume = self.d(className='android.widget.EditText')[2]
         # logger.info("获取买入数量")
@@ -152,10 +167,10 @@ class THSPage:
         else:
             pass
 
-    # 输入数量后系统自动计算的价格
+    # 输入数量后系统自动计算的金额
     def get_price_by_volume(self):
         price = self.d(resourceId='com.hexin.plat.android:id/couldbuy_volumn').get_text()
-        logger.info("获取价格: " + price)
+        logger.info("获取金额: " + price)
         return price
 
     def click_submit_button(self, operation):
@@ -191,9 +206,7 @@ class THSPage:
         raise ValueError("无法获取实时价格")
         # return None
 
-
-
-    def _calculate_volume(self, operation: str, real_price=None, buy_available=None, sale_available=None, new_ratio: float = None, ):
+    def calculate_volume(self, operation: str, real_price=None, buy_available=None, sale_available=None, new_ratio: float = None, ):
         """
         根据当前持仓和策略动态计算交易数量
         :param operation: '买入' 或 '卖出'
@@ -211,7 +224,7 @@ class THSPage:
                 if not buy_available:
                     return False, "无法获取可用资金", None
 
-                volume = calculate_buy_volume(real_price, buy_available)
+                volume = trader.calculate_buy_volume(real_price, buy_available)
                 if not volume:
                     return False, "买入数量计算失败", None
 
@@ -222,7 +235,7 @@ class THSPage:
                 if not sale_available:
                     return False, f'{self._current_stock_name} 没有可用持仓', None
 
-                volume = calculate_sell_volume(sale_available, new_ratio)
+                volume = trader.calculate_sell_volume(sale_available, new_ratio)
                 if not volume:
                     return False, "卖出数量计算失败", None
 
@@ -280,35 +293,35 @@ class THSPage:
         self.click_holding_stock_button()
         self.click_refresh_button()
         time.sleep(0.5)
-        account_info.iupdate_holding_info_all()
+        account_info.update_holding_info_all()
         logger.info("更新持仓信息")
-    def ensure_on_account_page(self):
-        """确保当前在账户页"""
-        current_page = common_page.where_page()
-        logger.info(f"当前页面: {current_page}")
-
-        # 确保在账户页
-        if not current_page == "账户页":
-            if current_page == "首页":
-                # 如果没有可用按钮，则点击持仓入口
-                self.trade_button_entry.click()
-                time.sleep(1)
-                if not self.search_button.exists:
-                    print("没有分享按钮")
-                    self.click_holding_stock_entry()
-            elif current_page == "交易页":
-                self.click_holding_stock_entry()
-            elif current_page == "国债列表页":
-                self.click_back()
-            elif current_page == "国债品种页":
-                self.click_back()
-                self.click_back()
-            else:
-                logger.error("无法返回账户页")
-                return False
-            logger.info("已切换至: 账户页")
-        else:
-            return True
+    # def ensure_on_account_page(self):
+    #     """确保当前在账户页"""
+    #     current_page = common_page.where_page()
+    #     logger.info(f"当前页面: {current_page}")
+    #
+    #     # 确保在账户页
+    #     if not current_page == "账户页":
+    #         if current_page == "首页":
+    #             # 如果没有可用按钮，则点击持仓入口
+    #             self.trade_button_entry.click()
+    #             time.sleep(1)
+    #             if not self.search_button.exists:
+    #                 print("没有分享按钮")
+    #                 self.click_holding_stock_entry()
+    #         elif current_page == "交易页":
+    #             self.click_holding_stock_entry()
+    #         elif current_page == "国债列表页":
+    #             self.click_back()
+    #         elif current_page == "国债品种页":
+    #             self.click_back()
+    #             self.click_back()
+    #         else:
+    #             logger.error("无法返回账户页")
+    #             return False
+    #         logger.info("已切换至: 账户页")
+    #     else:
+    #         return True
     # def operate_stock(self, operation, stock_name):
     #     """
     #     确保在账户页
@@ -359,7 +372,7 @@ class THSPage:
     #             volume = calculate_buy_volume(real_price, buy_available)
     #
     #         # # 计算交易数量
-    #         # success, msg, calculate_volume = self._calculate_volume(operation, real_price, buy_available, sale_available, new_ratio)
+    #         # success, msg, calculate_volume = self.calculate_volume(operation, real_price, buy_available, sale_available, new_ratio)
     #         # if not success:
     #         #     logger.warning(f"{operation} {stock_name} 失败: {msg}")
     #         #     return False, msg
@@ -408,7 +421,7 @@ if __name__ == '__main__':
     d = uiautomator2.connect()
 
     # d.screenshot("screenshot1.png")
-    ths = THSPage(d)
+    ths = TradeLogic()
     # pom.guozhai_operation()
     if ths.operate_stock('卖出', '东方创业'):
         # ths.trade_button_entry.click()

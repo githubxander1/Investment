@@ -1,21 +1,23 @@
 # data_process.py
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas
 import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
-    Strategy_portfolio_today, Combination_portfolio_today, Account_holding_file, Strategy_holding_file, \
+    Account_holding_file, Strategy_holding_file, \
     Combination_holding_file
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
-from Investment.THS.AutoTrade.pages.page_logic import THSPage
-from Investment.THS.AutoTrade.scripts.account_info import update_holding_info_all
+from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
+from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.utils.format_data import normalize_time
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger(trade_operations_log_file)
 common_page = CommonPage()
+account_info = AccountInfo()
+trader = TradeLogic()
 def read_portfolio_record_history(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # print(f'读取调仓记录文件日期{today}')
@@ -27,7 +29,7 @@ def read_portfolio_record_history(file_path):
 
                     # 显式转换关键列的类型
                     portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
-                    portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
+                    # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
                     portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
 
                     # 去重处理
@@ -86,16 +88,15 @@ def save_to_excel(df, filename, sheet_name, index=False):
     # 保存到 Excel
     try:
         # 标准化数据类型
-        # df = df.astype(object).fillna('')
-        df = df.astype(object).fillna('').infer_objects(copy=False)
-
+        df = df.fillna('')
+        df = df.infer_objects(copy=False)
         # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
         if not os.path.exists(filename):
             # print(f"保存的df {df}")
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=today, index=index)
                 #打印数据类型
-                print(f"保存的数据类型: \n{df.dtypes}")
+                # print(f"保存的数据类型: \n{df.dtypes}")
             logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {today} \n{df}")
             return
 
@@ -126,7 +127,7 @@ def save_to_excel(df, filename, sheet_name, index=False):
             with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
                 combined_df.to_excel(writer, sheet_name=today, index=index)
                 #打印数据类型
-                print(f"保存的数据类型: \n{combined_df.dtypes}")
+                # print(f"保存的数据类型: \n{combined_df.dtypes}")
 
             # 读取并保存其他 sheet 的数据
             other_sheets_data = {}
@@ -250,7 +251,7 @@ def get_difference_holding():
 
         if not to_sell.empty:
             logger.warning("⚠️ 发现需卖出的标的:")
-            print("需卖出的标的:")
+            # print("需卖出的标的:")
             print(to_sell[['标的名称', '持仓/可用']])
         else:
             logger.info("✅ 当前无需卖出的标的")
@@ -330,7 +331,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 # update_holding_info_all()
                 # logger.info("更新持仓信息完成")
 
-                status, info = ths_page.operate_stock(operation, stock_name)
+                status, info = trader.operate_stock(operation, stock_name)
 
                 # 构造记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -366,7 +367,7 @@ if __name__ == '__main__':
             print(diff_result['to_buy'][['标的名称']])
 
     # file_paths = [
-    #     Strategy_portfolio_today,Combination_portfolio_today
+    #     Strategy_portfolio_today_file,Combination_portfolio_today_file
     # ]
     # # from auto_trade_on_ths import THSPage
     # import uiautomator2 as u2

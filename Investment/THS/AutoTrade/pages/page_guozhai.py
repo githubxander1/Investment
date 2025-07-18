@@ -3,7 +3,7 @@ import time
 import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
-from Investment.THS.AutoTrade.pages.page_logic import THSPage
+from Investment.THS.AutoTrade.pages.page import THSPage
 # from Investment.THS.AutoTrade.scripts.account_info import click_holding_stock_button
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
@@ -58,20 +58,6 @@ class GuozhaiPage(THSPage):
             time.sleep(1)
         logger.warning(f"未找到 {target_name}，已滑动到底部")
         return False
-
-    # def wait_for_element(self, selector, timeout=10):
-    #     """
-    #     显式等待元素出现
-    #     :param selector: 元素定位器
-    #     :param timeout: 超时时间
-    #     :return: 是否找到
-    #     """
-    #     start_time = time.time()
-    #     while time.time() - start_time < timeout:
-    #         if selector.exists():
-    #             return True
-    #         time.sleep(0.5)
-    #     return False
 
     def assert_on_gc001_page(self):
         """
@@ -189,10 +175,10 @@ class GuozhaiPage(THSPage):
             success, message = result
 
             # ✅ 统一发送通知
-            if success:
-                send_notification(f"国债逆回购任务成功: {message}")
-            else:
-                send_notification(f"国债逆回购任务失败: {message}")
+            # if success:
+            send_notification(f"国债逆回购任务完成: {success} {message}")
+            # else:
+            #     send_notification(f"国债逆回购任务失败: {message}")
 
             logger.info(f"---------------------国债逆回购任务执行完毕---------------------")
             return result

@@ -8,7 +8,7 @@ import requests
 from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    Strategy_portfolio_today, Strategy_id_to_name, Strategy_ids
+    Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids
 from Investment.THS.AutoTrade.scripts.data_process import save_to_excel, read_portfolio_record_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
@@ -39,22 +39,19 @@ async def get_latest_position_and_trade(strategy_id):
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
     trade_stocks = latest_trade.get('tradeStocks', [])
 
-
     result = []
     for trade_info in trade_stocks:
-        # code = str(trade_info.get('stkCode', '').split('.')[0].zfill(6))
         code = str(trade_info.get('code', '').zfill(6))
-        # print(f"标的代码: {code}")
-        name = trade_info.get('stkName', '')
-        operation = '买入' if trade_info.get('operationType', '') == 'BUY' else '卖出'
-        price = trade_info.get('tradePrice', '')
-        ratio = round(trade_info.get('position', 0) * 100, 2)
-        market = determine_market(code)
+        # name = trade_info.get('stkName', '')
+        # operation = '买入' if trade_info.get('operationType', '') == 'BUY' else '卖出'
+        # price = trade_info.get('tradePrice', '')
+        # ratio = round(trade_info.get('position', 0) * 100, 2)
+        # market = determine_market(code)
         # 显式转换时间戳为整数
         timestamp = trade_info.get('tradeDate', '')
         if isinstance(timestamp, (int, float)):
             timestamp = str(int(timestamp))  #
-        stock_trade_date = normalize_time(timestamp)
+        # stock_trade_date = normalize_time(timestamp)
 
         # stock_trade_date = normalize_time(trade_info.get('tradeDate', ''))
         # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
@@ -112,7 +109,7 @@ async def Strategy_main():
 
 
     # 读取历史数据
-    history_data_file = Strategy_portfolio_today
+    history_data_file = Strategy_portfolio_today_file
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
     try:
         # 打印数据列的数据类型

@@ -1,4 +1,5 @@
 #format_data.py
+from datetime import datetime
 import pandas as pd
 from dateutil.utils import today
 
@@ -21,7 +22,6 @@ def determine_market(stock_code):
     else:
         return '其他'
 
-from datetime import datetime
 
 def normalize_time(time_str):
     """统一时间格式为 YYYY-MM-DD HH:MM"""
@@ -73,67 +73,6 @@ def normalize_time(time_str):
     except Exception as e:
         print(f"时间标准化失败: {e}")
         return ''
-
-    #         date_part, time_part = time_str.split(" ", 1)
-    #         time_part = ":".join(time_part.split(":")[:2])  # 只取小时和分钟
-    #         return f"{date_part} {time_part}"
-    #     else:
-    #         return time_str
-    # except Exception as e:
-    #     print(f"时间标准化失败: {e}")
-    #     return ''
-
-
-
-
-# def create_unique_id(df):
-#     df['代码'] = df['代码'].astype(str).str.zfill(6)
-#     df['新比例%'] = df['新比例%'].round(2).map(lambda x: f"{x:.2f}")
-#     df['_id'] = df['时间'].astype(str) + '_' + df['代码'] + '_' + df['新比例%']
-#     return df
-
-# def validate_dataframe(df, required_columns=None):
-#     """验证并清理DataFrame"""
-#     if required_columns is None:
-#         required_columns = ['名称', '操作', '标的名称', '代码', '时间']
-#
-#         # 确保字段存在并填充默认值
-#     for col in required_columns:
-#         if col not in df.columns:
-#             df[col] = 0.0 if col in ['新比例%', '最新价'] else ''
-#
-#     df = df.fillna({
-#     col: '' if col in ['名称', '操作', '标的名称', '代码', '市场', '时间'] else 0.0
-#     for col in required_columns
-# })
-#
-#
-#     # 确保所有必需列存在
-#     for col in required_columns:
-#         if col not in df.columns:
-#             df[col] = ''
-#
-#     # 标准化代码列
-#     if '代码' in df.columns:
-#         df['代码'] = df['代码'].astype(str).str.zfill(6)
-#
-#     # 标准化时间列
-#     if '时间' in df.columns:
-#         df['时间'] = df['时间'].astype(str).apply(normalize_time)
-#
-#     # 标准化数值列
-#     numeric_cols = ['新比例%', '最新价']
-#     for col in numeric_cols:
-#         if col in df.columns:
-#             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0).round(2)
-#
-#     # 标准化字符串列
-#     str_cols = ['名称', '操作', '标的名称', '市场']
-#     for col in str_cols:
-#         if col in df.columns:
-#             df[col] = df[col].astype(str).str.strip()
-#
-#     return df[required_columns]
 
 def get_new_records(current_df, history_df):
     """通过 _id 字段获取新增记录"""

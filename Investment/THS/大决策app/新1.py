@@ -221,7 +221,7 @@ if __name__ == '__main__':
 #     df_today = df_today[df_today['市场'] == '沪深A股']
 #
 #     # 读取历史记录
-#     history_df_file = Combination_portfolio_today
+#     history_df_file = Combination_portfolio_today_file
 #     expected_columns = ['组合名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '调仓理由']
 #     try:
 #         df_history = read_portfolio_record_history(history_df_file)
