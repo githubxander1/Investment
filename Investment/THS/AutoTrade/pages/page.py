@@ -1,14 +1,14 @@
 # page.py
 import time
 
-import uiautomator2
+import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 # from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 # from Demos.RegCreateKeyTransacted import classname
 
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
-from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
+# from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import THS_AUTO_TRADE_LOG_FILE_PAGE
 
@@ -16,7 +16,8 @@ logger = setup_logger(THS_AUTO_TRADE_LOG_FILE_PAGE)
 
 common_page = CommonPage()
 account_info =  AccountInfo()
-trader = TradeLogic()
+# trader = TradeLogic()
+# d = u2.connect()
 class THSPage:
 
     def __init__(self, d):
@@ -27,7 +28,7 @@ class THSPage:
         self._current_page = None
 
         # back_button = self.d('com.hexin.plat.android:id/title_bar_left_container')
-        self.trade_button_entry = self.d(resourceId="com.hexin.plat.android:id/icon")[3]
+        self.trade_button_entry = self.d(resourceId="com.hexin.plat.android:id/menu_holdings_image")
         # self.trade_button_entry = self.d(className="android.widget.RelativeLayout")[24]
         self.back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
 
@@ -45,17 +46,17 @@ class THSPage:
         self.back_button = self.d(resourceId="com.hexin.plat.android:id/title_bar_img")
         self.confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
         self.prompt_content = self.d(resourceId="com.hexin.plat.android:id/prompt_content")
-        self.ths = THSPage(d)
+        # self.ths = THSPage(d)
 
         self.guozhai_entry_button = self.d(resourceId="com.hexin.plat.android:id/title_right_image")[1]
-        self.guozhailist_assert_button = d(text="我要回购")
+        self.guozhailist_assert_button = self.d(text="我要回购")
 
         self.borrow_btn = self.d(resourceId="com.hexin.plat.android:id/btn_jiechu")
 
         # 弹窗
         self.diolog_title = self.d(resourceId="com.hexin.plat.android:id/dialog_title")
 
-        self.content_layout = d(resourceId="com.hexin.plat.android:id/content_layout")
+        self.content_layout = self.d(resourceId="com.hexin.plat.android:id/content_layout")
 
 
     def click_back(self):
@@ -206,49 +207,49 @@ class THSPage:
         raise ValueError("无法获取实时价格")
         # return None
 
-    def calculate_volume(self, operation: str, real_price=None, buy_available=None, sale_available=None, new_ratio: float = None, ):
-        """
-        根据当前持仓和策略动态计算交易数量
-        :param operation: '买入' 或 '卖出'
-        :param new_ratio: 新仓位比例（可选）
-        :param real_price: 实时价格
-        :param buy_available: 可用资金
-        :param sale_available: 可卖数量
-        :return: tuple(success: bool, message: str, volume: int | None)
-        """
-        try:
-            if operation == "买入":
-                if not real_price:
-                    return False, "无法获取实时价格", None
-
-                if not buy_available:
-                    return False, "无法获取可用资金", None
-
-                volume = trader.calculate_buy_volume(real_price, buy_available)
-                if not volume:
-                    return False, "买入数量计算失败", None
-
-                logger.info(f"实时价格: {real_price}, 操作数量: {volume}, 共{operation}: {real_price * volume}")
-                return True, '数量计算成功', volume
-
-            elif operation == "卖出":
-                if not sale_available:
-                    return False, f'{self._current_stock_name} 没有可用持仓', None
-
-                volume = trader.calculate_sell_volume(sale_available, new_ratio)
-                if not volume:
-                    return False, "卖出数量计算失败", None
-
-                logger.info(f"{operation}数量: {volume} (共可用：{sale_available})")
-                return True, '数量计算成功', volume
-
-            else:
-                logger.warning("未知操作类型")
-                return False, '失败', None
-
-        except Exception as e:
-            logger.error(f"数量计算失败: {e}", exc_info=True)
-            return False, '失败', None
+    # def calculate_volume(self, operation: str, real_price=None, buy_available=None, sale_available=None, new_ratio: float = None, ):
+    #     """
+    #     根据当前持仓和策略动态计算交易数量
+    #     :param operation: '买入' 或 '卖出'
+    #     :param new_ratio: 新仓位比例（可选）
+    #     :param real_price: 实时价格
+    #     :param buy_available: 可用资金
+    #     :param sale_available: 可卖数量
+    #     :return: tuple(success: bool, message: str, volume: int | None)
+    #     """
+    #     try:
+    #         if operation == "买入":
+    #             if not real_price:
+    #                 return False, "无法获取实时价格", None
+    #
+    #             if not buy_available:
+    #                 return False, "无法获取可用资金", None
+    #
+    #             volume = trader.calculate_buy_volume(real_price, buy_available)
+    #             if not volume:
+    #                 return False, "买入数量计算失败", None
+    #
+    #             logger.info(f"实时价格: {real_price}, 操作数量: {volume}, 共{operation}: {real_price * volume}")
+    #             return True, '数量计算成功', volume
+    #
+    #         elif operation == "卖出":
+    #             if not sale_available:
+    #                 return False, f'{self._current_stock_name} 没有可用持仓', None
+    #
+    #             volume = trader.calculate_sell_volume(sale_available, new_ratio)
+    #             if not volume:
+    #                 return False, "卖出数量计算失败", None
+    #
+    #             logger.info(f"{operation}数量: {volume} (共可用：{sale_available})")
+    #             return True, '数量计算成功', volume
+    #
+    #         else:
+    #             logger.warning("未知操作类型")
+    #             return False, '失败', None
+    #
+    #     except Exception as e:
+    #         logger.error(f"数量计算失败: {e}", exc_info=True)
+    #         return False, '失败', None
 
     def dialog_handle(self):
         """处理交易后的各种弹窗情况"""
@@ -417,17 +418,17 @@ class THSPage:
 
 
 if __name__ == '__main__':
-    # pass
-    d = uiautomator2.connect()
+    pass
+    # d = uiautomator2.connect()
 
     # d.screenshot("screenshot1.png")
-    ths = TradeLogic()
+    # ths = TradeLogic()
     # pom.guozhai_operation()
-    if ths.operate_stock('卖出', '东方创业'):
-        # ths.trade_button_entry.click()
-        print("True")
-    else:
-        print("False")
+    # if ths.operate_stock('卖出', '东方创业'):
+    #     # ths.trade_button_entry.click()
+    #     print("True")
+    # else:
+    #     print("False")
     # pom.trade_button_entry.click()
     # pom.common_page("长城证券")
     # pom.common_page("川财证券")

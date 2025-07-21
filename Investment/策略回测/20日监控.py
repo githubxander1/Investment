@@ -51,14 +51,14 @@ def fetch_etf_data(code: str, period=30):
     except Exception as e:
         logger.error(f"获取 ETF {code} 数据失败: {e}")
         return pd.DataFrame()
-def fetch_stock_data(code):
+def fetch_stock_data(code, period):
     """获取指定股票的历史行情数据"""
     try:
         df = ak.stock_zh_a_hist(symbol=code[2:], period="daily", adjust="qfq")
         df.columns = ['日期', '开盘价', '最高价', '最低价', '收盘价', '成交量', '成交额', '振幅', '涨跌幅', '涨跌额', '换手率']
         df['日期'] = pd.to_datetime(df['日期'])
         df.set_index('日期', inplace=True)
-        return df.tail(20)  # 取最近20天数据计算均线
+        return df.tail(period)  # 取最近20天数据计算均线
     except Exception as e:
         logger.error(f"获取股票 {code} 数据失败: {e}")
         return pd.DataFrame()
@@ -126,7 +126,7 @@ def daily_stock_check():
     logger.info("开始执行股票策略检查")
 
     for code, name in MONITORED_STOCKS.items():
-        df = fetch_stock_data(code)
+        df = fetch_stock_data(code,30)
         signal = check_strategy_5_ma(df)
 
         if signal == "up":
@@ -139,7 +139,7 @@ def daily_stock_check():
             logger.info(msg)
         else:
             logger.info(f"{name}({code}) 当前未出现明显趋势信号")
-def daily_monitor():
+def daily_monitor(MONITORED_ids=None):
     today = datetime.date.today()
     if not is_trading_day(today):
         logger.info(f"{today} 是非交易日，跳过本次监控")
@@ -147,7 +147,7 @@ def daily_monitor():
 
     logger.info(f"开始执行每日策略监控任务：{today}")
 
-    for code, name in MONITORED_ETFS.items():
+    for code, name in MONITORED_ids.items():
         df = fetch_etf_data(code, period=30)
         signal = check_strategy_20_ma(df, window=20, days_threshold=3)
 
@@ -161,6 +161,21 @@ def daily_monitor():
             logger.info(msg)
         else:
             logger.info(f"{name}({code}) 当前未出现明显趋势信号")
+
+    # for code, name in MONITORED_ids.items():
+    #     df = fetch_stock_data(code, period=30)
+    #     signal = check_strategy_20_ma(df, window=20, days_threshold=3)
+    #
+    #     if signal == "up":
+    #         msg = f"{name}({code}) 近 3 天收盘价持续上穿20日均线，建议关注买入机会！"
+    #         send_notification(msg)
+    #         logger.info(msg)
+    #     elif signal == "down":
+    #         msg = f"{name}({code}) 近 3 天收盘价持续下穿20日均线，建议关注卖出机会！"
+    #         send_notification(msg)
+    #         logger.info(msg)
+    #     else:
+    #         logger.info(f"{name}({code}) 当前未出现明显趋势信号")
 
 # 定时执行器（每天15:00执行）
 def schedule_daily_task(target_time="15:00"):
@@ -187,10 +202,11 @@ if __name__ == '__main__':
         "sz600570": "恒生电子"
     }
     # 要监控的 ETF
-    MONITORED_ETFS = {
-        "508011": "嘉实物美消费REIT",
-        "508005": "华夏首创奥莱REIT",
-        # 可添加更多 ETF
-    }
+    # MONITORED_ETFS = {
+    #     "508011": "嘉实物美消费REIT",
+    #     "508005": "华夏首创奥莱REIT",
+    #     # 可添加更多 ETF
+    # }
     # schedule_daily_task()
-    daily_monitor()
+    # daily_monitor()
+    daily_stock_check()

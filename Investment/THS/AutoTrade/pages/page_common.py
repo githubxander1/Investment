@@ -11,7 +11,8 @@ class CommonPage:
 
     def __init__(self):
         self.d = uiautomator2.connect()
-        self.back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
+        # self.back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
+        self.back_button = self.d(resourceId="com.hexin.plat.android:id/title_bar_img")
         # trade_button_entry = self.d(className="android.widget.RelativeLayout")[24]
         self.application_store = self.d(resourceId="com.hexin.plat.android:id/textView")[12]
 
