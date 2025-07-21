@@ -1,0 +1,792 @@
+[32m2025-07-08 19:44:54 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:44:58 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-08 19:45:00 - INFO - 操作提示: 当前时间不允许委托[0m
+[33m2025-07-08 19:45:00 - WARNING - 交易失败: 当前时间不允许委托[0m
+[32m2025-07-08 19:45:02 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-08 19:45:16 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:45:20 - INFO - 当前页面为 GC001(1天期)[0m
+[33m2025-07-08 19:45:31 - WARNING - 未检测到操作结果弹窗[0m
+[32m2025-07-08 19:45:31 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-08 19:45:37 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:45:42 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-08 19:45:47 - INFO - 操作提示: 当前时间不允许委托[0m
+[33m2025-07-08 19:45:47 - WARNING - 交易失败: 当前时间不允许委托[0m
+[32m2025-07-08 19:45:49 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-08 19:45:55 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:45:57 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-08 19:46:10 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:46:14 - INFO - 当前页面为 GC001(1天期)[0m
+[33m2025-07-08 19:46:26 - WARNING - 未检测到操作结果弹窗[0m
+[32m2025-07-08 19:46:26 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-08 19:47:34 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:47:38 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-08 19:48:37 - INFO - 操作提示: 当前时间不允许委托[0m
+[33m2025-07-08 19:48:37 - WARNING - 交易失败: 当前时间不允许委托[0m
+[32m2025-07-08 19:48:39 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-08 19:48:47 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:48:49 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-08 19:48:51 - INFO - 操作提示: 当前时间不允许委托[0m
+[33m2025-07-08 19:48:51 - WARNING - 交易失败: 当前时间不允许委托[0m
+[32m2025-07-08 19:48:53 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-08 19:49:00 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-08 19:49:02 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-08 19:49:05 - INFO - 操作提示: 当前时间不允许委托[0m
+[33m2025-07-08 19:49:05 - WARNING - 交易失败: 当前时间不允许委托[0m
+[32m2025-07-08 19:49:07 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 22:26:29 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:26:30 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 22:26:33 - INFO - 操作提示: 委托已提交，合同号为：317[0m
+[32m2025-07-11 22:26:34 - INFO - 交易成功[0m
+[32m2025-07-11 22:26:34 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 22:31:59 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:32:03 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 22:32:05 - INFO - 操作提示: 委托已提交，合同号为：323[0m
+[32m2025-07-11 22:32:05 - INFO - 交易成功[0m
+[32m2025-07-11 22:32:05 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 22:36:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:36:32 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:36:34 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 22:38:26 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:38:42 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:38:54 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:39:44 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:40:07 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:40:53 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 22:40:53 - ERROR - 操作失败: ensure_on_account_page() takes 0 positional arguments but 1 was given[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 179, in guozhai_operation
+    if not ensure_on_account_page(self):
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+TypeError: ensure_on_account_page() takes 0 positional arguments but 1 was given
+[32m2025-07-11 22:41:25 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:42:22 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:47:31 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:47:37 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 22:47:40 - INFO - 操作提示: 委托已提交，合同号为：337[0m
+[32m2025-07-11 22:47:40 - INFO - 交易成功[0m
+[32m2025-07-11 22:47:40 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 22:48:34 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:50:12 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:50:18 - INFO - 当前页面为 GC001(1天期)[0m
+[33m2025-07-11 22:50:30 - WARNING - 未检测到操作结果弹窗[0m
+[32m2025-07-11 22:50:30 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 22:53:56 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:54:18 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:55:06 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:55:23 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:55:36 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 22:55:38 - ERROR - 操作失败: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_left_container'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getVisibleBounds(UiObject2.java:310)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:81)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 179, in guozhai_operation
+    if not ensure_on_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in ensure_on_account_page
+    back_button.click()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 150, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 171, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 158, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_left_container'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getVisibleBounds(UiObject2.java:310)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:81)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')
+[32m2025-07-11 22:55:47 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:56:35 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:56:46 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 22:56:48 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-11 22:57:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 22:57:17 - INFO - 当前页面为 GC001(1天期)[0m
+[33m2025-07-11 22:57:29 - WARNING - 未检测到操作结果弹窗[0m
+[32m2025-07-11 22:57:29 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 22:57:42 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 22:57:45 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-11 22:58:09 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:00:03 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:00:43 - INFO - 操作提示: 委托已提交，合同号为：350[0m
+[32m2025-07-11 23:00:54 - INFO - 交易成功[0m
+[32m2025-07-11 23:00:57 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:13:47 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:13:48 - ERROR - 操作失败: 'UiObject' object has no attribute 'exiists'[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 189, in guozhai_operation
+    if not self.guozhai_entry_button.exiists():
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'UiObject' object has no attribute 'exiists'. Did you mean: 'exists'?
+[32m2025-07-11 23:14:18 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:14:28 - ERROR - 操作失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 195, in guozhai_operation
+    if not self._find_and_click_product("1天期"):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 69, in _find_and_click_product
+    self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 275, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-07-11 23:14:38 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:15:04 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:15:08 - ERROR - 操作失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 195, in guozhai_operation
+    if not self._find_and_click_product("1天期"):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 69, in _find_and_click_product
+    self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 275, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-07-11 23:16:23 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:16:27 - ERROR - 操作失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 195, in guozhai_operation
+    if not self._find_and_click_product("1天期"):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 69, in _find_and_click_product
+    self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 275, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-07-11 23:16:42 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:16:46 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:16:47 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:16:47 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:16:49 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:17:00 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:18:06 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:18:10 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:18:12 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:18:12 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:18:14 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:18:18 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:18:22 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:18:24 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:18:24 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:18:25 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:18:42 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:19:19 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:19:21 - ERROR - 当前页面不是 GC001(1天期)[0m
+[31m2025-07-11 23:19:21 - ERROR - 操作失败: Object of type UiObject is not JSON serializable[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 173, in guozhai_operation
+    back_button.click()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 337, in must_wait
+    if not self.wait(exists, timeout):
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 307, in wait
+    return self.jsonrpc.waitForExists(self.selector,
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+                                      int(timeout * 1000),
+                                      ^^^^^^^^^^^^^^^^^^^^
+                                      http_timeout=http_wait)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 113, in _http_request
+    r = requests.request(method, url, json=data, timeout=timeout, headers=headers)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 575, in request
+    prep = self.prepare_request(req)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 484, in prepare_request
+    p.prepare(
+    ~~~~~~~~~^
+        method=request.method.upper(),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+        hooks=merge_hooks(request.hooks, self.hooks),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 370, in prepare
+    self.prepare_body(data, files, json)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 510, in prepare_body
+    body = complexjson.dumps(json, allow_nan=False)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\__init__.py", line 378, in dumps
+    return _default_encoder.encode(obj)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\encoder.py", line 298, in encode
+    chunks = self.iterencode(o)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\encoder.py", line 379, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\encoder.py", line 274, in default
+    raise TypeError('Object of type %s is not JSON serializable' %
+                    o.__class__.__name__)
+TypeError: Object of type UiObject is not JSON serializable
+[32m2025-07-11 23:19:35 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:19:37 - ERROR - 操作失败: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_left_container'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getVisibleBounds(UiObject2.java:310)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:67)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 156, in guozhai_operation
+    ensure_on_account_page()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in ensure_on_account_page
+    back_button.click()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 150, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 171, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 158, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_left_container'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getVisibleBounds(UiObject2.java:310)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:67)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')
+[32m2025-07-11 23:19:43 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:19:47 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:19:48 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:19:48 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:19:50 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:19:55 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:19:59 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:20:00 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:20:00 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:20:02 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:20:09 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:20:49 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:21:43 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:21:50 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:21:51 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:21:59 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:22:11 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:22:37 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:22:41 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:22:41 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:22:43 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:22:51 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:22:54 - ERROR - 当前页面不是 GC001(1天期)[0m
+[31m2025-07-11 23:22:54 - ERROR - 操作失败: Object of type UiObject is not JSON serializable[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 173, in guozhai_operation
+    back_button.click()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 337, in must_wait
+    if not self.wait(exists, timeout):
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 307, in wait
+    return self.jsonrpc.waitForExists(self.selector,
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+                                      int(timeout * 1000),
+                                      ^^^^^^^^^^^^^^^^^^^^
+                                      http_timeout=http_wait)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\base.py", line 158, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 113, in _http_request
+    r = requests.request(method, url, json=data, timeout=timeout, headers=headers)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 575, in request
+    prep = self.prepare_request(req)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 484, in prepare_request
+    p.prepare(
+    ~~~~~~~~~^
+        method=request.method.upper(),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+        hooks=merge_hooks(request.hooks, self.hooks),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 370, in prepare
+    self.prepare_body(data, files, json)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 510, in prepare_body
+    body = complexjson.dumps(json, allow_nan=False)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\__init__.py", line 378, in dumps
+    return _default_encoder.encode(obj)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\encoder.py", line 298, in encode
+    chunks = self.iterencode(o)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\encoder.py", line 379, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\simplejson\encoder.py", line 274, in default
+    raise TypeError('Object of type %s is not JSON serializable' %
+                    o.__class__.__name__)
+TypeError: Object of type UiObject is not JSON serializable
+[32m2025-07-11 23:23:40 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:23:47 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:23:52 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:23:53 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:23:53 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:23:55 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:24:18 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:24:22 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:24:24 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:24:24 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:24:25 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:24:40 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:25:20 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:26:10 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:26:50 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:26:58 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:26:58 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:27:00 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:27:07 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:27:23 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:28:11 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:28:13 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-11 23:28:32 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:28:43 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:28:50 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:28:50 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:28:52 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:29:03 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-11 23:29:05 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-11 23:29:52 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:30:16 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:30:29 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:30:43 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:30:45 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:30:48 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:30:58 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:31:32 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:32:58 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:33:04 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:33:06 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:33:06 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:33:07 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:33:12 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-11 23:33:18 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-11 23:33:19 - INFO - 操作提示: 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-07-11 23:33:19 - WARNING - 交易失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-07-11 23:33:21 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-07-11 23:33:29 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:03:25 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:03:30 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:04:35 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:04:41 - INFO - 当前页面为 GC001(1天期)[0m
+[31m2025-07-12 16:05:02 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 190, in guozhai_operation
+    result = self._handle_transaction_confirm()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 114, in _handle_transaction_confirm
+    prompt_text = self.prompt_content.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[32m2025-07-12 16:06:06 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:07:14 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:07:21 - INFO - 当前页面为 GC001(1天期)[0m
+[31m2025-07-12 16:07:42 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 190, in guozhai_operation
+    result = self._handle_transaction_confirm()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 114, in _handle_transaction_confirm
+    prompt_text = self.prompt_content.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[32m2025-07-12 16:08:47 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:09:53 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:09:58 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:11:44 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:11:48 - INFO - 已进入: 国债逆回购入口[0m
+[31m2025-07-12 16:11:50 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:20:01 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:20:03 - INFO - 已进入: 国债逆回购入口[0m
+[31m2025-07-12 16:20:05 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:21:11 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:21:14 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:21:18 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 16:21:19 - INFO - 已点击: 借出按钮[0m
+[31m2025-07-12 16:21:39 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 186, in guozhai_operation
+    # 6. 处理交易确认
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 106, in _handle_transaction_confirm
+    """处理交易确认流程"""
+               ^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[32m2025-07-12 16:22:43 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:23:05 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    time.sleep(1)
+           ~~~^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:24:09 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:24:31 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    # 1. 确保在账户页
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:25:36 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:25:58 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    # 1. 确保在账户页
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:27:02 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:27:25 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    try:
+    
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:28:28 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:28:51 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    time.sleep(1)
+       ~~~~~~~^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:29:54 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:30:17 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    if '委托已提交' in prompt_text:
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:31:20 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:31:43 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    if '委托已提交' in prompt_text:
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:32:46 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:33:09 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    logger.warning(error_info)
+           ~~~~~~~^^^^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:34:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-07-12 16:34:35 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 152, in guozhai_operation
+    error_info = "弹窗不存在"
+           ^^^^^^^^^^^^^^^^^^
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 64, in goto_account_page
+    current_page = self.where_page()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_common.py", line 58, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_left_container']", 'method': 'wait'}
+[32m2025-07-12 16:35:38 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:36:50 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:37:56 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:37:59 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:38:02 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 16:38:03 - INFO - 已点击: 借出按钮[0m
+[32m2025-07-12 16:40:54 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:40:57 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:40:59 - INFO - 点击 {target_name} 成功[0m
+[32m2025-07-12 16:41:00 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 16:41:02 - INFO - 已点击: 借出按钮[0m
+[31m2025-07-12 16:41:22 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_title']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 214, in guozhai_operation
+    result = self._handle_transaction_confirm()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 112, in _handle_transaction_confirm
+    dialog_title_text = self.diolog_title.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_title']", 'method': 'wait'}
+[32m2025-07-12 16:42:25 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:43:39 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:43:41 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:43:43 - INFO - 点击 {target_name} 成功[0m
+[31m2025-07-12 16:43:44 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:44:39 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:44:42 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:44:42 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 16:44:44 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:44:45 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:44:47 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:44:48 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 16:44:49 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:44:51 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:44:53 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:44:53 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 16:44:55 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:48:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:48:15 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:48:18 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:48:18 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:48:20 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:48:20 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 16:48:21 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 16:48:23 - INFO - 已点击: 借出按钮[0m
+[31m2025-07-12 16:48:43 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 216, in guozhai_operation
+    result = self._handle_transaction_confirm()
+  File "D:\1document\Investment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 115, in _handle_transaction_confirm
+    prompt_text = self.prompt_content.get_text()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 353, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[32m2025-07-12 16:48:43 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:49:01 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:49:03 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:49:06 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:49:06 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:49:09 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:49:09 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 16:49:10 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 16:49:11 - INFO - 已点击: 借出按钮[0m
+[32m2025-07-12 16:49:30 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:49:33 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:49:35 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:49:35 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:49:36 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 16:50:00 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:50:32 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:51:35 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:52:01 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:52:30 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 16:52:39 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 16:52:53 - INFO - 已点击: 借出按钮[0m
+[32m2025-07-12 16:56:26 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:56:29 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:56:32 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:56:33 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 16:56:33 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 16:56:34 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 16:57:14 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 16:57:39 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 16:58:06 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:02:11 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:02:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:02:16 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:03:56 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:03:59 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:04:01 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:04:16 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:04:35 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 17:04:58 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 17:05:32 - INFO - 已点击: 借出按钮[0m
+[32m2025-07-12 17:11:35 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:11:38 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:11:41 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:11:41 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:11:41 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 17:11:43 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 17:13:04 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:13:07 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:13:09 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:13:09 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:13:11 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:13:13 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 17:13:14 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 17:13:25 - INFO - 已点击: 借出按钮[0m
+[32m2025-07-12 17:21:03 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:21:05 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:21:08 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:21:08 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:21:10 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:21:12 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 17:21:13 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 17:21:32 - INFO - 已点击: 借出按钮[0m
+[32m2025-07-12 17:23:29 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:23:32 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:23:34 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:23:34 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:23:36 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 17:23:37 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 17:24:25 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:24:28 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:24:28 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:24:29 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 17:24:31 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 17:24:38 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:24:41 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:24:41 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:24:43 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 17:24:44 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 17:24:58 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:25:01 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:25:03 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:25:04 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:25:06 - INFO - 点击 1天期 成功[0m
+[31m2025-07-12 17:25:07 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-07-12 17:26:47 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:26:50 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:26:52 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:26:52 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:26:55 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:26:56 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 17:26:57 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 17:27:05 - INFO - 已点击: 借出按钮[0m
+[33m2025-07-12 17:27:52 - WARNING - 委托失败: 当前时间不允许委托, 返回账户页[0m
+[32m2025-07-12 17:28:45 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-07-12 17:28:47 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-07-12 17:28:47 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:28:50 - INFO - 滑动到 1天期[0m
+[32m2025-07-12 17:28:52 - INFO - 点击 1天期 成功[0m
+[32m2025-07-12 17:28:53 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-07-12 17:29:02 - INFO - 已点击: 借出按钮[0m
+[33m2025-07-12 17:29:28 - WARNING - 委托失败: 当前时间不允许委托, 返回账户页[0m
