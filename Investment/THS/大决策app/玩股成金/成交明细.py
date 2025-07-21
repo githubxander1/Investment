@@ -1,16 +1,19 @@
-from pprint import pprint
-import requests
+import time
+from datetime import datetime, timedelta
 import json
 import pandas as pd
-from datetime import datetime
+import requests
+from pprint import pprint
 
+# 时间转换工具
 def convert_timestamp(timestamp):
     """将毫秒时间戳转为可读日期"""
     if timestamp and timestamp > 0:
         return datetime.fromtimestamp(timestamp / 1000).strftime('%Y-%m-%d %H:%M:%S')
     return None
 
-def 成交明细(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862", index=1, page_size=20, req_type=-1):
+# 获取成交明细
+def get_trade_details(robot_id):
     url = "http://ai.api.traderwin.com/api/ai/robot/history.json"
 
     headers = {
@@ -23,11 +26,11 @@ def 成交明细(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862", index=1, page_
     }
 
     payload = {
-        "index": index,
-        "pageSize": page_size,
+        "index": 1,
+        "pageSize": 5,
         "cmd": "9013",
         "robotId": robot_id,
-        "type": req_type
+        "type": -1  # 查询全部交易
     }
 
     try:
@@ -40,43 +43,82 @@ def 成交明细(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862", index=1, page_
         print(f"请求失败: {e}")
         return None
 
-# 请求数据
-result = 成交明细()
+# 检查当天交易并通知
+def check_trades_today():
+    # 机器人列表
+    robots = {
+        "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
+        "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
+        "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
+    }
+    #
 
-if result and result.get("message", {}).get("state") == 0:
-    data_list = result.get("data", {}).get("data", [])
+    today = datetime.now().date().strftime("%Y-%m-%d")
 
-    trade_records = []
+    all_today_trades = []
+    for robot_name, robot_id in robots.items():
+        result = get_trade_details(robot_id)
+        if result and result.get("message", {}).get("state") == 0:
+            data_list = result.get("data", {}).get("data", [])
 
-    for trade in data_list:
-        trade_info = {
-            "交易ID": trade.get("id"),
-            "机器人ID": trade.get("robotId"),
-            "股票ID": trade.get("stockId"),
-            "股票代码": trade.get("symbol"),
-            "股票名称": trade.get("symbolName"),
-            "交易方向": "买入" if trade.get("buy") == 1 else "卖出" if trade.get("buy") == 0 else "未知",
-            "交易数量": trade.get("shares"),
-            "交易价格": trade.get("price"),
-            "交易时间": convert_timestamp(trade.get("created")),
-            "完成时间": convert_timestamp(trade.get("updated")),
-            "状态": "已完成" if trade.get("status") == 1 else "进行中" if trade.get("status") == 0 else "已取消",
-            "委托类型": trade.get("orderType"),
-            "成交金额": trade.get("amount"),
-            "手续费": trade.get("fee"),
-            "市场类型": trade.get("marketType"),
-            "备注": trade.get("remark")
-        }
-        trade_records.append(trade_info)
+            for trade in data_list:
+                trade_date = convert_timestamp(trade.get("tradeDate"))
+                if trade_date and trade_date.startswith(today):
+                    trade_info = {
+                        "交易ID": trade.get("logId"),
+                        "机器人ID": trade.get("robotId"),
+                        # 从robots字典里获取机器人名字
+                        "机器人": robot_name,
+                        "操作方向": "买入" if trade.get("type") == 1 else "卖出" if trade.get("type") == 0 else "已取消",
+                        "股票代码": trade.get("symbol"),
+                        "股票名称": trade.get("symbolNmae"),
+                        # "交易方向": "买入" if trade.get("buy") == 1 else "卖出" if trade.get("buy") == 0 else "未知",
+                        "交易数量": trade.get("shares"),
+                        "成交价格": trade.get("price"),
+                        "买入价格": trade.get("buyPrice"),
+                        "交易金额": trade.get("balance"),
+                        # "交易时间": convert_timestamp(trade.get("created")),
+                        "买入时间": convert_timestamp(trade.get("buyDate")),
+                        "创建时间": convert_timestamp(trade.get("created")),
+                        "完成时间": convert_timestamp(trade.get("tradeTime"))
+                        # "委托类型": trade.get("orderType"),
+                        # "成交金额": trade.get("amount"),
+                        # "手续费": trade.get("fee"),
+                        # "市场类型": trade.get("marketType"),
+                        # "备注": trade.get("remark")
+                    }
+                    all_today_trades.append(trade_info)
+                    # 通知格式输出
+                    print(f"[{datetime.now().strftime('%Y-%m-%d')}] "
+                          f"机器人：{trade_info['机器人']}，"
+                          f"股票：{trade_info['股票名称']}，"
+                          f"方向：{trade_info['操作方向']}，"
+                          f"数量：{trade_info['交易数量']}，"
+                          f"成交价格：{trade_info['成交价格']}，"
+                          f"买入价格：{trade_info['买入价格']}，"
+                          f"买入时间：{trade_info['买入时间']}")
 
-    # 转换为 DataFrame
-    df_trades = pd.DataFrame(trade_records)
+        else:
+            print(f"⚠️ 获取 {robot_name} 成交记录失败")
 
-    # 保存到 Excel 文件
-    output_path = r"D:\1document\Investment\Investment\THS\大决策app\玩股成金\成交明细数据.xlsx"
-    df_trades.to_excel(output_path, sheet_name='成交明细', index=False)
+    all_today_trades_df  = pd.DataFrame(all_today_trades)
+    all_today_trades_df.to_excel(f"机器人今日成交明细.xlsx", index=False)
+    return all_today_trades_df
 
-    print(f"✅ 数据已成功保存到：{output_path}")
+# 定时执行函数
+# def schedule_daily_check(target_time="09:31"):
+#     while True:
+#         now = datetime.now()
+#         today_time = now.strftime("%H:%M")
+#         if today_time == target_time:
+#             print(f"⏰ 正在检查 {now.strftime('%Y-%m-%d')} 的交易记录...")
+#             check_trades_today()
+#             time.sleep(60)  # 避免重复执行
+#         else:
+#             time.sleep(30)  # 每30秒检查一次时间
 
-else:
-    print("未收到有效响应或状态码错误")
+# 启动定时任务
+if __name__ == "__main__":
+    print("⏰ 启动定时任务，等待每天 09:31 检查交易...")
+    # schedule_daily_check()
+    print(check_trades_today())

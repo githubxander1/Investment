@@ -65,7 +65,7 @@ if result and result.get("message", {}).get("state") == 0:
             "收益更新时间": convert_timestamp(robot.get("gainDate")),
             "标记": robot.get("flag"),
             "今日收益率": robot.get("todayRate"),
-            "今日总资产": robot.get("todayTotalRate"),
+            "总资产": robot.get("todayTotalRate"),
             "卖出收益": robot.get("sellGains"),
             "卖出时间": convert_timestamp(robot.get("sellDate")),
             "卖出市值": robot.get("sellMarketValue"),
@@ -78,7 +78,7 @@ if result and result.get("message", {}).get("state") == 0:
             "参考年份": robot.get("refYear"),
             "版本号": robot.get("version"),
             "风险等级": robot.get("risk"),
-            "资产总值": robot.get("marketValue")
+            "总市值": robot.get("marketValue")
         }
         robot_basic_info.append(robot_info)
 
@@ -120,7 +120,7 @@ if result and result.get("message", {}).get("state") == 0:
     df_stocks = pd.DataFrame(robot_stock_logs)
 
     # 保存到 Excel 文件的不同 sheet
-    output_path = r"D:\1document\Investment\Investment\THS\大决策app\玩股成金\机器人数据.xlsx"
+    output_path = r"全部机器人列表数据2.xlsx"
     with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
         df_robots.to_excel(writer, sheet_name='机器人基本信息', index=False)
         df_stocks.to_excel(writer, sheet_name='持仓股票信息', index=False)
