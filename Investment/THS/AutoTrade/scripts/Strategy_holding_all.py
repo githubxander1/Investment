@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime, timedelta
 from pprint import pprint
 
@@ -163,7 +164,8 @@ def Ai_strategy_main():
         # print(today)
         # all_positions_info.to_excel(Strategy_holding_file,sheet_name=today,index=False)
         save_to_excel_by_date(all_positions_info, Ai_Strategy_holding_file)  # 按日期保存
-        datas = compare_today_yesterday(Strategy_holding_file)  # 对比数据
+        time.sleep(2)
+        datas = compare_today_yesterday(Ai_Strategy_holding_file)  # 对比数据
         # print(type(datas))
         return True, datas
     else:
@@ -179,66 +181,91 @@ def save_to_excel_by_date(df, file_path):
             logger.info(f"✅ 创建并保存数据到Excel文件: {file_path}, 表名称: {today}")
             return
 
-        # 文件存在，读取现有 sheet
+        # # 文件存在，读取现有 sheet
         with pd.ExcelFile(file_path, engine='openpyxl') as xls:
             existing_sheets = xls.sheet_names
 
-        # 如果已有 today sheet，则读取并合并去重
+        # # 如果已有 today sheet
         if today in existing_sheets:
-            existing_df = pd.read_excel(file_path, sheet_name=today)
-            combined_df = pd.concat([existing_df, df], ignore_index=True)
-            combined_df = combined_df.drop_duplicates(subset=['标的名称', '操作', '新比例%', '时间'])
-            with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-                # print(f"要保存的df : {combined_df}")
-                combined_df.to_excel(writer, sheet_name=today, index=False)
-            logger.info(f"✅ 更新今日数据到Excel文件: {file_path}, 表名称: {today}")
-        else:
-            # 新增 today sheet 并置顶
-            temp_sheet_name = today
-
-            # 先写入一个临时sheet
-            with pd.ExcelWriter(file_path, engine='openpyxl', mode='a') as writer:
-                df.to_excel(writer, sheet_name=temp_sheet_name, index=False)
-
-            # 使用 openpyxl 移动 sheet 到最前面
+            today_existing_df = pd.read_excel(file_path, sheet_name=today)
             wb = openpyxl.load_workbook(file_path)
             sheets = wb.sheetnames
-            if temp_sheet_name in sheets:
-                wb.move_sheet(temp_sheet_name, offset=-len(sheets) + 1)
+            if today in sheets:
+                wb.move_sheet(today, offset=-len(sheets) + 1)
                 wb.save(file_path)
                 logger.info(f"✅ 新增今日数据并置顶到Excel文件: {file_path}, 表名称: {today}")
             else:
-                logger.warning(f"⚠️ sheet {temp_sheet_name} 写入失败")
+                logger.warning(f"⚠️ sheet {today} 写入失败")
+            # return
+            # print(f"today_existing_df : {today_existing_df}")
+        #     # combined_df = pd.concat([today_existing_df, df], ignore_index=True)
+        #     # combined_df = combined_df.drop_duplicates(subset=['标的名称', '操作', '新比例%', '时间'])
+            #
+            # with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+            #         # print(f"要保存的df : {combined_df}")
+            #     df.to_excel(writer,sheet_name=today, index=False)
+            #     logger.info(f"✅ 更新今日数据到Excel文件: {file_path}, 表名称: {today}")
+        # else:
+        #     # 新增 today sheet 并置顶
+        #     with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+        #         df.to_excel(writer, sheet_name=today, index=False)
+
+        # 使用 openpyxl 移动 sheet 到最前面
     except Exception as e:
         logger.error(f"❌ 保存数据到Excel失败: {str(e)}")
+
+from datetime import datetime, timedelta
+
+def get_previous_workday():
+    today = datetime.now().date()
+    one_day = timedelta(days=1)
+
+    # 获取昨天的日期
+    yesterday = today - one_day
+
+    # 如果昨天是周末，继续往前找工作日
+    while yesterday.weekday() >= 5:  # 5 是周六，6 是周日
+        yesterday -= one_day
+
+    return yesterday.strftime('%Y-%m-%d')
+
+# 示例使用
+previous_workday = get_previous_workday()
+print(f"Previous workday: {previous_workday}")
+
 def compare_today_yesterday(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
-    yesterday = normalize_time((datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'))
+    # yesterday_sheet = 1
+    previous_workday = get_previous_workday()
+    print(f"previous_workday:{previous_workday}")
+    # yesterday = normalize_time((datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'))
 
     try:
-        with pd.ExcelFile(file_path, engine='openpyxl') as xls:
+        with pd.ExcelFile(file_path) as xls:
             sheets = xls.sheet_names
+            print(f"sheets:{sheets}")
 
-        if today not in sheets or yesterday not in sheets:
+        if today not in sheets or previous_workday not in sheets:
             logger.warning("⚠️ 今天或昨天 sheet 不存在")
             return {}
 
         # 读取两个sheet并确保字段一致
         today_df = pd.read_excel(file_path, sheet_name=today)
-        # print(f"today_df:{today_df}")
-        yesterday_df = pd.read_excel(file_path, sheet_name=yesterday)
-        # print(f"yesterday_df:{yesterday_df}")
+        print(f"today_df:\n{today_df}")
+
+        previous_workday_df = pd.read_excel(file_path, sheet_name=previous_workday)
+        print(f"previous_workday_df:\n{previous_workday_df}")
         # 显式去重
         today_df = today_df.drop_duplicates(subset=['标的名称'])
-        yesterday_df = yesterday_df.drop_duplicates(subset=['标的名称'])
+        previous_workday_df = previous_workday_df.drop_duplicates(subset=['标的名称'])
 
         # 确保字段统一处理
         today_df['标的名称'] = today_df['标的名称'].astype(str).str.strip()
-        yesterday_df['标的名称'] = yesterday_df['标的名称'].astype(str).str.strip()
+        previous_workday_df['标的名称'] = previous_workday_df['标的名称'].astype(str).str.strip()
 
         # 正确找出差异
-        to_buy = today_df[~today_df['标的名称'].isin(yesterday_df['标的名称'])]
-        to_sell = yesterday_df[~yesterday_df['标的名称'].isin(today_df['标的名称'])]
+        to_buy = today_df[~today_df['标的名称'].isin(previous_workday_df['标的名称'])]
+        to_sell = previous_workday_df[~previous_workday_df['标的名称'].isin(today_df['标的名称'])]
 
         logger.info(f"✅ 今天有而昨天没有的标的（买入）:\n{to_buy['标的名称']}")
         logger.info(f"✅ 昨天有而今天没有的标的（卖出）:\n{to_sell['标的名称']}")
@@ -271,22 +298,49 @@ def sava_all_strategy_holding_data():
             logger.info(f"没有获取到策略数据，策略ID: {id}")
     all_holdings_df = pd.concat(all_holdings, ignore_index=True)
     all_holdings_df.to_excel(Strategy_holding_file)
-    print(all_holdings_df)
+    print(f"所有:\n{all_holdings_df}")
 # def job():
 #     """定时任务入口"""
 #     if datetime.now().weekday() < 5:  # 0-4 对应周一到周五
 #         main()
 
 if __name__ == '__main__':
+    # import os
+    #
+    # file_path = Ai_Strategy_holding_file
+    #
+    # if os.path.exists(file_path):
+    #     print(f"文件 {file_path} 存在")
+    # else:
+    #     print(f"文件 {file_path} 不存在")
+    #
+    # import pandas as pd
+    #
+    # try:
+    #     with pd.ExcelFile(file_path) as xls:
+    #         sheet_names = xls.sheet_names
+    #         print(f"文件中的表名: {sheet_names}")
+    #         for sheet_name in sheet_names:
+    #             try:
+    #                 df = pd.read_excel(file_path, sheet_name=sheet_name)
+    #                 print(f"\n表名: {sheet_name}\n内容:\n{df}")
+    #             except Exception as e:
+    #                 print(f"读取表 {sheet_name} 失败: {e}")
+    # except Exception as e:
+    #     print(f"读取 Excel 文件失败: {e}")
+
+
+
+
     # print(main())
     holding_success, ai_datas = Ai_strategy_main()
-    sava_all_strategy_holding_data()
-    # print(ai_datas)
-
-    to_sell = ai_datas.get("to_sell")
-    to_buy = ai_datas.get("to_buy")
-    print("to_sell:", to_sell)
-    print("to_buy:", to_buy)
+    # sava_all_strategy_holding_data()
+    print(ai_datas)
+    #
+    # to_sell = ai_datas.get("to_sell")
+    # to_buy = ai_datas.get("to_buy")
+    # print("to_sell:", to_sell)
+    # print("to_buy:", to_buy)
     # 示例调用
     # positions_df = fetch_strategy_profit('156275')  # 获取策略数据
     # pprint(positions_df)

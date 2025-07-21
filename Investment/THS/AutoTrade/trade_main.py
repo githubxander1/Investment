@@ -131,24 +131,24 @@ async def main():
         combination_data = None
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
-        if dt_time(9, 30) <= now <= dt_time(9, 35):
-            holding_success, ai_datas = Ai_strategy_main()
-
-            to_sell = ai_datas.get("to_sell")
-            to_buy = ai_datas.get("to_buy")
-
-            if not to_sell.empty or not to_buy.empty:
-                # 将 to_sell 和 to_buy 合并为一个 DataFrame
-                to_sell['操作'] = '卖出'
-                to_buy['操作'] = '买入'
-
-                combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-                                        ignore_index=True)
-                combined_df['新比例%'] = None  # 可根据需要设置默认值
-
-                # 写入临时文件
-                combined_df.to_excel(ai_strategy_diff_file_path, index=False)
-                logger.warning(f"发现持仓差异，准备执行模拟账户交易操作：买\n{to_buy}，卖\n{to_sell}")
+        if dt_time(9, 30) <= now <= dt_time(end_time_hour, end_time_minute):
+            # holding_success, ai_datas = Ai_strategy_main()
+            #
+            # to_sell = ai_datas.get("to_sell")
+            # to_buy = ai_datas.get("to_buy")
+            #
+            # if not to_sell.empty or not to_buy.empty:
+            #     # 将 to_sell 和 to_buy 合并为一个 DataFrame
+            #     to_sell['操作'] = '卖出'
+            #     to_buy['操作'] = '买入'
+            #
+            #     combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
+            #                             ignore_index=True)
+            #     combined_df['新比例%'] = None  # 可根据需要设置默认值
+            #
+            #     # 写入临时文件
+            #     combined_df.to_excel(ai_strategy_diff_file_path, index=False)
+            #     logger.warning(f"发现持仓差异，准备执行模拟账户交易操作：买\n{to_buy}，卖\n{to_sell}")
 
             #     # 初始化设备
             #     d = await initialize_device()
@@ -200,7 +200,7 @@ async def main():
         else:
             logger.debug("尚未进入策略任务时间窗口，跳过执行")
         # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
-        if dt_time(9, 25) <= now <= dt_time(14, 55):
+        if dt_time(9, 25) <= now <= dt_time(end_time_hour, end_time_minute):
             logger.info("---------------------组合任务开始执行---------------------")
             combination_result = await Combination_main()
             if combination_result:
@@ -210,8 +210,10 @@ async def main():
             logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
 
             # 如果有任何一个数据获取成功，则执行交易处理
-            if strategy_success or combination_success or holding_success:
-                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
+            # if strategy_success or combination_success or holding_success:
+                # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
+            if strategy_success or combination_success:
+                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file]
                 process_excel_files(trader, file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
 
         else:
@@ -256,7 +258,7 @@ if __name__ == '__main__':
     #
     # # 最大运行时间（小时）
     # MAX_RUN_TIME = 8
-    end_time_hour = 15
+    end_time_hour = 18
     end_time_minute = 00
 
     asyncio.run(main())
