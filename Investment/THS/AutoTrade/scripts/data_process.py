@@ -7,7 +7,7 @@ import pandas as pd
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
-    Combination_holding_file
+    Combination_holding_file, Strategy_portfolio_today_file, Combination_portfolio_today_file
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
@@ -18,14 +18,14 @@ logger = setup_logger(trade_operations_log_file)
 common_page = CommonPage()
 account_info = AccountInfo()
 trader = TradeLogic()
-def read_portfolio_record_history(file_path):
+def read_today_portfolio_record(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # print(f'读取调仓记录文件日期{today}')
     if os.path.exists(file_path):
         try:
-            with pd.ExcelFile(file_path, engine='openpyxl') as operation_history_xlsx:
-                if today in operation_history_xlsx.sheet_names:
-                    portfolio_record_history_df = pd.read_excel(operation_history_xlsx, sheet_name=today)
+            with pd.ExcelFile(file_path, engine='openpyxl') as portfolio_record_xlsx:
+                if today in portfolio_record_xlsx.sheet_names:
+                    portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
 
                     # 显式转换关键列的类型
                     portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
@@ -42,7 +42,7 @@ def read_portfolio_record_history(file_path):
                     portfolio_record_history_df = pd.DataFrame(columns=[
                         "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
                     ])
-                    logger.warning(f"历史文件表不存在: {today}")
+                    logger.warning(f"今日表不存在: {today}")
         except Exception as e:
             logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
             portfolio_record_history_df = pd.DataFrame(columns=[
@@ -52,6 +52,7 @@ def read_portfolio_record_history(file_path):
         portfolio_record_history_df = pd.DataFrame(columns=[
             "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
         ])
+        logger.warning(f"文件不存在: {file_path}")
 
     # print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
     return portfolio_record_history_df
@@ -76,7 +77,7 @@ def safe_concat(history_df, new_df):
 
     return pd.concat([history_df, new_df], ignore_index=True, sort=False)
 
-def save_to_excel(df, filename, sheet_name, index=False):
+def save_to_operation_history_excel(df, filename, sheet_name, index=False):
     """追加保存DataFrame到Excel文件，默认今天的在第一张表"""
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))  # 获取今天的日期
 
@@ -158,7 +159,7 @@ def write_operation_history(df):
     try:
         # 如果文件不存在，直接写入新文件
         if not os.path.exists(filename):
-            save_to_excel(df, filename, sheet_name=today, index=False)
+            save_to_operation_history_excel(df, filename, sheet_name=today, index=False)
             logger.info(f"成功写入操作记录到 {today} 表 {filename}")
             return
 
@@ -292,7 +293,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
 
         try:
             # 读取要处理的文件
-            df = read_portfolio_record_history(file_path)
+            df = read_today_portfolio_record(file_path)
             if df.empty:
                 logger.warning(f"文件 {file_path} 为空，跳过处理")
                 continue
@@ -354,17 +355,26 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
             logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
 
 if __name__ == '__main__':
-    diff_result = get_difference_holding()
-
-    if 'error' in diff_result:
-        print("持仓差异分析失败，请查看日志。")
-    else:
-        if not diff_result['to_sell'].empty:
-            print("💡 发现需卖出的股票：")
-            print(diff_result['to_sell'][['标的名称', '持仓/可用']])
-        if not diff_result['to_buy'].empty:
-            print("💡 发现需买入的股票：")
-            print(diff_result['to_buy'][['标的名称']])
+    # diff_result = get_difference_holding()
+    #
+    # if 'error' in diff_result:
+    #     print("持仓差异分析失败，请查看日志。")
+    # else:
+    #     if not diff_result['to_sell'].empty:
+    #         print("💡 发现需卖出的股票：")
+    #         print(diff_result['to_sell'][['标的名称', '持仓/可用']])
+    #     if not diff_result['to_buy'].empty:
+    #         print("💡 发现需买入的股票：")
+    #         print(diff_result['to_buy'][['标的名称']])
+    # file_path = Strategy_portfolio_today_file
+    # file_path = [Strategy_portfolio_today_file,Combination_portfolio_today_file]
+    file_path = [OPERATION_HISTORY_FILE]
+    for file in file_path:
+        if os.path.exists(file):
+            print(f"文件 {file} 存在")
+        else:
+            print(f"文件 {file} 不存在")
+        read_today_portfolio_record(file)
 
     # file_paths = [
     #     Strategy_portfolio_today_file,Combination_portfolio_today_file

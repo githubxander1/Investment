@@ -64,13 +64,13 @@ class AccountInfo:
                     continue
 
                 # 重点：强化“标的名称”的识别逻辑
-                stock_name = name_nodes[0].get('text', '').strip()
+                stock_name = name_nodes[0].get('text', '').replace('', '')
                 if not stock_name or any(c.isdigit() for c in stock_name):  # 如果包含数字，大概率不是股票名
                     continue
 
-                market_value = name_nodes[1].get('text', '').strip()
-                # print(f'名称{stock_name}')
-                # print(f'市值{market_value}')
+                market_value = name_nodes[1].get('text', '').replace('', '')
+                # print(f'名称 {stock_name}')
+                # print(f'市值 {market_value}')
 
                 # HorizontalScrollView
                 h_scrolls = item.findall(".//*[@class='android.widget.HorizontalScrollView']")
@@ -98,7 +98,7 @@ class AccountInfo:
                     continue
 
                 stocks.append({
-                    "标的名称": stock_name,
+                    "标的名称": stock_name.replace(" ", ""),
                     "市值": market_value,
                     "当日盈亏/盈亏率": f"{profit_loss_text}/{profit_loss_rate_text}",
                     "持仓/可用": f"{position}/{available}",
@@ -204,7 +204,7 @@ class AccountInfo:
                 new_count = 0
 
                 for stock in parsed_stocks:
-                    name = stock["标的名称"]
+                    name = stock["标的名称"].replace(" ", "")
                     if name in seen_stocks or any(kw in name for kw in ["清仓", "新标准券", "隐藏", "持仓管理"]):
                         continue
                     seen_stocks.add(name)

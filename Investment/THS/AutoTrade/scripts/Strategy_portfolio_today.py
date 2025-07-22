@@ -9,7 +9,7 @@ from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids
-from Investment.THS.AutoTrade.scripts.data_process import save_to_excel, read_portfolio_record_history
+from Investment.THS.AutoTrade.scripts.data_process import save_to_operation_history_excel, read_today_portfolio_record
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
@@ -113,7 +113,7 @@ async def Strategy_main():
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
     try:
         # 打印数据列的数据类型
-        history_data_df = read_portfolio_record_history(history_data_file)
+        history_data_df = read_today_portfolio_record(history_data_file)
         # print(f'历史数据列的数据类型:\n{history_data_df.dtypes}')
         if not history_data_df.empty:
             history_data_df['代码'] = history_data_df['代码'].astype(str).str.zfill(6)  # 立即转为 str
@@ -123,7 +123,7 @@ async def Strategy_main():
     except Exception: #读取历史数据失败，初始化保存一个
         history_data_df = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        save_to_excel(history_data_df, history_data_file, f'{today}', index=False)
+        save_to_operation_history_excel(history_data_df, history_data_file, f'{today}', index=False)
         # history_data_df.to_csv(history_data_df_file, index=False)
         # print(f'初始化历史记录文件: {history_data_df_file}')
 
@@ -148,7 +148,7 @@ async def Strategy_main():
 
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     header = not os.path.exists(history_data_file) or os.path.getsize(history_data_file) == 0
-    save_to_excel(new_data_df,history_data_file,f'{today}')
+    save_to_operation_history_excel(new_data_df,history_data_file,f'{today}')
     # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data_df}")
     # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
     # update_file_status(history_data_df_file)

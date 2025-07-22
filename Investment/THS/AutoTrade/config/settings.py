@@ -21,8 +21,8 @@ trade_operations_log_file = os.path.join(LOGS_DIR, 'data_process.log')
 OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
 
 
-Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'Strategy_portfolio_today_file.xlsx')
-Combination_portfolio_today_file = os.path.join(DATA_DIR, 'Combination_portfolio_today_file.xlsx')
+Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
+Combination_portfolio_today_file = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
 
 Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'Ai_Strategy_position.xlsx')
 ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")

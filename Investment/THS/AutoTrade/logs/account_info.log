@@ -1843,3 +1843,446 @@ uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.S
 10      恒生电子   3,342.00     2.77/0.080%    100/100  33.394/33.420
 11      中创物流   4,512.00   -4.00/-0.089%    400/400  11.288/11.280
 12      合锻智能   6,544.00  -64.00/-0.969%    400/400  16.772/16.360[0m
+[32m2025-07-22 09:35:01 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 09:35:02 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用        可取
+0  仓位 91.9%  12,903.01  11,860.00  +631.21  1,043.01  1,043.01[0m
+[32m2025-07-22 09:35:18 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 09:35:19 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 09:35:21 - INFO - 第 2 次尝试新增 1 条有效持仓[0m
+[32m2025-07-22 09:35:21 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 09:35:24 - INFO - 已回到顶部[0m
+[32m2025-07-22 09:35:24 - INFO - ✅ 成功提取持仓数据，共 5 条:
+    标的名称        市值        当日盈亏/盈亏率      持仓/可用        成本/现价
+0   首创奥莱  5,016.00    20.40/0.408%  1200/1200  3.920/4.180
+1   湖南投资    562.00   -2.00/-0.355%    100/100  5.651/5.620
+2  粤宏远 A  1,260.00   -6.00/-0.474%    300/300  4.190/4.200
+3   居然智家    921.00   -8.01/-0.878%      300/0  3.097/3.070
+4   物美消费  5,022.00  -43.20/-0.853%  1200/1200  3.919/4.185[0m
+[33m2025-07-22 09:35:24 - WARNING - 粤宏远A 不在持仓中[0m
+[32m2025-07-22 10:08:37 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:08:38 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用        可取
+0  仓位 87.0%  12,804.47  11,136.60  +532.67  1,662.87  1,043.01[0m
+[32m2025-07-22 10:08:54 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:08:54 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:08:56 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:08:57 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:08:59 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:08:59 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0   海南华铁  1,175.00   -6.01/-0.508%     100/0  11.810/11.750
+1   湖南投资    557.00   -7.00/-1.241%   100/100    5.651/5.570
+2  粤宏远 A  1,254.00  -12.00/-0.948%   300/300    4.190/4.180
+3   居然智家  2,456.00  -13.03/-0.522%     800/0    3.086/3.070
+4   博威合金  1,841.00  -16.02/-0.862%     100/0  18.570/18.410
+5   首创奥莱  4,971.60  -24.00/-0.480%  1200/100    3.920/4.143
+6   物美消费    418.00  -50.30/-0.993%   100/100    1.103/4.180[0m
+[33m2025-07-22 10:08:59 - WARNING - 粤宏远A 不在持仓中[0m
+[32m2025-07-22 10:09:07 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:09:07 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:09:10 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-07-22 10:09:13 - INFO - 第 3 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:09:16 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-07-22 10:09:16 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:09:20 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:09:20 - INFO - ✅ 成功提取持仓数据，共 13 条:
+        标的名称         市值        当日盈亏/盈亏率    持仓/可用            成本/现价
+0       三一重工   6,180.00   324.00/5.533%  300/300    19.514/20.600
+1    黄金ETF华夏   6,766.20    28.80/0.427%  900/900      7.420/7.518
+2   国债政金债ETF  10,791.60     0.70/0.006%  100/100  107.607/107.916
+3     可转债ETF  11,491.20   -4.50/-0.039%  900/900    12.036/12.768
+4       中国电信   3,028.00   -8.00/-0.264%  400/400      6.634/7.570
+5       航锦科技   2,247.00  -18.00/-0.795%  100/100    22.802/22.470
+6       工商银行   1,516.00  -24.00/-1.558%  200/200      5.557/7.580
+7       中创物流   4,536.00  -24.00/-0.526%  400/400    11.288/11.340
+8       东方创业   3,016.00  -28.00/-0.920%  400/400      7.465/7.540
+9       恒润股份   4,959.00  -45.00/-0.899%  300/300    15.761/16.530
+10      贵阳银行   3,936.00  -60.00/-1.502%  600/600      6.545/6.560
+11      博敏电子   4,950.00  -75.00/-1.493%  500/500      9.877/9.900
+12      万丰奥威   5,094.00  -78.00/-1.508%  300/300    16.962/16.980[0m
+[32m2025-07-22 10:15:01 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:15:03 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,809.55  12,682.70  +538.75  122.85  122.85[0m
+[32m2025-07-22 10:15:32 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:15:32 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:15:35 - INFO - 第 2 次尝试新增 2 条有效持仓[0m
+[32m2025-07-22 10:15:37 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[31m2025-07-22 10:15:37 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 224, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[33m2025-07-22 10:15:38 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-07-22 10:15:38 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[33m2025-07-22 10:15:41 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-07-22 10:15:41 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[31m2025-07-22 10:15:42 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 224, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-07-22 10:15:43 - INFO - ✅ 成功提取持仓数据，共 6 条:
+       标的名称         市值       当日盈亏/盈亏率    持仓/可用            成本/现价
+0      三一重工   6,126.00  270.00/4.611%  300/300    19.514/20.420
+1   黄金ETF华夏   6,769.80   32.40/0.481%  900/900      7.420/7.522
+2  国债政金债ETF  10,791.60    0.70/0.006%  100/100  107.607/107.916
+3      中国电信   3,028.00  -8.00/-0.264%  400/400      6.634/7.570
+4    可转债ETF  11,487.60  -8.10/-0.070%  900/900    12.036/12.764
+5      航锦科技     -19.00        -19.00/     100/          22.802/[0m
+[33m2025-07-22 10:15:43 - WARNING - 粤宏远A 不在持仓中[0m
+[32m2025-07-22 10:20:28 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:20:31 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.1%  12,776.15  12,656.30  +512.35  122.85  122.85[0m
+[32m2025-07-22 10:20:42 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:20:42 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:20:45 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:20:45 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:20:47 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:20:47 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0   湖南投资    559.00   -5.00/-0.887%   100/100    5.651/5.590
+1  粤宏远 A  1,254.00  -12.00/-0.948%   300/300    4.190/4.180
+2   海南华铁  1,169.00  -12.01/-1.014%     100/0  11.810/11.690
+3   博威合金  1,839.00  -18.02/-0.969%     100/0  18.570/18.390
+4   居然智家  2,448.00  -21.03/-0.836%     800/0    3.086/3.060
+5   首创奥莱  4,969.20  -26.40/-0.528%  1200/100    3.920/4.141
+6   物美消费    418.10  -50.20/-0.991%   100/100    1.103/4.181[0m
+[33m2025-07-22 10:20:47 - WARNING - 粤宏远A 不在持仓中[0m
+[32m2025-07-22 10:20:55 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:20:56 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:20:58 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-07-22 10:21:01 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-07-22 10:21:01 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:21:06 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:21:06 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值         当日盈亏/盈亏率    持仓/可用            成本/现价
+0    黄金ETF华夏   6,767.10     29.70/0.441%  900/900      7.420/7.519
+1   国债政金债ETF  10,791.80      0.90/0.008%  100/100  107.607/107.918
+2       中国电信   3,032.00    -4.00/-0.132%  400/400      6.634/7.580
+3     可转债ETF  11,475.90   -19.80/-0.172%  900/900    12.036/12.751
+4       东方创业   3,020.00   -24.00/-0.788%  400/400      7.465/7.550
+5       工商银行   1,516.00   -24.00/-1.558%  200/200      5.557/7.580
+6       中创物流   4,532.00   -28.00/-0.614%  400/400    11.288/11.330
+7       贵阳银行   3,936.00   -60.00/-1.502%  600/600      6.545/6.560
+8       恒润股份   4,932.00   -72.00/-1.439%  300/300    15.761/16.440
+9       万丰奥威   5,088.00   -84.00/-1.624%  300/300    16.962/16.960
+10      博敏电子   4,910.00  -115.00/-2.289%  500/500      9.877/9.820[0m
+[33m2025-07-22 10:21:06 - WARNING - 航锦科技 不在持仓中[0m
+[32m2025-07-22 10:21:11 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:21:12 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:21:14 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-07-22 10:21:17 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-07-22 10:21:17 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:21:21 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:21:21 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值         当日盈亏/盈亏率    持仓/可用            成本/现价
+0    黄金ETF华夏   6,767.10     29.70/0.441%  900/900      7.420/7.519
+1   国债政金债ETF  10,791.80      0.90/0.008%  100/100  107.607/107.918
+2       中国电信   3,028.00    -8.00/-0.264%  400/400      6.634/7.570
+3     可转债ETF  11,475.00   -20.70/-0.180%  900/900    12.036/12.750
+4       工商银行   1,518.00   -22.00/-1.429%  200/200      5.557/7.590
+5       东方创业   3,020.00   -24.00/-0.788%  400/400      7.465/7.550
+6       中创物流   4,532.00   -28.00/-0.614%  400/400    11.288/11.330
+7       贵阳银行   3,936.00   -60.00/-1.502%  600/600      6.545/6.560
+8       恒润股份   4,929.00   -75.00/-1.499%  300/300    15.761/16.430
+9       万丰奥威   5,085.00   -87.00/-1.682%  300/300    16.962/16.950
+10      博敏电子   4,915.00  -110.00/-2.189%  500/500      9.877/9.830[0m
+[33m2025-07-22 10:21:21 - WARNING - 三一重工 不在持仓中[0m
+[32m2025-07-22 10:22:27 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:22:30 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.1%  12,765.55  12,645.70  +501.75  122.85  122.85[0m
+[32m2025-07-22 10:22:41 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:22:41 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:22:44 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:22:44 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:22:46 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:22:46 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0   湖南投资    558.00   -6.00/-1.064%   100/100    5.651/5.580
+1  粤宏远 A  1,251.00  -15.00/-1.185%   300/300    4.190/4.170
+2   海南华铁  1,165.00  -16.01/-1.354%     100/0  11.810/11.650
+3   博威合金  1,838.00  -19.02/-1.023%     100/0  18.570/18.380
+4   首创奥莱  4,969.20  -26.40/-0.528%  1200/100    3.920/4.141
+5   居然智家  2,440.00  -29.03/-1.164%     800/0    3.086/3.050
+6   物美消费    418.50  -49.80/-0.983%   100/100    1.103/4.185[0m
+[33m2025-07-22 10:22:46 - WARNING - 粤宏远A 不在持仓中[0m
+[32m2025-07-22 10:22:55 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:22:55 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:22:57 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-07-22 10:23:00 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-07-22 10:23:00 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:23:05 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:23:05 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值         当日盈亏/盈亏率    持仓/可用            成本/现价
+0    黄金ETF华夏   6,767.10     29.70/0.441%  900/900      7.420/7.519
+1   国债政金债ETF  10,791.80      0.90/0.008%  100/100  107.607/107.918
+2       中国电信   3,024.00   -12.00/-0.395%  400/400      6.634/7.560
+3       工商银行   1,518.00   -22.00/-1.429%  200/200      5.557/7.590
+4     可转债ETF  11,468.70   -27.00/-0.235%  900/900    12.036/12.743
+5       东方创业   3,012.00   -32.00/-1.051%  400/400      7.465/7.530
+6       中创物流   4,524.00   -36.00/-0.789%  400/400    11.288/11.310
+7       贵阳银行   3,942.00   -54.00/-1.351%  600/600      6.545/6.570
+8       恒润股份   4,935.00   -69.00/-1.379%  300/300    15.761/16.450
+9       万丰奥威   5,073.00   -99.00/-1.914%  300/300    16.962/16.910
+10      博敏电子   4,905.00  -120.00/-2.388%  500/500      9.877/9.810[0m
+[33m2025-07-22 10:23:05 - WARNING - 航锦科技 不在持仓中[0m
+[32m2025-07-22 10:23:10 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:23:11 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:23:13 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-07-22 10:23:16 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-07-22 10:23:16 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:23:21 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:23:21 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值         当日盈亏/盈亏率    持仓/可用            成本/现价
+0    黄金ETF华夏   6,767.10     29.70/0.441%  900/900      7.420/7.519
+1   国债政金债ETF  10,791.80      0.90/0.008%  100/100  107.607/107.918
+2       中国电信   3,024.00   -12.00/-0.395%  400/400      6.634/7.560
+3       工商银行   1,520.00   -20.00/-1.299%  200/200      5.557/7.600
+4     可转债ETF  11,467.80   -27.90/-0.243%  900/900    12.036/12.742
+5       东方创业   3,012.00   -32.00/-1.051%  400/400      7.465/7.530
+6       中创物流   4,524.00   -36.00/-0.789%  400/400    11.288/11.310
+7       贵阳银行   3,936.00   -60.00/-1.502%  600/600      6.545/6.560
+8       恒润股份   4,932.00   -72.00/-1.439%  300/300    15.761/16.440
+9       万丰奥威   5,073.00   -99.00/-1.914%  300/300    16.962/16.910
+10      博敏电子   4,900.00  -125.00/-2.488%  500/500      9.877/9.800[0m
+[33m2025-07-22 10:23:21 - WARNING - 三一重工 不在持仓中[0m
+[32m2025-07-22 10:24:33 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:24:36 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,773.95  12,646.10  +502.15  122.85  122.85[0m
+[32m2025-07-22 10:42:43 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:42:43 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:42:44 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[32m2025-07-22 10:42:44 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-07-22 10:42:45 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-07-22 10:42:45 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[32m2025-07-22 10:42:47 - INFO - 第 2 次尝试新增 6 条有效持仓[0m
+[32m2025-07-22 10:42:48 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:42:50 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:42:50 - INFO - ✅ 成功提取持仓数据，共 6 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0   湖南投资    561.00   -3.00/-0.532%   100/100    5.651/5.610
+1  粤宏远 A  1,263.00   -3.00/-0.237%   300/300    4.190/4.210
+2   海南华铁  1,167.00  -14.01/-1.185%     100/0  11.810/11.670
+3   博威合金  1,843.00  -14.02/-0.754%     100/0  18.570/18.430
+4   首创奥莱  4,971.60  -24.00/-0.480%  1200/100    3.920/4.143
+5   物美消费    420.60  -47.70/-0.942%   100/100    1.103/4.206[0m
+[32m2025-07-22 10:42:50 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:43:37 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:43:37 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:43:39 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,849.05  12,721.20  +577.25  122.85  122.85[0m
+[32m2025-07-22 10:43:39 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:43:40 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:43:42 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:43:42 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:43:45 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:43:45 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  粤宏远 A  1,275.00     9.00/0.711%   300/300    4.190/4.250
+1   居然智家  2,472.00     2.97/0.119%     800/0    3.086/3.090
+2   湖南投资    563.00   -1.00/-0.177%   100/100    5.651/5.630
+3   海南华铁  1,169.00  -12.01/-1.016%     100/0  11.810/11.690
+4   博威合金  1,843.00  -14.02/-0.754%     100/0  18.570/18.430
+5   首创奥莱  4,977.60  -18.00/-0.360%  1200/100    3.920/4.148
+6   物美消费    420.60  -47.70/-0.942%   100/100    1.103/4.206[0m
+[32m2025-07-22 10:43:45 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:43:56 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:43:56 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:43:59 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,837.05  12,709.20  +565.25  122.85  122.85[0m
+[32m2025-07-22 10:43:59 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:43:59 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:44:02 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:44:02 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:44:04 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:44:04 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  粤宏远 A  1,272.00     6.00/0.474%   300/300    4.190/4.240
+1   湖南投资    563.00   -1.00/-0.177%   100/100    5.651/5.630
+2   居然智家  2,464.00   -5.03/-0.202%     800/0    3.086/3.080
+3   海南华铁  1,168.00  -13.01/-1.100%     100/0  11.810/11.680
+4   博威合金  1,844.00  -13.02/-0.700%     100/0  18.570/18.440
+5   首创奥莱  4,977.60  -18.00/-0.360%  1200/100    3.920/4.148
+6   物美消费    420.60  -47.70/-0.942%   100/100    1.103/4.206[0m
+[32m2025-07-22 10:44:04 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:45:02 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:45:02 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:45:04 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,834.05  12,706.20  +562.25  122.85  122.85[0m
+[32m2025-07-22 10:45:04 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:45:05 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:45:08 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:45:08 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:45:10 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:45:10 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  粤宏远 A  1,272.00     6.00/0.474%   300/300    4.190/4.240
+1   湖南投资    562.00   -2.00/-0.355%   100/100    5.651/5.620
+2   居然智家  2,464.00   -5.03/-0.202%     800/0    3.086/3.080
+3   海南华铁  1,167.00  -14.01/-1.185%     100/0  11.810/11.670
+4   博威合金  1,842.00  -15.02/-0.808%     100/0  18.570/18.420
+5   首创奥莱  4,977.60  -18.00/-0.360%  1200/100    3.920/4.148
+6   物美消费    420.60  -47.70/-0.942%   100/100    1.103/4.206[0m
+[32m2025-07-22 10:45:10 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:47:01 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:47:01 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:47:03 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,838.05  12,710.20  +566.25  122.85  122.85[0m
+[32m2025-07-22 10:47:03 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:47:04 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:47:06 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:47:07 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:47:09 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:47:09 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  粤宏远 A  1,269.00     3.00/0.237%   300/300    4.190/4.230
+1   居然智家  2,472.00     2.97/0.119%     800/0    3.086/3.090
+2   湖南投资    561.00   -3.00/-0.532%   100/100    5.651/5.610
+3   博威合金  1,845.00  -12.02/-0.646%     100/0  18.570/18.450
+4   海南华铁  1,166.00  -15.01/-1.270%     100/0  11.810/11.660
+5   首创奥莱  4,977.60  -18.00/-0.360%  1200/100    3.920/4.148
+6   物美消费    420.60  -47.70/-0.942%   100/100    1.103/4.206[0m
+[32m2025-07-22 10:47:09 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:47:22 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:47:22 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:47:25 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,839.05  12,711.20  +567.25  122.85  122.85[0m
+[32m2025-07-22 10:47:25 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:47:25 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:47:28 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:47:28 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:47:30 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:47:30 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  粤宏远 A  1,269.00     3.00/0.237%   300/300    4.190/4.230
+1   居然智家  2,472.00     2.97/0.119%     800/0    3.086/3.090
+2   湖南投资    562.00   -2.00/-0.355%   100/100    5.651/5.620
+3   博威合金  1,844.00  -13.02/-0.700%     100/0  18.570/18.440
+4   海南华铁  1,166.00  -15.01/-1.270%     100/0  11.810/11.660
+5   首创奥莱  4,977.60  -18.00/-0.360%  1200/100    3.920/4.148
+6   物美消费    420.60  -47.70/-0.942%   100/100    1.103/4.206[0m
+[32m2025-07-22 10:47:30 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:56:06 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:56:06 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:56:08 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,860.65  12,732.80  +588.85  122.85  122.85[0m
+[32m2025-07-22 10:56:08 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:56:09 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:56:11 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:56:11 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:56:14 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:56:14 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  粤宏远 A  1,272.00     6.00/0.474%   300/300    4.190/4.240
+1   居然智家  2,472.00     2.97/0.119%     800/0    3.086/3.090
+2   湖南投资    561.00   -3.00/-0.532%   100/100    5.651/5.610
+3   博威合金  1,850.00   -7.02/-0.377%     100/0  18.570/18.500
+4   海南华铁  1,172.00   -9.01/-0.762%     100/0  11.810/11.720
+5   首创奥莱  4,984.80  -10.80/-0.216%  1200/100    3.920/4.154
+6   物美消费    421.00  -47.30/-0.934%   100/100    1.103/4.210[0m
+[32m2025-07-22 10:56:14 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 10:58:40 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 10:58:40 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 10:58:43 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,864.15  12,736.30  +592.35  122.85  122.85[0m
+[32m2025-07-22 10:58:43 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 10:58:43 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 10:58:46 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 10:58:46 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 10:58:48 - INFO - 已回到顶部[0m
+[32m2025-07-22 10:58:48 - INFO - ✅ 成功提取持仓数据，共 7 条:
+    标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0   首创奥莱  5,007.60    12.00/0.240%  1200/100    3.920/4.173
+1  粤宏远 A  1,269.00     3.00/0.237%   300/300    4.190/4.230
+2   居然智家  2,472.00     2.97/0.119%     800/0    3.086/3.090
+3   湖南投资    561.00   -3.00/-0.532%   100/100    5.651/5.610
+4   海南华铁  1,173.00   -8.01/-0.678%     100/0  11.810/11.730
+5   博威合金  1,849.00   -8.02/-0.431%     100/0  18.570/18.490
+6   物美消费    421.30  -47.00/-0.928%   100/100    1.103/4.213[0m
+[32m2025-07-22 10:58:48 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 11:00:13 - INFO - 开始更新账户持仓信息...[0m
+[32m2025-07-22 11:00:13 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 11:00:16 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  12,893.35  12,765.50  +621.55  122.85  122.85[0m
+[32m2025-07-22 11:00:16 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 11:00:16 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 11:00:19 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 11:00:19 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 11:00:21 - INFO - 已回到顶部[0m
+[32m2025-07-22 11:00:21 - INFO - ✅ 成功提取持仓数据，共 7 条:
+   标的名称        市值        当日盈亏/盈亏率     持仓/可用          成本/现价
+0  首创奥莱  5,017.20    21.60/0.432%  1200/100    3.920/4.181
+1  粤宏远A  1,272.00     6.00/0.474%   300/300    4.190/4.240
+2  居然智家  2,472.00     2.97/0.119%     800/0    3.086/3.090
+3  湖南投资    561.00   -3.00/-0.532%   100/100    5.651/5.610
+4  海南华铁  1,173.00   -8.01/-0.678%     100/0  11.810/11.730
+5  博威合金  1,849.00   -8.02/-0.431%     100/0  18.570/18.490
+6  物美消费    421.30  -47.00/-0.928%   100/100    1.103/4.213[0m
+[32m2025-07-22 11:00:21 - INFO - ✅ 账户持仓信息已更新并保存至 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx[0m
+[32m2025-07-22 13:19:04 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 13:19:06 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏         可用      可取
+0  仓位 62.1%  96,693.63  60,084.90  +2,102.71  36,608.73  241.98[0m
+[32m2025-07-22 13:46:09 - INFO - 正在获取账户表头信息...[0m
+[32m2025-07-22 13:46:12 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏         可用    可取
+0  仓位 67.3%  96,448.34  64,918.20  +2,096.57  31,530.14  0.00[0m
+[32m2025-07-22 13:46:29 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-07-22 13:46:29 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-07-22 13:46:32 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-07-22 13:46:35 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-07-22 13:46:38 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-07-22 13:46:38 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-07-22 13:46:42 - INFO - 已回到顶部[0m
+[32m2025-07-22 13:46:42 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值         当日盈亏/盈亏率    持仓/可用            成本/现价
+0     可转债ETF  11,543.40     47.70/0.415%  900/900    12.036/12.826
+1    黄金ETF华夏   6,763.50     26.10/0.387%  900/900      7.420/7.515
+2   国债政金债ETF  10,791.40      0.50/0.005%  100/100  107.607/107.914
+3       中国电信   3,036.00      0.00/0.000%  400/400      6.634/7.590
+4       东方创业   3,036.00    -8.00/-0.263%  400/400      7.465/7.590
+5       中联重科   9,672.00   -12.88/-0.140%   1200/0      8.071/8.060
+6       中创物流   4,544.00   -16.00/-0.351%  400/400    11.288/11.360
+7       工商银行   1,518.00   -22.00/-1.429%  200/200      5.557/7.590
+8       贵阳银行   3,948.00   -48.00/-1.201%  600/600      6.545/6.580
+9       万丰奥威   5,109.00   -63.00/-1.218%  300/300    16.962/17.030
+10      恒润股份   4,935.00   -69.00/-1.379%  300/300    15.761/16.450
+11      博敏电子   4,860.00  -165.00/-3.284%  500/500      9.877/9.720[0m
+[33m2025-07-22 13:46:42 - WARNING - 通力科技 不在持仓中[0m

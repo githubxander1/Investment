@@ -110,6 +110,12 @@ async def main():
             logger.info("当前时间超过 15:30，停止运行")
             break
 
+        # 新增：检查是否在11:30到13:00之间，如果是则跳过本次循环
+        if dt_time(11, 30) <= now < dt_time(13, 0):
+            logger.info("当前时间在11:30到13:00之间，跳过本次循环")
+            await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
+            continue
+
         # 检测设备是否断开
         if not is_device_connected(d):
             logger.warning("设备断开连接，尝试重新初始化...")
@@ -131,7 +137,15 @@ async def main():
         combination_data = None
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
-        if dt_time(9, 30) <= now <= dt_time(end_time_hour, end_time_minute):
+        # 改成到了九点三十一就执行一次
+        #判断当前时间，如果到了九点三十一就执行一次
+        now = datetime.datetime.now().time()
+        # if dt_time(9, 31) == now:
+
+
+
+        if dt_time(9, 31) <= now <= dt_time(9, 32):
+        # if dt_time(9, 31):
             # holding_success, ai_datas = Ai_strategy_main()
             #
             # to_sell = ai_datas.get("to_sell")
@@ -258,7 +272,7 @@ if __name__ == '__main__':
     #
     # # 最大运行时间（小时）
     # MAX_RUN_TIME = 8
-    end_time_hour = 18
+    end_time_hour = 15
     end_time_minute = 00
 
     asyncio.run(main())

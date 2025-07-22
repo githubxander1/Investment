@@ -1,4 +1,4 @@
-# Combination_portfolio_today_file.py
+# Combination_portfolio_today.py
 import asyncio
 import datetime
 import re
@@ -10,7 +10,7 @@ import requests
 import sys
 import os
 
-from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_record_history, save_to_excel
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record,save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 # # 获取根目录
@@ -201,7 +201,7 @@ async def Combination_main():
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:
-        history_df = read_portfolio_record_history(history_df_file)
+        history_df = read_today_portfolio_record(history_df_file)
         # print(f'历史数据各列数据类型: {history_df.dtypes}')
         # 获取新增数据前
         # logger.info(f"历史数据（DataFrame）:\n{history_df}")
@@ -216,7 +216,7 @@ async def Combination_main():
         history_df = pd.DataFrame(columns=expected_columns)
         # history_df.to_csv(history_df_file, index=False)
         today = normalize_time(datetime.date.today().strftime('%Y%m%d'))
-        save_to_excel(history_df, history_df_file, f'{today}', index=False)
+        save_to_operation_history_excel(history_df, history_df_file, f'{today}', index=False)
         logger.info(f'初始化历史记录文件: {history_df_file}')
 
     # 标准化数据格式
@@ -239,7 +239,7 @@ async def Combination_main():
 
         header = not os.path.exists(history_df_file) or os.path.getsize(history_df_file) == 0
         today = normalize_time(datetime.date.today().strftime('%Y-%m-%d'))
-        save_to_excel(new_data, history_df_file, f'{today}', index=False)
+        save_to_operation_history_excel(new_data, history_df_file, f'{today}', index=False)
         # logger.info(f"保存新增数据到文件：{history_df_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status

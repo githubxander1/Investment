@@ -37,7 +37,7 @@ def get_trade_details(robot_id):
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         response.raise_for_status()
         response_data = response.json()
-        pprint(response_data)
+        # pprint(response_data)
         return response_data
     except requests.exceptions.RequestException as e:
         print(f"请求失败: {e}")
@@ -51,7 +51,6 @@ def check_trades_today():
         "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
         "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
     }
-    #
 
     today = datetime.now().date().strftime("%Y-%m-%d")
 
@@ -67,25 +66,17 @@ def check_trades_today():
                     trade_info = {
                         "交易ID": trade.get("logId"),
                         "机器人ID": trade.get("robotId"),
-                        # 从robots字典里获取机器人名字
                         "机器人": robot_name,
                         "操作方向": "买入" if trade.get("type") == 1 else "卖出" if trade.get("type") == 0 else "已取消",
                         "股票代码": trade.get("symbol"),
                         "股票名称": trade.get("symbolNmae"),
-                        # "交易方向": "买入" if trade.get("buy") == 1 else "卖出" if trade.get("buy") == 0 else "未知",
                         "交易数量": trade.get("shares"),
                         "成交价格": trade.get("price"),
                         "买入价格": trade.get("buyPrice"),
                         "交易金额": trade.get("balance"),
-                        # "交易时间": convert_timestamp(trade.get("created")),
                         "买入时间": convert_timestamp(trade.get("buyDate")),
                         "创建时间": convert_timestamp(trade.get("created")),
                         "完成时间": convert_timestamp(trade.get("tradeTime"))
-                        # "委托类型": trade.get("orderType"),
-                        # "成交金额": trade.get("amount"),
-                        # "手续费": trade.get("fee"),
-                        # "市场类型": trade.get("marketType"),
-                        # "备注": trade.get("remark")
                     }
                     all_today_trades.append(trade_info)
                     # 通知格式输出
