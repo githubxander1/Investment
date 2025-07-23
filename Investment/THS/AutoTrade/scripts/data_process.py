@@ -18,44 +18,183 @@ logger = setup_logger(trade_operations_log_file)
 common_page = CommonPage()
 account_info = AccountInfo()
 trader = TradeLogic()
-def read_today_portfolio_record(file_path):
+
+def read_portfolio_or_operation_data(file_paths, sheet_name=None):
+    """
+    通用函数用于读取投资组合或操作历史数据。
+
+    参数:
+        file_path (str): Excel 文件路径。
+        sheet_name (str, optional): 要读取的工作表名称，默认为当前日期。
+
+    返回:
+        pd.DataFrame: 包含 '标的名称', '操作', '新比例%' 的 DataFrame。
+    """
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
-    # print(f'读取调仓记录文件日期{today}')
-    if os.path.exists(file_path):
+    required_columns = ['名称','标的名称', '操作', '新比例%', '时间']
+    all_dfs = []
+
+    if sheet_name is None:
+        sheet_name = today
+    elif sheet_name == 'all':
+        sheet_name = None  # 用于后续判断读取所有sheet
+
+    for file_path in file_paths:
+        if not os.path.exists(file_path):
+            logger.warning(f"文件不存在: {file_path}")
+            continue
+
         try:
-            with pd.ExcelFile(file_path, engine='openpyxl') as portfolio_record_xlsx:
-                if today in portfolio_record_xlsx.sheet_names:
-                    portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
+            with pd.ExcelFile(file_path, engine='openpyxl') as xls:
+                sheets = xls.sheet_names
 
-                    # 显式转换关键列的类型
-                    portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
-                    # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
-                    portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
-
-                    # 去重处理
-                    portfolio_record_history_df.drop_duplicates(
-                        subset=['标的名称', '操作', '新比例%', '时间'],
-                        inplace=True
-                    )
-                    logger.info(f"读取去重后的操作历史文件完成, {len(portfolio_record_history_df)}条 \n{portfolio_record_history_df}")
+                if sheet_name is None:
+                    # 读取所有sheet
+                    sheets_to_read = sheets
                 else:
-                    portfolio_record_history_df = pd.DataFrame(columns=[
-                        "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
-                    ])
-                    logger.warning(f"今日表不存在: {today}")
-        except Exception as e:
-            logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
-            portfolio_record_history_df = pd.DataFrame(columns=[
-                "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
-            ])
-    else:
-        portfolio_record_history_df = pd.DataFrame(columns=[
-            "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
-        ])
-        logger.warning(f"文件不存在: {file_path}")
+                    sheets_to_read = [sheet_name] if sheet_name in sheets else []
 
-    # print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
-    return portfolio_record_history_df
+                for sn in sheets_to_read:
+                    df = pd.read_excel(xls, sheet_name=sn)
+
+                    # 确保关键列存在并进行类型转换
+                    for col in required_columns:
+                        if col not in df.columns:
+                            df[col] = ''
+
+                    df['名称'] = df['名称'].astype(str).str.strip()
+                    df['标的名称'] = df['标的名称'].astype(str).str.strip()
+                    df['操作'] = df['操作'].astype(str).str.strip()
+                    df['新比例%'] = pd.to_numeric(df['新比例%'], errors='coerce').fillna(0.0).round(2)
+                    # df['时间'] = pd.to_numeric(df['时间'], errors='coerce').fillna(0.0).round(2)
+
+                    all_dfs.append(df[required_columns])
+                    logger.info(f"✅ 读取数据成功: {file_path}, 表: {sn}, 共 {len(df)} 条记录")
+
+                if not sheets_to_read:
+                    logger.warning(f"未找到可读取的工作表: {file_path}")
+        except Exception as e:
+            logger.error(f"❌ 读取文件 {file_path} 失败: {e}", exc_info=True)
+
+        #return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+    if not all_dfs:
+        all_dfs = [pd.DataFrame(columns=required_columns)]
+        # print(all_dfs)
+        return all_dfs
+
+    # 合并所有数据并去重
+    combined_df = pd.concat(all_dfs, ignore_index=True)
+    combined_df.drop_duplicates(subset=required_columns, inplace=True)
+
+    return combined_df
+
+def write_to_excel_with_preserve(df, filename, sheet_name=None, index=True, mode='a'):
+    """
+    通用函数：将DataFrame写入Excel文件，支持追加模式和新建文件。
+
+    参数:
+        df (pd.DataFrame): 要写入的数据。
+        filename (str): 文件路径。
+        sheet_name (str): 工作表名称，默认为当前日期。
+        index (bool): 是否写入行索引。
+        mode (str): 写入模式，'a' 表示追加，'w' 表示覆盖。
+        if_sheet_exists (str): 如果sheet存在时的行为，'replace' 或 'overlay'。
+    """
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+    if sheet_name is None:
+        sheet_name = today
+
+    try:
+        # 统一数据类型
+        # if '新比例%' in df.columns:
+        #     df['新比例%'] = df['新比例%'].astype(float).round(2)
+        # if '最新价' in df.columns:
+        #     df['最新价'] = df['最新价'].astype(float).round(2)
+        # if '代码' in df.columns:
+        #     df['代码'] = df['代码'].astype(str).str.zfill(6)
+
+        # 填充空值
+        df = df.fillna('')
+
+        # 判断文件是否存在
+        if not os.path.exists(filename) or mode == 'w':
+            # 文件不存在，创建新文件并写入
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 创建并写入文件: {filename}, 表: {sheet_name}")
+            return
+
+        other_data = {}
+        # 文件存在，读取现有数据
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            # 如果指定的工作表存在，则读取其数据
+            if sheet_name in xls.sheet_names:
+                for sn in xls.sheet_names:
+                    if sn != sheet_name:
+                        other_data[sn] = pd.read_excel(xls, sheet_name=sn)
+
+                with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
+                    df.to_excel(writer, sheet_name=sheet_name, index=index)
+                    for sn, data in other_data.items():
+                        data.to_excel(writer, sheet_name=sn, index=index)
+
+                logger.info(f"✅ 成功追加写入文件并保留其他sheet: {filename}, 表: {sheet_name}")
+
+                # existing_df = pd.read_excel(xls, sheet_name=sheet_name)
+                # 合并现有数据和新数据
+                # combined_df = pd.concat([existing_df, df], ignore_index=True)
+                # df.to_excel(xls, sheet_name=sheet_name, index=index)
+            else:
+                # 如果工作表不存在，直接使用新数据
+                # combined_df = df
+                df.to_excel(xls, sheet_name=sheet_name, index=index)
+
+        # # 写入合并后的数据
+        # with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        #     combined_df.to_excel(writer, sheet_name=sheet_name, index=index)
+
+        # logger.info(f"✅ 成功追加写入文件: {filename}, 表: {sheet_name}")
+    except Exception as e:
+        logger.error(f"❌ 写入文件 {filename} 失败: {e}", exc_info=True)
+
+# def read_today_portfolio_record(file_path):
+#     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+#     # print(f'读取调仓记录文件日期{today}')
+#     if os.path.exists(file_path):
+#         try:
+#             with pd.ExcelFile(file_path, engine='openpyxl') as portfolio_record_xlsx:
+#                 if today in portfolio_record_xlsx.sheet_names:
+#                     portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
+#
+#                     # 显式转换关键列的类型
+#                     portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
+#                     # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
+#                     portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
+#
+#                     # 去重处理
+#                     portfolio_record_history_df.drop_duplicates(
+#                         subset=['标的名称', '操作', '新比例%', '时间'],
+#                         inplace=True
+#                     )
+#                     logger.info(f"读取去重后的操作历史文件完成, {len(portfolio_record_history_df)}条 \n{portfolio_record_history_df}")
+#                 else:
+#                     portfolio_record_history_df = pd.DataFrame(columns=[
+#                         "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
+#                     ])
+#                     logger.warning(f"今日表不存在: {today}")
+#         except Exception as e:
+#             logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
+#             portfolio_record_history_df = pd.DataFrame(columns=[
+#                 "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
+#             ])
+#     else:
+#         portfolio_record_history_df = pd.DataFrame(columns=[
+#             "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
+#         ])
+#         logger.warning(f"文件不存在: {file_path}")
+#
+#     # print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
+#     return portfolio_record_history_df
 def safe_concat(history_df, new_df):
     """安全的DataFrame拼接"""
     if history_df.empty:
@@ -366,15 +505,30 @@ if __name__ == '__main__':
     #     if not diff_result['to_buy'].empty:
     #         print("💡 发现需买入的股票：")
     #         print(diff_result['to_buy'][['标的名称']])
+
     # file_path = Strategy_portfolio_today_file
     # file_path = [Strategy_portfolio_today_file,Combination_portfolio_today_file]
-    file_path = [OPERATION_HISTORY_FILE]
-    for file in file_path:
-        if os.path.exists(file):
-            print(f"文件 {file} 存在")
-        else:
-            print(f"文件 {file} 不存在")
-        read_today_portfolio_record(file)
+    # file_path = [OPERATION_HISTORY_FILE,Strategy_portfolio_today_file,Combination_portfolio_today_file]
+    # file_path = [Strategy_portfolio_today_file,Combination_portfolio_today_file]
+    # for file in file_path:
+    #     if os.path.exists(file):
+    #         print(f"文件 {file} 存在")
+    #     else:
+    #         print(f"文件 {file} 不存在")
+    #     # read_today_portfolio_record(file)
+    #     portfolio_data = read_portfolio_or_operation_data(file_path)
+    #     print(portfolio_data)
+
+    today = datetime.now().strftime('%Y-%m-%d')
+    data = [{"名称": "策略名称2", "标的名称": "标的名称1", "操作": "操作1", "新比例%": "251"}]
+    data = pd.DataFrame(data)
+    # file_path = ["test.xlsx"]
+    file_path = "test.xlsx"
+    write_to_excel(data,file_path, sheet_name=today)
+    # read =read_portfolio_or_operation_data(file_path, sheet_name=today)
+    # print(f"读取：\n{read}")
+
+        # operation_data = read_portfolio_or_operation_data(OPERATION_HISTORY_FILE, sheet_name=today)
 
     # file_paths = [
     #     Strategy_portfolio_today_file,Combination_portfolio_today_file

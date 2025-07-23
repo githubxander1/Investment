@@ -10,7 +10,12 @@ logger = setup_logger('data_process.log')
 
 # from common_config import EXPECTED_COLUMNS
 def determine_market(stock_code):
-    """根据股票代码判断市场"""
+    """根据股票代码判断市场，支持带前缀的代码"""
+    stock_code = str(stock_code).lower().strip()
+
+    if stock_code.startswith(('sz','sh')):
+        stock_code = stock_code[2:]
+
     if stock_code.startswith(('60', '00')):
         return '沪深A股'
     elif stock_code.startswith('688'):
