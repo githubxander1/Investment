@@ -120,6 +120,5 @@ def check_trades_today():
 
 # 启动定时任务
 if __name__ == "__main__":
-    print("⏰ 启动定时任务，等待每天 09:31 检查交易...")
     # schedule_daily_check()
     print(check_trades_today())

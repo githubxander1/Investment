@@ -233,19 +233,19 @@ async def main():
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
         # # 国债逆回购操作（只执行一次）
-        # if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
-        #     logger.info("---------------------国债逆回购任务开始执行---------------------")
-        #     guozhai = GuozhaiPage(d)
-        #     success, message = guozhai.guozhai_operation()
-        #     if success:
-        #         logger.info("国债逆回购成功")
-        #         guozhai_success = True  # 标记国债逆回购任务已执行
-        #     else:
-        #         logger.info(f"国债逆回购失败: {message}")
-        #     logger.info("---------------------国债逆回购任务执行结束---------------------")
-        #
-        # else:# not guozhai_success and now < dt_time(14, 59):
-        #     logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
+        if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
+            logger.info("---------------------国债逆回购任务开始执行---------------------")
+            guozhai = GuozhaiPage(d)
+            success, message = guozhai.guozhai_operation()
+            if success:
+                logger.info("国债逆回购成功")
+                guozhai_success = True  # 标记国债逆回购任务已执行
+            else:
+                logger.info(f"国债逆回购失败: {message}")
+            logger.info("---------------------国债逆回购任务执行结束---------------------")
+
+        else:# not guozhai_success and now < dt_time(14, 59):
+            logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
 
         # 随机等待，降低请求频率规律性
         delay = random.uniform(50, 70)

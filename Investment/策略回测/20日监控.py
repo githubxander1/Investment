@@ -197,16 +197,16 @@ def schedule_daily_task(target_time="15:00"):
 
 if __name__ == '__main__':
     # 要监控的股票
-    MONITORED_STOCKS = {
-        "sh000573": "粤宏远A",
-        "sz600570": "恒生电子"
-    }
-    # 要监控的 ETF
-    # MONITORED_ETFS = {
-    #     "508011": "嘉实物美消费REIT",
-    #     "508005": "华夏首创奥莱REIT",
-    #     # 可添加更多 ETF
+    # MONITORED_STOCKS = {
+    #     "sh000573": "粤宏远A",
+    #     "sz600570": "恒生电子"
     # }
-    # schedule_daily_task()
+    # 要监控的 ETF
+    MONITORED_ETFS = {
+        "508011": "嘉实物美消费REIT",
+        "508005": "华夏首创奥莱REIT",
+        # 可添加更多 ETF
+    }
+    schedule_daily_task()
     # daily_monitor()
-    daily_stock_check()
+    # daily_stock_check()

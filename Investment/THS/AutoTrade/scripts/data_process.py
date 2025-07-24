@@ -4,6 +4,7 @@ from datetime import datetime
 
 import pandas
 import pandas as pd
+from sqlalchemy.sql.functions import current_time
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
@@ -19,6 +20,8 @@ common_page = CommonPage()
 account_info = AccountInfo()
 trader = TradeLogic()
 
+_operation_history_cache = None
+_operation_history_cache_time = None
 def read_portfolio_or_operation_data(file_paths, sheet_name=None):
     """
     通用函数用于读取投资组合或操作历史数据。
@@ -30,6 +33,14 @@ def read_portfolio_or_operation_data(file_paths, sheet_name=None):
     返回:
         pd.DataFrame: 包含 '标的名称', '操作', '新比例%' 的 DataFrame。
     """
+    global _operation_history_cache, _operation_history_cache_time
+    #检查是否需要刷新缓存，超过一分钟或强制刷新
+    current_time = datetime.now()
+    if _operation_history_cache_time is None or (current_time - _operation_history_cache_time).total_seconds() > 60:
+        _operation_history_cache = read_portfolio_or_operation_data(file_paths, sheet_name)
+        _operation_history_cache_time = current_time
+
+
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     required_columns = ['名称','标的名称', '操作', '新比例%', '时间']
     all_dfs = []
@@ -88,17 +99,15 @@ def read_portfolio_or_operation_data(file_paths, sheet_name=None):
 
     return combined_df
 
-def write_to_excel_with_preserve(df, filename, sheet_name=None, index=True, mode='a'):
+def write_to_excel_append(df, filename, sheet_name=None, index=False):
     """
-    通用函数：将DataFrame写入Excel文件，支持追加模式和新建文件。
+    通用函数：将DataFrame追加写入Excel文件的指定工作表。
 
     参数:
         df (pd.DataFrame): 要写入的数据。
         filename (str): 文件路径。
         sheet_name (str): 工作表名称，默认为当前日期。
         index (bool): 是否写入行索引。
-        mode (str): 写入模式，'a' 表示追加，'w' 表示覆盖。
-        if_sheet_exists (str): 如果sheet存在时的行为，'replace' 或 'overlay'。
     """
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     if sheet_name is None:
@@ -106,95 +115,147 @@ def write_to_excel_with_preserve(df, filename, sheet_name=None, index=True, mode
 
     try:
         # 统一数据类型
-        # if '新比例%' in df.columns:
-        #     df['新比例%'] = df['新比例%'].astype(float).round(2)
-        # if '最新价' in df.columns:
-        #     df['最新价'] = df['最新价'].astype(float).round(2)
-        # if '代码' in df.columns:
-        #     df['代码'] = df['代码'].astype(str).str.zfill(6)
+        if '新比例%' in df.columns:
+            df['新比例%'] = pd.to_numeric(df['新比例%'], errors='coerce').fillna(0.0).round(2)
+        if '最新价' in df.columns:
+            df['最新价'] = pd.to_numeric(df['最新价'], errors='coerce').fillna(0.0).round(2)
+        if '代码' in df.columns:
+            df['代码'] = df['代码'].astype(str).str.zfill(6)
+
+        # 处理字符串列
+        for col in ['名称', '标的名称', '操作']:
+            if col in df.columns:
+                df[col] = df[col].astype(str).str.strip()
 
         # 填充空值
         df = df.fillna('')
 
-        # 判断文件是否存在
-        if not os.path.exists(filename) or mode == 'w':
-            # 文件不存在，创建新文件并写入
+        # 如果文件不存在，创建新文件并写入
+        if not os.path.exists(filename):
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name=sheet_name, index=index)
             logger.info(f"✅ 创建并写入文件: {filename}, 表: {sheet_name}")
             return
 
-        other_data = {}
         # 文件存在，读取现有数据
+        existing_data = {}
         with pd.ExcelFile(filename, engine='openpyxl') as xls:
-            # 如果指定的工作表存在，则读取其数据
-            if sheet_name in xls.sheet_names:
-                for sn in xls.sheet_names:
-                    if sn != sheet_name:
-                        other_data[sn] = pd.read_excel(xls, sheet_name=sn)
+            # 读取所有现有工作表
+            for sn in xls.sheet_names:
+                existing_data[sn] = pd.read_excel(xls, sheet_name=sn)
 
-                with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
-                    df.to_excel(writer, sheet_name=sheet_name, index=index)
-                    for sn, data in other_data.items():
-                        data.to_excel(writer, sheet_name=sn, index=index)
+        # 如果目标工作表存在，合并数据
+        if sheet_name in existing_data:
+            combined_df = pd.concat([existing_data[sheet_name], df], ignore_index=True)
+            # 去除重复行（基于所有列）
+            combined_df = combined_df.drop_duplicates(keep='last')
+        else:
+            combined_df = df
 
-                logger.info(f"✅ 成功追加写入文件并保留其他sheet: {filename}, 表: {sheet_name}")
+        # 更新目标工作表数据
+        existing_data[sheet_name] = combined_df
 
-                # existing_df = pd.read_excel(xls, sheet_name=sheet_name)
-                # 合并现有数据和新数据
-                # combined_df = pd.concat([existing_df, df], ignore_index=True)
-                # df.to_excel(xls, sheet_name=sheet_name, index=index)
-            else:
-                # 如果工作表不存在，直接使用新数据
-                # combined_df = df
-                df.to_excel(xls, sheet_name=sheet_name, index=index)
+        # 重新排序工作表，确保最新工作表在最前面
+        ordered_sheets = [sheet_name]  # 最新工作表放在第一位
+        for sn in existing_data.keys():
+            if sn != sheet_name:
+                ordered_sheets.append(sn)
 
-        # # 写入合并后的数据
-        # with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-        #     combined_df.to_excel(writer, sheet_name=sheet_name, index=index)
+        # 按照新顺序重新组织数据
+        reordered_data = {sn: existing_data[sn] for sn in ordered_sheets}
 
-        # logger.info(f"✅ 成功追加写入文件: {filename}, 表: {sheet_name}")
+        # 重新写入所有工作表
+        with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
+            for sn, data in reordered_data.items():
+                data.to_excel(writer, sheet_name=sn, index=index)
+
+        logger.info(f"✅ 成功追加写入文件: {filename}, 表: {sheet_name}，新增{len(df)}条记录")
+
     except Exception as e:
-        logger.error(f"❌ 写入文件 {filename} 失败: {e}", exc_info=True)
+        logger.error(f"❌ 追加写入文件 {filename} 失败: {e}", exc_info=True)
 
-# def read_today_portfolio_record(file_path):
-#     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
-#     # print(f'读取调仓记录文件日期{today}')
-#     if os.path.exists(file_path):
-#         try:
-#             with pd.ExcelFile(file_path, engine='openpyxl') as portfolio_record_xlsx:
-#                 if today in portfolio_record_xlsx.sheet_names:
-#                     portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
-#
-#                     # 显式转换关键列的类型
-#                     portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
-#                     # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
-#                     portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
-#
-#                     # 去重处理
-#                     portfolio_record_history_df.drop_duplicates(
-#                         subset=['标的名称', '操作', '新比例%', '时间'],
-#                         inplace=True
-#                     )
-#                     logger.info(f"读取去重后的操作历史文件完成, {len(portfolio_record_history_df)}条 \n{portfolio_record_history_df}")
-#                 else:
-#                     portfolio_record_history_df = pd.DataFrame(columns=[
-#                         "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
-#                     ])
-#                     logger.warning(f"今日表不存在: {today}")
-#         except Exception as e:
-#             logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
-#             portfolio_record_history_df = pd.DataFrame(columns=[
-#                 "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
-#             ])
-#     else:
-#         portfolio_record_history_df = pd.DataFrame(columns=[
-#             "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
-#         ])
-#         logger.warning(f"文件不存在: {file_path}")
-#
-#     # print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
-#     return portfolio_record_history_df
+def read_today_portfolio_record(file_path):
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+    # print(f'读取调仓记录文件日期{today}')
+    if os.path.exists(file_path):
+        try:
+            with pd.ExcelFile(file_path, engine='openpyxl') as portfolio_record_xlsx:
+                if today in portfolio_record_xlsx.sheet_names:
+                    portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
+
+                    # 显式转换关键列的类型
+                    portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
+                    # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
+                    # portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
+
+                    # 去重处理
+                    portfolio_record_history_df.drop_duplicates(
+                        subset=['标的名称', '操作', '新比例%', '时间'],
+                        inplace=True
+                    )
+                    logger.info(f"读取去重后的操作历史文件完成, {len(portfolio_record_history_df)}条 \n{portfolio_record_history_df}")
+                else:
+                    portfolio_record_history_df = pd.DataFrame(columns=[
+                        "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
+                    ])
+                    logger.warning(f"今日表不存在: {today}")
+        except Exception as e:
+            logger.error(f"读取操作历史文件失败: {e}", exc_info=True)
+            portfolio_record_history_df = pd.DataFrame(columns=[
+                "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
+            ])
+    else:
+        portfolio_record_history_df = pd.DataFrame(columns=[
+            "名称", "操作", "标的名称", "代码", "最新价", "新比例%", "市场", "时间"
+        ])
+        logger.warning(f"文件不存在: {file_path}")
+
+    # print(f"读取的数据类型: \n{portfolio_record_history_df.dtypes}")
+    return portfolio_record_history_df
+
+
+def read_operation_history(history_file, force_refresh=False):
+    """
+    读取当日操作历史
+
+    参数:
+        history_file (str): 历史文件路径
+        force_refresh (bool): 是否强制刷新缓存
+    """
+    global _operation_history_cache, _operation_history_cache_time
+
+    # 检查是否需要刷新缓存（超过1分钟或强制刷新）
+    current_time = datetime.now()
+    if not force_refresh and _operation_history_cache is not None:
+        if _operation_history_cache_time and (current_time - _operation_history_cache_time).seconds < 60:
+            return _operation_history_cache
+
+    today = datetime.now().strftime('%Y-%m-%d')
+    # 昨天
+    # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    # print(f'读取历史文件日期：{today}')
+    if not os.path.exists(history_file):
+        return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+
+    try:
+        with pd.ExcelFile(history_file, engine='openpyxl') as f:
+            if today in f.sheet_names:
+                history_df = pd.read_excel(f, sheet_name=today)
+                history_df['标的名称'] = history_df['标的名称'].astype(str).str.strip()
+                history_df['操作'] = history_df['操作'].astype(str).str.strip()
+                history_df['新比例%'] = history_df['新比例%'].astype(float).round(2)
+                # 添加更完整的唯一标识
+                history_df['_id'] = history_df.apply(
+                    lambda x: f"{x['标的名称']}_{x['操作']}_{x['新比例%']}", axis=1)
+                logger.info(f"✅ 读取操作历史成功，共 {len(history_df)} 条记录\n{history_df}")
+                _operation_history_cache = history_df
+                _operation_history_cache_time = current_time
+                return history_df
+    except Exception as e:
+        logger.warning(f"读取操作历史失败，可能文件被占用或损坏: {e}")
+    return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+
+
 def safe_concat(history_df, new_df):
     """安全的DataFrame拼接"""
     if history_df.empty:
@@ -292,6 +353,8 @@ def save_to_operation_history_excel(df, filename, sheet_name, index=False):
 
 def write_operation_history(df):
     """将操作记录写入Excel文件，按日期作为sheet名，并确保今日sheet位于第一个"""
+    global _operation_history_cache
+
     today = datetime.now().strftime('%Y-%m-%d')
     filename = OPERATION_HISTORY_FILE
 
@@ -300,6 +363,8 @@ def write_operation_history(df):
         if not os.path.exists(filename):
             save_to_operation_history_excel(df, filename, sheet_name=today, index=False)
             logger.info(f"成功写入操作记录到 {today} 表 {filename}")
+            # 更新缓存
+            _operation_history_cache = df
             return
 
         # ✅ 先读取已有数据
@@ -326,38 +391,16 @@ def write_operation_history(df):
 
         logger.info(f"✅ 成功写入操作记录到 {today} 表 {filename}")
 
+        # 更新缓存
+        _operation_history_cache = combined_df
+
     except Exception as e:
         logger.error(f"❌ 写入操作记录失败: {e}")
         raise
 
-_operation_history_cache = None
-def read_operation_history(history_file):
-    """读取当日操作历史"""
-    global _operation_history_cache
-    if _operation_history_cache is not None:
-        return _operation_history_cache
 
-    today = datetime.now().strftime('%Y-%m-%d')
-    # 昨天
-    # today = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-    # print(f'读取历史文件日期：{today}')
-    if not os.path.exists(history_file):
-        return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
 
-    try:
-        with pd.ExcelFile(history_file, engine='openpyxl') as f:
-            if today in f.sheet_names:
-                history_df = pd.read_excel(f, sheet_name=today)
-                history_df['标的名称'] = history_df['标的名称'].astype(str).str.strip()
-                history_df['操作'] = history_df['操作'].astype(str).str.strip()
-                history_df['新比例%'] = history_df['新比例%'].astype(float).round(2)
-                history_df['_id'] = history_df.apply(lambda x: f"{x['标的名称']}_{x['操作']}_{x['新比例%']}", axis=1)
-                logger.info(f"✅ 读取操作历史成功，共 {len(history_df)} 条记录\n{history_df}")
-                _operation_history_cache = history_df
-                return history_df
-    except Exception as e:
-        logger.warning(f"读取操作历史失败，可能文件被占用或损坏: {e}")
-    return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+
 
 # 对比account_info文件和Strategy_holding以及Combination_holding文件,如果account_info里有其他两个文件里没有的股票标的，则卖出操作，反之买入（除了工商银行，中国电信，可转债ETF，国债证金债ETF）
 def get_difference_holding():
@@ -419,8 +462,8 @@ def get_difference_holding():
         return {"error": str(e)}
 
 def process_excel_files(ths_page, file_paths, operation_history_file, history_df=None):
-    if history_df is None:
-        history_df = read_operation_history(operation_history_file)
+    # 强制刷新操作历史缓存
+    history_df = read_operation_history(operation_history_file, force_refresh=True)
 
     for file_path in file_paths:
         logger.info(f"🔄 检测到文件更新，即将处理: {file_path}")
@@ -438,7 +481,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 continue
 
             # 默认账户（非 AI市场追踪策略 时使用）
-            default_account = "川财证券"
+            default_account = "中泰证券"
 
             for index, row in df.iterrows():
                 strategy_name = row['名称'].strip()
@@ -450,6 +493,9 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 if strategy_name == "AI市场追踪策略":
                     logger.info("检测到 AI市场追踪策略，切换账户为 模拟")
                     common_page.change_account("模拟练习区")
+                elif strategy_name == ["有色金属",'钢铁','建筑行业']:
+                    logger.info("检测到 GPT策略，切换账户为 川财证券")
+                    common_page.change_account("川财证券")
                 elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
                     common_page.change_account("长城证券")
                 else:
@@ -457,21 +503,26 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
 
-                # 判断是否已执行
+                # 判断是否已执行 - 使用更精确的匹配
                 exists = history_df[
                     (history_df['标的名称'] == stock_name) &
                     (history_df['操作'] == operation) &
-                    (history_df['新比例%'] == round(new_ratio, 2))
+                    (abs(history_df['新比例%'] - new_ratio) < 0.01)  # 使用近似相等比较
                 ]
+
                 if not exists.empty:
-                    logger.info(f"✅ 已处理过: {stock_name}")
+                    logger.info(f"✅ 已处理过: {stock_name} {operation} {new_ratio}%")
                     continue
 
                 logger.info(f"🚀 开始交易: {operation} {stock_name}")
-                # update_holding_info_all()
-                # logger.info("更新持仓信息完成")
 
-                status, info = trader.operate_stock(operation, stock_name)
+                # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
+                if operation == "卖出" and new_ratio == 0.0:
+                    logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
+                    # 直接调用交易逻辑，不依赖自动计算数量
+                    status, info = trader.operate_stock(operation, stock_name, new_ratio=0.0)
+                else:
+                    status, info = trader.operate_stock(operation, stock_name)
 
                 # 构造记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -488,10 +539,56 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 write_operation_history(record)
                 logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
+                # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
+                history_df = pd.concat([history_df, record], ignore_index=True)
+
         except pandas.errors.EmptyDataError:
             logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
         except Exception as e:
             logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
+
+
+        #     logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
+        #
+        #     # 判断是否已执行 - 使用更精确的匹配
+        #     exists = history_df[
+        #         (history_df['标的名称'] == stock_name) &
+        #         (history_df['操作'] == operation) &
+        #         (abs(history_df['新比例%'] - new_ratio) < 0.01)  # 使用近似相等比较
+        #     ]
+        #
+        #     if not exists.empty:
+        #         logger.info(f"✅ 已处理过: {stock_name} {operation} {new_ratio}%")
+        #         continue
+        #
+        #     logger.info(f"🚀 开始交易: {operation} {stock_name}")
+        #     # update_holding_info_all()
+        #     # logger.info("更新持仓信息完成")
+        #
+        #     status, info = trader.operate_stock(operation, stock_name)
+        #
+        #     # 构造记录
+        #     operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        #     record = pd.DataFrame([{
+        #         '标的名称': stock_name,
+        #         '操作': operation,
+        #         '新比例%': new_ratio,
+        #         '状态': status,
+        #         '信息': info,
+        #         '时间': operate_time
+        #     }])
+        #
+        #     # 写入历史
+        #     write_operation_history(record)
+        #     logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+        #
+        #     # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
+        #     history_df = pd.concat([history_df, record], ignore_index=True)
+        #
+        # except pandas.errors.EmptyDataError:
+        #     logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
+    # except Exception as e:
+    #     logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
 
 if __name__ == '__main__':
     # diff_result = get_difference_holding()
@@ -520,11 +617,12 @@ if __name__ == '__main__':
     #     print(portfolio_data)
 
     today = datetime.now().strftime('%Y-%m-%d')
-    data = [{"名称": "策略名称2", "标的名称": "标的名称1", "操作": "操作1", "新比例%": "251"}]
+    data = [{"名称": "策略名称3", "操作": "操作1", "标的名称": "标的名称1", '代码': '201',"新比例%": "251",'市场':'sdf','时间':'12'}]
     data = pd.DataFrame(data)
     # file_path = ["test.xlsx"]
-    file_path = "test.xlsx"
-    write_to_excel(data,file_path, sheet_name=today)
+    file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx'
+    # file_path = "test.xlsx"
+    write_to_excel_append(data,file_path, sheet_name=today)
     # read =read_portfolio_or_operation_data(file_path, sheet_name=today)
     # print(f"读取：\n{read}")
 
