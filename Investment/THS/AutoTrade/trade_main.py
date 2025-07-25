@@ -11,6 +11,7 @@ import uiautomator2 as u2
 
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.Combination_portfolio_today import Combination_main
+from Investment.THS.AutoTrade.scripts.Robots_detail import Robot_main
 from Investment.THS.AutoTrade.scripts.Strategy_holding_all import compare_today_yesterday, Ai_strategy_main
 from Investment.THS.AutoTrade.scripts.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
@@ -30,6 +31,7 @@ from Investment.THS.AutoTrade.config.settings import (
     STRATEGY_WINDOW_END,
     REPO_TIME_START,
     REPO_TIME_END, DATA_DIR, Strategy_holding_file, Ai_Strategy_holding_file, ai_strategy_diff_file_path,
+    Robot_portfolio_today_file,
 )
 
 # 设置日志
@@ -130,10 +132,11 @@ async def main():
 
         # 2. 处理组合和策略文件
         # 初始化变量
-        holding_success = False
+        robot_success = False
         strategy_success = False
-        strategy_data = None
         combination_success = False
+
+        strategy_data = None
         combination_data = None
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
@@ -204,15 +207,17 @@ async def main():
             #     logger.info("✅ 当前无持仓差异，无需执行模拟账户操作")
 
 
-            logger.info("---------------------策略任务开始执行---------------------")
+            logger.info("---------------------策略/Robot任务开始执行---------------------")
             strategy_result = await Strategy_main()
-            if strategy_result:
+            robot_result = await Robot_main()
+            if strategy_result or robot_result:
                 strategy_success, strategy_data = strategy_result
+                robot_success, robot_data = robot_result
             else:
-                logger.warning("⚠️ 策略任务返回空值，默认视为无更新")
-            logger.info(f"策略是否有新增数据: {strategy_success}\n---------------------策略任务执行结束---------------------")
+                logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
+            logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
         else:
-            logger.debug("尚未进入策略任务时间窗口，跳过执行")
+            logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
         # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
         if dt_time(9, 25) <= now <= dt_time(end_time_hour, end_time_minute):
             logger.info("---------------------组合任务开始执行---------------------")
@@ -226,8 +231,8 @@ async def main():
             # 如果有任何一个数据获取成功，则执行交易处理
             # if strategy_success or combination_success or holding_success:
                 # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
-            if strategy_success or combination_success:
-                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file]
+            if strategy_success or combination_success or robot_success:
+                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file]
                 process_excel_files(trader, file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
 
         else:

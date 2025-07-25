@@ -23,6 +23,7 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
 
 Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
 Combination_portfolio_today_file = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
+Robot_portfolio_today_file = os.path.join(DATA_DIR, 'Robot_portfolio_today.xlsx')
 
 Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'Ai_Strategy_position.xlsx')
 ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")

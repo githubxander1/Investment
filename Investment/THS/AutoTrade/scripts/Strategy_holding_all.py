@@ -231,7 +231,7 @@ def get_previous_workday():
 
 # 示例使用
 previous_workday = get_previous_workday()
-print(f"Previous workday: {previous_workday}")
+# print(f"Previous workday: {previous_workday}")
 
 def compare_today_yesterday(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
@@ -333,9 +333,9 @@ if __name__ == '__main__':
 
 
     # print(main())
-    holding_success, ai_datas = Ai_strategy_main()
-    # sava_all_strategy_holding_data()
-    print(ai_datas)
+    # holding_success, ai_datas = Ai_strategy_main()
+    sava_all_strategy_holding_data()
+    # print(ai_datas)
     #
     # to_sell = ai_datas.get("to_sell")
     # to_buy = ai_datas.get("to_buy")

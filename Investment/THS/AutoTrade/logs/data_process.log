@@ -7115,3 +7115,1661 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 7    组-逻辑为王  买入  ...  2025-07-24 14:41        消费电子，工业机器人 深市电子行业六成公司预喜，AI+显示巨头狂飙
 
 [8 rows x 9 columns][0m
+[33m2025-07-25 09:35:51 - WARNING - 今日表不存在: 2025-07-25[0m
+[32m2025-07-25 09:35:52 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx, 表名称: 2025-07-25 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+3  低价小市值股战法  卖出  湖南投资  000548  5.6 -16.0  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:46:55 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:46:58 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:46:58 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:47:00 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:47:00 - INFO - 🚀 开始交易: 卖出 湖南投资[0m
+[32m2025-07-25 09:47:07 - INFO - ✅ 成功写入操作记录到 2025-07-25 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-07-25 09:47:07 - INFO - 卖出 湖南投资 流程结束，操作已记录[0m
+[32m2025-07-25 09:47:07 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:47:08 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:47:08 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:47:08 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:47:08 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:47:08 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:48:12 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:48:15 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:48:15 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:48:15 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:48:19 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:48:19 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:48:19 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:48:19 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:48:19 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:48:19 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:48:19 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:48:19 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:49:18 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:49:23 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:49:23 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:49:23 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:49:27 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:49:27 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:49:27 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:49:27 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:49:27 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:49:27 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:49:27 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:49:27 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:50:34 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:50:38 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:50:38 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:50:38 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:50:41 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:50:41 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:50:41 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:50:41 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:50:41 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:50:41 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:50:41 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:50:41 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:51:38 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:51:41 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:51:41 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:51:41 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:51:45 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:51:45 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:51:45 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:51:45 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:51:45 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:51:45 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:51:45 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:51:45 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:52:12 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:52:13 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:52:16 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:52:16 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:52:17 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:52:20 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:52:20 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:52:20 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:52:20 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:52:20 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:52:20 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:52:20 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:52:20 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:53:25 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:53:30 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:53:30 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:53:30 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:53:33 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:53:33 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:53:33 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:53:34 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:53:34 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:53:34 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:53:34 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:53:34 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:54:29 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:54:32 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:54:32 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:54:32 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:54:36 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:54:36 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:54:36 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:54:36 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:54:36 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:54:36 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:54:36 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:54:36 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:55:40 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:55:43 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:55:43 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:55:43 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:55:47 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:55:47 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:55:47 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:55:47 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:55:47 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:55:47 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:55:47 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:55:47 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:56:54 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:56:58 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:56:58 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:56:58 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:57:01 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:57:01 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:57:01 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:57:01 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:57:01 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:57:01 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:57:01 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:57:01 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:58:05 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:58:09 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:58:09 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:58:09 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:58:13 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:58:13 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:58:13 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:58:13 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:58:13 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:58:13 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:58:13 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:58:13 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:59:11 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:59:14 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 09:59:14 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 09:59:14 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 09:59:18 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 09:59:18 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 09:59:18 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 09:59:18 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:59:18 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 09:59:18 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 09:59:18 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 09:59:18 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:00:15 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:00:19 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:00:19 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:00:19 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:00:22 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 10:00:22 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 10:00:22 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:00:22 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:00:22 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:00:22 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:00:22 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:00:22 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:01:24 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:01:29 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:01:29 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:01:29 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:01:33 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 10:01:33 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 10:01:33 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:01:33 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:01:33 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:01:33 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:01:33 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:01:33 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:02:33 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:02:36 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:02:36 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:02:36 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:02:40 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 10:02:40 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 10:02:40 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:02:40 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:02:40 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:02:40 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:02:40 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:02:40 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:03:34 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:03:39 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:03:39 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:03:39 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:04:05 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 10:04:05 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:04:05 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:04:05 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:04:05 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:04:05 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:04:05 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:04:59 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:05:03 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:05:03 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:05:03 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:05:27 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 10:05:27 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:05:27 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:05:27 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:05:27 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:05:27 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:05:27 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:06:28 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:06:32 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:06:32 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:06:32 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:06:59 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 10:06:59 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:06:59 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:06:59 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:06:59 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:06:59 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:06:59 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:07:59 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:08:03 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:08:03 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:08:03 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:08:28 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 10:08:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:08:28 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:08:28 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:08:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:08:28 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:08:28 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:09:36 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:09:40 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:09:40 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:09:40 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:10:05 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 10:10:05 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:10:05 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:10:05 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:10:05 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:10:05 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:10:05 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[33m2025-07-25 10:10:47 - WARNING - 今日表不存在: 2025-07-25[0m
+[32m2025-07-25 10:10:47 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表名称: 2025-07-25 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40   0.0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52   0.0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16   0.0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16   0.0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66   0.0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:11:01 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:11:04 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:11:04 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:11:04 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:11:29 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 10:11:29 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:11:29 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:11:29 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:11:29 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:11:29 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:11:29 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[33m2025-07-25 10:12:06 - WARNING - 文件不存在: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 10:12:06 - INFO - ✅ 创建并保存数据到Excel文件: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表名称: 2025-07-25 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40   0.0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52   0.0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16   0.0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16   0.0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66   0.0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:12:25 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:12:29 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:12:29 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:12:29 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 10:13:06 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/icon', instance=3]", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 118, in goto_trade_page
+    self.trade_button_entry.click()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/icon', instance=3]", 'method': 'wait'}
+[32m2025-07-25 10:13:06 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:13:06 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:13:06 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:13:06 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[33m2025-07-25 10:13:06 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:13:06 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:13:20 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:13:20 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[33m2025-07-25 10:13:22 - WARNING - 今日表不存在: 2025-07-25[0m
+[32m2025-07-25 10:13:22 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表名称: 2025-07-25 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40   0.0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52   0.0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16   0.0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16   0.0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66   0.0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:13:26 - INFO - ✅ 读取操作历史成功，共 1 条记录
+   标的名称  操作  新比例%     状态         信息                   时间            _id
+0  湖南投资  卖出 -16.0  False  湖南投资 没有持仓  2025-07-25 09:47:07  湖南投资_卖出_-16.0[0m
+[32m2025-07-25 10:13:26 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 10:13:26 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:13:33 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 10:13:33 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 10:13:33 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-07-25 10:13:33 - WARNING - 今日表不存在: 2025-07-25[0m
+[33m2025-07-25 10:13:33 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-07-25 10:13:33 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 10:13:33 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:13:39 - INFO - 🛠️ 要处理: 买入 兴业银锡 比例:0.0[0m
+[32m2025-07-25 10:13:39 - INFO - 🚀 开始交易: 买入 兴业银锡[0m
+[32m2025-07-25 10:14:10 - INFO - ✅ 成功写入操作记录到 2025-07-25 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-07-25 10:14:10 - INFO - 买入 兴业银锡 流程结束，操作已记录[0m
+[32m2025-07-25 10:14:12 - INFO - 🛠️ 要处理: 买入 宝钢股份 比例:0.0[0m
+[32m2025-07-25 10:14:12 - INFO - 🚀 开始交易: 买入 宝钢股份[0m
+[32m2025-07-25 10:14:43 - INFO - ✅ 成功写入操作记录到 2025-07-25 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-07-25 10:14:43 - INFO - 买入 宝钢股份 流程结束，操作已记录[0m
+[32m2025-07-25 10:14:45 - INFO - 🛠️ 要处理: 买入 镇海股份 比例:0.0[0m
+[32m2025-07-25 10:14:45 - INFO - 🚀 开始交易: 买入 镇海股份[0m
+[32m2025-07-25 10:15:15 - INFO - ✅ 成功写入操作记录到 2025-07-25 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-07-25 10:15:15 - INFO - 买入 镇海股份 流程结束，操作已记录[0m
+[32m2025-07-25 10:15:17 - INFO - 🛠️ 要处理: 买入 美晨生态 比例:0.0[0m
+[32m2025-07-25 10:15:17 - INFO - 🚀 开始交易: 买入 美晨生态[0m
+[32m2025-07-25 10:15:19 - INFO - ✅ 成功写入操作记录到 2025-07-25 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-07-25 10:15:19 - INFO - 买入 美晨生态 流程结束，操作已记录[0m
+[32m2025-07-25 10:15:23 - INFO - 🛠️ 要处理: 卖出 山鼎设计 比例:0.0[0m
+[32m2025-07-25 10:15:23 - INFO - 🚀 开始交易: 卖出 山鼎设计[0m
+[32m2025-07-25 10:15:23 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 山鼎设计[0m
+[31m2025-07-25 10:15:23 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name, new_ratio=0.0)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 10:16:23 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:16:24 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:17:19 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:17:20 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:18:26 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:18:27 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:19:25 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:19:27 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:20:28 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:20:30 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:21:37 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:21:38 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:22:31 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:22:33 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:23:25 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:23:27 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:24:23 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:24:24 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:25:29 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:25:31 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:26:29 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:26:31 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:27:28 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:27:31 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:28:41 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:28:42 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:29:39 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:29:41 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:30:36 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:30:37 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:31:31 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 10:31:32 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 10:42:46 - INFO - ✅ 读取操作历史成功，共 5 条记录
+   标的名称  操作  ...                   时间            _id
+0  湖南投资  卖出  ...  2025-07-25 09:47:07  湖南投资_卖出_-16.0
+1  兴业银锡  买入  ...  2025-07-25 10:14:10    兴业银锡_买入_0.0
+2  宝钢股份  买入  ...  2025-07-25 10:14:43    宝钢股份_买入_0.0
+3  镇海股份  买入  ...  2025-07-25 10:15:15    镇海股份_买入_0.0
+4  美晨生态  买入  ...  2025-07-25 10:15:19    美晨生态_买入_0.0
+
+[5 rows x 7 columns][0m
+[33m2025-07-25 13:20:39 - WARNING - 今日表不存在: 2025-07-25[0m
+[32m2025-07-25 13:20:40 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-07-25 
+           名称  操作  标的名称      代码    最新价   新比例%    市场                时间 理由
+1  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84  100.0  沪深A股  2025-07-25 13:20  无
+2  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03    0.0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:20:40 - INFO - ✅ 读取操作历史成功，共 5 条记录
+   标的名称  操作  ...                   时间            _id
+0  湖南投资  卖出  ...  2025-07-25 09:47:07  湖南投资_卖出_-16.0
+1  兴业银锡  买入  ...  2025-07-25 10:14:10    兴业银锡_买入_0.0
+2  宝钢股份  买入  ...  2025-07-25 10:14:43    宝钢股份_买入_0.0
+3  镇海股份  买入  ...  2025-07-25 10:15:15    镇海股份_买入_0.0
+4  美晨生态  买入  ...  2025-07-25 10:15:19    美晨生态_买入_0.0
+
+[5 rows x 7 columns][0m
+[32m2025-07-25 13:20:40 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 13:20:40 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 13:20:47 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 13:20:47 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 13:20:47 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-07-25 13:20:47 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:20:54 - INFO - 🛠️ 要处理: 买入 皇氏集团 比例:100.0[0m
+[32m2025-07-25 13:20:54 - INFO - 🚀 开始交易: 买入 皇氏集团[0m
+[32m2025-07-25 13:21:06 - INFO - ✅ 成功写入操作记录到 2025-07-25 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-07-25 13:21:06 - INFO - 买入 皇氏集团 流程结束，操作已记录[0m
+[32m2025-07-25 13:21:12 - INFO - 🛠️ 要处理: 卖出 博敏电子 比例:0.0[0m
+[32m2025-07-25 13:21:12 - INFO - 🚀 开始交易: 卖出 博敏电子[0m
+[32m2025-07-25 13:21:12 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 博敏电子[0m
+[31m2025-07-25 13:21:12 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name, new_ratio=0.0)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 13:21:12 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 13:21:12 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 13:21:12 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 13:21:18 - INFO - 🛠️ 要处理: 买入 兴业银锡 比例:0.0[0m
+[32m2025-07-25 13:21:18 - INFO - ✅ 已处理过: 兴业银锡 买入 0.0%[0m
+[32m2025-07-25 13:21:18 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 13:21:22 - INFO - 🛠️ 要处理: 买入 宝钢股份 比例:0.0[0m
+[32m2025-07-25 13:21:22 - INFO - ✅ 已处理过: 宝钢股份 买入 0.0%[0m
+[32m2025-07-25 13:21:22 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 13:21:26 - INFO - 🛠️ 要处理: 买入 镇海股份 比例:0.0[0m
+[32m2025-07-25 13:21:26 - INFO - ✅ 已处理过: 镇海股份 买入 0.0%[0m
+[32m2025-07-25 13:21:26 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 13:21:30 - INFO - 🛠️ 要处理: 买入 美晨生态 比例:0.0[0m
+[32m2025-07-25 13:21:30 - INFO - ✅ 已处理过: 美晨生态 买入 0.0%[0m
+[32m2025-07-25 13:21:30 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 13:21:33 - INFO - 🛠️ 要处理: 卖出 山鼎设计 比例:0.0[0m
+[32m2025-07-25 13:21:33 - INFO - 🚀 开始交易: 卖出 山鼎设计[0m
+[32m2025-07-25 13:21:33 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 山鼎设计[0m
+[31m2025-07-25 13:21:33 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name, new_ratio=0.0)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 13:22:38 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:23:50 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:25:01 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:26:09 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:27:08 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:28:10 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:29:09 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:30:03 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:31:02 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:31:55 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:33:06 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:34:13 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:35:07 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:36:07 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:37:18 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:38:30 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:39:26 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:40:32 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:41:37 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:42:43 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:43:40 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:44:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:45:46 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:46:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:48:03 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:49:05 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:50:17 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:51:15 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:52:15 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:53:18 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:54:21 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:55:27 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:56:36 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:57:41 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 13:58:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:00:02 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:01:12 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:02:09 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:03:14 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:04:15 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:05:26 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:06:26 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:07:27 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:08:34 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:09:41 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:10:48 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:11:53 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:12:54 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:13:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:14:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:15:44 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:16:55 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:17:50 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:18:52 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:20:03 - INFO - 读取去重后的操作历史文件完成, 2条 
+           名称  操作  标的名称      代码    最新价  新比例%    市场                时间 理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  002329   3.84   100  沪深A股  2025-07-25 13:20  无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  603936  10.03     0  沪深A股  2025-07-25 13:20  无[0m
+[32m2025-07-25 14:20:03 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-07-25 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:20:04 - INFO - ✅ 读取操作历史成功，共 6 条记录
+   标的名称  操作  ...                   时间            _id
+0  湖南投资  卖出  ...  2025-07-25 09:47:07  湖南投资_卖出_-16.0
+1  兴业银锡  买入  ...  2025-07-25 10:14:10    兴业银锡_买入_0.0
+2  宝钢股份  买入  ...  2025-07-25 10:14:43    宝钢股份_买入_0.0
+3  镇海股份  买入  ...  2025-07-25 10:15:15    镇海股份_买入_0.0
+4  美晨生态  买入  ...  2025-07-25 10:15:19    美晨生态_买入_0.0
+5  皇氏集团  买入  ...  2025-07-25 13:21:06  皇氏集团_买入_100.0
+
+[6 rows x 7 columns][0m
+[32m2025-07-25 14:20:04 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 14:20:04 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 14:20:10 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 14:20:10 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 14:20:10 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-07-25 14:20:10 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:20:16 - INFO - 🛠️ 要处理: 买入 皇氏集团 比例:100.0[0m
+[32m2025-07-25 14:20:16 - INFO - ✅ 已处理过: 皇氏集团 买入 100.0%[0m
+[31m2025-07-25 14:20:20 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097153, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/menu_holdings_text', 'text': '持仓'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getClassName(UiObject2.java:365)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:82)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 502, in process_excel_files
+    common_page.change_account(default_account)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 160, in change_account
+    self.holding_entry.click()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 2097153, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/menu_holdings_text', 'text': '持仓'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.getClassName(UiObject2.java:365)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:82)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')
+[32m2025-07-25 14:20:20 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 14:20:20 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 14:20:20 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[31m2025-07-25 14:20:45 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 498, in process_excel_files
+    common_page.change_account("川财证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-07-25 14:21:39 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:22:33 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:23:31 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:24:25 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:25:38 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:26:38 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:27:30 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:28:25 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:29:29 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:30:28 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:31:31 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:32:27 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:33:23 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:34:27 - INFO - 读取去重后的操作历史文件完成, 3条 
+           名称  操作  标的名称  ...    市场                时间                       理由
+0  赛-情绪拐点龙头战法  买入  皇氏集团  ...  沪深A股  2025-07-25 13:20                        无
+1  赛-情绪拐点龙头战法  卖出  博敏电子  ...  沪深A股  2025-07-25 13:20                        无
+2      组-逻辑为王  卖出  领益智造  ...  沪深A股  2025-07-25 14:19  换票 领益智造2025年07月25日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-07-25 14:34:28 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-07-25 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:34:28 - INFO - ✅ 读取操作历史成功，共 6 条记录
+   标的名称  操作  ...                   时间            _id
+0  湖南投资  卖出  ...  2025-07-25 09:47:07  湖南投资_卖出_-16.0
+1  兴业银锡  买入  ...  2025-07-25 10:14:10    兴业银锡_买入_0.0
+2  宝钢股份  买入  ...  2025-07-25 10:14:43    宝钢股份_买入_0.0
+3  镇海股份  买入  ...  2025-07-25 10:15:15    镇海股份_买入_0.0
+4  美晨生态  买入  ...  2025-07-25 10:15:19    美晨生态_买入_0.0
+5  皇氏集团  买入  ...  2025-07-25 13:21:06  皇氏集团_买入_100.0
+
+[6 rows x 7 columns][0m
+[32m2025-07-25 14:34:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 14:34:28 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 14:34:33 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 14:34:33 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 14:34:33 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-07-25 14:34:33 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:34:40 - INFO - 🛠️ 要处理: 买入 皇氏集团 比例:100.0[0m
+[32m2025-07-25 14:34:40 - INFO - ✅ 已处理过: 皇氏集团 买入 100.0%[0m
+[32m2025-07-25 14:34:44 - INFO - 🛠️ 要处理: 卖出 博敏电子 比例:0.0[0m
+[32m2025-07-25 14:34:44 - INFO - 🚀 开始交易: 卖出 博敏电子[0m
+[32m2025-07-25 14:34:44 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 博敏电子[0m
+[31m2025-07-25 14:34:44 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 14:34:44 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 14:34:44 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 14:34:44 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:34:50 - INFO - 🛠️ 要处理: 买入 兴业银锡 比例:0.0[0m
+[32m2025-07-25 14:34:50 - INFO - ✅ 已处理过: 兴业银锡 买入 0.0%[0m
+[32m2025-07-25 14:34:50 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:34:54 - INFO - 🛠️ 要处理: 买入 宝钢股份 比例:0.0[0m
+[32m2025-07-25 14:34:54 - INFO - ✅ 已处理过: 宝钢股份 买入 0.0%[0m
+[32m2025-07-25 14:34:54 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:34:58 - INFO - 🛠️ 要处理: 买入 镇海股份 比例:0.0[0m
+[32m2025-07-25 14:34:58 - INFO - ✅ 已处理过: 镇海股份 买入 0.0%[0m
+[32m2025-07-25 14:34:58 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:35:02 - INFO - 🛠️ 要处理: 买入 美晨生态 比例:0.0[0m
+[32m2025-07-25 14:35:02 - INFO - ✅ 已处理过: 美晨生态 买入 0.0%[0m
+[32m2025-07-25 14:35:02 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:35:05 - INFO - 🛠️ 要处理: 卖出 山鼎设计 比例:0.0[0m
+[32m2025-07-25 14:35:05 - INFO - 🚀 开始交易: 卖出 山鼎设计[0m
+[32m2025-07-25 14:35:05 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 山鼎设计[0m
+[31m2025-07-25 14:35:05 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 14:36:15 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:37:17 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:38:28 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:39:37 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:40:44 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:41:36 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:42:36 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:43:37 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:44:47 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:45:40 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:46:32 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:47:32 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:48:44 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:49:55 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:50:54 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:51:56 - INFO - 读取去重后的操作历史文件完成, 4条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+
+[4 rows x 9 columns][0m
+[32m2025-07-25 14:51:57 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-07-25 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+
+[5 rows x 9 columns][0m
+[32m2025-07-25 14:51:57 - INFO - ✅ 读取操作历史成功，共 6 条记录
+   标的名称  操作  ...                   时间            _id
+0  湖南投资  卖出  ...  2025-07-25 09:47:07  湖南投资_卖出_-16.0
+1  兴业银锡  买入  ...  2025-07-25 10:14:10    兴业银锡_买入_0.0
+2  宝钢股份  买入  ...  2025-07-25 10:14:43    宝钢股份_买入_0.0
+3  镇海股份  买入  ...  2025-07-25 10:15:15    镇海股份_买入_0.0
+4  美晨生态  买入  ...  2025-07-25 10:15:19    美晨生态_买入_0.0
+5  皇氏集团  买入  ...  2025-07-25 13:21:06  皇氏集团_买入_100.0
+
+[6 rows x 7 columns][0m
+[32m2025-07-25 14:51:57 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 14:51:57 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[32m2025-07-25 14:52:03 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-16.0[0m
+[32m2025-07-25 14:52:03 - INFO - ✅ 已处理过: 湖南投资 卖出 -16.0%[0m
+[32m2025-07-25 14:52:03 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-07-25 14:52:03 - INFO - 读取去重后的操作历史文件完成, 5条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+
+[5 rows x 9 columns][0m
+[32m2025-07-25 14:52:09 - INFO - 🛠️ 要处理: 买入 皇氏集团 比例:100.0[0m
+[32m2025-07-25 14:52:09 - INFO - ✅ 已处理过: 皇氏集团 买入 100.0%[0m
+[32m2025-07-25 14:52:13 - INFO - 🛠️ 要处理: 卖出 博敏电子 比例:0.0[0m
+[32m2025-07-25 14:52:13 - INFO - 🚀 开始交易: 卖出 博敏电子[0m
+[32m2025-07-25 14:52:13 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 博敏电子[0m
+[31m2025-07-25 14:52:13 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 14:52:13 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 14:52:13 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 14:52:13 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:52:19 - INFO - 🛠️ 要处理: 买入 兴业银锡 比例:0.0[0m
+[32m2025-07-25 14:52:19 - INFO - ✅ 已处理过: 兴业银锡 买入 0.0%[0m
+[32m2025-07-25 14:52:19 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:52:22 - INFO - 🛠️ 要处理: 买入 宝钢股份 比例:0.0[0m
+[32m2025-07-25 14:52:22 - INFO - ✅ 已处理过: 宝钢股份 买入 0.0%[0m
+[32m2025-07-25 14:52:22 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:52:26 - INFO - 🛠️ 要处理: 买入 镇海股份 比例:0.0[0m
+[32m2025-07-25 14:52:26 - INFO - ✅ 已处理过: 镇海股份 买入 0.0%[0m
+[32m2025-07-25 14:52:26 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:52:30 - INFO - 🛠️ 要处理: 买入 美晨生态 比例:0.0[0m
+[32m2025-07-25 14:52:30 - INFO - ✅ 已处理过: 美晨生态 买入 0.0%[0m
+[32m2025-07-25 14:52:30 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:52:34 - INFO - 🛠️ 要处理: 卖出 山鼎设计 比例:0.0[0m
+[32m2025-07-25 14:52:34 - INFO - 🚀 开始交易: 卖出 山鼎设计[0m
+[32m2025-07-25 14:52:34 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 山鼎设计[0m
+[31m2025-07-25 14:52:34 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 14:53:26 - INFO - 读取去重后的操作历史文件完成, 5条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+
+[5 rows x 9 columns][0m
+[32m2025-07-25 14:53:27 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-07-25 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+5      组-逻辑为王  买入  ...  2025-07-25 14:52           国产光通信 光迅科技2025年07月25日主力资金流
+
+[6 rows x 9 columns][0m
+[32m2025-07-25 14:53:27 - INFO - ✅ 读取操作历史成功，共 6 条记录
+   标的名称  操作  ...                   时间            _id
+0  湖南投资  卖出  ...  2025-07-25 09:47:07  湖南投资_卖出_-16.0
+1  兴业银锡  买入  ...  2025-07-25 10:14:10    兴业银锡_买入_0.0
+2  宝钢股份  买入  ...  2025-07-25 10:14:43    宝钢股份_买入_0.0
+3  镇海股份  买入  ...  2025-07-25 10:15:15    镇海股份_买入_0.0
+4  美晨生态  买入  ...  2025-07-25 10:15:19    美晨生态_买入_0.0
+5  皇氏集团  买入  ...  2025-07-25 13:21:06  皇氏集团_买入_100.0
+
+[6 rows x 7 columns][0m
+[32m2025-07-25 14:53:27 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-07-25 14:53:27 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  操作  标的名称      代码  最新价  新比例%    市场                时间
+0  低价小市值股战法  卖出  湖南投资  000548  5.6   -16  沪深A股  2025-07-25 09:31[0m
+[31m2025-07-25 14:53:55 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/tab_a']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 500, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 171, in change_account
+    self.Agu.click()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/tab_a']", 'method': 'wait'}
+[32m2025-07-25 14:53:55 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-07-25 14:53:55 - INFO - 读取去重后的操作历史文件完成, 6条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+5      组-逻辑为王  买入  ...  2025-07-25 14:52           国产光通信 光迅科技2025年07月25日主力资金流
+
+[6 rows x 9 columns][0m
+[31m2025-07-25 14:54:19 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/tab_a']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 502, in process_excel_files
+    common_page.change_account(default_account)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 171, in change_account
+    self.Agu.click()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/tab_a']", 'method': 'wait'}
+[32m2025-07-25 14:54:19 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-07-25 14:54:19 - INFO - 读取去重后的操作历史文件完成, 5条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  买入  兴业银锡  sz000426  19.40     0  沪深A股  2025-07-25 09:30   6200
+1    钢铁  买入  宝钢股份  sh600019   7.52     0  沪深A股  2025-07-25 09:30  14000
+2  建筑行业  买入  镇海股份  sh603637  11.16     0  沪深A股  2025-07-25 09:30   7700
+3  建筑行业  买入  美晨生态  sz300237   2.16     0   创业板  2025-07-25 09:30  39900
+4  建筑行业  卖出  山鼎设计  sz300492  68.66     0   创业板  2025-07-25 09:30   1100[0m
+[32m2025-07-25 14:54:19 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:54:23 - INFO - 🛠️ 要处理: 买入 兴业银锡 比例:0.0[0m
+[32m2025-07-25 14:54:23 - INFO - ✅ 已处理过: 兴业银锡 买入 0.0%[0m
+[32m2025-07-25 14:54:23 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:54:27 - INFO - 🛠️ 要处理: 买入 宝钢股份 比例:0.0[0m
+[32m2025-07-25 14:54:27 - INFO - ✅ 已处理过: 宝钢股份 买入 0.0%[0m
+[32m2025-07-25 14:54:27 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:54:31 - INFO - 🛠️ 要处理: 买入 镇海股份 比例:0.0[0m
+[32m2025-07-25 14:54:31 - INFO - ✅ 已处理过: 镇海股份 买入 0.0%[0m
+[32m2025-07-25 14:54:31 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:54:34 - INFO - 🛠️ 要处理: 买入 美晨生态 比例:0.0[0m
+[32m2025-07-25 14:54:34 - INFO - ✅ 已处理过: 美晨生态 买入 0.0%[0m
+[32m2025-07-25 14:54:34 - INFO - 检测到 GPT策略，切换账户为 川财证券[0m
+[32m2025-07-25 14:54:38 - INFO - 🛠️ 要处理: 卖出 山鼎设计 比例:0.0[0m
+[32m2025-07-25 14:54:38 - INFO - 🚀 开始交易: 卖出 山鼎设计[0m
+[32m2025-07-25 14:54:38 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 山鼎设计[0m
+[31m2025-07-25 14:54:38 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 523, in process_excel_files
+    status, info = trader.operate_stock(operation, stock_name)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TradeLogic.operate_stock() got an unexpected keyword argument 'new_ratio'
+[32m2025-07-25 14:55:44 - INFO - 读取去重后的操作历史文件完成, 6条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+5      组-逻辑为王  买入  ...  2025-07-25 14:52           国产光通信 光迅科技2025年07月25日主力资金流
+
+[6 rows x 9 columns][0m
+[32m2025-07-25 14:56:37 - INFO - 读取去重后的操作历史文件完成, 6条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+5      组-逻辑为王  买入  ...  2025-07-25 14:52           国产光通信 光迅科技2025年07月25日主力资金流
+
+[6 rows x 9 columns][0m
+[32m2025-07-25 14:57:54 - INFO - 读取去重后的操作历史文件完成, 6条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+5      组-逻辑为王  买入  ...  2025-07-25 14:52           国产光通信 光迅科技2025年07月25日主力资金流
+
+[6 rows x 9 columns][0m
+[32m2025-07-25 14:59:08 - INFO - 读取去重后的操作历史文件完成, 6条 
+           名称  操作  ...                时间                                   理由
+0  赛-情绪拐点龙头战法  买入  ...  2025-07-25 13:20                                    无
+1  赛-情绪拐点龙头战法  卖出  ...  2025-07-25 13:20                                    无
+2      组-逻辑为王  卖出  ...  2025-07-25 14:19              换票 领益智造2025年07月25日主力资金流
+3      组-逻辑为王  买入  ...  2025-07-25 14:30  国产算力 央行部署金融数据要素应用！金融机构数据治理如何按下“快捷键”
+4      组-逻辑为王  卖出  ...  2025-07-25 14:51              换票 人福医药2025年07月25日主力资金流
+5      组-逻辑为王  买入  ...  2025-07-25 14:52           国产光通信 光迅科技2025年07月25日主力资金流
+
+[6 rows x 9 columns][0m

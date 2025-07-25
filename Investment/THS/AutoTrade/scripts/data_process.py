@@ -493,7 +493,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 if strategy_name == "AI市场追踪策略":
                     logger.info("检测到 AI市场追踪策略，切换账户为 模拟")
                     common_page.change_account("模拟练习区")
-                elif strategy_name == ["有色金属",'钢铁','建筑行业']:
+                elif strategy_name in ["有色金属",'钢铁','建筑行业']:
                     logger.info("检测到 GPT策略，切换账户为 川财证券")
                     common_page.change_account("川财证券")
                 elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
@@ -520,7 +520,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 if operation == "卖出" and new_ratio == 0.0:
                     logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
                     # 直接调用交易逻辑，不依赖自动计算数量
-                    status, info = trader.operate_stock(operation, stock_name, new_ratio=0.0)
+                    status, info = trader.operate_stock(operation, stock_name)
                 else:
                     status, info = trader.operate_stock(operation, stock_name)
 
