@@ -10,14 +10,14 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
-def get_note_detail():
+def get_note_detail(noteid):
     # 请求URL
     url = "https://api.djc8888.com/api/v2/note/detail"
 
     # URL参数
     params = {
         "deviceToken": "f10afa3eef3c3a2d938b547f7ed0edc9",
-        "noteid": "105369",#103484
+        "noteid": noteid,#"105369",#103484
         "sign": "68C40E285D209B6F4A125CAE231ABE5E",
         "timestamp": "1752406433935",
         "version": "3.7.12",
@@ -246,7 +246,7 @@ def extract_and_merge_data(data, html_content):
 
 if __name__ == '__main__':
     # 示例调用
-    result = get_note_detail()  # 获取接口数据
+    result = get_note_detail('107090')  # 获取接口数据
     note_content = result['data']['noteContent']  # 提取 noteContent 字段
     pprint(result)
 

@@ -139,16 +139,27 @@ def write_to_excel_append(df, filename, sheet_name=None, index=False):
 
         # 文件存在，读取现有数据
         existing_data = {}
-        with pd.ExcelFile(filename, engine='openpyxl') as xls:
-            # 读取所有现有工作表
-            for sn in xls.sheet_names:
-                existing_data[sn] = pd.read_excel(xls, sheet_name=sn)
+        try:
+            with pd.ExcelFile(filename, engine='openpyxl') as xls:
+                # 读取所有现有工作表
+                for sn in xls.sheet_names:
+                    existing_data[sn] = pd.read_excel(xls, sheet_name=sn)
+        except Exception as e:
+            logger.warning(f"读取现有文件时出现问题: {e}，将覆盖文件")
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 重新创建并写入文件: {filename}, 表: {sheet_name}")
+            return
 
         # 如果目标工作表存在，合并数据
         if sheet_name in existing_data:
-            combined_df = pd.concat([existing_data[sheet_name], df], ignore_index=True)
-            # 去除重复行（基于所有列）
-            combined_df = combined_df.drop_duplicates(keep='last')
+            try:
+                combined_df = pd.concat([existing_data[sheet_name], df], ignore_index=True)
+                # 去除重复行（基于所有列）
+                combined_df = combined_df.drop_duplicates(keep='last')
+            except Exception as e:
+                logger.warning(f"合并数据时出现问题: {e}，使用新数据")
+                combined_df = df
         else:
             combined_df = df
 
@@ -157,7 +168,7 @@ def write_to_excel_append(df, filename, sheet_name=None, index=False):
 
         # 重新排序工作表，确保最新工作表在最前面
         ordered_sheets = [sheet_name]  # 最新工作表放在第一位
-        for sn in existing_data.keys():
+        for sn in sorted(existing_data.keys(), reverse=True):  # 按字母倒序排列其他表
             if sn != sheet_name:
                 ordered_sheets.append(sn)
 
@@ -167,10 +178,25 @@ def write_to_excel_append(df, filename, sheet_name=None, index=False):
         # 重新写入所有工作表
         with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
             for sn, data in reordered_data.items():
+                # 确保数据类型正确后再写入
+                if '代码' in data.columns:
+                    data['代码'] = data['代码'].astype(str).str.zfill(6)
+                if '新比例%' in data.columns:
+                    data['新比例%'] = pd.to_numeric(data['新比例%'], errors='coerce').fillna(0.0).round(2)
+                if '最新价' in data.columns:
+                    data['最新价'] = pd.to_numeric(data['最新价'], errors='coerce').fillna(0.0).round(2)
+
+                # 处理字符串列
+                for col in ['名称', '标的名称', '操作']:
+                    if col in data.columns:
+                        data[col] = data[col].astype(str).str.strip()
+
                 data.to_excel(writer, sheet_name=sn, index=index)
 
         logger.info(f"✅ 成功追加写入文件: {filename}, 表: {sheet_name}，新增{len(df)}条记录")
 
+    except PermissionError:
+        logger.error(f"❌ 文件被占用，无法写入: {filename}，请关闭文件后重试")
     except Exception as e:
         logger.error(f"❌ 追加写入文件 {filename} 失败: {e}", exc_info=True)
 
@@ -481,7 +507,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 continue
 
             # 默认账户（非 AI市场追踪策略 时使用）
-            default_account = "中泰证券"
+            default_account = "中泰证券" #组合
 
             for index, row in df.iterrows():
                 strategy_name = row['名称'].strip()
@@ -493,12 +519,14 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 if strategy_name == "AI市场追踪策略":
                     logger.info("检测到 AI市场追踪策略，切换账户为 模拟")
                     common_page.change_account("模拟练习区")
-                elif strategy_name in ["有色金属",'钢铁','建筑行业']:
-                    logger.info("检测到 GPT策略，切换账户为 川财证券")
+                elif strategy_name in ["有色金属",'钢铁','建筑行业']: #机器人
+                    logger.info("检测到 机器人，切换账户为 川财证券")
                     common_page.change_account("川财证券")
                 elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
-                    common_page.change_account("长城证券")
+                    logger.info("检测到 策略，切换账户为 长城证券")
+                    common_page.change_account("长城证券") #策略
                 else:
+                    logger.info("检测到 组合，切换账户为 中泰证券")
                     common_page.change_account(default_account)
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")

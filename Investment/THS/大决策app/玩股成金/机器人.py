@@ -65,6 +65,7 @@ def main():
 
     payload = json.dumps({
         "cmd": "9015",
+        # "robotId": "8afec86a-e573-411a-853f-5a9a044d89ae"
         "robotId": "8afec86a-e573-411a-853f-5a9a044d89ae"
     })
     headers = {
@@ -83,8 +84,8 @@ def main():
         # 提取数据
         combo_df, stocks_df = extract_data(response_data)
         with pd.ExcelWriter('机器人详情.xlsx') as writer:
-            combo_df.to_csv(writer, sheet_name='combo_data', index=False)
-            stocks_df.to_csv(writer, sheet_name='stocks_data', index=False)
+            combo_df.to_excel(writer, sheet_name='combo_data', index=False)
+            stocks_df.to_excel(writer, sheet_name='stocks_data', index=False)
 
         if not combo_df.empty:
             # 展示组合信息
