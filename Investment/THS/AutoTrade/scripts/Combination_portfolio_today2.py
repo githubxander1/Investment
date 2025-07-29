@@ -1,4 +1,4 @@
-# Combination_portfolio_today.py
+# Combination_portfolio_today2.py
 import asyncio
 import datetime
 import re
@@ -10,14 +10,13 @@ import requests
 import sys
 import os
 
-# 修改导入，使用新的读写函数
-from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_or_operation_data, write_to_excel_append
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record,save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 # # 获取根目录
-# others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))
-# # # 将others目录添加到模块搜索路径中
-# sys.path.append(others_dir)
+others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))))
+# # 将others目录添加到模块搜索路径中
+sys.path.append(others_dir)
 # print(f'包路径：{sys.path}')
 
 from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today_file, Combination_headers, all_ids, \
@@ -61,7 +60,7 @@ def clean_content(text):
     if reason_div:
         name_match = re.search(r'^(.+?)\s*调仓理由', reason_div.get_text(strip=True))
         extracted_name = name_match.group(1).strip() if name_match else '无'
-        logger.warning(f"从content提取标的名称: {extracted_name} 为 无")
+        logger.warning(f"从content提取标的名称: {extracted_name}")
         # send_notification(f"从content提取标的名称: {extracted_name} 为 无")
     else:
         # 新增二级提取方案：尝试从纯文本中提取
@@ -191,42 +190,38 @@ async def Combination_main():
     #     ]
     # all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'].isin(['沪深A股']) == True]
     all_today_trades_df = all_today_trades_df[all_today_trades_df['市场'] == '沪深A股']
-    # 如果标的名称有无得，去掉标的名称为'无'的，并通知有无的已去除
+    # 如果标的名称有无得，去掉标的名称为‘无’的，并通知有无的已去除
     if '无' in all_today_trades_df['标的名称'].unique():
         send_notification('标的名称无的已去除')
     all_today_trades_df = all_today_trades_df[all_today_trades_df['标的名称'] != '无']
 
-    # 打印时去掉'理由'列
+    # 打印时去掉‘理由’列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
 
     logger.info(f'今日交易数据 {len(all_today_trades_df_without_content)} 条\n{all_today_trades_df_without_content}')
 
-    # 读取历史数据 - 使用新的读取函数
+    # 读取历史数据
     history_df_file = Combination_portfolio_today_file
     # history_df_file_hash = get_file_hash(history_df_file)
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:
-        # 使用新的读取函数
-        today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        history_df = read_portfolio_or_operation_data([history_df_file], sheet_name=today)
+        history_df = read_today_portfolio_record(history_df_file)
         # print(f'历史数据各列数据类型: {history_df.dtypes}')
         # 获取新增数据前
         # logger.info(f"历史数据（DataFrame）:\n{history_df}")
 
         # ✅ 显式转换关键列类型
-        if not history_df.empty:
-            history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
-            history_df['新比例%'] = history_df['新比例%'].astype(float).round(2)
-            history_df['最新价'] = history_df['最新价'].astype(float).round(2)
+        history_df['代码'] = history_df['代码'].astype(str).str.zfill(6)
+        history_df['新比例%'] = history_df['新比例%'].astype(float).round(2)
+        history_df['最新价'] = history_df['最新价'].astype(float).round(2)
 
-    except Exception:
+    except (FileNotFoundError, pd.errors.EmptyDataError):
         # 显式创建带列名的空DataFrame
         history_df = pd.DataFrame(columns=expected_columns)
         # history_df.to_csv(history_df_file, index=False)
-        today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        # 使用新的写入函数进行初始化
-        write_to_excel_append(history_df, history_df_file, f'{today}', index=False)
+        today = normalize_time(datetime.date.today().strftime('%Y%m%d'))
+        save_to_operation_history_excel(history_df, history_df_file, f'{today}', index=False)
         logger.info(f'初始化历史记录文件: {history_df_file}')
 
     # 标准化数据格式
@@ -247,9 +242,9 @@ async def Combination_main():
         new_data_without_content = new_data.drop(columns=['理由'], errors='ignore')
         # logger.info(new_data_without_content)
 
-        today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        # 使用新的写入函数
-        write_to_excel_append(new_data, history_df_file, f'{today}', index=False)
+        header = not os.path.exists(history_df_file) or os.path.getsize(history_df_file) == 0
+        today = normalize_time(datetime.date.today().strftime('%Y-%m-%d'))
+        save_to_operation_history_excel(new_data, history_df_file, f'{today}', index=False)
         # logger.info(f"保存新增数据到文件：{history_df_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
@@ -257,7 +252,8 @@ async def Combination_main():
         # new_file_hash = get_file_hash(history_df_file)
         # 写入成功后，触发自动化交易
 
-        # 发送通知 - 修复：只发送新增数据而不是所有今日数据
+
+        # 发送通知
         new_data_print_without_header = new_data_without_content.to_string(index=False)
         send_notification(f" 新增交易 {len(new_data)}条：\n{new_data_print_without_header}")
         # logger.info(f"✅ 保存新增调仓数据成功 \n{history_df}")

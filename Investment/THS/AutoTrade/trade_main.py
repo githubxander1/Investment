@@ -34,6 +34,9 @@ from Investment.THS.AutoTrade.config.settings import (
     Robot_portfolio_today_file,
 )
 
+# 导入你的20日监控模块
+from Investment.THS.AutoTrade.scripts.monitor_20day import daily_stock_check, daily_monitor
+
 # 设置日志
 logger = setup_logger("trade_main.log")
 trader = TradeLogic()
@@ -77,6 +80,87 @@ def is_device_connected(d):
     except:
         return False
 
+
+# 添加全局变量来跟踪是否已执行过信号检测
+morning_signal_checked = False
+
+
+async def check_morning_signals():
+    """检查早盘信号"""
+    global morning_signal_checked
+
+    now = datetime.datetime.now()
+    current_time = now.time()
+
+    # 检查是否是交易日
+    if not is_trading_day(now.date()):
+        logger.info("今天是非交易日，跳过信号检查")
+        return
+
+    # 检查是否在信号检查时间窗口内（9:30-9:35）
+    if dt_time(9, 30) <= current_time <= dt_time(9, 35):
+        # 检查是否已经执行过今天的信号检查
+        if not morning_signal_checked:
+            logger.info("开始执行早盘信号检查...")
+
+            try:
+                # 定义要监控的股票（从配置或其他地方获取）
+                MONITORED_STOCKS = {
+                    "600858": "银座股份",
+                    "603978": "深圳新星",
+                    "603278": "大业股份",
+                    "603018": "华社集团",
+                    # 可添加更多股票
+                }
+
+                # 执行股票信号检查
+                daily_stock_check(MONITORED_STOCKS)
+
+                # 如果有ETF监控需求，也可以添加
+                # MONITORED_ETFS = {
+                #     "508011": "嘉实物美消费REIT",
+                #     "508005": "华夏首创奥莱REIT",
+                #     "511380": "可转债ETF",
+                #     "511580": "国债证金债ETF",
+                #     "518850": "黄金ETF华夏",
+                # }
+                # daily_monitor(MONITORED_ETFS)
+
+                # 标记今天已执行信号检查
+                morning_signal_checked = True
+                logger.info("早盘信号检查完成")
+
+            except Exception as e:
+                logger.error(f"执行早盘信号检查时发生异常: {e}")
+    else:
+        # 如果过了信号检查时间窗口，重置标记以便第二天使用
+        if current_time > dt_time(9, 35):
+            morning_signal_checked = False
+
+
+def is_trading_day(date: datetime.date) -> bool:
+    """
+    判断是否为中国股市的交易日
+    :param date: 日期
+    :return: 是否是交易日
+    """
+    # 忽略周六周日
+    if date.weekday() >= 5:  # 5=Saturday, 6=Sunday
+        return False
+
+    # 可以在此添加节假日列表进行排除
+    holidays = [
+        (1, 1),     # 元旦
+        (2, 10),    # 春节
+        (4, 5),     # 清明
+        (5, 1),     # 劳动节
+        (6, 22),    # 端午
+        (9, 30),    # 国庆
+    ]
+
+    return not ((date.month, date.day) in holidays)
+
+# 在 main 函数的 while 循环中添加信号检查调用
 async def main():
     """主程序：控制任务执行的时间窗口"""
 
@@ -130,6 +214,9 @@ async def main():
         # 更新页面对象引用
         ths_page = THSPage(d)
 
+        # 执行早盘信号检查
+        await check_morning_signals()
+
         # 2. 处理组合和策略文件
         # 初始化变量
         robot_success = False
@@ -147,7 +234,7 @@ async def main():
 
 
 
-        if dt_time(9, 31) <= now <= dt_time(9, 32):
+        if dt_time(9, 31) <= now <= dt_time(9, 44):
         # if dt_time(9, 31):
             # holding_success, ai_datas = Ai_strategy_main()
             #

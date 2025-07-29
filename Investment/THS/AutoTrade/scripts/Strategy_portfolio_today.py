@@ -9,7 +9,8 @@ from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids
-from Investment.THS.AutoTrade.scripts.data_process import save_to_operation_history_excel, read_today_portfolio_record
+from Investment.THS.AutoTrade.scripts.data_process import save_to_operation_history_excel, read_today_portfolio_record, \
+    write_to_excel_append, read_portfolio_or_operation_data
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
@@ -112,7 +113,9 @@ async def Strategy_main():
     history_data_file = Strategy_portfolio_today_file
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']
     try:
-        # 打印数据列的数据类型
+        # 修复：正确传递参数给 read_portfolio_or_operation_data
+        today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+        # 修复：使用 read_today_portfolio_record 而不是 read_portfolio_or_operation_data 保持一致性
         history_data_df = read_today_portfolio_record(history_data_file)
         # print(f'历史数据列的数据类型:\n{history_data_df.dtypes}')
         if not history_data_df.empty:
@@ -123,6 +126,7 @@ async def Strategy_main():
     except Exception: #读取历史数据失败，初始化保存一个
         history_data_df = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+        # 修复：保持函数一致性
         save_to_operation_history_excel(history_data_df, history_data_file, f'{today}', index=False)
         # history_data_df.to_csv(history_data_df_file, index=False)
         # print(f'初始化历史记录文件: {history_data_df_file}')
@@ -147,14 +151,14 @@ async def Strategy_main():
     # print(new_data_df_without_sc)
 
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-    header = not os.path.exists(history_data_file) or os.path.getsize(history_data_file) == 0
-    save_to_operation_history_excel(new_data_df,history_data_file,f'{today}')
+    # 修复：保持函数一致性
+    save_to_operation_history_excel(new_data_df, history_data_file, f'{today}', index=False)
     # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data_df}")
     # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
     # update_file_status(history_data_df_file)
 
-    # 发送通知
-    new_data_df_print_without_header = all_today_trades_df.to_string(index=False)
+    # 发送通知 - 修复：只发送新增数据而不是所有今日数据
+    new_data_df_print_without_header = new_data_df.to_string(index=False)
     # print(f"新增的数据各列数据类型：\n{all_today_trades_df.dtypes}")
     send_notification(f"{len(new_data_df)} 条新增策略调仓：\n{new_data_df_print_without_header}")
     # logger.info("✅ 检测到新增策略调仓，准备启动自动化交易")
