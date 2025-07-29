@@ -31,11 +31,12 @@ from Investment.THS.AutoTrade.config.settings import (
     STRATEGY_WINDOW_END,
     REPO_TIME_START,
     REPO_TIME_END, DATA_DIR, Strategy_holding_file, Ai_Strategy_holding_file, ai_strategy_diff_file_path,
-    Robot_portfolio_today_file,
+    Robot_portfolio_today_file, Account_holding_file,
 )
 
 # 导入你的20日监控模块
-from Investment.THS.AutoTrade.scripts.monitor_20day import daily_stock_check, daily_monitor
+from Investment.THS.AutoTrade.scripts.monitor_20day import daily_check
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 # 设置日志
 logger = setup_logger("trade_main.log")
@@ -98,12 +99,16 @@ async def check_morning_signals():
         return
 
     # 检查是否在信号检查时间窗口内（9:30-9:35）
-    if dt_time(9, 30) <= current_time <= dt_time(9, 35):
+    # if dt_time(9, 30) <= current_time <= dt_time(9, 35):
+    #定时在九点二十五执行
+    if  current_time == dt_time(9, 25):
+        logger.info("开始执行早盘信号检查...")
         # 检查是否已经执行过今天的信号检查
         if not morning_signal_checked:
             logger.info("开始执行早盘信号检查...")
 
             try:
+                stocks_code = read_operation_history(Account_holding_file)
                 # 定义要监控的股票（从配置或其他地方获取）
                 MONITORED_STOCKS = {
                     "600858": "银座股份",
@@ -113,18 +118,32 @@ async def check_morning_signals():
                     # 可添加更多股票
                 }
 
-                # 执行股票信号检查
-                daily_stock_check(MONITORED_STOCKS)
+                # 定义要监控的ETF
+                MONITORED_ETFS = {
+                    "508011": "嘉实物美消费REIT",
+                    "508005": "华夏首创奥莱REIT",
+                    "511380": "可转债ETF",
+                    "511580": "国债证金债ETF",
+                    "518850": "黄金ETF华夏",
+                    "510050": "中证500ETF",
+                    "510300": "沪深300ETF",
+                    "510500": "中证500ETF",
+                }
 
-                # 如果有ETF监控需求，也可以添加
-                # MONITORED_ETFS = {
-                #     "508011": "嘉实物美消费REIT",
-                #     "508005": "华夏首创奥莱REIT",
-                #     "511380": "可转债ETF",
-                #     "511580": "国债证金债ETF",
-                #     "518850": "黄金ETF华夏",
-                # }
-                # daily_monitor(MONITORED_ETFS)
+                # 执行股票信号检查（使用5日均线）
+                stock_signals_found, stock_signals = daily_check("stock", MONITORED_STOCKS, ma_window=5)
+
+                # 执行ETF信号检查（使用20日均线）
+                etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
+
+                # 如果有任何信号，发送汇总通知
+                if stock_signals_found or etf_signals_found:
+                    all_signals = stock_signals + etf_signals
+                    summary_msg = "📈📉 早盘信号提醒 📈📉\n" + "\n".join(all_signals)
+                    send_notification(summary_msg)
+                    logger.info("早盘信号检查完成，发现信号")
+                else:
+                    logger.info("早盘信号检查完成，未发现明显信号")
 
                 # 标记今天已执行信号检查
                 morning_signal_checked = True

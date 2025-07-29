@@ -59,8 +59,8 @@ async def get_latest_position_and_trade(strategy_id):
 
         # 只保留当天记录
         # 昨天
-        today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=4)).strftime('%Y-%m-%d'))
+        # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+        today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
         # print(today)
         if trade_date == today:
                 result.append({

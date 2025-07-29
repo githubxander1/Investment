@@ -517,15 +517,15 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
 
                 # 根据策略切换账户
                 if strategy_name == "AI市场追踪策略":
-                    logger.info("检测到 AI市场追踪策略，切换账户为 模拟")
-                    common_page.change_account("模拟练习区")
-                elif strategy_name in ["有色金属",'钢铁','建筑行业']: #机器人
-                    logger.info("检测到 机器人，切换账户为 川财证券")
+                    logger.info("检测到 AI市场追踪策略，切换账户为 川财证券")
                     common_page.change_account("川财证券")
-                elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
-                    logger.info("检测到 策略，切换账户为 长城证券")
-                    common_page.change_account("长城证券") #策略
-                else:
+                elif strategy_name in ["有色金属",'钢铁','建筑行业',"GPT定期精选"]: #机器人和GPT
+                    logger.info("检测到 机器人，切换账户为 长城证券")
+                    common_page.change_account("长城证券")
+                # elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
+                #     logger.info("检测到 策略，切换账户为 川财证券")
+                #     common_page.change_account("长城证券") #策略
+                else:#组合
                     logger.info("检测到 组合，切换账户为 中泰证券")
                     common_page.change_account(default_account)
 
@@ -548,9 +548,14 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 if operation == "卖出" and new_ratio == 0.0:
                     logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
                     # 直接调用交易逻辑，不依赖自动计算数量
-                    status, info = trader.operate_stock(operation, stock_name)
+                    status, info = trader.operate_stock(operation, stock_name, volume=None)
+                # 特殊处理：AI市场追踪策略买入时使用固定股数
+                elif strategy_name == "AI市场追踪策略" and operation == "买入":
+                    fixed_volume = 200  # 固定买入200股
+                    logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
+                    status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
                 else:
-                    status, info = trader.operate_stock(operation, stock_name)
+                    status, info = trader.operate_stock(operation, stock_name, volume=None)
 
                 # 构造记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

@@ -66,7 +66,8 @@ Combination_headers = {
         # "Cookie": 'uid=CvQTumg397R8rXMQBSppAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ5ODA1MTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWU5NThhYTRmYjRiYzZlM2RhMmI5NzU0MDI0ZGYzODU0Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=d19d7223e7976c9acf0df29f2bcb2d69; user_status=0; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=AwzMLPM8iAfDvpx7o4R4cs9M1GE-RbDvsunEs2bNGLda8aNbjlWAfwL5lEm1'
     }
 
-Strategy_ids = ['155680', '136574', '137789']
+# Strategy_ids = ['155680', '136574', '137789']
+Strategy_ids = ['156275','155680']
 Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
         '156275': "AI市场追踪策略",
@@ -126,9 +127,9 @@ ETF_ids_to_name = {
     # '29646': '热点追踪猎手'
 }
 
-zhitou_ids = ['31670','31672']
+zhitou_ids = ['31672']
 zhitou_ids_to_name = {
-    '31670': '赛-情绪拐点龙头战法',
+    '31670': '赛-情绪拐点龙头战法',#没了
 
     "31672": "赛-短线趋势题材",
     "31519": "赛-KD跟踪策略",

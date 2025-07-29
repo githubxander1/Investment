@@ -65,7 +65,7 @@ def extract_robot_base_info(data):
     return {
         "机器人ID": robot_data.get("robotId"),
         "名称": robot_data.get("name"),
-        "当前资金": robot_data.get("funds"),
+        "当前可用资金": robot_data.get("funds"),
         "初始资金": robot_data.get("startFunds"),
         "止损比例": robot_data.get("stopLost"),
         "止盈比例": robot_data.get("stopWin"),

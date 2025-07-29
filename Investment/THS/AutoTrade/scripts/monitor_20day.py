@@ -171,13 +171,16 @@ def daily_check(monitor_type, monitor_ids=None, ma_window=20):
     :param monitor_type: 检查类型，"stock" 或 "etf"
     :param monitor_ids: 要监控的ID字典，格式为 {code: name}
     :param ma_window: 均线窗口大小，默认20日
+    :return: (bool, list) 是否有信号, 信号列表
     """
     today = datetime.date.today()
     if not is_trading_day(today):
         logger.info(f"{today} 是非交易日，跳过本次监控")
-        return
+        return False, []
 
     logger.info(f"开始执行每日{monitor_type.upper()}策略监控任务：{today}，使用{ma_window}日均线")
+
+    signals = []
 
     for code, name in monitor_ids.items():
         logger.info(f"正在获取 {name}({code}) 的数据...")
@@ -195,28 +198,24 @@ def daily_check(monitor_type, monitor_ids=None, ma_window=20):
             logger.warning(f"{name}({code}) 数据为空，跳过检查")
             continue
 
-        # 根据类型选择不同的均线窗口
-        if monitor_type.lower() == "stock":
-            signal = check_strategy_ma(df, window=ma_window, days_threshold=3)  # 股票使用5日均线
-        else:
-            signal = check_strategy_ma(df, window=ma_window, days_threshold=3)  # ETF使用指定窗口均线
+        # 使用指定窗口均线
+        signal = check_strategy_ma(df, window=ma_window, days_threshold=3)
 
         if signal == "up":
-            if monitor_type.lower() == "stock":
-                msg = f"📈【{name}】({code}) 收盘价上穿{ma_window}日均线，建议关注买入机会！"
-            else:
-                msg = f"📈【{name}】({code}) 收盘价上穿{ma_window}日均线，建议关注买入机会！"
+            msg = f"📈【{name}】({code}) 收盘价上穿{ma_window}日均线，建议关注买入机会！"
+            signals.append(msg)
             send_notification(msg)
             logger.info(msg)
         elif signal == "down":
-            if monitor_type.lower() == "stock":
-                msg = f"📉【{name}】({code}) 收盘价下穿{ma_window}日均线，建议关注卖出机会！"
-            else:
-                msg = f"📉【{name}】({code}) 收盘价下穿{ma_window}日均线，建议关注卖出机会！"
+            msg = f"📉【{name}】({code}) 收盘价下穿{ma_window}日均线，建议关注卖出机会！"
+            signals.append(msg)
             send_notification(msg)
             logger.info(msg)
         else:
             logger.info(f"{name}({code}) 当前未出现明显趋势信号")
+
+    # 如果有任何信号，返回True和信号列表
+    return len(signals) > 0, signals
 
 # 定时执行器（每天15:00执行）
 def schedule_daily_task(target_time="15:00"):
@@ -256,7 +255,6 @@ if __name__ == '__main__':
         "603978": "深圳新星",
         "603278": "大业股份",
         "603018": "华社集团",
-
         # 可添加更多股票
     }
 

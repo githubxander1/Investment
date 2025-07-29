@@ -100,7 +100,7 @@ class TradeLogic:
         volume = self.calculate_sell_volume(available_positions, ratio)
         return volume
 
-    def operate_stock(self, operation, stock_name):
+    def operate_stock(self, operation, stock_name, volume=None):
         """
         确保在账户页
         更新账户数据：买入时的可用自己，卖出时的可用数量
