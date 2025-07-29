@@ -259,8 +259,9 @@ if __name__ == '__main__':
     }
 
     # 执行股票检查（使用5日均线）
-    daily_check("stock", MONITORED_STOCKS, ma_window=20)
-
+    # daily_check("stock", MONITORED_STOCKS, ma_window=20)
+    etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
+    print(etf_signals)
     # 执行ETF检查（使用20日均线）
     # daily_check("etf", MONITORED_ETFS, ma_window=20)
 

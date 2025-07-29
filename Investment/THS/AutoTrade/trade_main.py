@@ -131,7 +131,7 @@ async def check_morning_signals():
                 }
 
                 # 执行股票信号检查（使用5日均线）
-                stock_signals_found, stock_signals = daily_check("stock", MONITORED_STOCKS, ma_window=5)
+                stock_signals_found, stock_signals = daily_check("stock", MONITORED_STOCKS, ma_window=20)
 
                 # 执行ETF信号检查（使用20日均线）
                 etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
