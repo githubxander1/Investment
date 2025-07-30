@@ -162,4 +162,4 @@ MIN_DELAY = 50
 MAX_DELAY = 70
 
 # 最大运行时间（小时）
-MAX_RUN_TIME = 5
+MAX_RUN_TIME = 5.5

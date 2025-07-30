@@ -1,23 +1,19 @@
 # trade_main.py
 
 import asyncio
-import os
 import random
 import datetime
 from datetime import time as dt_time
 
-import pandas as pd
 import uiautomator2 as u2
 
 # 自定义模块
-from Investment.THS.AutoTrade.scripts.Combination_portfolio_today import Combination_main
-from Investment.THS.AutoTrade.scripts.Robots_detail import Robot_main
-from Investment.THS.AutoTrade.scripts.Strategy_holding_all import compare_today_yesterday, Ai_strategy_main
-from Investment.THS.AutoTrade.scripts.Strategy_portfolio_today import Strategy_main
+from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
+from Investment.THS.AutoTrade.scripts.portfolio_today.Robots_portfolio_today import Robot_main
+from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
-from Investment.THS.AutoTrade.pages.page import THSPage, common_page
-from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history, \
-    get_difference_holding
+from Investment.THS.AutoTrade.pages.page import THSPage
+from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import (
@@ -27,10 +23,6 @@ from Investment.THS.AutoTrade.config.settings import (
     MIN_DELAY,
     MAX_DELAY,
     MAX_RUN_TIME,
-    STRATEGY_WINDOW_START,
-    STRATEGY_WINDOW_END,
-    REPO_TIME_START,
-    REPO_TIME_END, DATA_DIR, Strategy_holding_file, Ai_Strategy_holding_file, ai_strategy_diff_file_path,
     Robot_portfolio_today_file, Account_holding_file,
 )
 
@@ -253,7 +245,7 @@ async def main():
 
 
 
-        if dt_time(9, 31) <= now <= dt_time(9, 44):
+        if dt_time(9, 31) <= now <= dt_time(9, 35):
         # if dt_time(9, 31):
             # holding_success, ai_datas = Ai_strategy_main()
             #

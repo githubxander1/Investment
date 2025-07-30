@@ -133,21 +133,31 @@ class TradeLogic:
                     return False, error_info
 
                 new_ratio = 10
-                volume = self.calculate_sell_volume(sale_available, new_ratio)
-
+                # 如果传入了固定股数，则直接使用
+                if volume is not None:
+                    logger.info(f"使用固定股数: {volume}")
+                else:
+                    volume = self.calculate_sell_volume(sale_available, new_ratio)
 
             # # 点击按钮 买/卖 操作按钮（tab)
             self.ths_page.click_operate_button(operation)
             # 搜索股票
             self.ths_page.search_stock(stock_name)
 
+            # 如果是买入操作且没有指定固定股数，则计算股数
             if operation == "买入":
-                # 获取实时价格
-                real_price = self.ths_page._get_real_price()
-                if not real_price:
-                    return False, "无法获取实时价格", None
+                # 如果传入了固定股数，则直接使用
+                if volume is not None:
+                    logger.info(f"使用固定股数进行买入: {volume}股")
+                else:
+                    # 获取实时价格
+                    real_price = self.ths_page._get_real_price()
+                    if not real_price:
+                        return False, "无法获取实时价格"
 
-                volume = self.calculate_buy_volume(real_price, buy_available)
+                    volume = self.calculate_buy_volume(real_price, buy_available)
+                    if volume is None:
+                        return False, "买入数量计算失败"
 
             # 输入交易数量
             self.ths_page.input_volume(int(volume))

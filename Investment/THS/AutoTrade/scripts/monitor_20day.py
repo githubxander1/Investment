@@ -5,7 +5,6 @@ import time
 import datetime
 import logging
 
-from Investment.THS.AutoTrade.scripts.Strategy_holding_all import get_previous_workday
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 # 设置日志
@@ -255,12 +254,16 @@ if __name__ == '__main__':
         "603978": "深圳新星",
         "603278": "大业股份",
         "603018": "华社集团",
+        "601728": "中国电信",
+        "601398": "工商银行",
+        "600900": "长江电力",
+        #中国电信，工商银行
         # 可添加更多股票
     }
 
     # 执行股票检查（使用5日均线）
     # daily_check("stock", MONITORED_STOCKS, ma_window=20)
-    etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
+    etf_signals_found, etf_signals = daily_check("stock", MONITORED_STOCKS, ma_window=20)
     print(etf_signals)
     # 执行ETF检查（使用20日均线）
     # daily_check("etf", MONITORED_ETFS, ma_window=20)

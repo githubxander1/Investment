@@ -5,7 +5,6 @@ import time
 import datetime
 import logging
 
-from Investment.THS.AutoTrade.scripts.Strategy_holding_all import get_previous_workday
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 # 设置日志

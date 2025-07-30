@@ -210,7 +210,7 @@ def read_today_portfolio_record(file_path):
                     portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
 
                     # 显式转换关键列的类型
-                    portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
+                    # portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
                     # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
                     # portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
 
