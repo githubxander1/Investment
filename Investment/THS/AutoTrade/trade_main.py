@@ -90,10 +90,10 @@ async def check_morning_signals():
         logger.info("今天是非交易日，跳过信号检查")
         return
 
-    # 检查是否在信号检查时间窗口内（9:30-9:35）
-    # if dt_time(9, 30) <= current_time <= dt_time(9, 35):
+    # 检查是否在信号检查时间窗口内（9:25-9:35）
+    if dt_time(9, 25) <= current_time <= dt_time(9, 28):
     #定时在九点二十五执行
-    if  current_time == dt_time(9, 25):
+    # if  current_time == dt_time(9, 25):
         logger.info("开始执行早盘信号检查...")
         # 检查是否已经执行过今天的信号检查
         if not morning_signal_checked:
@@ -103,10 +103,13 @@ async def check_morning_signals():
                 stocks_code = read_operation_history(Account_holding_file)
                 # 定义要监控的股票（从配置或其他地方获取）
                 MONITORED_STOCKS = {
-                    "600858": "银座股份",
-                    "603978": "深圳新星",
-                    "603278": "大业股份",
-                    "603018": "华社集团",
+                    "601728": "中国电信",
+                    "601398": "工商银行",
+                    "600900": "长江电力"
+                    # "600858": "银座股份",
+                    # "603978": "深圳新星",
+                    # "603278": "大业股份",
+                    # "603018": "华社集团",
                     # 可添加更多股票
                 }
 
@@ -117,9 +120,9 @@ async def check_morning_signals():
                     "511380": "可转债ETF",
                     "511580": "国债证金债ETF",
                     "518850": "黄金ETF华夏",
-                    "510050": "中证500ETF",
+                    # "510050": "上证50ETF",
                     "510300": "沪深300ETF",
-                    "510500": "中证500ETF",
+                    # "510500": "中证500ETF",
                 }
 
                 # 执行股票信号检查（使用5日均线）

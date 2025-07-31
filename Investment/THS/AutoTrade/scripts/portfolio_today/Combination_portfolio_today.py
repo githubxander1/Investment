@@ -210,6 +210,7 @@ async def Combination_main():
         send_notification(f'发现{invalid_names_count}条标的名称为"无"的记录，已去除')
         logger.warning(f'发现{invalid_names_count}条标的名称为"无"的记录，已去除')
     all_today_trades_df = all_today_trades_df[all_today_trades_df['标的名称'] != '无']
+    all_today_trades_df = all_today_trades_df[all_today_trades_df['标的名称'] != '****']
 
     # 打印时去掉'理由'列
     all_today_trades_df_without_content = all_today_trades_df.drop(columns=['理由'], errors='ignore')
