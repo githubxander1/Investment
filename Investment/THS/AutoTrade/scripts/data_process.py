@@ -591,7 +591,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 new_ratio = float(row['新比例%'])
 
                 # 根据策略切换账户
-                if strategy_name == ["AI市场追踪策略","GPT定期精选"]:  # 策略
+                if strategy_name in ["AI市场追踪策略","GPT定期精选"]:  # 策略
                     logger.info("检测到 AI市场追踪策略，切换账户为 川财证券")
                     common_page.change_account("川财证券")
                 elif strategy_name in ["有色金属",'钢铁','建筑行业']: # 机器人

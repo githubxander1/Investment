@@ -13529,3 +13529,246 @@ uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomat
 [32m2025-07-31 18:03:03 - INFO - ✅ 读取数据成功: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx, 表: 2025-07-31, 共 4 条记录[0m
 [33m2025-07-31 18:03:49 - WARNING - 未找到可读取的工作表: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
 [32m2025-07-31 18:03:49 - INFO - ✅ 读取数据成功: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx, 表: 2025-07-31, 共 4 条记录[0m
+[33m2025-08-01 09:10:51 - WARNING - 未找到可读取的工作表: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[33m2025-08-01 09:11:15 - WARNING - 未找到可读取的工作表: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[33m2025-08-01 09:31:25 - WARNING - 今日表不存在: 2025-08-01[0m
+[32m2025-08-01 09:31:25 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表名称: 2025-08-01 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0    钢铁  卖出  包钢股份  sh600010   2.61   0.0  沪深A股  2025-08-01 09:30  42400
+1    钢铁  卖出  海南矿业  sh601969   7.91   0.0  沪深A股  2025-08-01 09:30  12800
+2    钢铁  买入  大金重工  sz002487  31.93   0.0  沪深A股  2025-08-01 09:30   3200
+3  建筑行业  卖出  镇海股份  sh603637  11.24   0.0  沪深A股  2025-08-01 09:30   7700
+4  建筑行业  买入  文科园林  sz002775   4.65   0.0  沪深A股  2025-08-01 09:30  17700
+5  建筑行业  卖出  诚邦股份  sh603316   8.42   0.0  沪深A股  2025-08-01 09:30   8700[0m
+[32m2025-08-01 09:31:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[33m2025-08-01 09:31:28 - WARNING - 今日表不存在: 2025-08-01[0m
+[33m2025-08-01 09:31:28 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-01 09:31:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-08-01 09:31:28 - WARNING - 今日表不存在: 2025-08-01[0m
+[33m2025-08-01 09:31:28 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-01 09:31:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-01 09:31:28 - INFO - 读取去重后的操作历史文件完成, 6条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0    钢铁  卖出  包钢股份  sh600010   2.61     0  沪深A股  2025-08-01 09:30  42400
+1    钢铁  卖出  海南矿业  sh601969   7.91     0  沪深A股  2025-08-01 09:30  12800
+2    钢铁  买入  大金重工  sz002487  31.93     0  沪深A股  2025-08-01 09:30   3200
+3  建筑行业  卖出  镇海股份  sh603637  11.24     0  沪深A股  2025-08-01 09:30   7700
+4  建筑行业  买入  文科园林  sz002775   4.65     0  沪深A股  2025-08-01 09:30  17700
+5  建筑行业  卖出  诚邦股份  sh603316   8.42     0  沪深A股  2025-08-01 09:30   8700[0m
+[32m2025-08-01 09:31:28 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[31m2025-08-01 09:31:53 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 599, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[33m2025-08-01 09:32:58 - WARNING - 今日表不存在: 2025-08-01[0m
+[32m2025-08-01 09:32:58 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx, 表名称: 2025-08-01 
+        名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+1  GPT定期精选  卖出  梦网科技  002123  14.27 -30.01  沪深A股  2025-08-01 09:31[0m
+[32m2025-08-01 09:32:59 - INFO - 读取去重后的操作历史文件完成, 6条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0    钢铁  卖出  包钢股份  sh600010   2.61     0  沪深A股  2025-08-01 09:30  42400
+1    钢铁  卖出  海南矿业  sh601969   7.91     0  沪深A股  2025-08-01 09:30  12800
+2    钢铁  买入  大金重工  sz002487  31.93     0  沪深A股  2025-08-01 09:30   3200
+3  建筑行业  卖出  镇海股份  sh603637  11.24     0  沪深A股  2025-08-01 09:30   7700
+4  建筑行业  买入  文科园林  sz002775   4.65     0  沪深A股  2025-08-01 09:30  17700
+5  建筑行业  卖出  诚邦股份  sh603316   8.42     0  沪深A股  2025-08-01 09:30   8700[0m
+[33m2025-08-01 09:33:00 - WARNING - 今日表不存在: 2025-08-01[0m
+[32m2025-08-01 09:33:01 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-08-01 
+         名称  ...                                                 理由
+1  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:33:01 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-01 09:33:01 - INFO - 读取去重后的操作历史文件完成, 1条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.27 -30.01  沪深A股  2025-08-01 09:31[0m
+[32m2025-08-01 09:33:01 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[31m2025-08-01 09:33:26 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 599, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-08-01 09:33:26 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-01 09:33:26 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:33:26 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[31m2025-08-01 09:33:50 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 605, in process_excel_files
+    common_page.change_account(default_account)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-08-01 09:33:50 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-01 09:33:50 - INFO - 读取去重后的操作历史文件完成, 6条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0    钢铁  卖出  包钢股份  sh600010   2.61     0  沪深A股  2025-08-01 09:30  42400
+1    钢铁  卖出  海南矿业  sh601969   7.91     0  沪深A股  2025-08-01 09:30  12800
+2    钢铁  买入  大金重工  sz002487  31.93     0  沪深A股  2025-08-01 09:30   3200
+3  建筑行业  卖出  镇海股份  sh603637  11.24     0  沪深A股  2025-08-01 09:30   7700
+4  建筑行业  买入  文科园林  sz002775   4.65     0  沪深A股  2025-08-01 09:30  17700
+5  建筑行业  卖出  诚邦股份  sh603316   8.42     0  沪深A股  2025-08-01 09:30   8700[0m
+[32m2025-08-01 09:33:50 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[31m2025-08-01 09:34:15 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 599, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 147, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 113, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-08-01 09:35:13 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:36:17 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:37:16 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:38:12 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:39:08 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:40:06 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:41:15 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:42:13 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:43:11 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:44:07 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:45:16 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:46:09 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:47:12 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:48:10 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:49:02 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:50:06 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:51:25 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:52:29 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:53:21 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
+[32m2025-08-01 09:54:17 - INFO - 读取去重后的操作历史文件完成, 1条 
+         名称  ...                                                 理由
+0  赛-短线趋势题材  ...  海外需求旺盛，Q1增长明显，公司能否延续强势表现？以下为具体分析：一、业绩增长显著：2024...
+
+[1 rows x 9 columns][0m
