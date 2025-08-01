@@ -2,11 +2,13 @@
 import pandas as pd
 import akshare as ak
 import os
-from datetime import datetime
+# from datetime import datetime
 import time
 import random
 import requests
 import json
+
+from Investment.THS.AutoTrade.config.settings import Robot_holding_file
 
 # 所有股票信息文件路径
 ALL_STOCKS_FILE = 'all_stocks.xlsx'
@@ -60,7 +62,7 @@ def get_stock_name_by_code(code):
     """根据股票代码获取股票名称"""
     global all_stocks_df
 
-    if all_stocks_df is None or all_stocks_df.empty:
+    if all_stocks_df is None:
         return f"未知股票({code})"
 
     # 查找匹配的股票代码
@@ -104,13 +106,14 @@ def fetch_robot_data(robot_id, token="27129c04fb43a33723a9f7720f280ff9"):
             response.raise_for_status()
             response_json = response.json()
             # pprint(response_json)
-            return response_json
         except requests.RequestException as e:
             print(f"第 {attempt + 1} 次尝试，请求机器人 {robot_id} 数据失败: {e}")
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # 指数退避
             else:
                 return None
+
+    return response_json
 
 def extract_robot_data(response_data):
     """提取机器人数据并转换为 DataFrame"""
@@ -179,7 +182,7 @@ def main():
     }
 
     # 创建一个Excel写入器
-    with pd.ExcelWriter('机器人详情.xlsx', engine='openpyxl') as writer:
+    with pd.ExcelWriter(Robot_holding_file, engine='openpyxl') as writer:
         # 遍历所有机器人
         for robot_name, robot_id in robots.items():
             print(f"正在获取 {robot_name} 的数据...")
@@ -207,7 +210,7 @@ def main():
             else:
                 print(f"获取 {robot_name} 数据失败")
 
-    print("所有机器人的数据已保存到 '机器人详情.xlsx' 文件中")
+    print(f"所有机器人的数据已保存到 '{Robot_holding_file}' 文件中")
 
 # 运行主函数
 if __name__ == "__main__":

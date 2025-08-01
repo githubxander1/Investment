@@ -106,11 +106,6 @@ async def check_morning_signals():
                     "601728": "中国电信",
                     "601398": "工商银行",
                     "600900": "长江电力"
-                    # "600858": "银座股份",
-                    # "603978": "深圳新星",
-                    # "603278": "大业股份",
-                    # "603018": "华社集团",
-                    # 可添加更多股票
                 }
 
                 # 定义要监控的ETF
@@ -120,8 +115,8 @@ async def check_morning_signals():
                     "511380": "可转债ETF",
                     "511580": "国债证金债ETF",
                     "518850": "黄金ETF华夏",
-                    # "510050": "上证50ETF",
                     "510300": "沪深300ETF",
+                    # "510050": "上证50ETF",
                     # "510500": "中证500ETF",
                 }
 
@@ -135,7 +130,7 @@ async def check_morning_signals():
                 if stock_signals_found or etf_signals_found:
                     all_signals = stock_signals + etf_signals
                     summary_msg = "📈📉 早盘信号提醒 📈📉\n" + "\n".join(all_signals)
-                    send_notification(summary_msg)
+                    # send_notification(summary_msg)
                     logger.info("早盘信号检查完成，发现信号")
                 else:
                     logger.info("早盘信号检查完成，未发现明显信号")

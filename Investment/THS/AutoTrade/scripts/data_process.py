@@ -591,16 +591,16 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 new_ratio = float(row['新比例%'])
 
                 # 根据策略切换账户
-                if strategy_name == "AI市场追踪策略":
+                if strategy_name == ["AI市场追踪策略","GPT定期精选"]:  # 策略
                     logger.info("检测到 AI市场追踪策略，切换账户为 川财证券")
                     common_page.change_account("川财证券")
-                elif strategy_name in ["有色金属",'钢铁','建筑行业',"GPT定期精选"]: #机器人和GPT
+                elif strategy_name in ["有色金属",'钢铁','建筑行业']: # 机器人
                     logger.info("检测到 机器人，切换账户为 长城证券")
                     common_page.change_account("长城证券")
                 # elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
                 #     logger.info("检测到 策略，切换账户为 川财证券")
                 #     common_page.change_account("长城证券") #策略
-                else:#组合
+                else: # 组合
                     logger.info("检测到 组合，切换账户为 中泰证券")
                     common_page.change_account(default_account)
 
@@ -733,9 +733,9 @@ if __name__ == '__main__':
     portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx'
     # # file_path = "test.xlsx"
     # write_to_excel_append(data,file_path, sheet_name=today)
-    # read =read_portfolio_or_operation_data(file_path, sheet_name=today)
-    # print(f"读取：\n{read}")
-    print(get_stock_to_operate(trade_history_file_path,portfolio_file_path))
+    read =read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)
+    print(f"读取：\n{read}")
+    # print(get_stock_to_operate(trade_history_file_path,portfolio_file_path))
 
         # operation_data = read_portfolio_or_operation_data(OPERATION_HISTORY_FILE, sheet_name=today)
 

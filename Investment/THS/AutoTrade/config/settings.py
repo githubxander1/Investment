@@ -30,6 +30,7 @@ ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")
 
 Strategy_holding_file = os.path.join(DATA_DIR, 'Strategy_position.xlsx')
 Combination_holding_file = os.path.join(DATA_DIR, 'Combination_position.xlsx')
+Robot_holding_file = os.path.join(DATA_DIR, 'Robots_position.xlsx')
 Account_holding_file = os.path.join(DATA_DIR, 'account_info.xlsx')
 
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
