@@ -11,7 +11,7 @@ SHAPE_MAPPING = {
 }
 
 def get_api_data(shape_type=2, sort_field="closing_profit", sort_order="desc",
-                 page_size=5, date="2025-01-13"):
+                 page_size=5, date="2025-03-13"):
     """获取筹码数据API"""
     url = "https://dq.10jqka.com.cn/fuyao/chip_shape_stock_selection/selection/v1/list"
     params = {
