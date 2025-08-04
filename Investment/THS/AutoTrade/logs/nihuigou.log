@@ -848,3 +848,65 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-07-31 14:58:00 - INFO - 已点击: 借出按钮[0m
 [32m2025-07-31 14:58:03 - INFO - 委托成功: 委托已提交，合同号为：475418, 内容:['交易品种', 'GC001(1天期) 204001', '年化收益率', '1.105%', '出借资金', '28000元 (2万8千元)', '您是否确认以上委托？'][0m
 [32m2025-07-31 14:58:07 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-08-04 14:56:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-04 14:56:17 - ERROR - 操作失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_right_image', 'instance': 1},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 141, in guozhai_operation
+    self.guozhai_entry_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_right_image', 'instance': 1},))
+[32m2025-08-04 14:57:16 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-04 14:57:19 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-04 14:57:20 - INFO - 已滑动到底部[0m
+[32m2025-08-04 14:57:24 - INFO - 点击 1天期 成功[0m
+[32m2025-08-04 14:57:25 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-04 14:57:26 - INFO - 已点击: 借出按钮[0m
+[32m2025-08-04 14:57:30 - INFO - 委托成功: 委托已提交，合同号为：76046, 内容:['交易品种', 'GC001(1天期) 204001', '年化收益率', '1.315%', '出借资金', '8000元 (8千元)', '您是否确认以上委托？'][0m
+[32m2025-08-04 14:57:30 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-08-04 16:19:48 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:19:55 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x00000210614576B0>[0m
+[32m2025-08-04 16:20:06 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:42:34 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:43:22 - INFO - 已点击: 账户切换按钮[0m
+[33m2025-08-04 16:43:22 - WARNING - 无法找到账户: <uiautomator2._selector.UiObject object at 0x00000291D8BE7650>[0m
+[32m2025-08-04 16:43:46 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:43:47 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x000001CCAFC775F0>[0m
+[32m2025-08-04 16:44:05 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:44:05 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x000001637D7975F0>[0m
+[32m2025-08-04 16:44:20 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:44:20 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x000001A30FD475F0>[0m
+[32m2025-08-04 16:44:21 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:44:21 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x000001A30FD47C50>[0m
+[32m2025-08-04 16:45:35 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:48:32 - INFO - 当前账户: 川财证券, 不用切换账户[0m
+[32m2025-08-04 16:48:32 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:48:55 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:50:01 - INFO - 当前账户: 川财证券, 不用切换账户[0m
+[32m2025-08-04 16:50:06 - INFO - 当前账户: 川财证券, 不用切换账户[0m
+[32m2025-08-04 16:50:14 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:50:14 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x0000020C3F9875F0>[0m
+[32m2025-08-04 16:50:15 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:50:15 - INFO - 已切换账户: <uiautomator2._selector.UiObject object at 0x0000020C3F987C50>[0m
+[32m2025-08-04 16:50:51 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:50:52 - INFO - 已切换账户: 长城证券[0m
+[32m2025-08-04 16:50:52 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-04 16:50:53 - INFO - 已切换账户: 川财证券[0m

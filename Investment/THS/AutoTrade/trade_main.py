@@ -33,6 +33,10 @@ from Investment.THS.AutoTrade.utils.notification import send_notification
 # 设置日志
 logger = setup_logger("trade_main.log")
 trader = TradeLogic()
+
+# 定义账户列表
+ACCOUNTS = ["长城证券", "川财证券", "中泰证券"]
+
 async def connect_to_device():
     """连接设备"""
     try:
@@ -169,6 +173,28 @@ def is_trading_day(date: datetime.date) -> bool:
 
     return not ((date.month, date.day) in holidays)
 
+def switch_to_next_account(d, current_account_index):
+    """
+    切换到下一个账户
+    :param d: uiautomator2设备对象
+    :param current_account_index: 当前账户索引
+    :return: 下一个账户索引
+    """
+    next_account_index = (current_account_index + 1) % len(ACCOUNTS)
+    account_name = ACCOUNTS[next_account_index]
+
+    try:
+        guozhai = GuozhaiPage(d)
+        if guozhai.guozhai_change_account(account_name):
+            logger.info(f"✅ 成功切换到账户: {account_name}")
+            send_notification(f"账户已切换至: {account_name}")
+        else:
+            logger.warning(f"❌ 切换账户失败: {account_name}")
+    except Exception as e:
+        logger.error(f"切换账户时发生异常: {e}")
+
+    return next_account_index
+
 # 在 main 函数的 while 循环中添加信号检查调用
 async def main():
     """主程序：控制任务执行的时间窗口"""
@@ -181,7 +207,8 @@ async def main():
         logger.error("❌ 设备初始化失败")
         return
 
-    # ths_page = THSPage(d)
+    # 初始化账户索引
+    current_account_index = 0
 
     # 初始化国债逆回购状态
     guozhai_success = False
@@ -191,6 +218,9 @@ async def main():
 
     # 1. 提前读取历史记录
     history_df = read_operation_history(OPERATION_HISTORY_FILE)
+
+    # 标记是否已切换过账户
+    account_switched_today = False
 
     while True:
         now = datetime.datetime.now().time()
@@ -314,6 +344,7 @@ async def main():
             logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
         else:
             logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
+
         # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
         if dt_time(9, 25) <= now <= dt_time(end_time_hour, end_time_minute):
             logger.info("---------------------组合任务开始执行---------------------")
@@ -333,7 +364,8 @@ async def main():
 
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
-        # # 国债逆回购操作（只执行一次）
+
+        # 国债逆回购操作（只执行一次）
         if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
             logger.info("---------------------国债逆回购任务开始执行---------------------")
             guozhai = GuozhaiPage(d)
@@ -341,12 +373,27 @@ async def main():
             if success:
                 logger.info("国债逆回购成功")
                 guozhai_success = True  # 标记国债逆回购任务已执行
+
+                # 国债逆回购成功后切换账户
+                current_account_index = switch_to_next_account(d, current_account_index)
+                account_switched_today = True
             else:
                 logger.info(f"国债逆回购失败: {message}")
             logger.info("---------------------国债逆回购任务执行结束---------------------")
 
-        else:# not guozhai_success and now < dt_time(14, 59):
+        else:
             logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
+
+        # 每日账户切换（在收盘后执行一次）
+        if not account_switched_today and dt_time(15, 1) <= now <= dt_time(15, 5):
+            current_account_index = switch_to_next_account(d, current_account_index)
+            account_switched_today = True
+            logger.info("每日账户切换完成")
+
+        # 重置每日账户切换标记
+        if dt_time(0, 0) <= now <= dt_time(1, 0) and account_switched_today:
+            account_switched_today = False
+            logger.info("重置每日账户切换标记")
 
         # 随机等待，降低请求频率规律性
         delay = random.uniform(50, 70)

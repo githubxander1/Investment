@@ -14801,3 +14801,53 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-08-01 14:47:41 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 诚邦股份[0m
 [32m2025-08-01 14:47:48 - INFO - ✅ 成功写入操作记录到 2025-08-01 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
 [32m2025-08-01 14:47:48 - INFO - 卖出 诚邦股份 流程结束，操作已记录[0m
+[33m2025-08-04 09:31:51 - WARNING - 今日表不存在: 2025-08-04[0m
+[32m2025-08-04 09:31:51 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表名称: 2025-08-04 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  卖出  鄂尔多斯  sh600295  10.08   0.0  沪深A股  2025-08-04 09:30  11500
+1    钢铁  买入  振江股份  sh603507  24.65   0.0  沪深A股  2025-08-04 09:30   4300
+2    钢铁  买入  大业股份  sh603278   9.92   0.0  沪深A股  2025-08-04 09:30  10700
+4  建筑行业  买入  中设股份  sz002883  12.40   0.0  沪深A股  2025-08-04 09:30   6400[0m
+[32m2025-08-04 09:31:56 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[33m2025-08-04 09:31:56 - WARNING - 今日表不存在: 2025-08-04[0m
+[33m2025-08-04 09:31:56 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-04 09:31:56 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-08-04 09:31:56 - WARNING - 今日表不存在: 2025-08-04[0m
+[33m2025-08-04 09:31:56 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-04 09:31:56 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-04 09:31:56 - INFO - 读取去重后的操作历史文件完成, 4条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  卖出  鄂尔多斯  sh600295  10.08     0  沪深A股  2025-08-04 09:30  11500
+1    钢铁  买入  振江股份  sh603507  24.65     0  沪深A股  2025-08-04 09:30   4300
+2    钢铁  买入  大业股份  sh603278   9.92     0  沪深A股  2025-08-04 09:30  10700
+3  建筑行业  买入  中设股份  sz002883  12.40     0  沪深A股  2025-08-04 09:30   6400[0m
+[32m2025-08-04 09:31:56 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-04 09:32:00 - INFO - 🛠️ 要处理: 卖出 鄂尔多斯 比例:0.0[0m
+[32m2025-08-04 09:32:00 - INFO - 🚀 开始交易: 卖出 鄂尔多斯[0m
+[32m2025-08-04 09:32:00 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 鄂尔多斯[0m
+[32m2025-08-04 09:32:08 - INFO - ✅ 成功写入操作记录到 2025-08-04 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-04 09:32:08 - INFO - 卖出 鄂尔多斯 流程结束，操作已记录[0m
+[32m2025-08-04 09:32:08 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-04 09:32:12 - INFO - 🛠️ 要处理: 买入 振江股份 比例:0.0[0m
+[32m2025-08-04 09:32:12 - INFO - 🚀 开始交易: 买入 振江股份[0m
+[32m2025-08-04 09:32:25 - INFO - ✅ 成功写入操作记录到 2025-08-04 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-04 09:32:25 - INFO - 买入 振江股份 流程结束，操作已记录[0m
+[32m2025-08-04 09:32:25 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-04 09:32:31 - INFO - 🛠️ 要处理: 买入 大业股份 比例:0.0[0m
+[32m2025-08-04 09:32:31 - INFO - 🚀 开始交易: 买入 大业股份[0m
+[32m2025-08-04 09:32:43 - INFO - ✅ 成功写入操作记录到 2025-08-04 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-04 09:32:43 - INFO - 买入 大业股份 流程结束，操作已记录[0m
+[32m2025-08-04 09:32:43 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-04 09:32:49 - INFO - 🛠️ 要处理: 买入 中设股份 比例:0.0[0m
+[32m2025-08-04 09:32:49 - INFO - 🚀 开始交易: 买入 中设股份[0m
+[32m2025-08-04 09:33:04 - INFO - ✅ 成功写入操作记录到 2025-08-04 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-04 09:33:04 - INFO - 买入 中设股份 流程结束，操作已记录[0m
+[33m2025-08-04 09:33:57 - WARNING - 今日表不存在: 2025-08-04[0m
+[32m2025-08-04 09:33:58 - INFO - 读取去重后的操作历史文件完成, 4条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间   交易数量
+0  有色金属  卖出  鄂尔多斯  sh600295  10.08     0  沪深A股  2025-08-04 09:30  11500
+1    钢铁  买入  振江股份  sh603507  24.65     0  沪深A股  2025-08-04 09:30   4300
+2    钢铁  买入  大业股份  sh603278   9.92     0  沪深A股  2025-08-04 09:30  10700
+3  建筑行业  买入  中设股份  sz002883  12.40     0  沪深A股  2025-08-04 09:30   6400[0m
+[33m2025-08-04 09:39:41 - WARNING - 今日表不存在: 2025-08-04[0m
+[33m2025-08-04 09:41:26 - WARNING - 今日表不存在: 2025-08-04[0m

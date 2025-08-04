@@ -150,6 +150,7 @@ def fetch_and_extract_data(portfolio_id):
             # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             today = datetime.datetime.now().strftime('%Y-%m-%d')
 
+
             if today == createAt.split()[0]:
             # if today == createAt:
                 # print(f"提取{createAt.split()[0]}")
@@ -162,6 +163,8 @@ def fetch_and_extract_data(portfolio_id):
 
 
 async def Combination_main():
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    logger.info(f'今天日期: {today}')
     all_today_trades = []
     portfolio_stats = {}
     for portfolio_id in all_ids:

@@ -61,7 +61,6 @@ async def get_latest_position_and_trade(strategy_id):
         # 昨天
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
-        c
         if trade_date == today:
                 result.append({
                 '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
@@ -78,6 +77,8 @@ async def get_latest_position_and_trade(strategy_id):
 
 
 async def Strategy_main():
+    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    logger.info(f'今天日期: {today}')
     all_today_trades = []
     for strategy_id in Strategy_ids:
         trades = await get_latest_position_and_trade(strategy_id)
