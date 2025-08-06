@@ -1,9 +1,10 @@
-# 量化王_炫娇踏雪.py
+# Lhw_portfolio_today.py
 import asyncio
 import datetime
 import time
 import pandas as pd
 import requests
+import re
 from pprint import pprint
 
 # 导入必要的工具函数和配置
@@ -11,16 +12,16 @@ from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_r
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, determine_market
-from Investment.THS.AutoTrade.config.settings import Strategy_portfolio_today_file
+from Investment.THS.AutoTrade.config.settings import Lhw_portfolio_today_file, Lhw_ids, Lhw_ids_to_name
 
 # 使用setup_logger获取统一的logger实例
 logger = setup_logger("量化王_炫娇踏雪.log")
 
 # 策略配置
-STRATEGY_ID = "8001"
-STRATEGY_NAME = "量化王_炫娇踏雪"
+# STRATEGY_ID = "8001"
+# STRATEGY_NAME = "量化王_炫娇踏雪"
 
-def fetch_strategy_data():
+def fetch_strategy_data(strategy_id):
     """
     获取量化王策略数据
     """
@@ -28,10 +29,11 @@ def fetch_strategy_data():
 
     # 计算日期范围（最近30天）
     end_date = datetime.datetime.now().strftime("%Y-%m-%d")
-    start_date = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
+    start_date = (datetime.datetime.now() - datetime.timedelta(days=20)).strftime("%Y-%m-%d")
+    logger.info("获取策略数据，日期范围: %s ~ %s" % (start_date, end_date))
 
     params = {
-        "poolId": STRATEGY_ID,
+        "poolId": strategy_id,
         "startDate": start_date,
         "endDate": end_date,
         "by": "date",
@@ -56,7 +58,8 @@ def fetch_strategy_data():
             response = requests.get(url, params=params, headers=headers, timeout=10)
             response.raise_for_status()
             response_json = response.json()
-            logger.info(f"量化王策略数据获取成功: {STRATEGY_NAME}")
+            # pprint(response_json)
+            logger.info(f"量化王策略数据获取成功: {strategy_id}")
             return response_json.get('data', [])
         except requests.RequestException as e:
             logger.warning(f"请求出错, 第{attempt+1}次重试: {e}")
@@ -66,15 +69,21 @@ def fetch_strategy_data():
                 logger.error(f"请求最终失败: {e}")
                 return []
 
-def process_strategy_data(raw_data):
+def process_strategy_data(raw_data, strategy_id):
     """
     处理策略数据，提取今日交易
     """
     today_trades = []
     today = datetime.datetime.now().strftime('%Y-%m-%d')
-    
+
+    if not raw_data:
+        logger.warning(f"策略 {strategy_id} 返回空数据")
+        return today_trades
+
     for item in raw_data:
         trade_date = item.get('date', '')
+        # 具体时间
+        stock_trade_date = normalize_time(item.get('time_stamp', ''))
         sec_code = item.get('sec_code', '')
         sec_name = item.get('sec_name', '')
         transaction_price = item.get('transaction_price', 0)
@@ -95,14 +104,14 @@ def process_strategy_data(raw_data):
 
         # 构造交易记录
         trade_record = {
-            '名称': STRATEGY_NAME,
+            '名称': Lhw_ids_to_name.get(strategy_id, '未知策略'),
             '操作': operation,
             '标的名称': sec_name,
             '代码': code,
             '最新价': transaction_price,
-            '新比例%': None,  # 策略数据中没有比例信息
+            '新比例%': 0,  # 策略数据中没有比例信息
             '市场': market,
-            '时间': trade_date,
+            '时间': stock_trade_date,
             '理由': f"量化王策略信号 - {operation}"
         }
 
@@ -120,34 +129,49 @@ async def Strategy_main():
     today = datetime.datetime.now().strftime('%Y-%m-%d')
     logger.info(f'开始处理量化王策略数据，日期: {today}')
 
+    all_today_trades = []
+    portfolio_stats = {}
+
     # 获取策略数据
-    raw_data = fetch_strategy_data()
-    if not raw_data:
-        logger.warning("未能获取到策略数据")
-        return False, None
+    for Lhw_id in Lhw_ids:
+        raw_data = fetch_strategy_data(Lhw_id)
+        trade_count = len(raw_data) if raw_data else 0
+        portfolio_stats[Lhw_id] = trade_count
+        logger.info(f"策略ID: {Lhw_id} - 获取到 {trade_count} 条策略数据")
 
-    logger.info(f"共获取到 {len(raw_data)} 条策略数据")
+        if not raw_data:
+            logger.warning(f"未能获取到策略 {Lhw_id} 的数据")
+            continue
 
-    # 处理数据，提取今日交易
-    today_trades = process_strategy_data(raw_data)
+        # 处理数据，提取今日交易
+        today_trades = process_strategy_data(raw_data, Lhw_id)
+        all_today_trades.extend(today_trades)
 
-    if not today_trades:
+        logger.info(f"策略ID: {Lhw_id} - 提取到 {len(today_trades)} 条今日交易数据")
+
+    # 输出每个策略的数据统计
+    logger.info("📊 每个策略的数据统计:")
+    for pid, count in portfolio_stats.items():
+        logger.info(f"策略ID: {pid}, 名称: {Lhw_ids_to_name.get(str(pid), '未知策略')}, 数据条数: {count}")
+
+    if not all_today_trades:
         logger.info("---------------量化王策略 今日无交易数据----------------")
         return False, None
 
     # 转换为DataFrame
-    today_trades_df = pd.DataFrame(today_trades)
+    today_trades_df = pd.DataFrame(all_today_trades)
     today_trades_df = today_trades_df.sort_values('时间', ascending=False)  # 按时间倒序排序
 
     # 标准化数据格式
     today_trades_df = standardize_dataframe(today_trades_df)
 
-    # 打印时去掉'理由'列
+    # 过滤掉科创板和创业板的股票
+    today_trades_df = today_trades_df[today_trades_df['市场'] == '沪深A股']
     today_trades_df_without_content = today_trades_df.drop(columns=['理由'], errors='ignore')
     logger.info(f'今日交易数据 {len(today_trades_df_without_content)} 条\n{today_trades_df_without_content}')
 
     # 读取历史数据
-    history_df_file = Strategy_portfolio_today_file
+    history_df_file = Lhw_portfolio_today_file
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间', '理由']
 
     try:

@@ -178,6 +178,7 @@ class CommonPage:
     
             password_changcheng = '660493'
             password_chuangcai = '170212'
+            password_zhongtai = '170212'
 
             # 开始切换账户
             if self.current_account_trade.get_text() != to_account:
@@ -192,7 +193,9 @@ class CommonPage:
                     if to_account == '长城证券':
                         time.sleep(1)
                         password_input.set_text(password_changcheng)
-                    else:
+                    elif to_account == '中泰证券':
+                        password_input.set_text(password_zhongtai)
+                    elif to_account == '川财证券':
                         password_input.set_text(password_chuangcai)
     
                     keeplogin_checkbox.click()

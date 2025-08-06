@@ -96,8 +96,6 @@ async def check_morning_signals():
 
     # 检查是否在信号检查时间窗口内（9:25-9:35）
     if dt_time(9, 25) <= current_time <= dt_time(9, 28):
-    #定时在九点二十五执行
-    # if  current_time == dt_time(9, 25):
         logger.info("开始执行早盘信号检查...")
         # 检查是否已经执行过今天的信号检查
         if not morning_signal_checked:
@@ -134,7 +132,6 @@ async def check_morning_signals():
                 if stock_signals_found or etf_signals_found:
                     all_signals = stock_signals + etf_signals
                     summary_msg = "📈📉 早盘信号提醒 📈📉\n" + "\n".join(all_signals)
-                    # send_notification(summary_msg)
                     logger.info("早盘信号检查完成，发现信号")
                 else:
                     logger.info("早盘信号检查完成，未发现明显信号")
@@ -149,7 +146,6 @@ async def check_morning_signals():
         # 如果过了信号检查时间窗口，重置标记以便第二天使用
         if current_time > dt_time(9, 35):
             morning_signal_checked = False
-
 
 def is_trading_day(date: datetime.date) -> bool:
     """
@@ -210,9 +206,6 @@ async def main():
     # 初始化账户索引
     current_account_index = 0
 
-    # 初始化国债逆回购状态
-    guozhai_success = False
-
     # 记录开始时间，用于最大运行时长控制
     start_time = datetime.datetime.now()
 
@@ -221,6 +214,10 @@ async def main():
 
     # 标记是否已切换过账户
     account_switched_today = False
+
+    # 国债逆回购状态跟踪 - 为每个账户分别跟踪
+    guozhai_status = {account: False for account in ACCOUNTS}
+    guozhai_retry_status = {account: False for account in ACCOUNTS}  # 重试状态
 
     while True:
         now = datetime.datetime.now().time()
@@ -266,14 +263,7 @@ async def main():
         combination_data = None
 
         # 判断是否在策略任务时间窗口（9:30-9:33）
-        # 改成到了九点三十一就执行一次
-        #判断当前时间，如果到了九点三十一就执行一次
-        now = datetime.datetime.now().time()
-        # if dt_time(9, 31) == now:
-
-
-
-        if dt_time(9, 31) <= now <= dt_time(9, 35):
+        if dt_time(9, 31) <= now <= dt_time(10, 35):
         # if dt_time(9, 31):
             # holding_success, ai_datas = Ai_strategy_main()
             #
@@ -365,21 +355,46 @@ async def main():
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
 
-        # 国债逆回购操作（只执行一次）
-        if not guozhai_success and dt_time(14,56) <= now <= dt_time(end_time_hour,end_time_minute):
-            logger.info("---------------------国债逆回购任务开始执行---------------------")
-            guozhai = GuozhaiPage(d)
-            success, message = guozhai.guozhai_operation()
-            if success:
-                logger.info("国债逆回购成功")
-                guozhai_success = True  # 标记国债逆回购任务已执行
+        # 国债逆回购操作（为每个账户执行一次）
+        if dt_time(14, 56) <= now <= dt_time(end_time_hour, end_time_minute):
+            current_account = ACCOUNTS[current_account_index]
+            logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")
 
-                # 国债逆回购成功后切换账户
+            # 切换到当前账户
+            guozhai_page = GuozhaiPage(d)
+            if not guozhai_page.guozhai_change_account(current_account):
+                logger.warning(f"切换到账户 {current_account} 失败")
+                # 尝试切换到下一个账户
                 current_account_index = switch_to_next_account(d, current_account_index)
-                account_switched_today = True
+                await asyncio.sleep(2)
+                continue
+
+            # 如果当前账户还未成功执行，或者执行失败且还未重试
+            if not guozhai_status[current_account] or (not guozhai_retry_status[current_account] and guozhai_status[current_account]):
+                guozhai = GuozhaiPage(d)
+                success, message = guozhai.guozhai_operation()
+
+                if success:
+                    logger.info(f"国债逆回购成功 (账户: {current_account})")
+                    guozhai_status[current_account] = True
+                    send_notification(f"国债逆回购任务完成 (账户: {current_account}): {message}")
+                else:
+                    logger.info(f"国债逆回购失败 (账户: {current_account}): {message}")
+                    # 标记需要重试
+                    if not guozhai_status[current_account]:
+                        guozhai_status[current_account] = True  # 标记已尝试
+                        guozhai_retry_status[current_account] = False  # 需要重试
+                    else:
+                        guozhai_retry_status[current_account] = True  # 已重试过
+
+                logger.info(f"---------------------国债逆回购任务执行结束 (账户: {current_account})---------------------")
+
+                # 切换到下一个账户
+                current_account_index = switch_to_next_account(d, current_account_index)
             else:
-                logger.info(f"国债逆回购失败: {message}")
-            logger.info("---------------------国债逆回购任务执行结束---------------------")
+                logger.debug(f"账户 {current_account} 已完成国债逆回购任务，跳过执行")
+                # 切换到下一个账户
+                current_account_index = switch_to_next_account(d, current_account_index)
 
         else:
             logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
@@ -390,10 +405,16 @@ async def main():
             account_switched_today = True
             logger.info("每日账户切换完成")
 
-        # 重置每日账户切换标记
-        if dt_time(0, 0) <= now <= dt_time(1, 0) and account_switched_today:
-            account_switched_today = False
-            logger.info("重置每日账户切换标记")
+        # 重置每日账户切换标记和国债逆回购状态
+        if dt_time(0, 0) <= now <= dt_time(1, 0):
+            if account_switched_today:
+                account_switched_today = False
+                logger.info("重置每日账户切换标记")
+
+            # 重置国债逆回购状态（新的一天）
+            guozhai_status = {account: False for account in ACCOUNTS}
+            guozhai_retry_status = {account: False for account in ACCOUNTS}
+            logger.info("重置国债逆回购状态")
 
         # 随机等待，降低请求频率规律性
         delay = random.uniform(50, 70)

@@ -620,17 +620,18 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 logger.info(f"🚀 开始交易: {operation} {stock_name}")
 
                 # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
-                if operation == "卖出" and new_ratio == 0.0:
+                if operation == "卖出" and new_ratio == 0:
                     logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
                     # 直接调用交易逻辑，不依赖自动计算数量
-                    status, info = trader.operate_stock(operation, stock_name, volume=None)
+                    status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+
                 # 特殊处理：AI市场追踪策略买入时使用固定股数
                 elif strategy_name == "AI市场追踪策略" and operation == "买入":
                     fixed_volume = 200  # 固定买入200股
                     logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
                     status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
                 else:
-                    status, info = trader.operate_stock(operation, stock_name, volume=None)
+                    status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
 
                 # 构造记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -730,7 +731,8 @@ if __name__ == '__main__':
     # # file_path = ["test.xlsx"]
     trade_history_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx'
     # file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx'
-    portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx'
+    # portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx'
+    portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx'
     # # file_path = "test.xlsx"
     # write_to_excel_append(data,file_path, sheet_name=today)
     read =read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)
@@ -742,11 +744,11 @@ if __name__ == '__main__':
     # file_paths = [
     #     Strategy_portfolio_today_file,Combination_portfolio_today_file
     # ]
-    # # from auto_trade_on_ths import THSPage
-    # import uiautomator2 as u2
-    # d = u2.connect()
-    # package_name = "com.hexin.plat.android"
-    # d.app_start(package_name, wait=True)
-    # logger.info(f"启动App成功: {package_name}")
-    # ths_page = THSPage(d)
-    # process_excel_files(ths_page=ths_page, file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE, holding_stock_file=None)
+    # from auto_trade_on_ths import THSPage
+    import uiautomator2 as u2
+    d = u2.connect()
+    package_name = "com.hexin.plat.android"
+    d.app_start(package_name, wait=True)
+    logger.info(f"启动App成功: {package_name}")
+    ths_page = THSPage(d)
+    process_excel_files(ths_page=ths_page, file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE, holding_stock_file=None)

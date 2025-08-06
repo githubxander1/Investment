@@ -24,6 +24,7 @@ OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
 Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
 Combination_portfolio_today_file = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
 Robot_portfolio_today_file = os.path.join(DATA_DIR, 'Robot_portfolio_today.xlsx')
+Lhw_portfolio_today_file = os.path.join(DATA_DIR, 'Lhw_portfolio_today.xlsx')
 
 Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'Ai_Strategy_position.xlsx')
 ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")
@@ -91,9 +92,10 @@ Strategy_id_to_name = {
 
 
 # 组合 手动创建组合ID到组合名称的映射
-Combination_ids = ['9800','7152','12404']
+Combination_ids = ['9800','7152','12404','20811']
 # Combination_ids = ['19347']
 Combination_ids_to_name = {
+    '20811': '组-一枝梨花压海棠',#胜率低，收益高
     '9800': '组-逻辑为王',#胜率低，收益高
     '7152': '组-中线龙头',#胜率低，收益高
     '12404': '组-精选个股',#
@@ -107,6 +109,12 @@ Combination_ids_to_name = {
     '14980': '波段突击',#胜率高 落后15
 
     # '18710': '用收益率征服您'
+}
+
+Lhw_ids = ['8007','8005']
+Lhw_ids_to_name = {
+    '29669': 'LHW-九凤鸣岐',
+    '8005': 'LHW-穷奇踏焰',
 }
 
 ETF_ids = ['29684', "29634"]

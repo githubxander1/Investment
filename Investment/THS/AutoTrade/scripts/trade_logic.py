@@ -54,8 +54,10 @@ class TradeLogic:
 
             if new_ratio is not None and new_ratio != 0:
                 volume = int(available_shares * 0.5)  # 半仓卖出
+                logger.info("半仓卖出")
             else:
                 volume = available_shares  # 全部卖出
+                logger.info("全部卖出")
 
             volume = (volume // 100) * 100
             if volume < 100:
@@ -100,7 +102,7 @@ class TradeLogic:
         volume = self.calculate_sell_volume(available_positions, ratio)
         return volume
 
-    def operate_stock(self, operation, stock_name, volume=None):
+    def operate_stock(self, operation, stock_name, volume=None, new_ratio=None):
         """
         确保在账户页
         更新账户数据：买入时的可用自己，卖出时的可用数量

@@ -9,9 +9,11 @@ import requests
 import json
 
 from Investment.THS.AutoTrade.config.settings import Robot_holding_file
+from Investment.THS.AutoTrade.utils.format_data import determine_market
 
 # 所有股票信息文件路径
 ALL_STOCKS_FILE = 'all_stocks.xlsx'
+Stock_zh_a_spot = 'stock_zh_a_spot.xlsx'
 
 # 全局变量存储股票信息
 all_stocks_df = None
@@ -31,32 +33,36 @@ def load_all_stocks():
             print(f"从本地Excel文件加载股票信息失败: {e}")
 
     # 如果本地文件不存在或加载失败，则从网络获取
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            print(f"正在尝试通过 stock_zh_a_spot 获取所有股票信息... (第 {attempt + 1} 次尝试)")
-            # 添加随机延迟，避免请求过于频繁
-            time.sleep(random.uniform(1, 2))
+    if not os.path.exists(Stock_zh_a_spot):
+        print("本地Stock_zh_a_spotExcel文件不存在，正在尝试通过 stock_zh_a_spot 获取所有股票信息...")
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                print(f"正在尝试通过 stock_zh_a_spot 获取所有股票信息... (第 {attempt + 1} 次尝试)")
+                # 添加随机延迟，避免请求过于频繁
+                time.sleep(random.uniform(1, 2))
 
-            # 使用stock_zh_a_spot获取所有股票信息
-            all_stocks_df = ak.stock_zh_a_spot()
+                # 使用stock_zh_a_spot获取所有股票信息
+                all_stocks_df = ak.stock_zh_a_spot()
+                #增加一列‘市场’
+                all_stocks_df['市场'] = all_stocks_df['代码'].apply(lambda x: determine_market(x))
 
-            # 保存到Excel文件供以后使用
-            all_stocks_df.to_excel(ALL_STOCKS_FILE, index=False)
-            print(f"已保存所有股票信息到 {ALL_STOCKS_FILE}")
-            print(f"通过 stock_zh_a_spot 成功获取 {len(all_stocks_df)} 条股票信息")
-            return
+                # 保存到Excel文件供以后使用
+                all_stocks_df.to_excel(ALL_STOCKS_FILE, index=False)
+                print(f"已保存所有股票信息到 {ALL_STOCKS_FILE}")
+                print(f"通过 stock_zh_a_spot 成功获取 {len(all_stocks_df)} 条股票信息")
+                return
 
-        except Exception as e:
-            print(f"第 {attempt + 1} 次尝试获取股票信息失败: {e}")
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt  # 指数退避
-                print(f"等待 {wait_time} 秒后重试...")
-                time.sleep(wait_time)
-            continue
+            except Exception as e:
+                print(f"第 {attempt + 1} 次尝试获取股票信息失败: {e}")
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt  # 指数退避
+                    print(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
+                continue
 
-    print("所有方法都失败，无法获取股票信息")
-    all_stocks_df = pd.DataFrame()
+        print("所有方法都失败，无法获取股票信息")
+        all_stocks_df = pd.DataFrame()
 
 def get_stock_name_by_code(code):
     """根据股票代码获取股票名称"""
@@ -150,9 +156,13 @@ def extract_robot_data(response_data):
             code = symbol.replace('sh', '').replace('sz', '') if symbol.startswith(('sh', 'sz')) else symbol
             stock_name = get_stock_name_by_code(code)
 
+        from Investment.THS.AutoTrade.utils.format_data import determine_market
+        market = determine_market(symbol)
+
         stock_item = {
             "股票代码": symbol,
             "股票名称": stock_name,
+            "市场": market,
             "最新价": log.get('price', ''),
             "成本价": log.get('basePrice', ''),
             "持仓量": log.get('shares', ''),
@@ -215,5 +225,5 @@ def main():
 # 运行主函数
 if __name__ == "__main__":
     main()
-    name = get_stock_name_by_code("bj430017")
-    print(name)
+    # name = get_stock_name_by_code("bj430017")
+    # print(name)

@@ -112,9 +112,9 @@ def fetch_and_extract_data(portfolio_id):
             if '***' in name:
                 if extracted_name != '无':
                     name = extracted_name
-                    logger.info(f"标的名称被隐藏，已从content中提取到名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
-                else:
-                    logger.warning(f"标的名称被隐藏，且未能从content中提取到名称 - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                    # logger.info(f"标的名称被隐藏，已从content中提取到名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                # else:
+                    # logger.warning(f"标的名称被隐藏，且未能从content中提取到名称 - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
 
             # 只有在确实提取不到名称时才记录警告
             elif name == '无':
