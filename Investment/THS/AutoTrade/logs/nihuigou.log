@@ -949,3 +949,117 @@ uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.S
 [32m2025-08-05 14:59:57 - INFO - 已点击: 借出按钮[0m
 [31m2025-08-05 14:59:58 - ERROR - 委托失败: 交易深市国债，借出资金必须为1000的整数倍[0m
 [32m2025-08-05 14:59:59 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[33m2025-08-07 15:01:55 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:01:55 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:01:59 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:01:59 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:04 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:04 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:09 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:09 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:14 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:14 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:18 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:18 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:22 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:23 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[33m2025-08-07 15:02:27 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:27 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:31 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:02:41 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:45 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:45 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:49 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:49 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-07 15:02:58 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:02:58 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:03 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:03 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:09 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:10 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:14 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:14 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:19 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:19 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:23 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:23 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:28 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:28 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:32 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:32 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:37 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:03:37 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:05:17 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[33m2025-08-07 15:05:17 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[32m2025-08-07 15:09:16 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:09:17 - INFO - 已切换账户: 长城证券[0m
+[32m2025-08-07 15:09:17 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:09:18 - INFO - 已切换账户: 川财证券[0m
+[33m2025-08-07 15:18:53 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-08-07 15:18:54 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:18:55 - INFO - 已切换账户: 长城证券[0m
+[32m2025-08-07 15:18:55 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-07 15:18:58 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-07 15:18:58 - INFO - 已滑动到底部[0m
+[32m2025-08-07 15:19:01 - INFO - 点击 1天期 成功[0m
+[31m2025-08-07 15:19:03 - ERROR - 当前页面不是 GC001(1天期)[0m
+[31m2025-08-07 15:19:03 - ERROR - 当前页面不是 GC001(1天期)[0m
+[33m2025-08-07 15:19:07 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[32m2025-08-07 15:19:07 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:19:08 - INFO - 已切换账户: 川财证券[0m
+[33m2025-08-07 15:20:19 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-08-07 15:20:19 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:20:20 - INFO - 已切换账户: 川财证券[0m
+[32m2025-08-07 15:20:20 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-07 15:20:23 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-07 15:20:24 - INFO - 已滑动到底部[0m
+[32m2025-08-07 15:20:27 - INFO - 点击 1天期 成功[0m
+[32m2025-08-07 15:20:29 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-07 15:20:30 - INFO - 已点击: 借出按钮[0m
+[31m2025-08-07 15:20:32 - ERROR - 委托失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-08-07 15:20:34 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[33m2025-08-07 15:20:34 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-08-07 15:20:34 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:20:35 - INFO - 已切换账户: 中泰证券[0m
+[32m2025-08-07 15:21:44 - INFO - 当前账户: 中泰证券, 不用切换账户[0m
+[32m2025-08-07 15:21:44 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-07 15:21:48 - INFO - 已进入: 国债逆回购入口[0m
+[31m2025-08-07 15:22:00 - ERROR - 操作失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 150, in guozhai_operation
+    if not self._find_and_click_product("1天期"):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 51, in _find_and_click_product
+    self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[33m2025-08-07 15:22:00 - WARNING - 无法从账户信息中提取中文名称: **8250[0m
+[32m2025-08-07 15:22:01 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:01 - INFO - 已切换账户: 长城证券[0m
+[32m2025-08-07 15:22:21 - INFO - 当前账户: 长城证券, 不用切换账户[0m
+[32m2025-08-07 15:22:21 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:22 - INFO - 已切换账户: 川财证券[0m
+[32m2025-08-07 15:22:35 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:35 - INFO - 已切换账户: 长城证券[0m
+[32m2025-08-07 15:22:36 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:37 - INFO - 已切换账户: 川财证券[0m
+[33m2025-08-07 15:22:37 - WARNING - 未找到账户信息元素[0m
+[32m2025-08-07 15:22:37 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:38 - INFO - 已切换账户: 中泰证券[0m
+[32m2025-08-07 15:22:46 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:47 - INFO - 已切换账户: 长城证券[0m
+[32m2025-08-07 15:22:48 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:48 - INFO - 已切换账户: 川财证券[0m
+[33m2025-08-07 15:22:48 - WARNING - 未找到账户信息元素[0m
+[32m2025-08-07 15:22:49 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-07 15:22:49 - INFO - 已切换账户: 中泰证券[0m

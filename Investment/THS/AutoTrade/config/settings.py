@@ -113,8 +113,8 @@ Combination_ids_to_name = {
 
 Lhw_ids = ['8007','8005']
 Lhw_ids_to_name = {
-    '29669': 'LHW-九凤鸣岐',
-    '8005': 'LHW-穷奇踏焰',
+    '8007': 'LHW-九凤鸣岐',
+    '8005': 'LHW-穷奇踏焰'
 }
 
 ETF_ids = ['29684', "29634"]

@@ -8,7 +8,7 @@ from sqlalchemy.sql.functions import current_time
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
-    Combination_holding_file, Strategy_portfolio_today_file, Combination_portfolio_today_file
+    Combination_holding_file, Strategy_portfolio_today_file, Combination_portfolio_today_file, Lhw_portfolio_today_file
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
@@ -510,8 +510,11 @@ def get_stock_to_operate(trade_history_file, today_portfolio_file):
         to_operate_list.append(exists)
 
     to_operate_list_df = pd.DataFrame(to_operate_list, columns=['标的名称', '操作', '新比例%'])
+    stock_name = to_operate_list_df['标的名称']
+    operation = to_operate_list['操作']
+    new_ratio = to_operate_list_df['新比例%']
 
-    return to_operate_list_df
+    return stock_name, operation, new_ratio
         # logger.info(f"🚀 开始交易: {operation} {stock_name}")
         # # 根据策略切换账户
         # if strategy_name in ["AI市场追踪策略", "GPT定期精选"]:  # 策略
@@ -562,7 +565,7 @@ def get_stock_to_operate(trade_history_file, today_portfolio_file):
 # except Exception as e:
 # logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
 
-def process_excel_files(ths_page, file_paths, operation_history_file, history_df=None):
+def process_excel_files(file_paths, operation_history_file, history_df=None):
     # 强制刷新操作历史缓存
     history_df = read_operation_history(operation_history_file, force_refresh=True)
 
@@ -633,6 +636,11 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 else:
                     status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
 
+                # 检查交易是否成功执行
+                if status is None:
+                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                    continue
+
                 # 构造记录
                 operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 record = pd.DataFrame([{
@@ -649,7 +657,7 @@ def process_excel_files(ths_page, file_paths, operation_history_file, history_df
                 logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
                 # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
-                history_df = pd.concat([history_df, record], ignore_index=True)
+                history_df = pd.concat([history_df, record], ignore_index=True, sort=False)
 
         except pandas.errors.EmptyDataError:
             logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
@@ -741,14 +749,14 @@ if __name__ == '__main__':
 
         # operation_data = read_portfolio_or_operation_data(OPERATION_HISTORY_FILE, sheet_name=today)
 
-    # file_paths = [
-    #     Strategy_portfolio_today_file,Combination_portfolio_today_file
-    # ]
+    file_paths = [
+        Lhw_portfolio_today_file
+    ]
     # from auto_trade_on_ths import THSPage
     import uiautomator2 as u2
     d = u2.connect()
     package_name = "com.hexin.plat.android"
     d.app_start(package_name, wait=True)
     logger.info(f"启动App成功: {package_name}")
-    ths_page = THSPage(d)
-    process_excel_files(ths_page=ths_page, file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE, holding_stock_file=None)
+    # ths_page = THSPage(d)
+    process_excel_files(file_paths=file_paths, operation_history_file=OPERATION_HISTORY_FILE)

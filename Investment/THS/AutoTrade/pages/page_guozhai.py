@@ -200,10 +200,26 @@ class GuozhaiPage(THSPage):
         account = self.d(className="android.widget.TextView", text=account_name)#，如果account_name等于元素定位里的文案，就不用跳转
 
         # 提取 //android.widget.TextView[@text="长城证券 **5735"] 里取汉字
-        current_account = self.d(resourceId="com.hexin.plat.android:id/account_info_view").get_text()
-        if current_account:
-            current_account = re.search(r"[\u4e00-\u9fa5]+", current_account).group()
-            print(f"当前账户: {current_account}")
+        current_account_element = self.d(resourceId="com.hexin.plat.android:id/account_info_view")
+        # current_account = current_account_element.replace(" ", "")
+        # print(current_account)
+        if current_account_element.exists():
+            current_account_text = current_account_element.get_text()
+            if current_account_text:
+                # 修复：检查正则表达式是否匹配到内容
+                match = re.search(r"[\u4e00-\u9fa5]+", current_account_text)
+                if match:
+                    current_account = match.group()
+                    print(f"当前账户: {current_account}")
+                else:
+                    logger.warning(f"无法从账户信息中提取中文名称: {current_account_text}")
+                    current_account = ""
+            else:
+                logger.warning("获取到的账户信息为空")
+                current_account = ""
+        else:
+            logger.warning("未找到账户信息元素")
+            current_account = ""
 
         if current_account == account_name:
             logger.info(f"当前账户: {current_account}, 不用切换账户")
@@ -230,4 +246,4 @@ if __name__ == '__main__':
     #     print(f"Operation failed: {message}")
     guozhai.guozhai_change_account("长城证券")
     guozhai.guozhai_change_account("川财证券")
-    # guozhai.guozhai_change_account("中泰证券")
+    guozhai.guozhai_change_account("中泰证券")

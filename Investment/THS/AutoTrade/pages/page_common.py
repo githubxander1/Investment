@@ -74,6 +74,7 @@ class CommonPage:
     def goto_account_page(self):
             """确保当前在账户页"""
             time.sleep(1)
+            logger.info("正在切换至: 账户页")
             current_page = self.where_page()
             logger.info(f"当前页面: {current_page}")
 
@@ -109,6 +110,7 @@ class CommonPage:
                 logger.error("❌ 无法返回账户页")
                 return False
     def goto_trade_page(self,max_retry=3):
+        logger.info("正在切换至: 交易页")
         for _ in range(max_retry):
             current_page = self.where_page()
             if current_page == "交易页":

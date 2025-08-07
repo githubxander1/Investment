@@ -122,7 +122,7 @@ def process_strategy_data(raw_data, strategy_id):
 
     return today_trades
 
-async def Strategy_main():
+async def Lhw_main():
     """
     主函数，获取并处理量化王策略数据
     """
@@ -221,7 +221,7 @@ async def Strategy_main():
 
 if __name__ == '__main__':
     # 测试代码
-    asyncio.run(Strategy_main())
+    asyncio.run(Lhw_main())
 
     # 测试数据解析
     # test_data = [

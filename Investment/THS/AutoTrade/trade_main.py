@@ -9,6 +9,7 @@ import uiautomator2 as u2
 
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
+from Investment.THS.AutoTrade.scripts.portfolio_today.Lhw_portfolio_today import Lhw_main
 from Investment.THS.AutoTrade.scripts.portfolio_today.Robots_portfolio_today import Robot_main
 from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
@@ -23,7 +24,7 @@ from Investment.THS.AutoTrade.config.settings import (
     MIN_DELAY,
     MAX_DELAY,
     MAX_RUN_TIME,
-    Robot_portfolio_today_file, Account_holding_file,
+    Robot_portfolio_today_file, Account_holding_file, Lhw_portfolio_today_file,
 )
 
 # 导入你的20日监控模块
@@ -258,6 +259,7 @@ async def main():
         robot_success = False
         strategy_success = False
         combination_success = False
+        lhw_success = False
 
         strategy_data = None
         combination_data = None
@@ -339,8 +341,10 @@ async def main():
         if dt_time(9, 25) <= now <= dt_time(end_time_hour, end_time_minute):
             logger.info("---------------------组合任务开始执行---------------------")
             combination_result = await Combination_main()
+            lhw_result = await Lhw_main()
             if combination_result:
                 combination_success, combination_data = combination_result
+                lhw_success, lhw_data = lhw_result
             else:
                 logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
             logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
@@ -348,9 +352,9 @@ async def main():
             # 如果有任何一个数据获取成功，则执行交易处理
             # if strategy_success or combination_success or holding_success:
                 # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
-            if strategy_success or combination_success or robot_success:
-                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file]
-                process_excel_files(trader, file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
+            if strategy_success or combination_success or robot_success or lhw_success:
+                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
+                process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
 
         else:
             logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
@@ -361,6 +365,8 @@ async def main():
             logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")
 
             # 切换到当前账户
+            # 切换到交易页面
+
             guozhai_page = GuozhaiPage(d)
             if not guozhai_page.guozhai_change_account(current_account):
                 logger.warning(f"切换到账户 {current_account} 失败")
@@ -442,6 +448,6 @@ if __name__ == '__main__':
     # # 最大运行时间（小时）
     # MAX_RUN_TIME = 8
     end_time_hour = 15
-    end_time_minute = 00
+    end_time_minute = 30
 
     asyncio.run(main())

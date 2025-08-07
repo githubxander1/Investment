@@ -1,9 +1,10 @@
+# trade_logic.py
+
 from Investment.THS.AutoTrade.pages.page import THSPage
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 
 import uiautomator2 as u2
 
-# from Investment.THS.AutoTrade.scripts.volume_calculate import calculate_sell_volume, calculate_buy_volume
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
@@ -28,6 +29,7 @@ class TradeLogic:
         """
         try:
             if buying_power is None or real_price is None:
+                logger.warning(f"计算买入数量失败：buying_power={buying_power}, real_price={real_price}")
                 return None
 
             volume = int((buying_power if buying_power < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / real_price)
@@ -48,28 +50,38 @@ class TradeLogic:
         :return: 卖出数量，或 None 表示失败
         """
         try:
-            if available_shares <= 0:
-                logger.warning("无可用数量")
+            if available_shares is None or available_shares <= 0:
+                logger.warning(f"无可用数量: available_shares={available_shares}")
                 return None
 
-            if new_ratio is not None and new_ratio != 0:
-                volume = int(available_shares * 0.5)  # 半仓卖出
-                logger.info("半仓卖出")
-            else:
+            # 确保new_ratio是数值类型
+            if new_ratio is not None:
+                try:
+                    new_ratio = float(new_ratio)
+                except (ValueError, TypeError):
+                    logger.warning(f"new_ratio转换为数值失败: {new_ratio}")
+                    new_ratio = None
+
+            # 当new_ratio为0或None时，全仓卖出
+            if new_ratio is None or new_ratio == 0:
                 volume = available_shares  # 全部卖出
                 logger.info("全部卖出")
+            else:
+                volume = int(available_shares * 0.5)  # 半仓卖出
+                logger.info("半仓卖出")
 
             volume = (volume // 100) * 100
             if volume < 100:
-                logger.warning("卖出数量不足100股")
-                return None
+                logger.warning(f"卖出数量不足100股: 计算结果={volume}")
+                # 在这种情况下，我们仍然返回计算出的数量，让调用者决定是否继续
+                return volume
 
             return volume
         except Exception as e:
             logger.error(f"卖出数量计算失败: {e}")
             return None
 
-    def buy_volume(self, operation,stock_name):
+    def buy_volume(self, operation, stock_name):
         # 1. 可用资金
         available_funds = self.account.get_buying_power()
 
@@ -115,15 +127,17 @@ class TradeLogic:
         """
         # self.goto_account_page()
         # self.ths_page.ensure_on_account_page()
+        # 进入到 交易 页面
         common_page.goto_account_page()
         try:
+            # 更新账户数据
             self._current_stock_name = stock_name
             account_info = AccountInfo()
 
             # 初始化资金: 可用资金,可卖数量,卖出比例
             buy_available = None
             sale_available = None
-            new_ratio = None
+            # new_ratio = None  # 这行代码是多余的，因为new_ratio是参数传入的
 
             self.ths_page.click_holding_stock_button()
             if operation == "买入":
@@ -132,14 +146,25 @@ class TradeLogic:
                 stock_exist, sale_available = account_info.get_stock_available(self._current_stock_name)
                 if not stock_exist:
                     error_info = f"{self._current_stock_name} 没有持仓"
+                    logger.error(error_info)
                     return False, error_info
 
-                new_ratio = 10
                 # 如果传入了固定股数，则直接使用
                 if volume is not None:
                     logger.info(f"使用固定股数: {volume}")
                 else:
+                    # 计算卖出数量
                     volume = self.calculate_sell_volume(sale_available, new_ratio)
+                    if volume is None:
+                        error_msg = "卖出数量计算失败"
+                        logger.error(error_msg)
+                        return False, error_msg
+
+                    # 检查计算出的数量是否足够
+                    if volume < 100:
+                        error_msg = f"计算出的卖出数量不足100股: {volume}"
+                        logger.error(error_msg)
+                        return False, error_msg
 
             # # 点击按钮 买/卖 操作按钮（tab)
             self.ths_page.click_operate_button(operation)
@@ -161,6 +186,18 @@ class TradeLogic:
                     if volume is None:
                         return False, "买入数量计算失败"
 
+                    # 检查计算出的数量是否足够
+                    if volume < 100:
+                        error_msg = f"计算出的买入数量不足100股: {volume}"
+                        logger.error(error_msg)
+                        return False, error_msg
+
+            # 确保volume不为None且是有效数值
+            if volume is None:
+                error_msg = "交易数量计算结果为None"
+                logger.error(error_msg)
+                return False, error_msg
+
             # 输入交易数量
             self.ths_page.input_volume(int(volume))
             # 点击提交按钮
@@ -177,10 +214,10 @@ class TradeLogic:
             logger.info(f"{operation} {stock_name} {volume}股 {success} {info}")
             return success, info
         except Exception as e:
-            calculate_volume = "未知"
+            calculate_volume = volume if volume is not None else "未知"
             logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
             return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
 
 if __name__ == '__main__':
     trader = TradeLogic()
-    trader.operate_stock('卖出', '工商银行')
+    trader.operate_stock('买', '工商银行', 100)
