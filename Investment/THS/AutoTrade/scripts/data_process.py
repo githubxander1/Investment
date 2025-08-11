@@ -1,6 +1,6 @@
 # data_process.py
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas
 import pandas as pd
@@ -797,26 +797,26 @@ def process_excel_files(file_paths, operation_history_file, history_df=None):
     #     logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
 
 if __name__ == '__main__':
-    diff_result = get_difference_holding()
-
-    if 'error' in diff_result:
-        print("持仓差异分析失败，请查看日志。")
-    else:
-        if not diff_result['to_sell'].empty:
-            print("💡 发现需卖出的股票：")
-            # 显示需要卖出的股票及其账户信息
-            if '账户' in diff_result['to_sell'].columns:
-                print(diff_result['to_sell'][['标的名称', '账户']])
-            else:
-                print(diff_result['to_sell'][['标的名称']])
-        else:
-            print("✅ 当前无需卖出的标的")
-
-        if not diff_result['to_buy'].empty:
-            print("💡 发现需买入的股票：")
-            print(diff_result['to_buy'][['标的名称']])
-        else:
-            print("✅ 当前无需买入的标的")
+    # diff_result = get_difference_holding()
+    #
+    # if 'error' in diff_result:
+    #     print("持仓差异分析失败，请查看日志。")
+    # else:
+    #     if not diff_result['to_sell'].empty:
+    #         print("💡 发现需卖出的股票：")
+    #         # 显示需要卖出的股票及其账户信息
+    #         if '账户' in diff_result['to_sell'].columns:
+    #             print(diff_result['to_sell'][['标的名称', '账户']])
+    #         else:
+    #             print(diff_result['to_sell'][['标的名称']])
+    #     else:
+    #         print("✅ 当前无需卖出的标的")
+    #
+    #     if not diff_result['to_buy'].empty:
+    #         print("💡 发现需买入的股票：")
+    #         print(diff_result['to_buy'][['标的名称']])
+    #     else:
+    #         print("✅ 当前无需买入的标的")
 
     # file_path = Strategy_portfolio_today_file
     # file_path = [Strategy_portfolio_today_file,Combination_portfolio_today_file]
@@ -831,18 +831,20 @@ if __name__ == '__main__':
     #     portfolio_data = read_portfolio_or_operation_data(file_path)
     #     print(portfolio_data)
 
-    # today = datetime.now().strftime('%Y-%m-%d')
+    today = datetime.now().strftime('%Y-%m-%d')
+    # 昨天
+    today = (datetime.now() - timedelta(days=4)).strftime('%Y-%m-%d')
     # # data = [{"名称": "策略名称3", "操作": "操作1", "标的名称": "标的名称1", '代码': '201',"新比例%": "251",'市场':'sdf','时间':'12'}]
     # # data = pd.DataFrame(data)
     # # # file_path = ["test.xlsx"]
     # trade_history_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx'
     # # file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx'
     # # portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx'
-    # portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx'
+    portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx'
     # # # file_path = "test.xlsx"
     # # write_to_excel_append(data,file_path, sheet_name=today)
-    # read =read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)
-    # print(f"读取：\n{read}")
+    read =read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)
+    print(f"读取：\n{read}")
     # print(get_stock_to_operate(trade_history_file_path,portfolio_file_path))
 
         # operation_data = read_portfolio_or_operation_data(OPERATION_HISTORY_FILE, sheet_name=today)

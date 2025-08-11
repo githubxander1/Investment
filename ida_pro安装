@@ -1,0 +1,53 @@
+Requirement already satisfied: click>=7.0 in c:\users\hq\appdata\local\programs\python\python313\lib\site-packages (from uvicorn>=0.23.1->mcp>=1.6.0->ida-pro-mcp==1.4.0) (8.1.8)
+Requirement already satisfied: colorama in c:\users\hq\appdata\local\programs\python\python313\lib\site-packages (from click>=7.0->uvicorn>=0.23.1->mcp>=1.6.0->ida-pro-mcp==1.4.0) (0.4.6)
+Downloading mcp-1.12.4-py3-none-any.whl (160 kB)
+Downloading httpx_sse-0.4.1-py3-none-any.whl (8.1 kB)
+Downloading jsonschema-4.25.0-py3-none-any.whl (89 kB)
+Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading pydantic_settings-2.10.1-py3-none-any.whl (45 kB)
+Downloading pywin32-311-cp313-cp313-win_amd64.whl (9.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.5/9.5 MB 783.9 kB/s  0:00:11
+Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+Downloading rpds_py-0.27.0-cp313-cp313-win_amd64.whl (232 kB)
+Downloading sse_starlette-3.0.2-py3-none-any.whl (11 kB)
+Downloading typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+Building wheels for collected packages: ida-pro-mcp
+  Building wheel for ida-pro-mcp (pyproject.toml) ... done
+  Created wheel for ida-pro-mcp: filename=ida_pro_mcp-1.4.0-py3-none-any.whl size=30489 sha256=a429f962379f0c955260ebcb1e49aff973bded891eca06d1b55a459cfd919488
+  Stored in directory: C:\Users\HQ\AppData\Local\Temp\pip-ephem-wheel-cache-eb5vx_ij\wheels\89\b8\23\9419319618fee728d96d12e7821fb9a119b941018b9a7274e6
+Successfully built ida-pro-mcp
+Installing collected packages: pywin32, typing-inspection, rpds-py, httpx-sse, sse-starlette, referencing, pydantic-settings, jsonschema-specifications, jsonschema, mcp, ida-pro-mcp
+  Attempting uninstall: pywin32
+    Found existing installation: pywin32 308
+    Uninstalling pywin32-308:
+      Successfully uninstalled pywin32-308
+Successfully installed httpx-sse-0.4.1 ida-pro-mcp-1.4.0 jsonschema-4.25.0 jsonschema-specifications-2025.4.1 mcp-1.12.4 pydantic-settings-2.10.1 pywin32-311 referencing-0.36.2 rpds-py-0.27.0 sse-starlette-3.0.2 typing-inspection-0.4.1
+PS D:\Xander\Inverstment> ida-pro-mcp --install
+Skipping Cline installation
+  Config: C:\Users\HQ\AppData\Roaming\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json (not found)
+Skipping Roo Code installation
+  Config: C:\Users\HQ\AppData\Roaming\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\mcp_settings.json (not found)
+Skipping Claude installation
+  Config: C:\Users\HQ\AppData\Roaming\Claude\claude_desktop_config.json (not found)
+Skipping Cursor installation
+  Config: C:\Users\HQ\.cursor\mcp.json (not found)
+Skipping Windsurf installation
+  Config: C:\Users\HQ\.codeium\windsurf\mcp_config.json (not found)
+Skipping LM Studio installation
+  Config: C:\Users\HQ\.lmstudio\mcp.json (not found)
+No MCP servers installed. For unsupported MCP clients, use the following config:
+
+{
+  "mcpServers": {
+    "github.com/mrexodia/ida-pro-mcp": {
+      "command": "C:\\Users\\HQ\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "args": [
+        "C:\\Users\\HQ\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\ida_pro_mcp\\server.py"
+      ],
+      "timeout": 1800,
+      "disabled": false
+    }
+  }
+}
+Installed IDA Pro plugin (IDA restart required)
+  Plugin: C:\Users\HQ\AppData\Roaming\Hex-Rays\IDA Pro\plugins\mcp-plugin.py
