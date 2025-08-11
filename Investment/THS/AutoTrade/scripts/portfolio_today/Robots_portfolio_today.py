@@ -102,10 +102,12 @@ def extract_trade_data(robots):
         else:
             print(f"⚠️ 获取 {robot_name} 成交记录失败")
 
-    if all_today_trades:# 列表非空（空列表 [] 会被视为 False，所以 if my_list 等价于“非空”）
-        df = pd.DataFrame(all_today_trades)
-        return  df
-    return None
+    if all_today_trades:  # 列表非空（空列表 [] 会被视为 False，所以 if my_list 等价于"非空"）
+       df = pd.DataFrame(all_today_trades)
+       return df
+    # 当没有数据时，返回一个空的 DataFrame，列名与有数据时一致
+    return pd.DataFrame(columns=['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间'])
+
 async def Robot_main():
     # 机器人列表
     robots = {
@@ -114,7 +116,7 @@ async def Robot_main():
         "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
     }
     all_today_trades_df = extract_trade_data(robots)
-    all_today_trades_df = all_today_trades_df[all_today_trades_df["市场"] == "沪深A股"]
+    # all_today_trades_df = all_today_trades_df[all_today_trades_df["市场"] == "沪深A股"]
     # 读取历史数据
     history_data_file = Robot_portfolio_today_file
     expected_columns = ['名称', '操作', '标的名称', '代码', '最新价', '新比例%', '市场', '时间']

@@ -6,9 +6,11 @@ import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.config.settings import Account_holding_file, account_xml_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-# from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
+from Investment.THS.AutoTrade.pages.page_common import CommonPage
 
 logger = setup_logger("account_info.log")  # 创建日志实例
+
+common_page = CommonPage()
 
 class AccountInfo:
     def __init__(self):
@@ -287,23 +289,55 @@ class AccountInfo:
         logger.info("开始更新账户持仓信息...")
         # ths = GuozhaiPage(d)
         # ths.ensure_on_holding_page()
-        try:
-            header_info_df = self.extract_header_info()
-            stocks_df = self.extract_stock_info()
+        accounts = ["川财证券","长城证券","中泰证券"]
 
-            if header_info_df.empty or stocks_df.empty:
-                logger.warning("无法保存持仓信息：数据为空")
+        try:
+            account_data = {}
+
+            # 依次获取每个账户的数据
+            for account in accounts:
+                logger.info(f"正在获取 {account} 账户数据...")
+                common_page.change_account(account)
+
+                # 等待账户切换完成
+                time.sleep(2)
+
+                # 提取该账户的数据
+                header_info_df = self.extract_header_info()
+                stocks_df = self.extract_stock_info()
+
+                # 如果数据为空，记录警告但继续处理其他账户
+                if header_info_df.empty and stocks_df.empty:
+                    logger.warning(f"{account} 账户数据为空")
+                    account_data[account] = (pd.DataFrame(), pd.DataFrame())
+                    continue
+
+                # 存储该账户的数据
+                account_data[account] = (header_info_df, stocks_df)
+                logger.info(f"✅ {account} 账户数据获取完成")
+
+            # 将所有账户数据保存到同一个Excel文件的不同工作表中
+            if account_data:
+                with pd.ExcelWriter(Account_holding_file, engine='openpyxl') as writer:
+                    for account, (header_df, stocks_df) in account_data.items():
+                        # 保存表头数据到"{account}_表头"工作表
+                        if not header_df.empty:
+                            header_df.to_excel(writer, index=False, sheet_name=f"{account}_表头数据")
+
+                        # 保存持仓数据到"{account}_持仓"工作表
+                        if not stocks_df.empty:
+                            stocks_df.to_excel(writer, index=False, sheet_name=f"{account}_持仓数据")
+
+                logger.info(f"✅ 所有账户持仓信息已更新并保存至 {Account_holding_file}")
+                return True
+            else:
+                logger.warning("所有账户数据均为空")
                 return False
 
-            with pd.ExcelWriter(Account_holding_file, engine='openpyxl') as writer:
-                header_info_df.to_excel(writer, index=False, sheet_name="表头数据")
-                stocks_df.to_excel(writer, index=False, sheet_name="持仓数据")
-
-            logger.info(f"✅ 账户持仓信息已更新并保存至 {Account_holding_file}")
-            return True
         except Exception as e:
             logger.error(f"❌ 保存持仓信息失败: {e}", exc_info=True)
             return False
+
 
 
 

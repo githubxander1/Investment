@@ -2,11 +2,11 @@
 import pandas as pd
 import akshare as ak
 import os
-# from datetime import datetime
 import time
 import random
 import requests
 import json
+from datetime import datetime
 
 from Investment.THS.AutoTrade.config.settings import Robot_holding_file
 from Investment.THS.AutoTrade.utils.format_data import determine_market
@@ -111,21 +111,22 @@ def fetch_robot_data(robot_id, token="27129c04fb43a33723a9f7720f280ff9"):
             response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
             response.raise_for_status()
             response_json = response.json()
-            # pprint(response_json)
+            # return response_json
         except requests.RequestException as e:
             print(f"第 {attempt + 1} 次尝试，请求机器人 {robot_id} 数据失败: {e}")
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # 指数退避
+                return None
             else:
                 return None
-
     return response_json
 
+
 def extract_robot_data(response_data):
-    """提取机器人数据并转换为 DataFrame"""
+    """提取机器人持仓数据并转换为统一格式"""
     if not response_data or 'data' not in response_data:
         print("无效的响应数据")
-        return pd.DataFrame(), pd.DataFrame()
+        return pd.DataFrame()
 
     data = response_data['data']
 
@@ -143,7 +144,7 @@ def extract_robot_data(response_data):
     }
 
     # 提取持仓股票信息
-    stocks_data = []
+    positions_data = []
     for log in data.get('logs', []):
         symbol = log.get('symbol', '')
         symbol_name = log.get('symbolName', None)
@@ -156,10 +157,14 @@ def extract_robot_data(response_data):
             code = symbol.replace('sh', '').replace('sz', '') if symbol.startswith(('sh', 'sz')) else symbol
             stock_name = get_stock_name_by_code(code)
 
-        from Investment.THS.AutoTrade.utils.format_data import determine_market
         market = determine_market(symbol)
 
-        stock_item = {
+        # 计算持仓比例（市值/总市值）
+        # market_value = log.get('marketValue', 0)
+        # total_value = data.get('nowPrice', 1)  # 使用组合最新价作为总市值参考
+        # position_ratio = (market_value / total_value * 100) if total_value != 0 else 0
+
+        position_item = {
             "股票代码": symbol,
             "股票名称": stock_name,
             "市场": market,
@@ -172,11 +177,11 @@ def extract_robot_data(response_data):
             "今日收益率": (log.get('todayGains', 0) / log.get('todayCost', 1)) * 100 if log.get('todayCost', 0) != 0 else 0,
             "累计收益率": (log.get('totalGains', 0) / log.get('lockCost', 1)) * 100 if log.get('lockCost', 0) != 0 else 0,
         }
-        stocks_data.append(stock_item)
+        positions_data.append(position_item)
 
     # 将提取的数据转换为 DataFrame
     combo_df = pd.DataFrame([combo_info])
-    stocks_df = pd.DataFrame(stocks_data)
+    stocks_df = pd.DataFrame(positions_data)
 
     return combo_df, stocks_df
 
@@ -190,6 +195,9 @@ def main():
         "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
         "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
     }
+
+    # 收集所有机器人的持仓数据
+    all_positons = []
 
     # 创建一个Excel写入器
     with pd.ExcelWriter(Robot_holding_file, engine='openpyxl') as writer:
@@ -215,11 +223,19 @@ def main():
                     print(f"已保存 {robot_name} 的组合信息到工作表 {combo_sheet_name}")
 
                 if not stocks_df.empty:
+                    all_positons.append(stocks_df)
                     stocks_df.to_excel(writer, sheet_name=stocks_sheet_name, index=False)
                     print(f"已保存 {robot_name} 的持仓信息到工作表 {stocks_sheet_name}")
             else:
                 print(f"获取 {robot_name} 数据失败")
 
+    if all_positons:
+        # 合并所有持仓数据
+        all_positions_df = pd.concat(all_positons, ignore_index=True)
+        print(all_positions_df)
+        # 保存合并后的数据到Excel
+        all_positions_df.to_excel(writer, sheet_name="所有机器人持仓信息", index=False)
+        print("已保存所有机器人的持仓信息到工作表 '所有机器人持仓信息'")
     print(f"所有机器人的数据已保存到 '{Robot_holding_file}' 文件中")
 
 # 运行主函数
