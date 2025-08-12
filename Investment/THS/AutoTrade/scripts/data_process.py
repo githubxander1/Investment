@@ -840,7 +840,7 @@ if __name__ == '__main__':
     # trade_history_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx'
     # # file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx'
     # # portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx'
-    portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx'
+    portfolio_file_path = r'/Investment/THS/AutoTrade/data/portfolio/Robot_portfolio_today.xlsx'
     # # # file_path = "test.xlsx"
     # # write_to_excel_append(data,file_path, sheet_name=today)
     read =read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)

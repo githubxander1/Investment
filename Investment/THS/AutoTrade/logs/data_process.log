@@ -23434,3 +23434,1531 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [33m2025-08-11 18:01:32 - WARNING - 未找到可读取的工作表: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
 [33m2025-08-11 18:01:41 - WARNING - 未找到可读取的工作表: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
 [32m2025-08-11 18:01:50 - INFO - ✅ 读取数据成功: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表: 2025-08-07, 共 3 条记录[0m
+[33m2025-08-12 09:31:48 - WARNING - 今日表不存在: 2025-08-12[0m
+[32m2025-08-12 09:31:48 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx, 表名称: 2025-08-12 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61   0.0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50   0.0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:31:51 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[33m2025-08-12 09:31:51 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 09:31:51 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 09:31:51 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-08-12 09:31:51 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 09:31:51 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 09:31:51 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 09:31:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:31:51 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 09:31:57 - INFO - 🛠️ 要处理: 卖出 云南锗业 比例:0.0[0m
+[32m2025-08-12 09:31:57 - INFO - 🚀 开始交易: 卖出 云南锗业[0m
+[32m2025-08-12 09:31:57 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 云南锗业[0m
+[32m2025-08-12 09:32:12 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 09:32:12 - INFO - 卖出 云南锗业 流程结束，操作已记录[0m
+[32m2025-08-12 09:32:12 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 09:32:17 - INFO - 🛠️ 要处理: 卖出 振江股份 比例:0.0[0m
+[32m2025-08-12 09:32:17 - INFO - 🚀 开始交易: 卖出 振江股份[0m
+[32m2025-08-12 09:32:17 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 振江股份[0m
+[32m2025-08-12 09:32:32 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 09:32:32 - INFO - 卖出 振江股份 流程结束，操作已记录[0m
+[32m2025-08-12 09:32:32 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx[0m
+[33m2025-08-12 09:32:32 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 09:32:32 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx 为空，跳过处理[0m
+[33m2025-08-12 09:33:28 - WARNING - 今日表不存在: 2025-08-12[0m
+[32m2025-08-12 09:33:28 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx, 表名称: 2025-08-12 
+        名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+1  GPT定期精选  卖出  梦网科技  002123  14.73 -31.26  沪深A股  2025-08-12 09:31
+2  GPT定期精选  买入  中科金财  002657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:33:31 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:33:35 - INFO - ✅ 读取操作历史成功，共 2 条记录
+   标的名称  操作  新比例%    状态     信息                   时间          _id
+0  云南锗业  卖出   0.0  True  委托已提交  2025-08-12 09:32:11  云南锗业_卖出_0.0
+1  振江股份  卖出   0.0  True  委托已提交  2025-08-12 09:32:32  振江股份_卖出_0.0[0m
+[32m2025-08-12 09:33:35 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-12 09:33:35 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:33:35 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 09:33:41 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:-31.26[0m
+[32m2025-08-12 09:33:41 - INFO - 🚀 开始交易: 卖出 梦网科技[0m
+[32m2025-08-12 09:34:02 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 09:34:02 - INFO - 卖出 梦网科技 流程结束，操作已记录[0m
+[32m2025-08-12 09:34:02 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 09:34:06 - INFO - 🛠️ 要处理: 买入 中科金财 比例:32.89[0m
+[32m2025-08-12 09:34:06 - INFO - 🚀 开始交易: 买入 中科金财[0m
+[32m2025-08-12 09:34:17 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 09:34:17 - INFO - 买入 中科金财 流程结束，操作已记录[0m
+[32m2025-08-12 09:34:17 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[33m2025-08-12 09:34:17 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 09:34:17 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 09:34:17 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 09:34:17 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:34:17 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 09:34:25 - INFO - 🛠️ 要处理: 卖出 云南锗业 比例:0.0[0m
+[32m2025-08-12 09:34:25 - INFO - ✅ 已处理过: 云南锗业 卖出 0.0%[0m
+[32m2025-08-12 09:34:25 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 09:34:28 - INFO - 🛠️ 要处理: 卖出 振江股份 比例:0.0[0m
+[32m2025-08-12 09:34:28 - INFO - ✅ 已处理过: 振江股份 卖出 0.0%[0m
+[32m2025-08-12 09:34:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx[0m
+[33m2025-08-12 09:34:29 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 09:34:29 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 09:35:05 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:35:24 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:35:25 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:36:21 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:36:21 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:36:23 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:36:32 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:36:38 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:36:43 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:36:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:37:24 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:37:26 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:38:38 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:38:39 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 09:38:40 - INFO - 读取去重后的操作历史文件完成, 2条 
+        名称  操作  标的名称    代码    最新价   新比例%    市场                时间
+0  GPT定期精选  卖出  梦网科技  2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1  GPT定期精选  买入  中科金财  2657  31.44  32.89  沪深A股  2025-08-12 09:31[0m
+[32m2025-08-12 09:38:41 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx, 表名称: 2025-08-12 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特  002790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份  000757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技  001211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资  000548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装  002969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团  001366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕  001300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊  002817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽  002836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份  002763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 09:40:31 - INFO - 读取去重后的操作历史文件完成, 20条 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特    2790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份     757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技    1211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资     548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装    2969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团    1366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕    1300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊    2817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽    2836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份    2763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 09:42:49 - INFO - 读取去重后的操作历史文件完成, 20条 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特    2790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份     757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技    1211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资     548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装    2969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团    1366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕    1300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊    2817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽    2836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份    2763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 10:42:20 - INFO - ✅ 读取操作历史成功，共 4 条记录
+   标的名称  操作   新比例%    状态     信息                   时间             _id
+0  云南锗业  卖出   0.00  True  委托已提交  2025-08-12 09:32:11     云南锗业_卖出_0.0
+1  振江股份  卖出   0.00  True  委托已提交  2025-08-12 09:32:32     振江股份_卖出_0.0
+2  梦网科技  卖出 -31.26  True  委托已提交  2025-08-12 09:34:01  梦网科技_卖出_-31.26
+3  中科金财  买入  32.89  True  委托已提交  2025-08-12 09:34:17   中科金财_买入_32.89[0m
+[33m2025-08-12 10:42:22 - WARNING - 今日表不存在: 2025-08-12[0m
+[32m2025-08-12 10:42:22 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-08-12 
+          名称  ...                                                 理由
+2     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+4  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:42:23 - INFO - ✅ 读取操作历史成功，共 4 条记录
+   标的名称  操作   新比例%    状态     信息                   时间             _id
+0  云南锗业  卖出   0.00  True  委托已提交  2025-08-12 09:32:11     云南锗业_卖出_0.0
+1  振江股份  卖出   0.00  True  委托已提交  2025-08-12 09:32:32     振江股份_卖出_0.0
+2  梦网科技  卖出 -31.26  True  委托已提交  2025-08-12 09:34:01  梦网科技_卖出_-31.26
+3  中科金财  买入  32.89  True  委托已提交  2025-08-12 09:34:17   中科金财_买入_32.89[0m
+[32m2025-08-12 10:42:23 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-12 10:42:23 - INFO - 读取去重后的操作历史文件完成, 20条 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特    2790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份     757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技    1211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资     548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装    2969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团    1366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕    1300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊    2817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽    2836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份    2763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 10:42:23 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:42:29 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:-31.26[0m
+[32m2025-08-12 10:42:29 - INFO - ✅ 已处理过: 梦网科技 卖出 -31.26%[0m
+[32m2025-08-12 10:42:29 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[31m2025-08-12 10:42:54 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 688, in process_excel_files
+    common_page.change_account("川财证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 149, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 115, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-08-12 10:42:54 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-12 10:42:54 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:42:54 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[31m2025-08-12 10:43:17 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx 失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/tab_a'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 697, in process_excel_files
+    common_page.change_account(default_account)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 173, in change_account
+    self.Agu.click()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/tab_a'},))
+[32m2025-08-12 10:43:17 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 10:43:17 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 10:43:17 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[31m2025-08-12 10:43:42 - ERROR - 处理文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx 失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\data_process.py", line 691, in process_excel_files
+    common_page.change_account("长城证券")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 149, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 115, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-08-12 10:43:42 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx[0m
+[33m2025-08-12 10:43:42 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 10:43:42 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 10:44:55 - INFO - 读取去重后的操作历史文件完成, 1条 
+       名称  操作  ...                时间                                        理由
+0  组-逻辑为王  买入  ...  2025-08-12 10:22  机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+
+[1 rows x 9 columns][0m
+[32m2025-08-12 10:44:56 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-08-12 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:44:57 - INFO - ✅ 读取操作历史成功，共 4 条记录
+   标的名称  操作   新比例%    状态     信息                   时间             _id
+0  云南锗业  卖出   0.00  True  委托已提交  2025-08-12 09:32:11     云南锗业_卖出_0.0
+1  振江股份  卖出   0.00  True  委托已提交  2025-08-12 09:32:32     振江股份_卖出_0.0
+2  梦网科技  卖出 -31.26  True  委托已提交  2025-08-12 09:34:01  梦网科技_卖出_-31.26
+3  中科金财  买入  32.89  True  委托已提交  2025-08-12 09:34:17   中科金财_买入_32.89[0m
+[32m2025-08-12 10:44:57 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-12 10:44:57 - INFO - 读取去重后的操作历史文件完成, 20条 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特    2790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份     757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技    1211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资     548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装    2969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团    1366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕    1300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊    2817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽    2836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份    2763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 10:44:57 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:45:03 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:-31.26[0m
+[32m2025-08-12 10:45:03 - INFO - ✅ 已处理过: 梦网科技 卖出 -31.26%[0m
+[32m2025-08-12 10:45:03 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:45:07 - INFO - 🛠️ 要处理: 买入 中科金财 比例:32.89[0m
+[32m2025-08-12 10:45:07 - INFO - ✅ 已处理过: 中科金财 买入 32.89%[0m
+[32m2025-08-12 10:45:07 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:45:11 - INFO - 🛠️ 要处理: 买入 丰林集团 比例:2.0[0m
+[32m2025-08-12 10:45:11 - INFO - 🚀 开始交易: 买入 丰林集团[0m
+[32m2025-08-12 10:45:11 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 丰林集团 固定数量 200 股[0m
+[32m2025-08-12 10:45:43 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:45:43 - INFO - 买入 丰林集团 流程结束，操作已记录[0m
+[32m2025-08-12 10:45:43 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:45:46 - INFO - 🛠️ 要处理: 买入 瑞尔特 比例:2.0[0m
+[32m2025-08-12 10:45:46 - INFO - 🚀 开始交易: 买入 瑞尔特[0m
+[32m2025-08-12 10:45:46 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 瑞尔特 固定数量 200 股[0m
+[32m2025-08-12 10:46:18 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:46:18 - INFO - 买入 瑞尔特 流程结束，操作已记录[0m
+[32m2025-08-12 10:46:18 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:46:22 - INFO - 🛠️ 要处理: 卖出 万丰股份 比例:-0.51[0m
+[32m2025-08-12 10:46:22 - INFO - 🚀 开始交易: 卖出 万丰股份[0m
+[32m2025-08-12 10:46:34 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:46:34 - INFO - 卖出 万丰股份 流程结束，操作已记录[0m
+[32m2025-08-12 10:46:34 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:46:38 - INFO - 🛠️ 要处理: 买入 广电电气 比例:2.01[0m
+[32m2025-08-12 10:46:38 - INFO - 🚀 开始交易: 买入 广电电气[0m
+[32m2025-08-12 10:46:38 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 广电电气 固定数量 200 股[0m
+[32m2025-08-12 10:47:23 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:47:23 - INFO - 买入 广电电气 流程结束，操作已记录[0m
+[32m2025-08-12 10:47:23 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:47:27 - INFO - 🛠️ 要处理: 买入 中持股份 比例:1.99[0m
+[32m2025-08-12 10:47:27 - INFO - 🚀 开始交易: 买入 中持股份[0m
+[32m2025-08-12 10:47:27 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 中持股份 固定数量 200 股[0m
+[32m2025-08-12 10:47:58 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:47:58 - INFO - 买入 中持股份 流程结束，操作已记录[0m
+[32m2025-08-12 10:47:58 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:48:01 - INFO - 🛠️ 要处理: 买入 浩物股份 比例:2.01[0m
+[32m2025-08-12 10:48:01 - INFO - 🚀 开始交易: 买入 浩物股份[0m
+[32m2025-08-12 10:48:01 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 浩物股份 固定数量 200 股[0m
+[32m2025-08-12 10:48:28 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:48:28 - INFO - 买入 浩物股份 流程结束，操作已记录[0m
+[32m2025-08-12 10:48:28 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:48:32 - INFO - 🛠️ 要处理: 买入 歌力思 比例:2.0[0m
+[32m2025-08-12 10:48:32 - INFO - 🚀 开始交易: 买入 歌力思[0m
+[32m2025-08-12 10:48:32 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 歌力思 固定数量 200 股[0m
+[32m2025-08-12 10:49:03 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:49:03 - INFO - 买入 歌力思 流程结束，操作已记录[0m
+[32m2025-08-12 10:49:03 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:49:07 - INFO - 🛠️ 要处理: 卖出 双枪科技 比例:-2.0[0m
+[32m2025-08-12 10:49:07 - INFO - 🚀 开始交易: 卖出 双枪科技[0m
+[32m2025-08-12 10:49:21 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:49:21 - INFO - 卖出 双枪科技 流程结束，操作已记录[0m
+[32m2025-08-12 10:49:21 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:49:24 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-2.0[0m
+[32m2025-08-12 10:49:24 - INFO - 🚀 开始交易: 卖出 湖南投资[0m
+[32m2025-08-12 10:49:37 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:49:37 - INFO - 卖出 湖南投资 流程结束，操作已记录[0m
+[32m2025-08-12 10:49:37 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:49:40 - INFO - 🛠️ 要处理: 买入 嘉美包装 比例:2.0[0m
+[32m2025-08-12 10:49:40 - INFO - 🚀 开始交易: 买入 嘉美包装[0m
+[32m2025-08-12 10:49:40 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 嘉美包装 固定数量 200 股[0m
+[32m2025-08-12 10:50:12 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:50:12 - INFO - 买入 嘉美包装 流程结束，操作已记录[0m
+[32m2025-08-12 10:50:12 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:50:15 - INFO - 🛠️ 要处理: 卖出 播恩集团 比例:-2.02[0m
+[32m2025-08-12 10:50:15 - INFO - 🚀 开始交易: 卖出 播恩集团[0m
+[32m2025-08-12 10:50:28 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:50:28 - INFO - 卖出 播恩集团 流程结束，操作已记录[0m
+[32m2025-08-12 10:50:28 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:50:31 - INFO - 🛠️ 要处理: 卖出 三柏硕 比例:-0.11[0m
+[32m2025-08-12 10:50:31 - INFO - 🚀 开始交易: 卖出 三柏硕[0m
+[32m2025-08-12 10:50:44 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:50:44 - INFO - 卖出 三柏硕 流程结束，操作已记录[0m
+[32m2025-08-12 10:50:44 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:50:47 - INFO - 🛠️ 要处理: 卖出 醋化股份 比例:-1.99[0m
+[32m2025-08-12 10:50:47 - INFO - 🚀 开始交易: 卖出 醋化股份[0m
+[32m2025-08-12 10:50:59 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:50:59 - INFO - 卖出 醋化股份 流程结束，操作已记录[0m
+[32m2025-08-12 10:50:59 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:51:03 - INFO - 🛠️ 要处理: 卖出 钱江生化 比例:-1.97[0m
+[32m2025-08-12 10:51:03 - INFO - 🚀 开始交易: 卖出 钱江生化[0m
+[32m2025-08-12 10:51:15 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:51:15 - INFO - 卖出 钱江生化 流程结束，操作已记录[0m
+[32m2025-08-12 10:51:15 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:51:19 - INFO - 🛠️ 要处理: 卖出 黄山胶囊 比例:-1.96[0m
+[32m2025-08-12 10:51:19 - INFO - 🚀 开始交易: 卖出 黄山胶囊[0m
+[32m2025-08-12 10:51:31 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:51:31 - INFO - 卖出 黄山胶囊 流程结束，操作已记录[0m
+[32m2025-08-12 10:51:31 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:51:35 - INFO - 🛠️ 要处理: 卖出 新宏泽 比例:-1.56[0m
+[32m2025-08-12 10:51:35 - INFO - 🚀 开始交易: 卖出 新宏泽[0m
+[32m2025-08-12 10:51:47 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:51:47 - INFO - 卖出 新宏泽 流程结束，操作已记录[0m
+[32m2025-08-12 10:51:47 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:51:51 - INFO - 🛠️ 要处理: 卖出 汇洁股份 比例:-1.11[0m
+[32m2025-08-12 10:51:51 - INFO - 🚀 开始交易: 卖出 汇洁股份[0m
+[32m2025-08-12 10:52:03 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:52:03 - INFO - 卖出 汇洁股份 流程结束，操作已记录[0m
+[32m2025-08-12 10:52:03 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 10:52:07 - INFO - 🛠️ 要处理: 买入 百大集团 比例:1.34[0m
+[32m2025-08-12 10:52:07 - INFO - 🚀 开始交易: 买入 百大集团[0m
+[32m2025-08-12 10:52:07 - INFO - 🎯 AI市场追踪策略特殊处理: 买入 百大集团 固定数量 200 股[0m
+[32m2025-08-12 10:52:38 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:52:38 - INFO - 买入 百大集团 流程结束，操作已记录[0m
+[32m2025-08-12 10:52:38 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-12 10:52:38 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:52:38 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 10:52:44 - INFO - 🛠️ 要处理: 买入 银轮股份 比例:33.0[0m
+[32m2025-08-12 10:52:44 - INFO - 🚀 开始交易: 买入 银轮股份[0m
+[32m2025-08-12 10:53:14 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:53:14 - INFO - 买入 银轮股份 流程结束，操作已记录[0m
+[32m2025-08-12 10:53:14 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 10:53:18 - INFO - 🛠️ 要处理: 卖出 奥飞娱乐 比例:5.0[0m
+[32m2025-08-12 10:53:18 - INFO - 🚀 开始交易: 卖出 奥飞娱乐[0m
+[32m2025-08-12 10:53:32 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 10:53:32 - INFO - 卖出 奥飞娱乐 流程结束，操作已记录[0m
+[32m2025-08-12 10:53:32 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 10:53:32 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 10:53:32 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 10:53:40 - INFO - 🛠️ 要处理: 卖出 云南锗业 比例:0.0[0m
+[32m2025-08-12 10:53:40 - INFO - ✅ 已处理过: 云南锗业 卖出 0.0%[0m
+[32m2025-08-12 10:53:40 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 10:53:44 - INFO - 🛠️ 要处理: 卖出 振江股份 比例:0.0[0m
+[32m2025-08-12 10:53:44 - INFO - ✅ 已处理过: 振江股份 卖出 0.0%[0m
+[32m2025-08-12 10:53:44 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx[0m
+[33m2025-08-12 10:53:44 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 10:53:44 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 10:54:39 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:55:47 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:56:55 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:58:02 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:58:59 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 10:59:51 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:00:52 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:02:05 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:03:04 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:04:16 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:05:11 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:06:13 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:07:05 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:08:01 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:09:11 - INFO - 读取去重后的操作历史文件完成, 2条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[2 rows x 9 columns][0m
+[32m2025-08-12 11:09:11 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-08-12 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-08-12 11:09:12 - INFO - ✅ 读取操作历史成功，共 24 条记录
+    标的名称  操作  ...                   时间             _id
+0   云南锗业  卖出  ...  2025-08-12 09:32:11     云南锗业_卖出_0.0
+1   振江股份  卖出  ...  2025-08-12 09:32:32     振江股份_卖出_0.0
+2   梦网科技  卖出  ...  2025-08-12 09:34:01  梦网科技_卖出_-31.26
+3   中科金财  买入  ...  2025-08-12 09:34:17   中科金财_买入_32.89
+4   丰林集团  买入  ...  2025-08-12 10:45:42     丰林集团_买入_2.0
+5    瑞尔特  买入  ...  2025-08-12 10:46:18      瑞尔特_买入_2.0
+6   万丰股份  卖出  ...  2025-08-12 10:46:34   万丰股份_卖出_-0.51
+7   广电电气  买入  ...  2025-08-12 10:47:23    广电电气_买入_2.01
+8   中持股份  买入  ...  2025-08-12 10:47:57    中持股份_买入_1.99
+9   浩物股份  买入  ...  2025-08-12 10:48:28    浩物股份_买入_2.01
+10   歌力思  买入  ...  2025-08-12 10:49:03      歌力思_买入_2.0
+11  双枪科技  卖出  ...  2025-08-12 10:49:21    双枪科技_卖出_-2.0
+12  湖南投资  卖出  ...  2025-08-12 10:49:37    湖南投资_卖出_-2.0
+13  嘉美包装  买入  ...  2025-08-12 10:50:12     嘉美包装_买入_2.0
+14  播恩集团  卖出  ...  2025-08-12 10:50:28   播恩集团_卖出_-2.02
+15   三柏硕  卖出  ...  2025-08-12 10:50:44    三柏硕_卖出_-0.11
+16  醋化股份  卖出  ...  2025-08-12 10:50:59   醋化股份_卖出_-1.99
+17  钱江生化  卖出  ...  2025-08-12 10:51:15   钱江生化_卖出_-1.97
+18  黄山胶囊  卖出  ...  2025-08-12 10:51:31   黄山胶囊_卖出_-1.96
+19   新宏泽  卖出  ...  2025-08-12 10:51:47    新宏泽_卖出_-1.56
+20  汇洁股份  卖出  ...  2025-08-12 10:52:03   汇洁股份_卖出_-1.11
+21  百大集团  买入  ...  2025-08-12 10:52:38    百大集团_买入_1.34
+22  银轮股份  买入  ...  2025-08-12 10:53:14    银轮股份_买入_33.0
+23  奥飞娱乐  卖出  ...  2025-08-12 10:53:32     奥飞娱乐_卖出_5.0
+
+[24 rows x 7 columns][0m
+[32m2025-08-12 11:09:12 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-12 11:09:12 - INFO - 读取去重后的操作历史文件完成, 20条 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特    2790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份     757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技    1211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资     548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装    2969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团    1366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕    1300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊    2817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽    2836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份    2763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 11:09:12 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:18 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:-31.26[0m
+[32m2025-08-12 11:09:18 - INFO - ✅ 已处理过: 梦网科技 卖出 -31.26%[0m
+[32m2025-08-12 11:09:18 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:21 - INFO - 🛠️ 要处理: 买入 中科金财 比例:32.89[0m
+[32m2025-08-12 11:09:21 - INFO - ✅ 已处理过: 中科金财 买入 32.89%[0m
+[32m2025-08-12 11:09:21 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:25 - INFO - 🛠️ 要处理: 买入 丰林集团 比例:2.0[0m
+[32m2025-08-12 11:09:25 - INFO - ✅ 已处理过: 丰林集团 买入 2.0%[0m
+[32m2025-08-12 11:09:25 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:29 - INFO - 🛠️ 要处理: 买入 瑞尔特 比例:2.0[0m
+[32m2025-08-12 11:09:29 - INFO - ✅ 已处理过: 瑞尔特 买入 2.0%[0m
+[32m2025-08-12 11:09:29 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:32 - INFO - 🛠️ 要处理: 卖出 万丰股份 比例:-0.51[0m
+[32m2025-08-12 11:09:32 - INFO - ✅ 已处理过: 万丰股份 卖出 -0.51%[0m
+[32m2025-08-12 11:09:32 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:36 - INFO - 🛠️ 要处理: 买入 广电电气 比例:2.01[0m
+[32m2025-08-12 11:09:36 - INFO - ✅ 已处理过: 广电电气 买入 2.01%[0m
+[32m2025-08-12 11:09:36 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:40 - INFO - 🛠️ 要处理: 买入 中持股份 比例:1.99[0m
+[32m2025-08-12 11:09:40 - INFO - ✅ 已处理过: 中持股份 买入 1.99%[0m
+[32m2025-08-12 11:09:40 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:44 - INFO - 🛠️ 要处理: 买入 浩物股份 比例:2.01[0m
+[32m2025-08-12 11:09:44 - INFO - ✅ 已处理过: 浩物股份 买入 2.01%[0m
+[32m2025-08-12 11:09:44 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:47 - INFO - 🛠️ 要处理: 买入 歌力思 比例:2.0[0m
+[32m2025-08-12 11:09:47 - INFO - ✅ 已处理过: 歌力思 买入 2.0%[0m
+[32m2025-08-12 11:09:47 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:51 - INFO - 🛠️ 要处理: 卖出 双枪科技 比例:-2.0[0m
+[32m2025-08-12 11:09:51 - INFO - ✅ 已处理过: 双枪科技 卖出 -2.0%[0m
+[32m2025-08-12 11:09:51 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:55 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-2.0[0m
+[32m2025-08-12 11:09:55 - INFO - ✅ 已处理过: 湖南投资 卖出 -2.0%[0m
+[32m2025-08-12 11:09:55 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:09:58 - INFO - 🛠️ 要处理: 买入 嘉美包装 比例:2.0[0m
+[32m2025-08-12 11:09:58 - INFO - ✅ 已处理过: 嘉美包装 买入 2.0%[0m
+[32m2025-08-12 11:09:58 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:02 - INFO - 🛠️ 要处理: 卖出 播恩集团 比例:-2.02[0m
+[32m2025-08-12 11:10:02 - INFO - ✅ 已处理过: 播恩集团 卖出 -2.02%[0m
+[32m2025-08-12 11:10:02 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:06 - INFO - 🛠️ 要处理: 卖出 三柏硕 比例:-0.11[0m
+[32m2025-08-12 11:10:06 - INFO - ✅ 已处理过: 三柏硕 卖出 -0.11%[0m
+[32m2025-08-12 11:10:06 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:09 - INFO - 🛠️ 要处理: 卖出 醋化股份 比例:-1.99[0m
+[32m2025-08-12 11:10:09 - INFO - ✅ 已处理过: 醋化股份 卖出 -1.99%[0m
+[32m2025-08-12 11:10:09 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:13 - INFO - 🛠️ 要处理: 卖出 钱江生化 比例:-1.97[0m
+[32m2025-08-12 11:10:13 - INFO - ✅ 已处理过: 钱江生化 卖出 -1.97%[0m
+[32m2025-08-12 11:10:13 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:17 - INFO - 🛠️ 要处理: 卖出 黄山胶囊 比例:-1.96[0m
+[32m2025-08-12 11:10:17 - INFO - ✅ 已处理过: 黄山胶囊 卖出 -1.96%[0m
+[32m2025-08-12 11:10:17 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:21 - INFO - 🛠️ 要处理: 卖出 新宏泽 比例:-1.56[0m
+[32m2025-08-12 11:10:21 - INFO - ✅ 已处理过: 新宏泽 卖出 -1.56%[0m
+[32m2025-08-12 11:10:21 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:24 - INFO - 🛠️ 要处理: 卖出 汇洁股份 比例:-1.11[0m
+[32m2025-08-12 11:10:24 - INFO - ✅ 已处理过: 汇洁股份 卖出 -1.11%[0m
+[32m2025-08-12 11:10:24 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:10:28 - INFO - 🛠️ 要处理: 买入 百大集团 比例:1.34[0m
+[32m2025-08-12 11:10:28 - INFO - ✅ 已处理过: 百大集团 买入 1.34%[0m
+[32m2025-08-12 11:10:28 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-12 11:10:28 - INFO - 读取去重后的操作历史文件完成, 3条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-08-12 11:10:28 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:10:34 - INFO - 🛠️ 要处理: 买入 银轮股份 比例:33.0[0m
+[32m2025-08-12 11:10:34 - INFO - ✅ 已处理过: 银轮股份 买入 33.0%[0m
+[32m2025-08-12 11:10:34 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:10:38 - INFO - 🛠️ 要处理: 卖出 奥飞娱乐 比例:5.0[0m
+[32m2025-08-12 11:10:38 - INFO - ✅ 已处理过: 奥飞娱乐 卖出 5.0%[0m
+[32m2025-08-12 11:10:38 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:10:41 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:0.0[0m
+[32m2025-08-12 11:10:41 - INFO - 🚀 开始交易: 卖出 梦网科技[0m
+[32m2025-08-12 11:10:41 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 梦网科技[0m
+[32m2025-08-12 11:11:15 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 11:11:15 - INFO - 卖出 梦网科技 流程结束，操作已记录[0m
+[32m2025-08-12 11:11:15 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 11:11:15 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 11:11:15 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 11:11:21 - INFO - 🛠️ 要处理: 卖出 云南锗业 比例:0.0[0m
+[32m2025-08-12 11:11:21 - INFO - ✅ 已处理过: 云南锗业 卖出 0.0%[0m
+[32m2025-08-12 11:11:21 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 11:11:25 - INFO - 🛠️ 要处理: 卖出 振江股份 比例:0.0[0m
+[32m2025-08-12 11:11:25 - INFO - ✅ 已处理过: 振江股份 卖出 0.0%[0m
+[32m2025-08-12 11:11:25 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx[0m
+[33m2025-08-12 11:11:25 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 11:11:25 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 11:12:35 - INFO - 读取去重后的操作历史文件完成, 3条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+
+[3 rows x 9 columns][0m
+[32m2025-08-12 11:12:36 - INFO - ✅ 成功追加数据到Excel文件的第一个sheet: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-08-12 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:12:36 - INFO - ✅ 读取操作历史成功，共 25 条记录
+    标的名称  操作  ...                   时间             _id
+0   云南锗业  卖出  ...  2025-08-12 09:32:11     云南锗业_卖出_0.0
+1   振江股份  卖出  ...  2025-08-12 09:32:32     振江股份_卖出_0.0
+2   梦网科技  卖出  ...  2025-08-12 09:34:01  梦网科技_卖出_-31.26
+3   中科金财  买入  ...  2025-08-12 09:34:17   中科金财_买入_32.89
+4   丰林集团  买入  ...  2025-08-12 10:45:42     丰林集团_买入_2.0
+5    瑞尔特  买入  ...  2025-08-12 10:46:18      瑞尔特_买入_2.0
+6   万丰股份  卖出  ...  2025-08-12 10:46:34   万丰股份_卖出_-0.51
+7   广电电气  买入  ...  2025-08-12 10:47:23    广电电气_买入_2.01
+8   中持股份  买入  ...  2025-08-12 10:47:57    中持股份_买入_1.99
+9   浩物股份  买入  ...  2025-08-12 10:48:28    浩物股份_买入_2.01
+10   歌力思  买入  ...  2025-08-12 10:49:03      歌力思_买入_2.0
+11  双枪科技  卖出  ...  2025-08-12 10:49:21    双枪科技_卖出_-2.0
+12  湖南投资  卖出  ...  2025-08-12 10:49:37    湖南投资_卖出_-2.0
+13  嘉美包装  买入  ...  2025-08-12 10:50:12     嘉美包装_买入_2.0
+14  播恩集团  卖出  ...  2025-08-12 10:50:28   播恩集团_卖出_-2.02
+15   三柏硕  卖出  ...  2025-08-12 10:50:44    三柏硕_卖出_-0.11
+16  醋化股份  卖出  ...  2025-08-12 10:50:59   醋化股份_卖出_-1.99
+17  钱江生化  卖出  ...  2025-08-12 10:51:15   钱江生化_卖出_-1.97
+18  黄山胶囊  卖出  ...  2025-08-12 10:51:31   黄山胶囊_卖出_-1.96
+19   新宏泽  卖出  ...  2025-08-12 10:51:47    新宏泽_卖出_-1.56
+20  汇洁股份  卖出  ...  2025-08-12 10:52:03   汇洁股份_卖出_-1.11
+21  百大集团  买入  ...  2025-08-12 10:52:38    百大集团_买入_1.34
+22  银轮股份  买入  ...  2025-08-12 10:53:14    银轮股份_买入_33.0
+23  奥飞娱乐  卖出  ...  2025-08-12 10:53:32     奥飞娱乐_卖出_5.0
+24  梦网科技  卖出  ...  2025-08-12 11:11:15     梦网科技_卖出_0.0
+
+[25 rows x 7 columns][0m
+[32m2025-08-12 11:12:36 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-12 11:12:36 - INFO - 读取去重后的操作历史文件完成, 20条 
+          名称  操作  标的名称      代码    最新价   新比例%    市场                时间
+0    GPT定期精选  卖出  梦网科技    2123  14.73 -31.26  沪深A股  2025-08-12 09:31
+1    GPT定期精选  买入  中科金财    2657  31.44  32.89  沪深A股  2025-08-12 09:31
+2   AI市场追踪策略  买入  丰林集团  601996   2.30   2.00  沪深A股  2025-08-11 09:31
+3   AI市场追踪策略  买入   瑞尔特    2790   7.76   2.00  沪深A股  2025-08-11 09:31
+4   AI市场追踪策略  卖出  万丰股份  603172  17.55  -0.51  沪深A股  2025-08-11 09:31
+5   AI市场追踪策略  买入  广电电气  601616   3.91   2.01  沪深A股  2025-08-11 09:31
+6   AI市场追踪策略  买入  中持股份  603903   8.18   1.99  沪深A股  2025-08-11 09:31
+7   AI市场追踪策略  买入  浩物股份     757   4.99   2.01  沪深A股  2025-08-11 09:31
+8   AI市场追踪策略  买入   歌力思  603808   8.55   2.00  沪深A股  2025-08-11 09:31
+9   AI市场追踪策略  卖出  双枪科技    1211  24.78  -2.00  沪深A股  2025-08-11 09:31
+10  AI市场追踪策略  卖出  湖南投资     548   5.63  -2.00  沪深A股  2025-08-11 09:31
+11  AI市场追踪策略  买入  嘉美包装    2969   3.67   2.00  沪深A股  2025-08-11 09:31
+12  AI市场追踪策略  卖出  播恩集团    1366  13.77  -2.02  沪深A股  2025-08-11 09:31
+13  AI市场追踪策略  卖出   三柏硕    1300  13.18  -0.11  沪深A股  2025-08-11 09:31
+14  AI市场追踪策略  卖出  醋化股份  603968  12.84  -1.99  沪深A股  2025-08-11 09:31
+15  AI市场追踪策略  卖出  钱江生化  600796   6.06  -1.97  沪深A股  2025-08-11 09:31
+16  AI市场追踪策略  卖出  黄山胶囊    2817   8.19  -1.96  沪深A股  2025-08-11 09:31
+17  AI市场追踪策略  卖出   新宏泽    2836   9.99  -1.56  沪深A股  2025-08-11 09:31
+18  AI市场追踪策略  卖出  汇洁股份    2763   7.36  -1.11  沪深A股  2025-08-11 09:31
+19  AI市场追踪策略  买入  百大集团  600865   9.02   1.34  沪深A股  2025-08-11 09:31[0m
+[32m2025-08-12 11:12:36 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:12:42 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:-31.26[0m
+[32m2025-08-12 11:12:42 - INFO - ✅ 已处理过: 梦网科技 卖出 -31.26%[0m
+[32m2025-08-12 11:12:42 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:12:46 - INFO - 🛠️ 要处理: 买入 中科金财 比例:32.89[0m
+[32m2025-08-12 11:12:46 - INFO - ✅ 已处理过: 中科金财 买入 32.89%[0m
+[32m2025-08-12 11:12:46 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:12:50 - INFO - 🛠️ 要处理: 买入 丰林集团 比例:2.0[0m
+[32m2025-08-12 11:12:50 - INFO - ✅ 已处理过: 丰林集团 买入 2.0%[0m
+[32m2025-08-12 11:12:50 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:12:54 - INFO - 🛠️ 要处理: 买入 瑞尔特 比例:2.0[0m
+[32m2025-08-12 11:12:54 - INFO - ✅ 已处理过: 瑞尔特 买入 2.0%[0m
+[32m2025-08-12 11:12:54 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:12:57 - INFO - 🛠️ 要处理: 卖出 万丰股份 比例:-0.51[0m
+[32m2025-08-12 11:12:57 - INFO - ✅ 已处理过: 万丰股份 卖出 -0.51%[0m
+[32m2025-08-12 11:12:57 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:01 - INFO - 🛠️ 要处理: 买入 广电电气 比例:2.01[0m
+[32m2025-08-12 11:13:01 - INFO - ✅ 已处理过: 广电电气 买入 2.01%[0m
+[32m2025-08-12 11:13:01 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:05 - INFO - 🛠️ 要处理: 买入 中持股份 比例:1.99[0m
+[32m2025-08-12 11:13:05 - INFO - ✅ 已处理过: 中持股份 买入 1.99%[0m
+[32m2025-08-12 11:13:05 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:08 - INFO - 🛠️ 要处理: 买入 浩物股份 比例:2.01[0m
+[32m2025-08-12 11:13:08 - INFO - ✅ 已处理过: 浩物股份 买入 2.01%[0m
+[32m2025-08-12 11:13:08 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:12 - INFO - 🛠️ 要处理: 买入 歌力思 比例:2.0[0m
+[32m2025-08-12 11:13:12 - INFO - ✅ 已处理过: 歌力思 买入 2.0%[0m
+[32m2025-08-12 11:13:12 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:16 - INFO - 🛠️ 要处理: 卖出 双枪科技 比例:-2.0[0m
+[32m2025-08-12 11:13:16 - INFO - ✅ 已处理过: 双枪科技 卖出 -2.0%[0m
+[32m2025-08-12 11:13:16 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:19 - INFO - 🛠️ 要处理: 卖出 湖南投资 比例:-2.0[0m
+[32m2025-08-12 11:13:19 - INFO - ✅ 已处理过: 湖南投资 卖出 -2.0%[0m
+[32m2025-08-12 11:13:19 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:22 - INFO - 🛠️ 要处理: 买入 嘉美包装 比例:2.0[0m
+[32m2025-08-12 11:13:22 - INFO - ✅ 已处理过: 嘉美包装 买入 2.0%[0m
+[32m2025-08-12 11:13:22 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:26 - INFO - 🛠️ 要处理: 卖出 播恩集团 比例:-2.02[0m
+[32m2025-08-12 11:13:26 - INFO - ✅ 已处理过: 播恩集团 卖出 -2.02%[0m
+[32m2025-08-12 11:13:26 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:30 - INFO - 🛠️ 要处理: 卖出 三柏硕 比例:-0.11[0m
+[32m2025-08-12 11:13:30 - INFO - ✅ 已处理过: 三柏硕 卖出 -0.11%[0m
+[32m2025-08-12 11:13:30 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:34 - INFO - 🛠️ 要处理: 卖出 醋化股份 比例:-1.99[0m
+[32m2025-08-12 11:13:34 - INFO - ✅ 已处理过: 醋化股份 卖出 -1.99%[0m
+[32m2025-08-12 11:13:34 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:38 - INFO - 🛠️ 要处理: 卖出 钱江生化 比例:-1.97[0m
+[32m2025-08-12 11:13:38 - INFO - ✅ 已处理过: 钱江生化 卖出 -1.97%[0m
+[32m2025-08-12 11:13:38 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:41 - INFO - 🛠️ 要处理: 卖出 黄山胶囊 比例:-1.96[0m
+[32m2025-08-12 11:13:41 - INFO - ✅ 已处理过: 黄山胶囊 卖出 -1.96%[0m
+[32m2025-08-12 11:13:41 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:45 - INFO - 🛠️ 要处理: 卖出 新宏泽 比例:-1.56[0m
+[32m2025-08-12 11:13:45 - INFO - ✅ 已处理过: 新宏泽 卖出 -1.56%[0m
+[32m2025-08-12 11:13:45 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:49 - INFO - 🛠️ 要处理: 卖出 汇洁股份 比例:-1.11[0m
+[32m2025-08-12 11:13:49 - INFO - ✅ 已处理过: 汇洁股份 卖出 -1.11%[0m
+[32m2025-08-12 11:13:49 - INFO - 检测到 AI市场追踪策略，切换账户为 川财证券[0m
+[32m2025-08-12 11:13:53 - INFO - 🛠️ 要处理: 买入 百大集团 比例:1.34[0m
+[32m2025-08-12 11:13:53 - INFO - ✅ 已处理过: 百大集团 买入 1.34%[0m
+[32m2025-08-12 11:13:53 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-12 11:13:53 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:13:53 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:13:59 - INFO - 🛠️ 要处理: 买入 银轮股份 比例:33.0[0m
+[32m2025-08-12 11:13:59 - INFO - ✅ 已处理过: 银轮股份 买入 33.0%[0m
+[32m2025-08-12 11:13:59 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:14:02 - INFO - 🛠️ 要处理: 卖出 奥飞娱乐 比例:5.0[0m
+[32m2025-08-12 11:14:02 - INFO - ✅ 已处理过: 奥飞娱乐 卖出 5.0%[0m
+[32m2025-08-12 11:14:02 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:14:06 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:0.0[0m
+[32m2025-08-12 11:14:06 - INFO - ✅ 已处理过: 梦网科技 卖出 0.0%[0m
+[32m2025-08-12 11:14:06 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 11:14:09 - INFO - 🛠️ 要处理: 买入 神州数码 比例:33.0[0m
+[32m2025-08-12 11:14:09 - INFO - 🚀 开始交易: 买入 神州数码[0m
+[32m2025-08-12 11:14:15 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 11:14:15 - INFO - 买入 神州数码 流程结束，操作已记录[0m
+[32m2025-08-12 11:14:15 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 11:14:15 - INFO - 读取去重后的操作历史文件完成, 2条 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61     0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50     0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 11:14:15 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 11:14:21 - INFO - 🛠️ 要处理: 卖出 云南锗业 比例:0.0[0m
+[32m2025-08-12 11:14:21 - INFO - ✅ 已处理过: 云南锗业 卖出 0.0%[0m
+[32m2025-08-12 11:14:21 - INFO - 检测到 机器人，切换账户为 长城证券[0m
+[32m2025-08-12 11:14:25 - INFO - 🛠️ 要处理: 卖出 振江股份 比例:0.0[0m
+[32m2025-08-12 11:14:25 - INFO - ✅ 已处理过: 振江股份 卖出 0.0%[0m
+[32m2025-08-12 11:14:25 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx[0m
+[33m2025-08-12 11:14:25 - WARNING - 今日表不存在: 2025-08-12[0m
+[33m2025-08-12 11:14:25 - WARNING - 文件 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Lhw_portfolio_today.xlsx 为空，跳过处理[0m
+[32m2025-08-12 11:15:30 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:16:23 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:17:15 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:18:13 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:19:07 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:20:15 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:21:27 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:22:39 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:23:51 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:24:58 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:26:04 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:27:00 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:28:08 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:29:05 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 11:29:59 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:00:44 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:01:39 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:02:42 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:03:45 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:04:37 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:05:34 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:06:41 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:07:47 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:08:55 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:09:59 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:10:51 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:11:52 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:13:01 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:14:09 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:15:19 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:16:12 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:17:06 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:18:04 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:19:00 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:19:55 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:21:02 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:22:07 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:22:59 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:24:08 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:25:11 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:26:20 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:27:28 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:28:31 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:29:26 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:30:22 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:31:19 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:32:28 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:33:30 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:34:43 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:35:52 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:36:47 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:37:55 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:39:08 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:40:11 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:41:06 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:42:18 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:43:29 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:44:30 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:45:33 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:46:44 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:47:51 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:48:43 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:49:39 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:50:48 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:51:51 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:52:47 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:53:51 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[33m2025-08-12 13:54:19 - WARNING - 文件不存在: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\Robot_portfolio_today.xlsx[0m
+[32m2025-08-12 13:54:19 - INFO - ✅ 创建并保存数据到Excel文件: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\Robot_portfolio_today.xlsx, 表名称: 2025-08-12 
+     名称  操作  标的名称        代码    最新价  新比例%    市场                时间  交易数量
+0  有色金属  卖出  云南锗业  sz002428  22.61   0.0  沪深A股  2025-08-12 09:30  5400
+1    钢铁  卖出  振江股份  sh603507  27.50   0.0  沪深A股  2025-08-12 09:30  4300[0m
+[32m2025-08-12 13:55:00 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m
+[33m2025-08-12 13:56:11 - WARNING - 文件不存在: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-12 13:56:11 - INFO - ✅ 创建并保存数据到Excel文件: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx, 表名称: 2025-08-12 
+          名称  ...                                                 理由
+2     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+3     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+4     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+6  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:56:12 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[33m2025-08-12 13:56:12 - WARNING - ⚠️ 文件不存在或为空: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx[0m
+[32m2025-08-12 13:56:12 - INFO - 🔄 检测到文件更新，即将处理: D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx[0m
+[32m2025-08-12 13:56:12 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+1     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+2     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+3  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+
+[4 rows x 9 columns][0m
+[32m2025-08-12 13:56:12 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 13:56:15 - INFO - 🛠️ 要处理: 买入 神州数码 比例:33.0[0m
+[32m2025-08-12 13:56:15 - INFO - 🚀 开始交易: 买入 神州数码[0m
+[32m2025-08-12 13:56:31 - INFO - ✅ 成功写入操作记录到 2025-08-12 表 D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx[0m
+[32m2025-08-12 13:56:31 - INFO - 买入 神州数码 流程结束，操作已记录[0m
+[32m2025-08-12 13:56:31 - INFO - 检测到 组合，切换账户为 中泰证券[0m
+[32m2025-08-12 13:56:35 - INFO - 🛠️ 要处理: 卖出 梦网科技 比例:0.0[0m
+[32m2025-08-12 13:56:35 - INFO - 🚀 开始交易: 卖出 梦网科技[0m
+[32m2025-08-12 13:56:35 - INFO - 🎯 特殊处理: 新比例为0，将全仓卖出 梦网科技[0m
+[32m2025-08-12 13:57:07 - INFO - ✅ 读取操作历史成功，共 26 条记录
+    标的名称  操作  ...                   时间             _id
+0   云南锗业  卖出  ...  2025-08-12 09:32:11     云南锗业_卖出_0.0
+1   振江股份  卖出  ...  2025-08-12 09:32:32     振江股份_卖出_0.0
+2   梦网科技  卖出  ...  2025-08-12 09:34:01  梦网科技_卖出_-31.26
+3   中科金财  买入  ...  2025-08-12 09:34:17   中科金财_买入_32.89
+4   丰林集团  买入  ...  2025-08-12 10:45:42     丰林集团_买入_2.0
+5    瑞尔特  买入  ...  2025-08-12 10:46:18      瑞尔特_买入_2.0
+6   万丰股份  卖出  ...  2025-08-12 10:46:34   万丰股份_卖出_-0.51
+7   广电电气  买入  ...  2025-08-12 10:47:23    广电电气_买入_2.01
+8   中持股份  买入  ...  2025-08-12 10:47:57    中持股份_买入_1.99
+9   浩物股份  买入  ...  2025-08-12 10:48:28    浩物股份_买入_2.01
+10   歌力思  买入  ...  2025-08-12 10:49:03      歌力思_买入_2.0
+11  双枪科技  卖出  ...  2025-08-12 10:49:21    双枪科技_卖出_-2.0
+12  湖南投资  卖出  ...  2025-08-12 10:49:37    湖南投资_卖出_-2.0
+13  嘉美包装  买入  ...  2025-08-12 10:50:12     嘉美包装_买入_2.0
+14  播恩集团  卖出  ...  2025-08-12 10:50:28   播恩集团_卖出_-2.02
+15   三柏硕  卖出  ...  2025-08-12 10:50:44    三柏硕_卖出_-0.11
+16  醋化股份  卖出  ...  2025-08-12 10:50:59   醋化股份_卖出_-1.99
+17  钱江生化  卖出  ...  2025-08-12 10:51:15   钱江生化_卖出_-1.97
+18  黄山胶囊  卖出  ...  2025-08-12 10:51:31   黄山胶囊_卖出_-1.96
+19   新宏泽  卖出  ...  2025-08-12 10:51:47    新宏泽_卖出_-1.56
+20  汇洁股份  卖出  ...  2025-08-12 10:52:03   汇洁股份_卖出_-1.11
+21  百大集团  买入  ...  2025-08-12 10:52:38    百大集团_买入_1.34
+22  银轮股份  买入  ...  2025-08-12 10:53:14    银轮股份_买入_33.0
+23  奥飞娱乐  卖出  ...  2025-08-12 10:53:32     奥飞娱乐_卖出_5.0
+24  梦网科技  卖出  ...  2025-08-12 11:11:15     梦网科技_卖出_0.0
+25  神州数码  买入  ...  2025-08-12 11:14:15    神州数码_买入_33.0
+
+[26 rows x 7 columns][0m
+[32m2025-08-12 13:57:10 - INFO - 读取去重后的操作历史文件完成, 4条 
+          名称  ...                                                 理由
+0     组-逻辑为王  ...           机器人十液冷 券商观点|液冷行业跟踪：预计AI液冷将为产业链公司提供第二增长曲线
+1  组-一枝梨花压海棠  ...  奥飞娱乐近期举办“奥飞动漫之夜”，是否意味着短期利好已兑现？以下为具体分析：一、重大活动举办...
+2     组-逻辑为王  ...                            换票 梦网科技2025年08月12日主力资金流
+3     组-逻辑为王  ...     英伟达amd出口国内要交保护费，国产算力性价比提升 神州数码2025年08月12日主力资金流
+
+[4 rows x 9 columns][0m

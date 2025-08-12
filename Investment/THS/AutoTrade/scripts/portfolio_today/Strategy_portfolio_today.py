@@ -8,7 +8,7 @@ import requests
 from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids
+    Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids, Strategy_holding_file
 from Investment.THS.AutoTrade.scripts.data_process import save_to_operation_history_excel, read_today_portfolio_record, \
     write_to_excel_append, read_portfolio_or_operation_data
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -35,58 +35,80 @@ async def get_latest_position_and_trade(strategy_id):
         logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
 
-    latest_trade = data.get('result', {}).get('latestTrade', {})
-    trade_date = normalize_time(latest_trade.get('tradeDate', ''))
+    result = data.get('result', {})
+    latest_trade_infos = result.get('latestTrade', {})
+    position_stocks = result.get('positionStocks', {})
+    lastest_trade_date = normalize_time(latest_trade_infos.get('tradeDate', ''))
     # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
-    trade_stocks = latest_trade.get('tradeStocks', [])
+    trade_stocks = latest_trade_infos.get('tradeStocks', [])
 
-    result = []
-    for trade_info in trade_stocks:
-        code = str(trade_info.get('code', '').zfill(6))
-        # name = trade_info.get('stkName', '')
-        # operation = '买入' if trade_info.get('operationType', '') == 'BUY' else '卖出'
-        # price = trade_info.get('tradePrice', '')
-        # ratio = round(trade_info.get('position', 0) * 100, 2)
-        # market = determine_market(code)
+    trade_results = []
+    for trade_stock_info in trade_stocks:
         # 显式转换时间戳为整数
-        timestamp = trade_info.get('tradeDate', '')
+        timestamp = trade_stock_info.get('tradeDate', '')
         if isinstance(timestamp, (int, float)):
             timestamp = str(int(timestamp))  #
-        # stock_trade_date = normalize_time(timestamp)
-
         # stock_trade_date = normalize_time(trade_info.get('tradeDate', ''))
         # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
 
         # 只保留当天记录
         # 昨天
-        today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+        today = (datetime.datetime.now().strftime('%Y-%m-%d'))
+        # print(f'今天{today}')
         # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
-        if trade_date == today:
-                result.append({
-                '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
-                '操作': '买入' if trade_info.get('operationType') == 'BUY' else '卖出',
-                '标的名称': trade_info.get('stkName', ''),
-                '代码': str(trade_info.get('code', '')).zfill(6),
-                '最新价': round(float(trade_info.get('tradePrice', 0)), 2),
-                '新比例%': round(float(trade_info.get('position', 0)) * 100, 2),
-                '市场': determine_market(trade_info.get('code', '')),
-                '时间': normalize_time(trade_info.get('tradeDate', ''))
+        if lastest_trade_date == today:
+            trade_results.append({
+            '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
+            '操作': '买入' if trade_stock_info.get('operationType') == 'BUY' else '卖出',
+            '标的名称': trade_stock_info.get('stkName', ''),
+            '代码': str(trade_stock_info.get('stkCode', '').split('.')[0]).zfill(6),
+            '最新价': round(float(trade_stock_info.get('tradePrice', 0)), 2),
+            '新比例%': round(float(trade_stock_info.get('position', 0)) * 100, 2),
+            '交易数量': trade_stock_info.get('tradeAmount', 0),
+            '市场': determine_market(trade_stock_info.get('code', '')),
+            '时间': normalize_time(trade_stock_info.get('tradeDate', ''))
             })
 
-    return result
+    position_stocks_results = []
+    for position_stock_info in position_stocks:
+        stk_code = str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6)
+        position_stocks_results.append({
+            '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
+            '标的名称': position_stock_info.get('stkName', ''),
+            '代码': str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6),
+            '市场': determine_market(stk_code),
+            '最新价': round(float(position_stock_info.get('price', 0)), 2),
+            '盈亏比例%': round(float(position_stock_info.get('profitAndLossRatio', 0)) * 100, 2),
+            '持仓比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
+            '持仓时间': position_stock_info.get('positionDate', ''),
+            '行业': position_stock_info.get('industry', ''),
+        })
+
+
+    return trade_results, position_stocks_results
 
 
 async def Strategy_main():
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=6)).strftime('%Y-%m-%d'))
     logger.info(f'今天日期: {today}')
     all_today_trades = []
+    all_positions = []
     for strategy_id in Strategy_ids:
-        trades = await get_latest_position_and_trade(strategy_id)
+        lastest_trade_results, position_stocks_results = await get_latest_position_and_trade(strategy_id)
         # pprint(trades)
-        all_today_trades.extend(trades)
+        all_today_trades.extend(lastest_trade_results)
+        all_positions.extend(position_stocks_results)
 
-    # all_today_trades = sorted(all_today_trades, key=lambda x: x['时间'], reverse=True)  # 倒序排序
     all_today_trades_df = pd.DataFrame(all_today_trades)
+    position_stocks_results_df = pd.DataFrame(all_positions)
+    # logger.info(f'保存今日持仓数据:\n{position_stocks_results_df}')
+    # position_stocks_results_df.to_excel(Strategy_holding_file, sheet_name=today,index=False)
+    # print('今日数据:', all_today_trades_df)
+    # print('持仓数据:', position_stocks_results_df)
+    # 筛选今天的
+    all_today_trades_df = all_today_trades_df[all_today_trades_df['时间'] == today]
+
     # 打印所有列的数据类型
     # print(f'今日数据列的数据类型:\n{all_today_trades_df.dtypes}')
 
@@ -154,6 +176,8 @@ async def Strategy_main():
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 修复：保持函数一致性
     save_to_operation_history_excel(new_data_df, history_data_file, f'{today}', index=False)
+    position_stocks_results_df.to_excel(Strategy_holding_file, sheet_name=today, index=False)
+    logger.info(f'保存今日持仓数据:\n{position_stocks_results_df}')
     # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data_df}")
     # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
     # update_file_status(history_data_df_file)

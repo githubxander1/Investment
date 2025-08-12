@@ -17,28 +17,31 @@ STRATEGY_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, 'strategy_portfolio_
 COMBINATION_TODAY_ADJUSTMENT_LOG_FILE = os.path.join(LOGS_DIR, 'combination_portfolio_today.log')
 trade_operations_log_file = os.path.join(LOGS_DIR, 'data_process.log')
 
-# 数据文件路径
-OPERATION_HISTORY_FILE = os.path.join(DATA_DIR, 'trade_operation_history.xlsx')
+# 操作历史
+OPERATION_HISTORY_FILE = os.path.join(DATA_DIR,'portfolio',  'trade_operation_history.xlsx')
 
+# 调仓
+Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio', 'Strategy_portfolio_today.xlsx')
+Combination_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Combination_portfolio_today.xlsx')
+Robot_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Robot_portfolio_today.xlsx')
+Lhw_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Lhw_portfolio_today.xlsx')
 
-Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'Strategy_portfolio_today.xlsx')
-Combination_portfolio_today_file = os.path.join(DATA_DIR, 'Combination_portfolio_today.xlsx')
-Robot_portfolio_today_file = os.path.join(DATA_DIR, 'Robot_portfolio_today.xlsx')
-Lhw_portfolio_today_file = os.path.join(DATA_DIR, 'Lhw_portfolio_today.xlsx')
-
+# 持仓
 Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'Ai_Strategy_position.xlsx')
 ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")
 
-Strategy_holding_file = os.path.join(DATA_DIR, 'Strategy_position.xlsx')
-Combination_holding_file = os.path.join(DATA_DIR, 'Combination_position.xlsx')
-Robot_holding_file = os.path.join(DATA_DIR, 'Robots_position.xlsx')
-Account_holding_file = os.path.join(DATA_DIR, 'account_info.xlsx')
+Strategy_holding_file = os.path.join(DATA_DIR, 'position','Strategy_position.xlsx')
+Combination_holding_file = os.path.join(DATA_DIR, 'position','Combination_position.xlsx')
+Robot_holding_file = os.path.join(DATA_DIR, 'position','Robots_position.xlsx')
+Account_holding_file = os.path.join(DATA_DIR, 'position','account_info.xlsx')
 
+# 对比
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
 
 Combination_list_file = os.path.join(DATA_DIR, '组合列表.xlsx')
 Strategy_list_file = os.path.join(DATA_DIR, '策略列表.csv')
 Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.xlsx')
+
 #ai诊断文件
 Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
