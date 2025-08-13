@@ -1,0 +1,143 @@
+[32m2025-08-13 09:33:09 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:33:09 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:33:11 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-13 09:33:14 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-13 09:33:14 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[31m2025-08-13 09:33:18 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 256, 360, 1024, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 222, in extract_stock_info
+    self.return_to_top()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 36, in return_to_top
+    self.d.swipe(0.5, 0.2, 0.5, 0.8, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 256, 360, 1024, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-08-13 09:33:19 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[31m2025-08-13 09:33:19 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 226, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-08-13 09:33:20 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:33:23 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值         当日盈亏/盈亏率      持仓/可用            成本/现价
+0      中科金财   3,128.00   -10.10/-0.330%    100/100    31.383/31.280
+1       瑞尔特   1,552.00    -9.04/-0.590%    200/200      7.806/7.760
+2      超讯通信   3,709.00  -187.50/-4.820%    100/100    38.968/37.090
+3      梦网科技   2,932.00   -11.97/-0.410%    200/200    14.721/14.660
+4      金鹰股份     817.00   177.47/27.730%    100/100      6.396/8.170
+5      曙光股份   4,784.00   -29.21/-0.610%  1300/1300      3.703/3.680
+6      恒尚节能   4,920.00   485.74/10.960%    300/300    14.781/16.400
+7      双箭股份     729.00     29.52/4.190%    100/100      6.997/7.290
+8    可转债ETF  11,828.70    996.07/9.200%    900/900    12.036/13.143
+9  国债政金债ETF  10,793.30     32.58/0.300%    100/100  107.607/107.933[0m
+[32m2025-08-13 09:33:25 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 09:33:27 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-13 09:33:27 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-13 09:33:44 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:33:44 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:33:47 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:33:47 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 09:33:49 - INFO - 已回到顶部[0m
+[32m2025-08-13 09:33:49 - INFO - ✅ 成功提取持仓数据，共 4 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   金诚信  5,204.00    338.53/6.957%  100/100  48.655/52.040
+1  大业股份  4,216.00    199.62/4.970%  400/400  10.041/10.540
+2  首创奥莱    415.80  274.01/193.230%  100/100    1.418/4.158
+3  物美消费    434.60  329.07/311.943%  100/100    1.055/4.346[0m
+[32m2025-08-13 09:34:00 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-13 09:34:01 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:01 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:03 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:03 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:06 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:06 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:09 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:09 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:12 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:12 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:34:14 - INFO - ✅ 成功提取持仓数据，共 0 条:
+Empty DataFrame
+Columns: []
+Index: [][0m
+[31m2025-08-13 09:34:14 - ERROR - 获取持仓失败: '标的名称'[0m
+[32m2025-08-13 09:34:17 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:34:17 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:34:20 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:34:20 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 09:34:22 - INFO - 已回到顶部[0m
+[32m2025-08-13 09:34:22 - INFO - ✅ 成功提取持仓数据，共 4 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   金诚信  5,199.00    333.53/6.854%  100/100  48.655/51.990
+1  大业股份  3,162.00    194.08/6.540%    300/0   9.893/10.540
+2  首创奥莱    415.80  274.01/193.230%  100/100    1.418/4.158
+3  物美消费    434.60  329.07/311.943%  100/100    1.055/4.346[0m
+[33m2025-08-13 09:34:22 - WARNING - 农尚环境 不在持仓中[0m
+[32m2025-08-13 09:34:30 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 09:34:33 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用      可取
+0  仓位 92.4%  43,095.19  39,814.00  +155.32  3,285.19  285.07[0m
+[32m2025-08-13 09:40:53 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:40:53 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:40:56 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:40:58 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:40:59 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 09:41:01 - INFO - 已回到顶部[0m
+[32m2025-08-13 09:41:01 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  卫光生物  2,950.00   -1.25/-0.044%    100/0  29.513/29.500
+1  神州数码  8,178.00    77.31/0.956%  200/200  40.503/40.890
+2  鲁西化工  4,888.00  -36.42/-0.739%  400/400  12.311/12.220
+3  银轮股份  6,186.00   193.49/3.227%  200/200  29.963/30.930
+4  博敏电子  4,332.00   103.60/2.450%  400/400  10.571/10.830
+5  梦网科技  8,880.00  -45.76/-0.511%  600/600  14.876/14.800
+6  奥飞娱乐  2,832.00  -83.51/-2.861%  300/300    9.718/9.440
+7  锐明技术  4,650.00    78.61/1.719%  100/100  45.714/46.500[0m
+[32m2025-08-13 10:20:40 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 10:20:40 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 10:20:43 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 10:20:45 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 10:20:45 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 10:20:48 - INFO - 已回到顶部[0m
+[32m2025-08-13 10:20:48 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  卫光生物  2,925.00  -26.25/-0.891%    100/0  29.513/29.250
+1  神州数码  8,236.00   135.31/1.671%  200/200  40.503/41.180
+2  鲁西化工  4,856.00  -68.42/-1.389%  400/400  12.311/12.140
+3  博敏电子  4,348.00   119.60/2.828%  400/400  10.571/10.870
+4  梦网科技  9,090.00   164.24/1.842%  600/600  14.876/15.150
+5  奥飞娱乐  2,817.00  -98.51/-3.375%  300/300    9.718/9.390
+6  锐明技术  4,639.00    67.61/1.479%  100/100  45.714/46.390
+7  银轮股份      0.00   231.85/0.000%      0/0   0.000/31.570[0m
+[32m2025-08-13 10:21:00 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 10:21:01 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-13 10:21:01 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-13 13:37:27 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 13:37:30 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用      可取
+0  仓位 59.5%  43,535.83  25,924.00  +591.96  17,611.33  285.07[0m
