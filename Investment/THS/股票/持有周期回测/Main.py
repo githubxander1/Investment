@@ -2,18 +2,19 @@ import os
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
-from BacktestUtils import *
-from HoldingPeriodStrategy import SingleHoldingPeriodStrategy
+# from BacktestUtils import *
+from HoldingPeriodStrategy import *
 
-def main():
+def main(type, name):
     # 设置数据路径
-    data_dir = 'stock_data/双峰形态'
+
+    data_dir = f'stock_data/{type}/{name}'
     # data_dir = 'stock_data'
     # output_path = 'backtest_results_低位锁定'
-    output_path = 'backtest_results_双峰形态'
+    output_path = f'backtest_results/{type}/{name}'
 
     if not os.path.exists(output_path):
-        os.makedirs(output_path)
+        os.makedirs(output_path, exist_ok=True)
 
     # ✅ 保持 datetime 类型
     selection_date = '2023-06-13'
@@ -82,8 +83,8 @@ def main():
 
         # 绘制并保存收益图表
         if stock_results:
-            chart_path = plot_results(stock_results, stock_name, output_path)
-            # print(f"📈 收益图表已保存至: {chart_path}")
+            chart_path = plot_results(stock_results, stock_name, output_path, df)
+            print(f"📈 收益图表已保存至: {chart_path}")
 
         print(f"{'='*50}\n")
 
@@ -127,4 +128,6 @@ def main():
         print(f"📊 所有股票收益对比图表已保存至: {chart_path}")
 
 if __name__ == '__main__':
-    main()
+    type = '双峰形态'
+    name = datetime.now().strftime('%Y-%m-%d')
+    main(type, name)
