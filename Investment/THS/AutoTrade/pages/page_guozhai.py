@@ -201,6 +201,7 @@ class GuozhaiPage(THSPage):
 
         # 提取 //android.widget.TextView[@text="长城证券 **5735"] 里取汉字
         current_account_element = self.d(resourceId="com.hexin.plat.android:id/account_info_view")
+        # '//*[@resource-id="com.hexin.plat.android:id/account_info_view"]'
         # current_account = current_account_element.replace(" ", "")
         # print(current_account)
         if current_account_element.exists():
@@ -244,6 +245,6 @@ if __name__ == '__main__':
     #     print("Operation succeeded.")
     # else:
     #     print(f"Operation failed: {message}")
+    guozhai.guozhai_change_account("中泰证券")
     guozhai.guozhai_change_account("长城证券")
     guozhai.guozhai_change_account("川财证券")
-    guozhai.guozhai_change_account("中泰证券")

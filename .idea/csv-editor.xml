@@ -38,6 +38,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\001234泰慕士.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\605188国光连锁.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\688291金橙子.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\刑不刑量化\社保基金\social_security_holdings.csv">
           <value>
             <Attribute>

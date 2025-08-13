@@ -7,11 +7,11 @@ import pandas as pd
 
 
 from datetime import datetime
-start_date = '2025-06-13'
+start_date = '2023-06-13'
 dt = datetime.strptime(start_date, "%Y-%m-%d")
 start_date = dt.strftime("%Y%m%d")
 print(start_date)
-def download_stock_data(stock_infos, save_path='stock_data'):
+def download_stock_data(stock_infos, save_path='stock_data/双峰形态'):
     """下载股票 K 线数据并保存为 CSV 文件"""
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -58,8 +58,8 @@ if __name__ == "__main__":
     #
     # }
     stock_infos = {
-        '603389': '亚振家居',
-        '688720': '艾森股份',
-        '000793': '华闻集团',
+        '000011': '深物业A',
+        '601869': '长飞光纤',
+        '300433': '蓝思科技',
     }
     download_stock_data(stock_infos)

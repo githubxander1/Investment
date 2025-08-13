@@ -30,7 +30,7 @@ async def get_latest_position_and_trade(strategy_id):
         data.raise_for_status()
         data = data.json()
         logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
-        # pprint(data)
+        pprint(data)
     except requests.RequestException as e:
         logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
@@ -107,7 +107,7 @@ async def Strategy_main():
     # print('今日数据:', all_today_trades_df)
     # print('持仓数据:', position_stocks_results_df)
     # 筛选今天的
-    all_today_trades_df = all_today_trades_df[all_today_trades_df['时间'] == today]
+    # all_today_trades_df = all_today_trades_df[all_today_trades_df['时间'] == today]
 
     # 打印所有列的数据类型
     # print(f'今日数据列的数据类型:\n{all_today_trades_df.dtypes}')

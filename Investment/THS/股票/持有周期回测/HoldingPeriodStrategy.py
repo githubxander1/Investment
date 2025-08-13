@@ -123,7 +123,7 @@ def plot_results(results, stock_name, output_path):
 if __name__ == '__main__':
     # 设置路径
     data_dir = '../国家队/龙虎榜联动分析交易系统/stock_data'
-    output_path = '../国家队/龙虎榜联动分析交易系统/backtest_results'
+    output_path = '../国家队/龙虎榜联动分析交易系统/backtest_results_低位锁定'
 
     # 确保输出目录存在
     if not os.path.exists(output_path):

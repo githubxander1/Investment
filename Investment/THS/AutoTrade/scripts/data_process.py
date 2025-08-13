@@ -636,13 +636,14 @@ def extract_operations_to_perform(file_paths, operation_history_file):
                 stock_name = row['标的名称'].strip()
                 operation = row['操作'].strip()
                 new_ratio = float(row['新比例%'])
+                price = float(row['最新价'])
 
-                logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
+                logger.info(f"🛠️ 要处理: {operation} {stock_name} {price} 比例:{new_ratio}")
 
                 # 检查是否已处理
                 operation_key = (stock_name, operation, round(new_ratio, 2))
                 if operation_key in processed_operations:
-                    logger.info(f"✅ 已处理过: {stock_name} {operation} {new_ratio}%")
+                    logger.info(f"✅ 已处理过: {stock_name} {operation} {price} 比例:{new_ratio}%")
                     continue
 
                 # 确定账户类型
@@ -662,7 +663,7 @@ def extract_operations_to_perform(file_paths, operation_history_file):
                     "file_path": file_path  # 用于日志记录
                 })
 
-                logger.info(f"📝 记录操作: {account} - {operation} {stock_name} 比例:{new_ratio}")
+                logger.info(f"📝 记录操作: {account} - {operation} {stock_name} {price} 比例:{new_ratio}")
 
         except pandas.errors.EmptyDataError:
             logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")

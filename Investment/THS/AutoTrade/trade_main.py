@@ -3,6 +3,7 @@
 import asyncio
 import random
 import datetime
+import time
 from datetime import time as dt_time
 
 import uiautomator2 as u2
@@ -189,6 +190,8 @@ def switch_to_next_account(d, current_account_index):
             logger.warning(f"❌ 切换账户失败: {account_name}")
     except Exception as e:
         logger.error(f"切换账户时发生异常: {e}")
+        # 即使切换失败也返回下一个索引，避免程序卡死在当前账户
+        logger.info("将继续尝试下一个账户")
 
     return next_account_index
 
@@ -207,6 +210,9 @@ async def main():
     # 初始化账户索引
     current_account_index = 0
 
+    # 初始化国债逆回购状态
+    guozhai_success = False
+
     # 记录开始时间，用于最大运行时长控制
     start_time = datetime.datetime.now()
 
@@ -221,211 +227,233 @@ async def main():
     guozhai_retry_status = {account: False for account in ACCOUNTS}  # 重试状态
 
     while True:
-        now = datetime.datetime.now().time()
+        try:
+            now = datetime.datetime.now().time()
 
-        # 检查是否超过最大运行时间
-        if (datetime.datetime.now() - start_time) > datetime.timedelta(hours=MAX_RUN_TIME):
-            logger.info(f"已达到最大运行时间 {MAX_RUN_TIME} 小时，退出程序")
-            break
+            # 检查是否超过最大运行时间
+            if (datetime.datetime.now() - start_time) > datetime.timedelta(hours=MAX_RUN_TIME):
+                logger.info(f"已达到最大运行时间 {MAX_RUN_TIME} 小时，退出程序")
+                break
 
-        # 检查是否超过每日结束时间
-        if now >= dt_time(end_time_hour, end_time_minute):
-            logger.info("当前时间超过 15:30，停止运行")
-            break
+            # 检查是否超过每日结束时间
+            if now >= dt_time(end_time_hour, end_time_minute):
+                logger.info("当前时间超过 15:30，停止运行")
+                break
 
-        # 新增：检查是否在11:30到13:00之间，如果是则跳过本次循环
-        if dt_time(11, 30) <= now < dt_time(13, 0):
-            logger.info("当前时间在11:30到13:00之间，跳过本次循环")
-            await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
-            continue
-
-        # 检测设备是否断开
-        if not is_device_connected(d):
-            logger.warning("设备断开连接，尝试重新初始化...")
-            d = await initialize_device()
-            if not d:
-                logger.error("设备重连失败，等待下一轮检测")
+            # 新增：检查是否在11:30到13:00之间，如果是则跳过本次循环
+            if dt_time(11, 30) <= now < dt_time(13, 0):
+                logger.info("当前时间在11:30到13:00之间，跳过本次循环")
                 await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
                 continue
 
-        # 更新页面对象引用
-        ths_page = THSPage(d)
+            # 检测设备是否断开
+            if not is_device_connected(d):
+                logger.warning("设备断开连接，尝试重新初始化...")
+                d = await initialize_device()
+                if not d:
+                    logger.error("设备重连失败，等待下一轮检测")
+                    await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
+                    continue
 
-        # 执行早盘信号检查
-        await check_morning_signals()
+            # 更新页面对象引用
+            ths_page = THSPage(d)
 
-        # 2. 处理组合和策略文件
-        # 初始化变量
-        robot_success = False
-        strategy_success = False
-        combination_success = False
-        lhw_success = False
+            # 执行早盘信号检查
+            await check_morning_signals()
 
-        strategy_data = None
-        combination_data = None
+            # 2. 处理组合和策略文件
+            # 初始化变量
+            robot_success = False
+            strategy_success = False
+            combination_success = False
+            lhw_success = False
 
-        # 判断是否在策略任务时间窗口（9:30-9:33）
-        if dt_time(9, 31) <= now <= dt_time(10, 35):
-        # if dt_time(9, 31):
-            # holding_success, ai_datas = Ai_strategy_main()
-            #
-            # to_sell = ai_datas.get("to_sell")
-            # to_buy = ai_datas.get("to_buy")
-            #
-            # if not to_sell.empty or not to_buy.empty:
-            #     # 将 to_sell 和 to_buy 合并为一个 DataFrame
-            #     to_sell['操作'] = '卖出'
-            #     to_buy['操作'] = '买入'
-            #
-            #     combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-            #                             ignore_index=True)
-            #     combined_df['新比例%'] = None  # 可根据需要设置默认值
-            #
-            #     # 写入临时文件
-            #     combined_df.to_excel(ai_strategy_diff_file_path, index=False)
-            #     logger.warning(f"发现持仓差异，准备执行模拟账户交易操作：买\n{to_buy}，卖\n{to_sell}")
+            strategy_data = None
+            combination_data = None
 
-            #     # 初始化设备
-            #     d = await initialize_device()
-            #     if not d:
-            #         logger.error("❌ 设备初始化失败，跳过模拟账户操作")
-            #     else:
-            #         # ths_page = THSPage(d)
-            #
-            #         # 切换到模拟账户
-            #         common_page.change_account("模拟练习区")
-            #         logger.info("✅ 已切换至模拟账户")
-            #
-            #         # 构造临时文件用于 process_excel_files
-            #         from tempfile import NamedTemporaryFile
-            #         import pandas as pd
-            #
-            #         temp_file_path = os.path.join(DATA_DIR, "temp_strategy_diff.xlsx")
-            #
-            #         # 将 to_sell 和 to_buy 合并为一个 DataFrame
-            #         to_sell['操作'] = '卖出'
-            #         to_buy['操作'] = '买入'
-            #
-            #         combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-            #                                 ignore_index=True)
-            #         combined_df['新比例%'] = None  # 可根据需要设置默认值
-            #
-            #         # 写入临时文件
-            #         combined_df.to_excel(temp_file_path, index=False)
-            #
-            #         # 执行交易
-            #         process_excel_files(
-            #             ths_page=trader,
-            #             file_paths=[temp_file_path],
-            #             operation_history_file=OPERATION_HISTORY_FILE
-            #         )
-            #
-            #         logger.info("✅ 模拟账户持仓差异处理完成")
-            # else:
-            #     logger.info("✅ 当前无持仓差异，无需执行模拟账户操作")
+            # 判断是否在策略任务时间窗口（9:30-9:33）
+            if dt_time(9, 31) <= now <= dt_time(9, 35):
+            # if dt_time(9, 31):
+                # holding_success, ai_datas = Ai_strategy_main()
+                #
+                # to_sell = ai_datas.get("to_sell")
+                # to_buy = ai_datas.get("to_buy")
+                #
+                # if not to_sell.empty or not to_buy.empty:
+                #     # 将 to_sell 和 to_buy 合并为一个 DataFrame
+                #     to_sell['操作'] = '卖出'
+                #     to_buy['操作'] = '买入'
+                #
+                #     combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
+                #                             ignore_index=True)
+                #     combined_df['新比例%'] = None  # 可根据需要设置默认值
+                #
+                #     # 写入临时文件
+                #     combined_df.to_excel(ai_strategy_diff_file_path, index=False)
+                #     logger.warning(f"发现持仓差异，准备执行模拟账户交易操作：买\n{to_buy}，卖\n{to_sell}")
+
+                #     # 初始化设备
+                #     d = await initialize_device()
+                #     if not d:
+                #         logger.error("❌ 设备初始化失败，跳过模拟账户操作")
+                #     else:
+                #         # ths_page = THSPage(d)
+                #
+                #         # 切换到模拟账户
+                #         common_page.change_account("模拟练习区")
+                #         logger.info("✅ 已切换至模拟账户")
+                #
+                #         # 构造临时文件用于 process_excel_files
+                #         from tempfile import NamedTemporaryFile
+                #         import pandas as pd
+                #
+                #         temp_file_path = os.path.join(DATA_DIR, "temp_strategy_diff.xlsx")
+                #
+                #         # 将 to_sell 和 to_buy 合并为一个 DataFrame
+                #         to_sell['操作'] = '卖出'
+                #         to_buy['操作'] = '买入'
+                #
+                #         combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
+                #                                 ignore_index=True)
+                #         combined_df['新比例%'] = None  # 可根据需要设置默认值
+                #
+                #         # 写入临时文件
+                #         combined_df.to_excel(temp_file_path, index=False)
+                #
+                #         # 执行交易
+                #         process_excel_files(
+                #             ths_page=trader,
+                #             file_paths=[temp_file_path],
+                #             operation_history_file=OPERATION_HISTORY_FILE
+                #         )
+                #
+                #         logger.info("✅ 模拟账户持仓差异处理完成")
+                # else:
+                #     logger.info("✅ 当前无持仓差异，无需执行模拟账户操作")
 
 
-            logger.info("---------------------策略/Robot任务开始执行---------------------")
-            strategy_result = await Strategy_main()
-            robot_result = await Robot_main()
-            if strategy_result or robot_result:
-                strategy_success, strategy_data = strategy_result
-                robot_success, robot_data = robot_result
-            else:
-                logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
-            logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
-        else:
-            logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
-
-        # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
-        if dt_time(9, 25) <= now <= dt_time(end_time_hour, end_time_minute):
-            logger.info("---------------------组合任务开始执行---------------------")
-            combination_result = await Combination_main()
-            lhw_result = await Lhw_main()
-            if combination_result:
-                combination_success, combination_data = combination_result
-                lhw_success, lhw_data = lhw_result
-            else:
-                logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
-            logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
-
-            # 如果有任何一个数据获取成功，则执行交易处理
-            # if strategy_success or combination_success or holding_success:
-                # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
-            if strategy_success or combination_success or robot_success or lhw_success:
-                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
-                process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
-
-        else:
-            logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
-
-        # 国债逆回购操作（为每个账户执行一次）
-        if dt_time(14, 56) <= now <= dt_time(end_time_hour, end_time_minute):
-            current_account = ACCOUNTS[current_account_index]
-            logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")
-
-            # 切换到当前账户
-            # 切换到交易页面
-
-            guozhai_page = GuozhaiPage(d)
-            if not guozhai_page.guozhai_change_account(current_account):
-                logger.warning(f"切换到账户 {current_account} 失败")
-                # 尝试切换到下一个账户
-                current_account_index = switch_to_next_account(d, current_account_index)
-                await asyncio.sleep(2)
-                continue
-
-            # 如果当前账户还未成功执行，或者执行失败且还未重试
-            if not guozhai_status[current_account] or (not guozhai_retry_status[current_account] and guozhai_status[current_account]):
-                guozhai = GuozhaiPage(d)
-                success, message = guozhai.guozhai_operation()
-
-                if success:
-                    logger.info(f"国债逆回购成功 (账户: {current_account})")
-                    guozhai_status[current_account] = True
-                    send_notification(f"国债逆回购任务完成 (账户: {current_account}): {message}")
+                logger.info("---------------------策略/Robot任务开始执行---------------------")
+                strategy_result = await Strategy_main()
+                robot_result = await Robot_main()
+                if strategy_result or robot_result:
+                    strategy_success, strategy_data = strategy_result
+                    robot_success, robot_data = robot_result
                 else:
-                    logger.info(f"国债逆回购失败 (账户: {current_account}): {message}")
-                    # 标记需要重试
-                    if not guozhai_status[current_account]:
-                        guozhai_status[current_account] = True  # 标记已尝试
-                        guozhai_retry_status[current_account] = False  # 需要重试
-                    else:
-                        guozhai_retry_status[current_account] = True  # 已重试过
-
-                logger.info(f"---------------------国债逆回购任务执行结束 (账户: {current_account})---------------------")
-
-                # 切换到下一个账户
-                current_account_index = switch_to_next_account(d, current_account_index)
+                    logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
+                logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
             else:
-                logger.debug(f"账户 {current_account} 已完成国债逆回购任务，跳过执行")
-                # 切换到下一个账户
-                current_account_index = switch_to_next_account(d, current_account_index)
+                logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
 
-        else:
-            logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
+            # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
+            if dt_time(9, 25) <= now <= dt_time(15, 00):
+                logger.info("---------------------组合任务开始执行---------------------")
+                combination_result = await Combination_main()
+                lhw_result = await Lhw_main()
+                if combination_result:
+                    combination_success, combination_data = combination_result
+                    lhw_success, lhw_data = lhw_result
+                else:
+                    logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
+                logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
 
-        # 每日账户切换（在收盘后执行一次）
-        if not account_switched_today and dt_time(15, 1) <= now <= dt_time(15, 5):
-            current_account_index = switch_to_next_account(d, current_account_index)
-            account_switched_today = True
-            logger.info("每日账户切换完成")
+                # 如果有任何一个数据获取成功，则执行交易处理
+                # if strategy_success or combination_success or holding_success:
+                    # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
+                if strategy_success or combination_success or robot_success or lhw_success:
+                    file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
+                    process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
 
-        # 重置每日账户切换标记和国债逆回购状态
-        if dt_time(0, 0) <= now <= dt_time(1, 0):
-            if account_switched_today:
-                account_switched_today = False
-                logger.info("重置每日账户切换标记")
+            else:
+                logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
 
-            # 重置国债逆回购状态（新的一天）
-            guozhai_status = {account: False for account in ACCOUNTS}
-            guozhai_retry_status = {account: False for account in ACCOUNTS}
-            logger.info("重置国债逆回购状态")
+            # 国债逆回购操作（为每个账户执行一次）
+            if dt_time(14, 56) <= now <= dt_time(16, 25):
+                current_account = ACCOUNTS[current_account_index]
+                logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")
 
-        # 随机等待，降低请求频率规律性
-        delay = random.uniform(50, 70)
-        logger.info(f"💤 等待 {delay:.2f} 秒后继续下一轮检测")
-        await asyncio.sleep(delay)
+                try:
+                    # 切换到当前账户
+                    # guozhai_page = GuozhaiPage(d)
+                    # if not guozhai_page.guozhai_change_account(current_account):
+                    #     logger.warning(f"切换到账户 {current_account} 失败")
+                    #     # 尝试切换到下一个账户
+                    #     current_account_index = switch_to_next_account(d, current_account_index)
+                    #     await asyncio.sleep(2)
+                    #     # 继续执行下一个账户而不是等待下一轮
+                    #     continue
+
+                    # 如果当前账户还未成功执行，或者执行失败且还未重试
+                    if not guozhai_status[current_account] or (not guozhai_retry_status[current_account] and guozhai_status[current_account]):
+                        guozhai = GuozhaiPage(d)
+                        success, message = guozhai.guozhai_operation()
+
+                        if success:
+                            logger.info(f"国债逆回购成功 (账户: {current_account})")
+                            guozhai_status[current_account] = True
+                            send_notification(f"国债逆回购任务完成 (账户: {current_account}): {message}")
+
+                            # 成功后立即切换到下一个账户并继续执行
+                            logger.info(
+                                f"---------------------国债逆回购任务执行结束 (账户: {current_account})---------------------")
+                            current_account_index = switch_to_next_account(d, current_account_index)
+                            # 不等待，立即继续执行下一个账户
+                            continue
+                        else:
+                            logger.info(f"国债逆回购失败 (账户: {current_account}): {message}")
+                            # 标记需要下一轮重试
+                            if not guozhai_status[current_account]:
+                                guozhai_status[current_account] = True  # 标记已尝试
+                                guozhai_retry_status[current_account] = False  # 需要重试
+                            else:
+                                guozhai_retry_status[current_account] = True  # 已重试过
+
+                        logger.info(f"---------------------国债逆回购任务执行结束 (账户: {current_account})---------------------")
+
+                        # 切换到下一个账户
+                        current_account_index = switch_to_next_account(d, current_account_index)
+                        # 继续执行下一个账户
+                        continue
+                    else:
+                        logger.debug(f"账户 {current_account} 已完成国债逆回购任务，跳过执行")
+                        # 切换到下一个账户
+                        current_account_index = switch_to_next_account(d, current_account_index)
+                        continue
+
+                except Exception as e:
+                    logger.error(f"国债逆回购操作过程中发生错误: {e}", exc_info=True)
+                    logger.info("将继续执行下一个账户的操作")
+                    current_account_index = switch_to_next_account(d, current_account_index)
+                    # 即使出错也继续执行下一个账户
+                    continue
+    # else:
+    #     logger.debug("尚未进入国债逆回购时间窗口，跳过执行")
+
+            # # 每日账户切换（在收盘后执行一次）
+            # if not account_switched_today and dt_time(15, 1) <= now <= dt_time(15, 5):
+            #     current_account_index = switch_to_next_account(d, current_account_index)
+            #     account_switched_today = True
+            #     logger.info("每日账户切换完成")
+
+            # 重置每日账户切换标记和国债逆回购状态
+            if dt_time(0, 0) <= now <= dt_time(1, 0):
+                if account_switched_today:
+                    account_switched_today = False
+                    logger.info("重置每日账户切换标记")
+
+                # 重置国债逆回购状态（新的一天）
+                guozhai_status = {account: False for account in ACCOUNTS}
+                guozhai_retry_status = {account: False for account in ACCOUNTS}
+                logger.info("重置国债逆回购状态")
+
+            # 随机等待，降低请求频率规律性
+            delay = random.uniform(50, 70)
+            logger.info(f"💤 等待 {delay:.2f} 秒后继续下一轮检测")
+            await asyncio.sleep(delay)
+        except Exception as e:
+            logger.error(f"主循环中发生未预期的错误: {e}", exc_info=True)
+            logger.info("程序将继续运行，等待下一轮检测")
+            await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
+            continue
 
 if __name__ == '__main__':
     # config/settings.py

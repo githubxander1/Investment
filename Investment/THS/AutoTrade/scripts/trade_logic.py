@@ -63,7 +63,7 @@ class TradeLogic:
                     new_ratio = None
 
             # 当new_ratio为0或None时，全仓卖出
-            if new_ratio is None or new_ratio == 0:
+            if new_ratio is None or new_ratio <= 0:
                 volume = available_shares  # 全部卖出
                 logger.info("全部卖出")
             else:

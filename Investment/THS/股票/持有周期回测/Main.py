@@ -7,15 +7,16 @@ from HoldingPeriodStrategy import SingleHoldingPeriodStrategy
 
 def main():
     # 设置数据路径
-    data_dir = 'stock_data'
+    data_dir = 'stock_data/双峰形态'
     # data_dir = 'stock_data'
-    output_path = '../backtest_results'
+    # output_path = 'backtest_results_低位锁定'
+    output_path = 'backtest_results_双峰形态'
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
     # ✅ 保持 datetime 类型
-    selection_date = '2024-06-13'
+    selection_date = '2023-06-13'
     buy_date = pd.to_datetime(selection_date) + pd.Timedelta(days=1)
     print(f"📅 买入日期: {buy_date}")
     # print(f"🔄 DEBUG: 选股日={selection_date}(str) -> 买入日={buy_date}")
