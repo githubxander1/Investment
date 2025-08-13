@@ -66,7 +66,6 @@ Combination_headers = {
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         # "Referer": "https://t.10jqka.com.cn/portfolioFront/historyTransfer.html?id=14533", #可网页看
-        #20250509 9:42 20250623
         "Cookie": 'user_status=0; hxmPid=adm_sjpopfuceng_441325; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzUxMjQ2MTQxOjo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWMzNWY3ZWZlZGIyZWYwNjliOGVkZTdlODEwNzdjM2EyOjox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=b5eafad7a376b45f8bc0e43df793dfbc; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=A_jcG90c5DqZ6Qi-GGN21lvXwK2KYVzhvsUwbzJpRDPmTZeX2nEsew7VAOaB'
         # "Cookie": 'uid=CvQTumg397R8rXMQBSppAg==; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzQ5ODA1MTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MWU5NThhYTRmYjRiYzZlM2RhMmI5NzU0MDI0ZGYzODU0Ojox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=d19d7223e7976c9acf0df29f2bcb2d69; user_status=0; IFUserCookieKey={"userid":"641926488","escapename":"mo_641926488","custid":""}; v=AwzMLPM8iAfDvpx7o4R4cs9M1GE-RbDvsunEs2bNGLda8aNbjlWAfwL5lEm1'
     }

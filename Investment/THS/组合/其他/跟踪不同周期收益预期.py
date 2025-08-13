@@ -28,7 +28,7 @@ if response.status_code == 200:
     # 翻译字段
     translated_result = {
         "状态码": result["status_code"],
-        "股票数据": {
+        "stock_data": {
             "盈利水平": result["testdata"]["profitLevel"],
             "跟踪天数": result["testdata"]["followDay"],
             "盈利概率": result["testdata"]["profitProbability"],
@@ -46,11 +46,11 @@ if response.status_code == 200:
     pprint(translated_result)
 
     # 将翻译后的数据转换为DataFrame格式，方便后续保存为Excel
-    df = pd.DataFrame(translated_result["股票数据"]["跟踪盈利数据列表"])
+    df = pd.DataFrame(translated_result["stock_data"]["跟踪盈利数据列表"])
     # 添加盈利水平、跟踪天数、盈利概率这几个总体数据到DataFrame中
-    df["盈利水平"] = translated_result["股票数据"]["盈利水平"]
-    df["总跟踪天数"] = translated_result["股票数据"]["跟踪天数"]
-    df["总盈利概率"] = translated_result["股票数据"]["盈利概率"]
+    df["盈利水平"] = translated_result["stock_data"]["盈利水平"]
+    df["总跟踪天数"] = translated_result["stock_data"]["跟踪天数"]
+    df["总盈利概率"] = translated_result["stock_data"]["盈利概率"]
     # 保存为Excel文件
     df.to_excel("portfolio_profit_probability.xlsx", index=False)
 else:

@@ -8,7 +8,7 @@ from HoldingPeriodStrategy import SingleHoldingPeriodStrategy
 def main():
     # 设置数据路径
     data_dir = 'stock_data'
-    # data_dir = '股票数据'
+    # data_dir = 'stock_data'
     output_path = '../backtest_results'
 
     if not os.path.exists(output_path):

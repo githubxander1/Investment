@@ -59,7 +59,7 @@ import akshare as ak
 # 公司股本变动-巨潮资讯
 # 接口: stock_share_change_cninfo
 # 目标地址: https://webapi.cninfo.com.cn/#/apiDoc
-# 描述: 巨潮资讯-股票数据-公司股本变动
+# 描述: 巨潮资讯-stock_data-公司股本变动
 # 限量: 单次获取指定 symbol 在 start_date 和 end_date 之间的公司股本变动数据
 # stock_share_change_cninfo_df = ak.stock_share_change_cninfo(symbol="002594", start_date="20091227", end_date="20241021")
 # print(stock_share_change_cninfo_df)

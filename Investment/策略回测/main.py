@@ -27,7 +27,7 @@ end_time = '20250613'
 stock_codes = ['000001', '000002']
 
 # 获取股票文件夹路径
-file_path = os.path.abspath(os.path.dirname(__file__)) + '/股票数据/'  # 返回当前文件路径
+file_path = os.path.abspath(os.path.dirname(__file__)) + '/stock_data/'  # 返回当前文件路径
 # 获取文件夹下的所有csv文件的文件路径
 file_list = os.listdir(file_path)
 file_list = [f for f in file_list if '.csv' in f]

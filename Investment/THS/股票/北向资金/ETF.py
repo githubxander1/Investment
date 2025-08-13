@@ -5,7 +5,7 @@ from fake_useragent import UserAgent
 
 def fetch_data():
     """
-    获取北向资金 ETF 股票数据（原始 JSON 响应）
+    获取北向资金 ETF stock_data（原始 JSON 响应）
     """
     url = "https://apigate.10jqka.com.cn/d/hq/hshkconnect/etf/v1/list"
     params = {

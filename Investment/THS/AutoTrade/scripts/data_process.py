@@ -1,10 +1,9 @@
-# data_process.py
+# data_process2.py
 import os
 from datetime import datetime, timedelta
 
 import pandas
 import pandas as pd
-from sqlalchemy.sql.functions import current_time
 
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
@@ -23,6 +22,8 @@ trader = TradeLogic()
 
 _operation_history_cache = None
 _operation_history_cache_time = None
+
+
 def read_portfolio_or_operation_data(file_path, sheet_name=None):
     """
     通用函数用于读取投资组合或操作历史数据。
@@ -43,7 +44,6 @@ def read_portfolio_or_operation_data(file_path, sheet_name=None):
 
 
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
-    # required_columns = ['名称','标的名称', '操作', '新比例%', '时间']
     all_dfs = []
 
     if sheet_name is None:
@@ -51,10 +51,9 @@ def read_portfolio_or_operation_data(file_path, sheet_name=None):
     elif sheet_name == 'all':
         sheet_name = None  # 用于后续判断读取所有sheet
 
-    # for file_path in file_paths:
     if not os.path.exists(file_path):
         logger.warning(f"文件不存在: {file_path}")
-        # continue
+        return [pd.DataFrame()]
 
     try:
         with pd.ExcelFile(file_path, engine='openpyxl') as xls:
@@ -69,16 +68,6 @@ def read_portfolio_or_operation_data(file_path, sheet_name=None):
             for sn in sheets_to_read:
                 df = pd.read_excel(xls, sheet_name=sn)
 
-                # 确保关键列存在并进行类型转换
-                # for col in required_columns:
-                #     if col not in df.columns:
-                #         df[col] = ''
-
-                # df['名称'] = df['名称'].astype(str).str.strip()
-                # df['标的名称'] = df['标的名称'].astype(str).str.strip()
-                # df['操作'] = df['操作'].astype(str).str.strip()
-                # df['新比例%'] = pd.to_numeric(df['新比例%'], errors='coerce').fillna(0.0).round(2)
-                # df['时间'] = pd.to_numeric(df['时间'], errors='coerce').fillna(0.0).round(2)
                 if df is not None:
                     all_dfs.append(df)
                     logger.info(f"✅ 读取数据成功: {file_path}, 表: {sn}, 共 {len(df)} 条记录")
@@ -87,18 +76,17 @@ def read_portfolio_or_operation_data(file_path, sheet_name=None):
                 logger.warning(f"未找到可读取的工作表: {file_path}")
     except Exception as e:
         logger.error(f"❌ 读取文件 {file_path} 失败: {e}", exc_info=True)
+        return [pd.DataFrame()]
 
-        #return pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
     if not all_dfs:
         all_dfs = [pd.DataFrame()]
-        # print(all_dfs)
-        return all_dfs
 
     # 合并所有数据并去重
     combined_df = pd.concat(all_dfs, ignore_index=True)
     combined_df.drop_duplicates(inplace=True)
 
     return combined_df
+
 
 def write_to_excel_append(df, filename, sheet_name=None, index=False):
     """
@@ -201,6 +189,7 @@ def write_to_excel_append(df, filename, sheet_name=None, index=False):
     except Exception as e:
         logger.error(f"❌ 追加写入文件 {filename} 失败: {e}", exc_info=True)
 
+
 def read_today_portfolio_record(file_path):
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # print(f'读取调仓记录文件日期{today}')
@@ -209,11 +198,6 @@ def read_today_portfolio_record(file_path):
             with pd.ExcelFile(file_path, engine='openpyxl') as portfolio_record_xlsx:
                 if today in portfolio_record_xlsx.sheet_names:
                     portfolio_record_history_df = pd.read_excel(portfolio_record_xlsx, sheet_name=today)
-
-                    # 显式转换关键列的类型
-                    # portfolio_record_history_df['代码'] = portfolio_record_history_df['代码'].astype(str).str.zfill(6)
-                    # portfolio_record_history_df['新比例%'] = portfolio_record_history_df['新比例%'].astype(float).round(2)
-                    # portfolio_record_history_df['最新价'] = portfolio_record_history_df['最新价'].astype(float).round(2)
 
                     # 去重处理
                     portfolio_record_history_df.drop_duplicates(
@@ -304,6 +288,7 @@ def safe_concat(history_df, new_df):
 
     return pd.concat([history_df, new_df], ignore_index=True, sort=False)
 
+
 def save_to_operation_history_excel(df, filename, sheet_name, index=False):
     """追加保存DataFrame到Excel文件，默认今天的在第一张表"""
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))  # 获取今天的日期
@@ -378,6 +363,7 @@ def save_to_operation_history_excel(df, filename, sheet_name, index=False):
     except Exception as e:
         logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
 
+
 def write_operation_history(df):
     """将操作记录写入Excel文件，按日期作为sheet名，并确保今日sheet位于第一个"""
     global _operation_history_cache
@@ -426,7 +412,7 @@ def write_operation_history(df):
         raise
 
 # 对比account_info文件和Strategy_holding以及Combination_holding文件,如果account_info里有其他两个文件里没有的股票标的，则卖出操作，反之买入（除了工商银行，中国电信，可转债ETF，国债证金债ETF）
-# scripts/data_process.py
+# scripts/data_process2.py
 
 def get_difference_holding():
     """
@@ -598,65 +584,36 @@ def get_stock_to_operate(trade_history_file, today_portfolio_file):
             continue
         to_operate_list.append(exists)
 
-    to_operate_list_df = pd.DataFrame(to_operate_list, columns=['标的名称', '操作', '新比例%'])
-    stock_name = to_operate_list_df['标的名称']
-    operation = to_operate_list['操作']
-    new_ratio = to_operate_list_df['新比例%']
+def extract_operations_to_perform(file_paths, operation_history_file):
+    """
+    提取所有需要执行的操作，不实际执行交易
 
-    return stock_name, operation, new_ratio
-        # logger.info(f"🚀 开始交易: {operation} {stock_name}")
-        # # 根据策略切换账户
-        # if strategy_name in ["AI市场追踪策略", "GPT定期精选"]:  # 策略
-        #     logger.info("检测到 AI市场追踪策略，切换账户为 川财证券")
-        #     common_page.change_account("川财证券")
-        # elif strategy_name in ["有色金属", '钢铁', '建筑行业']:  # 机器人
-        #     logger.info("检测到 机器人，切换账户为 长城证券")
-        #     common_page.change_account("长城证券")
-        # else:  # 组合
-        #     logger.info("检测到 组合，切换账户为 中泰证券")
-        #     common_page.change_account(default_account)
-        #
-        # logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
-        #
-        # # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
-        # if operation == "卖出" and new_ratio == 0.0:
-        #     logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
-        #     # 直接调用交易逻辑，不依赖自动计算数量
-        #     status, info = trader.operate_stock(operation, stock_name, volume=None)
-        # # 特殊处理：AI市场追踪策略买入时使用固定股数
-        # elif strategy_name == "AI市场追踪策略" and operation == "买入":
-        #     fixed_volume = 200  # 固定买入200股
-        #     logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
-        #     status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
-        # else:
-        #     status, info = trader.operate_stock(operation, stock_name, volume=None)
-        #
-        # # 构造记录
-        # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # record = pd.DataFrame([{
-        #     '标的名称': stock_name,
-        #     '操作': operation,
-        #     '新比例%': new_ratio,
-        #     '状态': status,
-        #     '信息': info,
-        #     '时间': operate_time
-        # }])
-        #
-        # # 写入历史
-        # write_operation_history(record)
-        # logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
-        #
-        # # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
-        # history_df = pd.concat([history_df, record], ignore_index=True)
-
-# except pandas.errors.EmptyDataError:
-# logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
-# except Exception as e:
-# logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
-
-def process_excel_files(file_paths, operation_history_file, history_df=None):
+    返回:
+        dict: 按账户分组的操作列表
+        {
+            "川财证券": [
+                {"strategy_name": "...", "stock_name": "...", "operation": "...", "new_ratio": ..., ...},
+                ...
+            ],
+            "长城证券": [...],
+            "中泰证券": [...]
+        }
+    """
     # 强制刷新操作历史缓存
     history_df = read_operation_history(operation_history_file, force_refresh=True)
+
+    # 创建已处理记录的索引集合，提高查找效率
+    processed_operations = set()
+    for _, row in history_df.iterrows():
+        key = (row['标的名称'], row['操作'], round(row['新比例%'], 2))
+        processed_operations.add(key)
+
+    # 按账户分组的操作字典
+    operations_by_account = {
+        "川财证券": [],
+        "长城证券": [],
+        "中泰证券": []
+    }
 
     for file_path in file_paths:
         logger.info(f"🔄 检测到文件更新，即将处理: {file_path}")
@@ -673,128 +630,120 @@ def process_excel_files(file_paths, operation_history_file, history_df=None):
                 logger.warning(f"文件 {file_path} 为空，跳过处理")
                 continue
 
-            # 默认账户（非 AI市场追踪策略 时使用）
-            default_account = "中泰证券" #组合
-
+            # 遍历所有操作
             for index, row in today_portfolio_df.iterrows():
                 strategy_name = row['名称'].strip()
                 stock_name = row['标的名称'].strip()
                 operation = row['操作'].strip()
                 new_ratio = float(row['新比例%'])
 
-                # 根据策略切换账户
-                if strategy_name in ["AI市场追踪策略","GPT定期精选"]:  # 策略
-                    logger.info("检测到 AI市场追踪策略，切换账户为 川财证券")
-                    common_page.change_account("川财证券")
-                elif strategy_name in ["有色金属",'钢铁','建筑行业']: # 机器人
-                    logger.info("检测到 机器人，切换账户为 长城证券")
-                    common_page.change_account("长城证券")
-                # elif strategy_name in ["GPT定期精选","中字头资金流入战法", "低价小市值股战法", "高现金毛利战法"]:
-                #     logger.info("检测到 策略，切换账户为 川财证券")
-                #     common_page.change_account("长城证券") #策略
-                else: # 组合
-                    logger.info("检测到 组合，切换账户为 中泰证券")
-                    common_page.change_account(default_account)
-
                 logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
 
-                # 判断是否已执行 - 使用更精确的匹配
-                exists = history_df[
-                    (history_df['标的名称'] == stock_name) &
-                    (history_df['操作'] == operation) &
-                    (abs(history_df['新比例%'] - new_ratio) < 0.01)  # 使用近似相等比较
-                ]
-
-                if not exists.empty:
+                # 检查是否已处理
+                operation_key = (stock_name, operation, round(new_ratio, 2))
+                if operation_key in processed_operations:
                     logger.info(f"✅ 已处理过: {stock_name} {operation} {new_ratio}%")
                     continue
 
-                logger.info(f"🚀 开始交易: {operation} {stock_name}")
+                # 确定账户类型
+                if strategy_name in ["AI市场追踪策略", "GPT定期精选"]:  # 策略
+                    account = "川财证券"
+                elif strategy_name in ["有色金属", '钢铁', '建筑行业']:  # 机器人
+                    account = "长城证券"
+                else:  # 组合
+                    account = "中泰证券"
 
-                # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
-                if operation == "卖出" and new_ratio == 0:
-                    logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
-                    # 直接调用交易逻辑，不依赖自动计算数量
-                    status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+                # 添加到对应账户的操作列表中
+                operations_by_account[account].append({
+                    "strategy_name": strategy_name,
+                    "stock_name": stock_name,
+                    "operation": operation,
+                    "new_ratio": new_ratio,
+                    "file_path": file_path  # 用于日志记录
+                })
 
-                # 特殊处理：AI市场追踪策略买入时使用固定股数
-                elif strategy_name == "AI市场追踪策略" and operation == "买入":
-                    fixed_volume = 200  # 固定买入200股
-                    logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
-                    status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
-                else:
-                    status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
-
-                # 检查交易是否成功执行
-                if status is None:
-                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                    continue
-
-                # 构造记录
-                operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                record = pd.DataFrame([{
-                    '标的名称': stock_name,
-                    '操作': operation,
-                    '新比例%': new_ratio,
-                    '状态': status,
-                    '信息': info,
-                    '时间': operate_time
-                }])
-
-                # 写入历史
-                write_operation_history(record)
-                logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
-
-                # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
-                history_df = pd.concat([history_df, record], ignore_index=True, sort=False)
+                logger.info(f"📝 记录操作: {account} - {operation} {stock_name} 比例:{new_ratio}")
 
         except pandas.errors.EmptyDataError:
             logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
         except Exception as e:
             logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
 
+    # 过滤掉空的账户列表
+    operations_by_account = {k: v for k, v in operations_by_account.items() if v}
 
-        #     logger.info(f"🛠️ 要处理: {operation} {stock_name} 比例:{new_ratio}")
-        #
-        #     # 判断是否已执行 - 使用更精确的匹配
-        #     exists = history_df[
-        #         (history_df['标的名称'] == stock_name) &
-        #         (history_df['操作'] == operation) &
-        #         (abs(history_df['新比例%'] - new_ratio) < 0.01)  # 使用近似相等比较
-        #     ]
-        #
-        #     if not exists.empty:
-        #         logger.info(f"✅ 已处理过: {stock_name} {operation} {new_ratio}%")
-        #         continue
-        #
-        #     logger.info(f"🚀 开始交易: {operation} {stock_name}")
-        #     # update_holding_info_all()
-        #     # logger.info("更新持仓信息完成")
-        #
-        #     status, info = trader.operate_stock(operation, stock_name)
-        #
-        #     # 构造记录
-        #     operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        #     record = pd.DataFrame([{
-        #         '标的名称': stock_name,
-        #         '操作': operation,
-        #         '新比例%': new_ratio,
-        #         '状态': status,
-        #         '信息': info,
-        #         '时间': operate_time
-        #     }])
-        #
-        #     # 写入历史
-        #     write_operation_history(record)
-        #     logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
-        #
-        #     # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
-        #     history_df = pd.concat([history_df, record], ignore_index=True)
-        #
-        # except pandas.errors.EmptyDataError:
-        #     logger.error(f"处理文件 {file_path} 失败: 文件为空或格式错误")
-    # except Exception as e:
-    #     logger.error(f"处理文件 {file_path} 失败: {e}", exc_info=True)
+    if not operations_by_account:
+        logger.info("✅ 没有需要执行的操作")
+    else:
+        for account, operations in operations_by_account.items():
+            logger.info(f"📋 账户 {account} 需要执行 {len(operations)} 个操作")
+
+    return operations_by_account
+
+
+def process_excel_files(file_paths, operation_history_file, history_df=None):
+    """
+    处理Excel文件中的交易指令，按账户分组处理以减少账户切换次数
+    """
+    # 提取所有需要执行的操作
+    operations_by_account = extract_operations_to_perform(file_paths, operation_history_file)
+
+    if not operations_by_account:
+        return
+
+    # 按账户顺序处理
+    for account, operations in operations_by_account.items():
+        if not operations:
+            continue
+
+        # 切换账户（仅当需要时）
+        logger.info(f"🔐 切换到账户: {account}")
+        common_page.change_account(account)
+
+        # 处理该账户下的所有交易
+        for op in operations:
+            strategy_name = op['strategy_name']
+            stock_name = op['stock_name']
+            operation = op['operation']
+            new_ratio = op['new_ratio']
+            file_path = op['file_path']
+
+            logger.info(f"🚀 开始交易: {operation} {stock_name}")
+
+            # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
+            if operation == "卖出" and new_ratio == 0:
+                logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
+                # 直接调用交易逻辑，不依赖自动计算数量
+                status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+
+            # 特殊处理：AI市场追踪策略买入时使用固定股数
+            elif strategy_name == "AI市场追踪策略" and operation == "买入":
+                fixed_volume = 200  # 固定买入200股
+                logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
+                status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
+            else:
+                status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+
+            # 检查交易是否成功执行
+            if status is None:
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                continue
+
+            # 构造记录
+            operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            record = pd.DataFrame([{
+                '标的名称': stock_name,
+                '操作': operation,
+                '新比例%': new_ratio,
+                '状态': status,
+                '信息': info,
+                '时间': operate_time
+            }])
+
+            # 写入历史
+            write_operation_history(record)
+            logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+
 
 if __name__ == '__main__':
     # diff_result = get_difference_holding()
@@ -834,16 +783,8 @@ if __name__ == '__main__':
     today = datetime.now().strftime('%Y-%m-%d')
     # 昨天
     today = (datetime.now() - timedelta(days=4)).strftime('%Y-%m-%d')
-    # # data = [{"名称": "策略名称3", "操作": "操作1", "标的名称": "标的名称1", '代码': '201',"新比例%": "251",'市场':'sdf','时间':'12'}]
-    # # data = pd.DataFrame(data)
-    # # # file_path = ["test.xlsx"]
-    # trade_history_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\trade_operation_history.xlsx'
-    # # file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_portfolio_today.xlsx'
-    # # portfolio_file_path = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_portfolio_today.xlsx'
     portfolio_file_path = r'/Investment/THS/AutoTrade/data/portfolio/Robot_portfolio_today.xlsx'
-    # # # file_path = "test.xlsx"
-    # # write_to_excel_append(data,file_path, sheet_name=today)
-    read =read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)
+    read = read_portfolio_or_operation_data(portfolio_file_path, sheet_name=today)
     print(f"读取：\n{read}")
     # print(get_stock_to_operate(trade_history_file_path,portfolio_file_path))
 

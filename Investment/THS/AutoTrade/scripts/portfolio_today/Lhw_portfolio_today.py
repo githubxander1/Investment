@@ -52,22 +52,22 @@ def fetch_strategy_data(strategy_id):
         "User-Agent": "okhttp/4.12.0"
     }
 
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(url, params=params, headers=headers, timeout=10)
-            response.raise_for_status()
-            response_json = response.json()
-            # pprint(response_json)
-            logger.info(f"量化王策略数据获取成功: {strategy_id}")
-            return response_json.get('data', [])
-        except requests.RequestException as e:
-            logger.warning(f"请求出错, 第{attempt+1}次重试: {e}")
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # 指数退避
-            else:
-                logger.error(f"请求最终失败: {e}")
-                return []
+    # max_retries = 3
+    # for attempt in range(max_retries):
+    try:
+        response = requests.get(url, params=params, headers=headers, timeout=10)
+        response.raise_for_status()
+        response_json = response.json()
+        # pprint(response_json)
+        logger.info(f"量化王策略数据获取成功: {strategy_id}")
+        return response_json.get('data', [])
+    except requests.RequestException as e:
+        # logger.warning(f"请求出错, 第{attempt+1}次重试: {e}")
+        # if attempt < max_retries - 1:
+        #     time.sleep(2 ** attempt)  # 指数退避
+        # else:
+        logger.error(f"请求最终失败: {e}")
+        #     return []
 
 def process_strategy_data(raw_data, strategy_id):
     """

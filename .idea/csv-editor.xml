@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\THS\new\财务\stock_finance_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\THS\new\财务\stock_profit_history.csv">
           <value>
             <Attribute>
@@ -35,6 +42,13 @@
           <value>
             <Attribute>
               <option name="separator" value="|" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\策略回测\策略\大决策app\advisor_ranking.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>

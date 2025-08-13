@@ -144,6 +144,7 @@ class CommonPage:
         :param to_account: 目标账户名称（如 "模拟" / "川财证券" / "长城证券"）
         :return: 成功与否
         """
+        # self.current_account = None
         time.sleep(1)
         # 切换到交易页
         self.goto_trade_page()

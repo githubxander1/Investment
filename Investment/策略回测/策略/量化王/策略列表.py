@@ -131,7 +131,7 @@ def main():
 
     if results:
         try:
-            with pd.ExcelWriter("../Strategy_ranking_results.xlsx", engine="openpyxl") as writer:
+            with pd.ExcelWriter("Strategy_ranking_results.xlsx", engine="openpyxl") as writer:
                 for tr, df in results.items():
                     # 工作表名用timeRange（小写）
                     df.to_excel(writer, sheet_name=tr, index=False)

@@ -48,7 +48,7 @@ def test_read_excel_to_db():
                 # db_file = "Combination_position.db"
                 # db_file = "Strategy_position.db"
                 # db_file = "Robots_position.db"
-                db_file = "Lhw_data.db"
+                db_file = "db/Lhw_data.db"
                 conn = sqlite3.connect(db_file)
 
                 # 清理表名，确保符合SQLite规范
