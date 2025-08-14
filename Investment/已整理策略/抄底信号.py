@@ -80,6 +80,9 @@ def extract_and_save_data(json_data, save_path="抄底机会数据.csv"):
     
     # 创建DataFrame并展示
     df = pd.DataFrame(rows, columns=columns)
+    # 如果信号强度为强烈，则通知提示
+    if "强烈" in df["信号强度"]:
+        print("有强烈的抄底机会！请及时查看和关注！")
     print("\n抄底机会数据整理结果：")
     print(df.to_string(index=False))  # 不显示索引
     

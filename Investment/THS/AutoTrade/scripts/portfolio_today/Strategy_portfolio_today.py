@@ -30,7 +30,7 @@ async def get_latest_position_and_trade(strategy_id):
         data.raise_for_status()
         data = data.json()
         logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
-        pprint(data)
+        # pprint(data)
     except requests.RequestException as e:
         logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
@@ -38,38 +38,44 @@ async def get_latest_position_and_trade(strategy_id):
     result = data.get('result', {})
     latest_trade_infos = result.get('latestTrade', {})
     position_stocks = result.get('positionStocks', {})
+
+    trade_count = len(latest_trade_infos.get('tradeStocks', []))
+    position_count = len(position_stocks)
+    logger.info(f"策略 {Strategy_id_to_name.get(strategy_id, '未知策略')} 获取数据成功，今日交易数据: {trade_count} 条，持仓数据: {position_count} 条，")
+
     lastest_trade_date = normalize_time(latest_trade_infos.get('tradeDate', ''))
-    # print(f"原始日期: {trade_date}，格式化后的：{normalize_time(str(trade_date))}")
+
+    # # 根据策略ID确定目标日期
+    # today = normalize_time(datetime.datetime.now().date())
+    today = datetime.datetime.now().date()
+    # if strategy_id == '156275':
+    #     # 对于策略156275，使用前天的日期
+    #     target_date = normalize_time((current_date - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+    # else:
+    #     # 其他策略使用今天的日期
+    #     target_date = current_date
+    yestoday = (today - datetime.timedelta(days=1))
+    # print(yestoday)
     trade_stocks = latest_trade_infos.get('tradeStocks', [])
-
     trade_results = []
-    for trade_stock_info in trade_stocks:
-        # 显式转换时间戳为整数
-        timestamp = trade_stock_info.get('tradeDate', '')
-        if isinstance(timestamp, (int, float)):
-            timestamp = str(int(timestamp))  #
-        # stock_trade_date = normalize_time(trade_info.get('tradeDate', ''))
-        # print(f"原始日期: {stock_trade_date}，格式化后的：{normalize_time(str(stock_trade_date))}")
 
-        # 只保留当天记录
-        # 昨天
-        today = (datetime.datetime.now().strftime('%Y-%m-%d'))
-        # print(f'今天{today}')
-        # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
-        if lastest_trade_date == today:
+    # 仅当顶层交易日期等于目标日期时，保留该策略的所有交易记录
+    if lastest_trade_date == yestoday:
+        for trade_stock_info in trade_stocks:
             trade_results.append({
-            '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
-            '操作': '买入' if trade_stock_info.get('operationType') == 'BUY' else '卖出',
-            '标的名称': trade_stock_info.get('stkName', ''),
-            '代码': str(trade_stock_info.get('stkCode', '').split('.')[0]).zfill(6),
-            '最新价': round(float(trade_stock_info.get('tradePrice', 0)), 2),
-            '新比例%': round(float(trade_stock_info.get('position', 0)) * 100, 2),
-            '交易数量': trade_stock_info.get('tradeAmount', 0),
-            '市场': determine_market(trade_stock_info.get('code', '')),
-            '时间': normalize_time(trade_stock_info.get('tradeDate', ''))
+                '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
+                '操作': '买入' if trade_stock_info.get('operationType') == 'BUY' else '卖出',
+                '标的名称': trade_stock_info.get('stkName', ''),
+                '代码': str(trade_stock_info.get('stkCode', '').split('.')[0]).zfill(6),
+                '最新价': round(float(trade_stock_info.get('tradePrice', 0)), 2),
+                '新比例%': round(float(trade_stock_info.get('position', 0)) * 100, 2),
+                '交易数量': trade_stock_info.get('tradeAmount', 0),
+                '市场': determine_market(trade_stock_info.get('code', '')),
+                '时间': lastest_trade_date
             })
 
     position_stocks_results = []
+    # if lastest_trade_date == yestoday:
     for position_stock_info in position_stocks:
         stk_code = str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6)
         position_stocks_results.append({
@@ -89,7 +95,9 @@ async def get_latest_position_and_trade(strategy_id):
 
 
 async def Strategy_main():
-    today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    # today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+    today = datetime.datetime.now().date()
+    # yestoday = (today - datetime.timedelta(days=1))
     # today = normalize_time((datetime.datetime.now() - datetime.timedelta(days=6)).strftime('%Y-%m-%d'))
     logger.info(f'今天日期: {today}')
     all_today_trades = []
@@ -101,7 +109,9 @@ async def Strategy_main():
         all_positions.extend(position_stocks_results)
 
     all_today_trades_df = pd.DataFrame(all_today_trades)
+    # print(f'今日持仓数据:\n{all_today_trades_df}')
     position_stocks_results_df = pd.DataFrame(all_positions)
+    # position_stocks_results_df.to_excel(Strategy_holding_file, sheet_name=str(yestoday), index=False)
     # logger.info(f'保存今日持仓数据:\n{position_stocks_results_df}')
     # position_stocks_results_df.to_excel(Strategy_holding_file, sheet_name=today,index=False)
     # print('今日数据:', all_today_trades_df)

@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 
-from Investment.刑不刑量化.technical import *
+from Investment.回测.刑不刑量化.technical import *
 
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
 pd.set_option('display.max_rows', 5000)  # 最多显示数据的行数

@@ -27,8 +27,8 @@ Robot_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Robot_portfolio
 Lhw_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Lhw_portfolio_today.xlsx')
 
 # 持仓
-Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'Ai_Strategy_position.xlsx')
-ai_strategy_diff_file_path = os.path.join(DATA_DIR, "ai_strategy_diff.xlsx")
+Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'position', 'Ai_Strategy_position.xlsx')
+ai_strategy_diff_file_path = os.path.join(DATA_DIR, 'position', "ai_strategy_diff.xlsx")
 
 Strategy_holding_file = os.path.join(DATA_DIR, 'position','Strategy_position.xlsx')
 Combination_holding_file = os.path.join(DATA_DIR, 'position','Combination_position.xlsx')
@@ -71,10 +71,10 @@ Combination_headers = {
     }
 
 # Strategy_ids = ['155680', '136574', '137789']
-Strategy_ids = ['156275','155680']
+Strategy_ids = ['155680','156275']
 Strategy_id_to_name = {
         '155680': 'GPT定期精选',#技术面
-        '156275': "AI市场追踪策略",
+        '156275': 'AI市场追踪策略',
         # '155265': '中字头资金流入战法', #资金面
         '136574': '低价小市值股战法', #技术面
         # '136509': '缩量绩优小盘股战法', #技术面
@@ -173,4 +173,4 @@ MIN_DELAY = 50
 MAX_DELAY = 70
 
 # 最大运行时间（小时）
-MAX_RUN_TIME = 5.5
+MAX_RUN_TIME = 6

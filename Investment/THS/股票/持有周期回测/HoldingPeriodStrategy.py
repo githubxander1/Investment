@@ -3,6 +3,7 @@ import os
 import backtrader as bt
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 # 设置中文字体支持
 plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -152,53 +153,94 @@ def get_stock_price_data(stock_name):
 # HoldingPeriodStrategy.py
 
 def plot_results(results, stock_name, output_path, price_data=None):
-    fig, ax1 = plt.subplots(figsize=(12, 6))
-
-    # 绘制收益曲线
+    """绘制持有期收益与价格对比图表（双Y轴）"""
+    # 准备数据
     periods = [r['持有期(天)'] for r in results]
     profits = [r['收益率(%)'] for r in results]
+    buy_date = pd.to_datetime(results[0]['买入日期'])
 
-    ax1.plot(periods, profits, 'o-', markersize=8, color='blue', label='收益率')
-    ax1.set_title(f'{stock_name} - 不同持有期收益与价格走势')
-    ax1.set_xlabel('持有期(天)')
+    # 计算每个周期对应的日期
+    profit_dates = [buy_date + pd.Timedelta(days=p) for p in periods]
+
+    # 创建图表
+    fig, ax1 = plt.subplots(figsize=(14, 8))
+
+    # 绘制收益曲线（左侧Y轴）
+    line1 = ax1.plot(profit_dates, profits, 'o-', markersize=8, color='blue', label='收益率')
+    ax1.set_xlabel('日期', fontsize=12)
     ax1.set_ylabel('收益率(%)', color='blue')
     ax1.tick_params(axis='y', labelcolor='blue')
     ax1.grid(True)
-    ax1.axhline(0, color='red', linestyle='--')
+    ax1.axhline(0, color='red', linestyle='--', alpha=0.3)
 
+    # 格式化日期轴
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
+    plt.xticks(rotation=45, ha='right')  # 日期倾斜45度
+
+    # 标注最高点和最低点
     if profits:
         max_idx = profits.index(max(profits))
         min_idx = profits.index(min(profits))
-        ax1.annotate(f'{profits[max_idx]:.2f}%',
-                     (periods[max_idx], profits[max_idx]),
-                     xytext=(5, 5), textcoords='offset points')
-        ax1.annotate(f'{profits[min_idx]:.2f}%',
-                     (periods[min_idx], profits[min_idx]),
-                     xytext=(5, -10), textcoords='offset points')
+        # 添加标注（包含周期天数）
+        ax1.annotate(f"{periods[max_idx]}天\n{profits[max_idx]:.2f}%",
+                     (profit_dates[max_idx], profits[max_idx]),
+                     xytext=(5, 5), textcoords='offset points',
+                     bbox=dict(boxstyle='round,pad=0.3', fc='blue', alpha=0.1))
+        ax1.annotate(f"{periods[min_idx]}天\n{profits[min_idx]:.2f}%",
+                     (profit_dates[min_idx], profits[min_idx]),
+                     xytext=(5, -15), textcoords='offset points',
+                     bbox=dict(boxstyle='round,pad=0.3', fc='blue', alpha=0.1))
 
-    # 绘制价格曲线
+    # 绘制价格曲线（右侧Y轴）
     if price_data is not None and not price_data.empty:
+        # 截取与最长周期匹配的时间段
+        max_period = max(periods)
+        end_date = buy_date + pd.Timedelta(days=max_period)
+
+        # 截取价格数据（包含买入日前20天用于显示买入前走势）
+        price_start_date = buy_date - pd.Timedelta(days=20)
+        price_data_sub = price_data[(price_data.index >= price_start_date) &
+                                   (price_data.index <= end_date)]
+
+        # 绘制价格曲线
         ax2 = ax1.twinx()
-        ax2.plot(price_data.index, price_data['close'], color='green', linewidth=1, label='收盘价')
+        line2 = ax2.plot(price_data_sub.index, price_data_sub['close'],
+                        color='green', linewidth=1, label='收盘价')
         ax2.set_ylabel('价格', color='green')
         ax2.tick_params(axis='y', labelcolor='green')
 
+        # 标记买入点
         if results:
-            buy_date = pd.to_datetime(results[0]['买入日期'])
-            if buy_date in price_data.index:
+            try:
                 buy_price = price_data.loc[buy_date, 'close']
-                ax2.scatter(buy_date, buy_price, color='red', s=100, marker='^', label='买入点')
-                ax2.legend()
+                ax2.scatter(buy_date, buy_price, color='red', s=100,
+                           marker='^', label='买入点')
+            except KeyError:
+                print(f"⚠️ 价格数据缺失: {buy_date} 不存在于价格数据中")
 
+        # 合并图例
+        lines = line1 + line2
+        labels = [l.get_label() for l in lines]
+        ax1.legend(lines, labels, loc='upper left', bbox_to_anchor=(0.1, 0.9))
     else:
-        ax1.text(0.5, 0.5, '无价格数据', ha='center', va='center', transform=ax1.transAxes)
+        ax1.text(0.5, 0.5, '无价格数据', ha='center', va='center',
+                transform=ax1.transAxes, fontsize=14, alpha=0.5)
 
+    # 设置标题
+    plt.title(f'{stock_name} 收益率与价格走势对比\n（显示周期：{max(periods)}天）',
+             fontsize=14, pad=20)
+
+    # 调整布局
     plt.tight_layout()
 
+    # 保存图表
     chart_path = os.path.join(output_path, f"{stock_name}_combined_chart.png")
     plt.savefig(chart_path)
     plt.close()
+
     return chart_path
+
 
 
 

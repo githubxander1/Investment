@@ -3,34 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\Investment\THS\new\财务\stock_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\new\财务\stock_final_score_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\new\财务\stock_finance_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\THS\new\财务\stock_profit_history.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Investment\THS\股票\北向资金\data.csv">
           <value>
             <Attribute>
@@ -38,21 +10,35 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\THS\股票\持有周期回测\stock_data\001234泰慕士.csv">
+        <entry key="\Investment\THS\股票\抄底机会数据.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\THS\股票\持有周期回测\stock_data\605188国光连锁.csv">
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位密集\002549凯美特气.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\THS\股票\持有周期回测\stock_data\688291金橙子.csv">
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位密集\002820桂发祥.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位密集\600053九鼎投资.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-13\000011深物业A.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -67,6 +53,13 @@
           </value>
         </entry>
         <entry key="\Investment\策略回测\策略\大决策app\advisor_ranking.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\策略回测\策略\大决策app\策略列表.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

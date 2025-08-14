@@ -1,12 +1,15 @@
 # trade_main.py
 
 import asyncio
+import os
 import random
 import datetime
 import time
 from datetime import time as dt_time
 
+import pandas as pd
 import uiautomator2 as u2
+from sympy.physics.units import volume
 
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
@@ -15,7 +18,8 @@ from Investment.THS.AutoTrade.scripts.portfolio_today.Robots_portfolio_today imp
 from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 from Investment.THS.AutoTrade.pages.page import THSPage
-from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history
+from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history, \
+    write_operation_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import (
@@ -212,6 +216,8 @@ async def main():
 
     # 初始化国债逆回购状态
     guozhai_success = False
+    strategy1_executed = False  # Strategy_portfolio_today 是否已执行
+    strategy2_executed = False  # Strategy.py 的持仓差异 是否已执行
 
     # 记录开始时间，用于最大运行时长控制
     start_time = datetime.datetime.now()
@@ -271,100 +277,92 @@ async def main():
             strategy_data = None
             combination_data = None
 
-            # 判断是否在策略任务时间窗口（9:30-9:33）
-            if dt_time(9, 31) <= now <= dt_time(9, 35):
-            # if dt_time(9, 31):
-                # holding_success, ai_datas = Ai_strategy_main()
-                #
-                # to_sell = ai_datas.get("to_sell")
-                # to_buy = ai_datas.get("to_buy")
-                #
-                # if not to_sell.empty or not to_buy.empty:
-                #     # 将 to_sell 和 to_buy 合并为一个 DataFrame
-                #     to_sell['操作'] = '卖出'
-                #     to_buy['操作'] = '买入'
-                #
-                #     combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-                #                             ignore_index=True)
-                #     combined_df['新比例%'] = None  # 可根据需要设置默认值
-                #
-                #     # 写入临时文件
-                #     combined_df.to_excel(ai_strategy_diff_file_path, index=False)
-                #     logger.warning(f"发现持仓差异，准备执行模拟账户交易操作：买\n{to_buy}，卖\n{to_sell}")
+            # 获取当前日期
+            today = datetime.date.today()
+            current_time = now
 
-                #     # 初始化设备
-                #     d = await initialize_device()
-                #     if not d:
-                #         logger.error("❌ 设备初始化失败，跳过模拟账户操作")
-                #     else:
-                #         # ths_page = THSPage(d)
-                #
-                #         # 切换到模拟账户
-                #         common_page.change_account("模拟练习区")
-                #         logger.info("✅ 已切换至模拟账户")
-                #
-                #         # 构造临时文件用于 process_excel_files
-                #         from tempfile import NamedTemporaryFile
-                #         import pandas as pd
-                #
-                #         temp_file_path = os.path.join(DATA_DIR, "temp_strategy_diff.xlsx")
-                #
-                #         # 将 to_sell 和 to_buy 合并为一个 DataFrame
-                #         to_sell['操作'] = '卖出'
-                #         to_buy['操作'] = '买入'
-                #
-                #         combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-                #                                 ignore_index=True)
-                #         combined_df['新比例%'] = None  # 可根据需要设置默认值
-                #
-                #         # 写入临时文件
-                #         combined_df.to_excel(temp_file_path, index=False)
-                #
-                #         # 执行交易
-                #         process_excel_files(
-                #             ths_page=trader,
-                #             file_paths=[temp_file_path],
-                #             operation_history_file=OPERATION_HISTORY_FILE
-                #         )
-                #
-                #         logger.info("✅ 模拟账户持仓差异处理完成")
-                # else:
-                #     logger.info("✅ 当前无持仓差异，无需执行模拟账户操作")
-
-
-                logger.info("---------------------策略/Robot任务开始执行---------------------")
+            # {策略}任务时间窗口（9:32-9:35）
+            if dt_time(9, 32) <= current_time <= dt_time(9, 35) and not strategy1_executed:
+                logger.info("---------------------策略任务开始执行---------------------")
                 strategy_result = await Strategy_main()
-                robot_result = await Robot_main()
-                if strategy_result or robot_result:
+                if strategy_result:
                     strategy_success, strategy_data = strategy_result
-                    robot_success, robot_data = robot_result
                 else:
-                    logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
-                logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
-            else:
-                logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
+                    logger.warning("⚠️ 策略任务返回空值，默认视为无更新")
+                logger.info(f"策略是否有新增数据: {strategy_success}\n---------------------策略任务执行结束---------------------")
+                strategy1_executed = True
 
-            # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
-            if dt_time(9, 25) <= now <= dt_time(15, 00):
-                logger.info("---------------------组合任务开始执行---------------------")
-                combination_result = await Combination_main()
-                lhw_result = await Lhw_main()
-                if combination_result:
-                    combination_success, combination_data = combination_result
-                    lhw_success, lhw_data = lhw_result
-                else:
-                    logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
-                logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
+            # 策略持仓差异任务（9:32-9:35）
+            if dt_time(9, 32) <= current_time <= dt_time(9, 35) and not strategy2_executed:
+                logger.info("---------------------策略持仓差异分析开始---------------------")
+                try:
+                    from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy import get_difference_holding
+                    diff_result = get_difference_holding()
+                    if diff_result:
+                        to_buy = diff_result.get('to_buy')
+                        to_sell = diff_result.get('to_sell')
 
-                # 如果有任何一个数据获取成功，则执行交易处理
-                # if strategy_success or combination_success or holding_success:
-                    # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
-                if strategy_success or combination_success or robot_success or lhw_success:
-                    file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
-                    process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
+                        if not to_buy.empty or not to_sell.empty:
+                            logger.info(f"发现持仓差异，准备执行交易操作：买入 {len(to_buy)} 只，卖出 {len(to_sell)} 只")
 
-            else:
-                logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
+                            # 合并买入/卖出数据
+                            combined_df = pd.concat([
+                                to_buy[['标的名称', '操作']],
+                                to_sell[['标的名称', '操作']]
+                            ], ignore_index=True)
+
+                            # 遍历每一行，执行交易
+                            for index, row in combined_df.iterrows():
+                                stock_name = row['标的名称']
+                                operation = row['操作']
+
+                                logger.info(f"🛠️ 要处理: {operation} {stock_name}")
+
+                                # 特殊处理：卖出时全仓卖出
+                                if operation == "卖出":
+                                    new_ratio = 0.0
+                                else:
+                                    new_ratio = None  # 买入时无需新比例
+
+                                # 调用交易逻辑
+                                status, info = trader.operate_stock(
+                                    operation=operation,
+                                    stock_name=stock_name,
+                                    volume=200 if operation == "买入" else None,
+                                    new_ratio=new_ratio
+                                )
+
+                                # 检查交易是否成功执行
+                                if status is None:
+                                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                                    continue
+
+                                # 构造记录
+                                # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                record = pd.DataFrame([{
+                                    '标的名称': stock_name,
+                                    '操作': operation,
+                                    '新比例%': new_ratio,
+                                    '状态': status,
+                                    '信息': info,
+                                    '时间': operate_time
+                                }])
+
+                                # 写入历史
+                                write_operation_history(record)
+                                logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+
+                        else:
+                            logger.info("✅ 当前无持仓差异，无需执行交易")
+                    else:
+                        logger.warning("⚠️ 持仓差异分析返回空值，默认视为无更新")
+
+                except Exception as e:
+                    logger.error(f"❌ 持仓差异分析过程中发生异常: {e}")
+
+                logger.info("---------------------策略持仓差异分析结束---------------------")
+                strategy2_executed = True
 
             # 国债逆回购操作（为每个账户执行一次）
             if dt_time(14, 56) <= now <= dt_time(16, 25):
