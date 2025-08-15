@@ -10,13 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\THS\股票\抄底机会数据.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位密集\002549凯美特气.csv">
           <value>
             <Attribute>
@@ -39,27 +32,6 @@
           </value>
         </entry>
         <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-13\000011深物业A.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\刑不刑量化\社保基金\social_security_holdings.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="|" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\策略回测\策略\大决策app\advisor_ranking.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\策略回测\策略\大决策app\策略列表.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

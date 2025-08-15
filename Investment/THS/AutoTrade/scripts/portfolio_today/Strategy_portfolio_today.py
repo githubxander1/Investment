@@ -109,7 +109,7 @@ async def Strategy_main():
         all_positions.extend(position_stocks_results)
 
     all_today_trades_df = pd.DataFrame(all_today_trades)
-    # print(f'今日持仓数据:\n{all_today_trades_df}')
+    # print(f'今日调仓数据:\n{all_today_trades_df}')
     position_stocks_results_df = pd.DataFrame(all_positions)
     # position_stocks_results_df.to_excel(Strategy_holding_file, sheet_name=str(yestoday), index=False)
     # logger.info(f'保存今日持仓数据:\n{position_stocks_results_df}')

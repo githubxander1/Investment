@@ -135,16 +135,30 @@ class THSPage:
 
         # 如果clear按钮在，则点击匹配，如果找不到，则pass，继续下一步
         if clear.exists():
-            time.sleep(1)
+            # 显式等待搜索结果加载
             recycler_view = self.d(resourceId='com.hexin.plat.android:id/recyclerView')
-            if recycler_view.exists:
-                time.sleep(1)
+            if recycler_view.wait(timeout=5):  # 等待最多5秒
                 first_item = recycler_view.child(index=0)
                 first_item.click()
                 logger.info("点击匹配的第一个股票")
                 time.sleep(1)
             else:
-                logger.info("没有匹配到股票或已选中")
+                logger.warning("未找到搜索结果列表，尝试使用股票代码搜索")
+                # 如果没找到，尝试输入股票代码
+                stock_code = self._get_stock_code(stock_name)  # 自定义方法：通过名称获取股票代码
+                if stock_code:
+                    clear.click()
+                    auto_search.send_keys(stock_code)
+                    time.sleep(1)
+                    if recycler_view.wait(timeout=5):
+                        first_item = recycler_view.child(index=0)
+                        first_item.click()
+                        logger.info("点击匹配的第一个股票（使用代码搜索）")
+                    else:
+                        logger.warning("使用代码搜索仍无法找到匹配项")
+                else:
+                    logger.warning("无法获取股票代码，跳过点击")
+
         time.sleep(2)
 
     def input_volume(self, volume):

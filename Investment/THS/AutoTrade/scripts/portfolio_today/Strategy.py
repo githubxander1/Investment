@@ -5,7 +5,7 @@ import fake_useragent
 import pandas as pd
 import requests
 
-from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids
+from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 import os
 import datetime
@@ -74,7 +74,7 @@ def get_difference_holding():
     - 如果昨天sheet不存在，将今天所有持仓视为买入
     - 如果文件不存在，直接退出
     """
-    file_path = 'AiStrategy_position.xlsx'
+    file_path = Ai_Strategy_holding_file
     today = str(datetime.date.today())
     yestoday = str(datetime.date.today() - datetime.timedelta(days=1))
 
@@ -92,7 +92,7 @@ def get_difference_holding():
                 return {'to_buy': pd.DataFrame(), 'to_sell': pd.DataFrame()}
 
             # ✅ 读取今天持仓数据
-            today_positions_df = pd.read_excel(xls, sheet_name=today)
+            today_positions_df = pd.read_excel(xls, sheet_name=today, index_col=0)
 
             # ✅ 昨天sheet不存在，将今天所有持仓视为买入
             if yestoday not in xls.sheet_names:
@@ -104,7 +104,7 @@ def get_difference_holding():
                 }
 
             # ✅ 读取昨天持仓数据
-            yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday)
+            yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday, index_col=0)
 
     except Exception as e:
         logger.error(f"❌ 读取Excel文件失败: {str(e)}")
@@ -115,16 +115,19 @@ def get_difference_holding():
     yestoday_stocks = set(yestoday_positions_df['标的名称'].str.strip().str.upper())
 
     # ✅ 找出买入和卖出
-    to_buy = today_positions_df[~today_positions_df['标的名称'].isin(yestoday_stocks)]
-    to_sell = yestoday_positions_df[~yestoday_positions_df['标的名称'].isin(today_stocks)]
+    to_buy = today_positions_df[~today_positions_df['标的名称'].isin(yestoday_stocks)].copy()
+    to_sell = yestoday_positions_df[~yestoday_positions_df['标的名称'].isin(today_stocks)].copy()
 
     # ✅ 添加操作列
     to_buy['操作'] = '买入'
     to_sell['操作'] = '卖出'
 
     # ✅ 输出结果
-    logger.info(f"✅ 买入标的:\n{to_buy[['标的名称']]}\n")
-    logger.info(f"✅ 卖出标的:\n{to_sell[['标的名称']]}\n")
+    logger.info(f"📊 今日({today})持仓标的: {today_positions_df['标的名称'].tolist()}")
+    logger.info(f"📊 昨日{yestoday}持仓标的: {yestoday_positions_df['标的名称'].tolist()}")
+
+    logger.info(f"✅ 要买入标的:\n{to_buy[['标的名称']]}\n")
+    logger.info(f"✅ 要卖出标的:\n{to_sell[['标的名称']]}\n")
 
     return {
         'to_buy': to_buy,
@@ -132,32 +135,69 @@ def get_difference_holding():
     }
 
 def sava_all_strategy_holding_data():
+    """
+    获取所有策略的持仓数据，并保存到 Excel 文件中，保留历史sheet
+    """
     all_holdings = []
     for id in Strategy_ids:
         positions_df = get_latest_position(id)
         if positions_df is not None:
-            # positions_df.to_excel(Strategy_holding_file,index=False)
             all_holdings.append(positions_df)
-            # save_to_excel_by_date(positions_df, Strategy_holding_file)  # 按日期保存
-            # compare_today_yesterday(Strategy_holding_file)  # 对比数据
         else:
             logger.info(f"没有获取到策略数据，策略ID: {id}")
 
     today = str(datetime.date.today())
     all_holdings_df = pd.concat(all_holdings, ignore_index=True)
-    all_holdings_df.to_excel(file_path,sheet_name= today,)
-    logger.info(f"所有持仓数据已保存:{len(all_holdings_df)}条 \n{all_holdings_df}")
 
-def Smain(file_path):
-    sava_all_strategy_holding_data()
-    time.sleep(2)
-    diff_df = get_difference_holding()
-    logger.info(f"持仓数据差异:{len(diff_df)}条 \n{diff_df}")
+    file_path = Ai_Strategy_holding_file
+
+    try:
+        # 如果文件存在，读取现有sheet
+        if os.path.exists(file_path):
+            with pd.ExcelFile(file_path) as xls:
+                existing_sheets = xls.sheet_names
+
+            # 如果今天sheet已存在，可以选择覆盖或跳过
+            if today in existing_sheets:
+                logger.warning(f"⚠️ 今天 {today} 的sheet已存在，是否覆盖？（当前为跳过）")
+                # 如果要覆盖，可以删除该sheet再写入
+                # 但本方案选择 **跳过写入**，保留历史数据
+                return
+
+        # 使用 ExcelWriter 以追加模式保存
+        with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+            all_holdings_df.to_excel(writer, sheet_name=today, index=True)
+            logger.info(f"✅ 所有持仓数据已保存为 sheet: {today}，共 {len(all_holdings_df)} 条")
+    except Exception as e:
+        logger.error(f"❌ 保存持仓数据失败: {e}")
+        # 如果文件被占用或损坏，可以选择新建文件
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+            all_holdings_df.to_excel(writer, sheet_name=today, index=True)
+            logger.info(f"✅ 文件损坏，新建文件并保存 sheet: {today}")
+
+def Smain():
+    # sava_all_strategy_holding_data()
+    # time.sleep(2)
+    diff_result = get_difference_holding()
+    logger.info(f"持仓数据差异:{len(diff_result)}条 \n{diff_result}")
+    if diff_result:
+        to_buy = diff_result.get('to_buy')
+        to_sell = diff_result.get('to_sell')
+
+        if not to_buy.empty or not to_sell.empty:
+            logger.info(
+                f"发现持仓差异，准备执行交易操作：买入 {len(to_buy)} 只，卖出 {len(to_sell)} 只")
+            # 合并买入/卖出数据
+            combined_df = pd.concat([
+                to_buy[['标的名称', '操作']],
+                to_sell[['标的名称', '操作']]
+            ], ignore_index=True)
+    return combined_df
 
 if __name__ == '__main__':
-    file_path = 'AiStrategy_position.xlsx'
+    file_path = Ai_Strategy_holding_file
     # if os.path.exists(file_path):
         # print(f"文件 {file_path} 已存在，请勿重复生成")
     # get_latest_position(156275)
-    # get_difference_holding(file_path)
-    Smain(file_path)
+    # get_difference_holding()
+    Smain()

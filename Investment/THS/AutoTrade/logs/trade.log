@@ -32,3 +32,39 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-08-14 09:56:05 - INFO - 买入 弘业期货 300股 True 委托已提交[0m
 [32m2025-08-14 10:31:15 - INFO - 全部卖出[0m
 [32m2025-08-14 10:31:23 - INFO - 卖出 鲁西化工 400.0股 True 委托已提交[0m
+[32m2025-08-15 10:34:32 - INFO - 买入 东睦股份 100股 True 委托已提交[0m
+[31m2025-08-15 10:34:40 - ERROR - 科达利 没有持仓[0m
+[33m2025-08-15 10:34:48 - WARNING - 计算买入数量失败：buying_power=None, real_price=3.27[0m
+[31m2025-08-15 10:34:56 - ERROR - 得邦照明 没有持仓[0m
+[31m2025-08-15 10:42:26 - ERROR - 立中集团 没有持仓[0m
+[31m2025-08-15 10:42:42 - ERROR - 金诚信 没有持仓[0m
+[32m2025-08-15 11:15:00 - INFO - 买入 金安国纪 300股 True 委托已提交[0m
+[31m2025-08-15 13:20:57 - ERROR - 买入 多氟多 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 172, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 143, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[32m2025-08-15 17:41:39 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-15 17:42:01 - ERROR - 买入 长江电力 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 206, in operate_stock
+    success, info = self.ths_page.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 286, in dialog_handle
+    prompt_text = prompt_content.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 358, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[31m2025-08-15 17:42:08 - ERROR - 中国电信 没有持仓[0m
