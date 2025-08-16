@@ -151,6 +151,7 @@ if __name__ == "__main__":
     for type_key, type_name in types.items():
         print(f"正在获取 {type_name} 数据...")
         data = fetch_limit_up_data(type_key,date)
+        pprint(data)
 
         if type_key == 'limit_up_pool':
             df = pd.DataFrame(extract_limit_up_pool(data))

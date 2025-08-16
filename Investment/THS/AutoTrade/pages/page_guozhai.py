@@ -1,4 +1,5 @@
 # page_guozhai.py
+import re
 import time
 import uiautomator2 as u2
 
@@ -30,6 +31,10 @@ class GuozhaiPage(THSPage):
         self.diolog_title = self.d(resourceId="com.hexin.plat.android:id/dialog_title")
 
         self.content_layout = d(resourceId="com.hexin.plat.android:id/content_layout")
+
+        #切换账户弹窗
+        self.change_button = self.d(resourceId="com.hexin.plat.android:id/right_arrow_button")
+        # self.account = self.d(className="android.widget.TextView", text=account_name)
     def _find_and_click_product(self, target_name, max_swipe=5):
         """
         查找并点击产品，支持最大滑动次数和超时控制
@@ -189,12 +194,57 @@ class GuozhaiPage(THSPage):
             send_notification(f"国债逆回购任务异常终止: {error_msg}")
             return False, error_msg
 
+    def guozhai_change_account(self, account_name):
+        """切换账户"""
+        self.change_button = self.d(resourceId="com.hexin.plat.android:id/right_arrow_button")
+        account = self.d(className="android.widget.TextView", text=account_name)#，如果account_name等于元素定位里的文案，就不用跳转
+
+        # 提取 //android.widget.TextView[@text="长城证券 **5735"] 里取汉字
+        current_account_element = self.d(resourceId="com.hexin.plat.android:id/account_info_view")
+        # '//*[@resource-id="com.hexin.plat.android:id/account_info_view"]'
+        # current_account = current_account_element.replace(" ", "")
+        # print(current_account)
+        if current_account_element.exists():
+            current_account_text = current_account_element.get_text()
+            if current_account_text:
+                # 修复：检查正则表达式是否匹配到内容
+                match = re.search(r"[\u4e00-\u9fa5]+", current_account_text)
+                if match:
+                    current_account = match.group()
+                    print(f"当前账户: {current_account}")
+                else:
+                    logger.warning(f"无法从账户信息中提取中文名称: {current_account_text}")
+                    current_account = ""
+            else:
+                logger.warning("获取到的账户信息为空")
+                current_account = ""
+        else:
+            logger.warning("未找到账户信息元素")
+            current_account = ""
+
+        if current_account == account_name:
+            logger.info(f"当前账户: {current_account}, 不用切换账户")
+            return True
+        #
+        # # account_name = self.d(className="android.widget.TextView", textMatches=f".*{account_name}.*")
+        self.change_button.click()
+        logger.info("已点击: 账户切换按钮")
+        if account.exists():
+            account.click()
+            logger.info(f"已切换账户: {account_name}")
+            return True
+        else:
+            logger.warning(f"无法找到账户: {account_name}")
+            return False
 
 if __name__ == '__main__':
     d = u2.connect()
     guozhai = GuozhaiPage(d)
-    success, message = guozhai.guozhai_operation()
-    if success:
-        print("Operation succeeded.")
-    else:
-        print(f"Operation failed: {message}")
+    # success, message = guozhai.guozhai_operation()
+    # if success:
+    #     print("Operation succeeded.")
+    # else:
+    #     print(f"Operation failed: {message}")
+    guozhai.guozhai_change_account("中泰证券")
+    guozhai.guozhai_change_account("长城证券")
+    guozhai.guozhai_change_account("川财证券")

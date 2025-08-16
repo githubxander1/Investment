@@ -94,6 +94,41 @@ def fetch_stock_data(code, period=30):
         logger.error(f"获取股票 {code} 数据失败: {e}")
         return pd.DataFrame()
 
+def check_volume_confirmation(df: pd.DataFrame, window=20):
+    """
+    成交量确认，判断是否放量突破
+    """
+    if '成交量' not in df.columns:
+        return True  # 无法获取成交量时跳过检查
+
+    # 计算平均成交量
+    df['MA_volume'] = df['成交量'].rolling(window=window).mean()
+
+    # 检查最近几天是否放量
+    recent_volume = df['成交量'].tail(3).mean()
+    avg_volume = df['MA_volume'].iloc[-1]
+
+    # 成交量放大1.5倍以上才算有效
+    return recent_volume > avg_volume * 1.5
+
+def check_volatility_filter(df: pd.DataFrame, window=20):
+    """
+    波动率过滤，确保有足够的波动才发出信号
+    """
+    if len(df) < window:
+        return False
+
+    # 计算ATR(平均真实波幅)
+    df['TR'] = df['最高价'] - df['最低价']
+    df['ATR'] = df['TR'].rolling(window=window).mean()
+
+    # 计算最近波动率
+    recent_atr = df['ATR'].iloc[-1]
+    price = df['收盘价'].iloc[-1]
+
+    # 波动率需要超过价格的1%
+    return recent_atr > price * 0.01
+
 def check_strategy_ma(df: pd.DataFrame, window=20, days_threshold=3):
     """
     判断是否连续 N 天收盘价上穿或下穿均线
@@ -158,6 +193,29 @@ def check_strategy_ma(df: pd.DataFrame, window=20, days_threshold=3):
         # 如果价格与均线差异过小（小于0.5%），认为信号不够强烈
         if price_ma_diff < 0.005:
             logger.info(f"价格与均线差异过小 ({price_ma_diff:.4f})，不发出信号")
+            return None
+
+        # 计算均线斜率
+        df['MA_slope'] = df['MA'].diff()
+
+        # 判断均线方向
+        recent_slopes = df['MA_slope'].tail(3)  # 最近3天的斜率
+        avg_slope = recent_slopes.mean()
+
+        # 添加斜率过滤条件
+        slope_threshold = df['MA'].iloc[-1] * 0.001  # 0.1%作为最小斜率阈值
+
+        # 额外检查：均线斜率是否符合趋势
+        if last_signal and avg_slope < 0:  # 价格上穿但均线向下
+            logger.info(f"虽然价格上穿均线，但均线斜率为负，趋势不明确")
+            return None
+        elif not last_signal and avg_slope > 0:  # 价格下穿但均线向上
+            logger.info(f"虽然价格下穿均线，但均线斜率为正，趋势不明确")
+            return None
+
+        # 检查斜率强度
+        if abs(avg_slope) < slope_threshold:
+            logger.info(f"均线斜率过小 ({avg_slope:.4f})，趋势不明显")
             return None
 
         return "up" if last_signal else "down"

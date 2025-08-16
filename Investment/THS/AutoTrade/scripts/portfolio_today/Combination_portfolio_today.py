@@ -112,9 +112,9 @@ def fetch_and_extract_data(portfolio_id):
             if '***' in name:
                 if extracted_name != '无':
                     name = extracted_name
-                    logger.info(f"标的名称被隐藏，已从content中提取到名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
-                else:
-                    logger.warning(f"标的名称被隐藏，且未能从content中提取到名称 - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                    # logger.info(f"标的名称被隐藏，已从content中提取到名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                # else:
+                    # logger.warning(f"标的名称被隐藏，且未能从content中提取到名称 - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
 
             # 只有在确实提取不到名称时才记录警告
             elif name == '无':
@@ -150,6 +150,7 @@ def fetch_and_extract_data(portfolio_id):
             # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             today = datetime.datetime.now().strftime('%Y-%m-%d')
 
+
             if today == createAt.split()[0]:
             # if today == createAt:
                 # print(f"提取{createAt.split()[0]}")
@@ -162,6 +163,8 @@ def fetch_and_extract_data(portfolio_id):
 
 
 async def Combination_main():
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    logger.info(f'今天日期: {today}')
     all_today_trades = []
     portfolio_stats = {}
     for portfolio_id in all_ids:

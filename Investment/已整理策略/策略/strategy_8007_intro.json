@@ -1,0 +1,290 @@
+{
+  "code": 0,
+  "msg": "操作成功",
+  "data": {
+    "maxIncome": 0.196926,
+    "backtestingIncome": 4.224326,
+    "reson": null,
+    "shelfTime": "2025-03-07 16:42:20",
+    "type": "3",
+    "operator": null,
+    "jsy": 0.198145,
+    "winYear": 0.472336,
+    "nsy": 1.014237,
+    "stockLabelJson": {
+      "tiaoJianTree": {
+        "params": [
+          {
+            "selectTitle": "中期彩带",
+            "selectId": 932,
+            "selectDesc": "维持粉色",
+            "selectFullDesc": "技术面特色指标>>中期彩带>>维持粉色",
+            "selectItem": "技术面特色指标>>中期彩带>>维持粉色",
+            "ids": "1345",
+            "abbrs": "ZQCDWCFS",
+            "titles": "维持粉色",
+            "hasAndOr": 2,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "剔除ST股",
+            "selectId": 909,
+            "selectDesc": "",
+            "selectFullDesc": "选股范围:剔除ST股",
+            "selectItem": "选股范围:剔除ST股",
+            "ids": 909,
+            "abbrs": "fst",
+            "titles": "剔除ST股",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "剔除新股",
+            "selectId": 912,
+            "selectDesc": "",
+            "selectFullDesc": "选股范围:剔除新股",
+            "selectItem": "选股范围:剔除新股",
+            "ids": 912,
+            "abbrs": "fxg",
+            "titles": "剔除新股",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "剔除次新股",
+            "selectId": 911,
+            "selectDesc": "",
+            "selectFullDesc": "选股范围:剔除次新股",
+            "selectItem": "选股范围:剔除次新股",
+            "ids": 911,
+            "abbrs": "fcx",
+            "titles": "剔除次新股",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "换手率",
+            "selectId": 917,
+            "selectDesc": "0%-14%",
+            "selectFullDesc": "技术面>>换手率>>0%-14%",
+            "selectItem": "技术面>>换手率>>0%-14%",
+            "ids": "1153",
+            "abbrs": "huanShouLv",
+            "titles": "自定义",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 14,
+            "customMinValue": "0",
+            "customMaxValue": "14"
+          },
+          {
+            "selectTitle": "市净率",
+            "selectId": 887,
+            "selectDesc": "≤10",
+            "selectFullDesc": "基本面>>市净率>>≤10",
+            "selectItem": "基本面>>市净率>>≤10",
+            "ids": "986",
+            "abbrs": "shiJingLv",
+            "titles": "≤10",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "市盈率",
+            "selectId": 886,
+            "selectDesc": "≤50",
+            "selectFullDesc": "基本面>>市盈率>>≤50",
+            "selectItem": "基本面>>市盈率>>≤50",
+            "ids": "978",
+            "abbrs": "shiYingLv",
+            "titles": "≤50",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "彼得林奇成长指标",
+            "selectId": 2453,
+            "selectDesc": "0-100",
+            "selectFullDesc": "基本面>>彼得林奇成长指标>>0-100",
+            "selectItem": "基本面>>彼得林奇成长指标>>0-100",
+            "ids": "2456",
+            "abbrs": "bdlqcz",
+            "titles": "自定义",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 100,
+            "customMinValue": "0",
+            "customMaxValue": "100"
+          },
+          {
+            "selectTitle": "销售收现率",
+            "selectId": 902,
+            "selectDesc": ">0.9",
+            "selectFullDesc": "基本面>>销售收现率>>>0.9",
+            "selectItem": "基本面>>销售收现率>>>0.9",
+            "ids": "1079",
+            "abbrs": "xssxl",
+            "titles": ">0.9",
+            "hasAndOr": 0,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          },
+          {
+            "selectTitle": "机构持仓",
+            "selectId": 2194,
+            "selectDesc": "私募基金:盈利占比>60%,年化收益>30% 且 私募基金:盈利占比>60%,年化收益>30%",
+            "selectFullDesc": "核心股池>>机构持仓>>私募基金:盈利占比>60%,年化收益>30% 且 私募基金:盈利占比>60%,年化收益>30%",
+            "selectItem": "核心股池>>机构持仓>>私募基金:盈利占比>60%,年化收益>30% 且 私募基金:盈利占比>60%,年化收益>30%",
+            "ids": "2209,2213",
+            "abbrs": "smjjylzb,smjjnhsy",
+            "titles": ">60%,>30%",
+            "hasAndOr": 1,
+            "canMinCustom": 0,
+            "canMaxCustom": 0,
+            "customMinValue": 0,
+            "customMaxValue": 0
+          }
+        ],
+        "selfParams": [
+          {
+            "ids": "66001",
+            "abbrs": "writeTime",
+            "titles": "日期",
+            "value": 1741276800000
+          },
+          {
+            "ids": "66002",
+            "abbrs": "periodicalReport",
+            "titles": "定期报告",
+            "value": "最新"
+          },
+          {
+            "ids": "66004",
+            "abbrs": "zhangDieFu",
+            "titles": "排序",
+            "value": "desc"
+          }
+        ]
+      },
+      "huiceTree": {
+        "startTime": 1615046400,
+        "endTime": 1741276800,
+        "buyDateMark": 0,
+        "buyDate": "",
+        "buyTimeMark": 1,
+        "buyTime": "09:30",
+        "holdingPeriod": "20",
+        "holdingLimit": 5,
+        "singleDayBuyLimit": "3",
+        "sortField": "EMA28",
+        "sort": "asc",
+        "initialCapital": "1000000",
+        "signalsSales": 0,
+        "signalsSalesItem": "",
+        "signalsSalesItemCondition": 1,
+        "stopProfitLossSales": 1,
+        "takeProfit": "33",
+        "fallBack": "3",
+        "stopLoss": "-8",
+        "fallBackSales": 1,
+        "fallBackPoint": 999999999,
+        "tradingPosition": 0,
+        "positionRatio": 10,
+        "maximumPosition": 4,
+        "type": 2,
+        "conditionText": ""
+      },
+      "tiao_jian_select_tree": {
+        "stockFilter": [],
+        "transactionModel": {
+          "title": "交易模型",
+          "child": [
+            {
+              "key": "买入优先级",
+              "value": "ema28乖离率从小到大"
+            },
+            {
+              "key": "买入时机",
+              "value": "开盘买入"
+            },
+            {
+              "key": "单次最大买入",
+              "value": "3只"
+            },
+            {
+              "key": "持仓上限",
+              "value": "5只"
+            },
+            {
+              "key": "单股最大仓位",
+              "value": "40%"
+            },
+            {
+              "key": "持有天数",
+              "value": "20天"
+            },
+            {
+              "key": "卖出信号",
+              "value": ""
+            },
+            {
+              "key": "止盈止损",
+              "value": "收益率≥33%时继续持有\n直到最高收益回落3%时卖出\n收益率≤-8%卖出"
+            }
+          ]
+        },
+        "huiCeZhouQi": "近5年"
+      },
+      "type": 2,
+      "name": "九凤鸣岐",
+      "standardLine": 5
+    },
+    "rsy": -0.00042,
+    "id": 36,
+    "hnsy": 0.534863,
+    "shenhe": 1,
+    "introduction": "本策略通过系统化的筛选与分析，帮助投资者构建稳健的投资组合。剔除ST股、新股和次新股，以降低投资风险，确保选股的稳定性和可靠性，换手率、市净率和市盈率，深入分析股票的流动性、估值水平和市场表现，从而识别出具备投资价值的优质企业。此外，彼得·林奇成长指标被纳入策略中，以评估公司的成长潜力，确保投资标的在未来具备良好的发展前景。同时，销售收现率作为重要的财务指标，帮助投资者判断企业的盈利质量和现金流状况。结合私募基金的投资理念，策略强调对市场趋势的把握与风险管理，力求在复杂的市场环境中实现资产的稳健增值。通过这一系列的筛选与分析，投资者能够更有效地识别出具备长期投资价值的股票，提升投资回报。",
+    "ysy": 0.112869,
+    "winLoseRatio": 1.87064,
+    "zsy": 0.068233,
+    "publishTime": "2021-03-08",
+    "lhid": "8007",
+    "nature": "2",
+    "cesy": 4.408615,
+    "downReason": null,
+    "fundingVolume": "3",
+    "updateTime": "2025-08-12 15:59:01",
+    "realYearIncome": 0.00042,
+    "policyStyle": null,
+    "createTime": "2025-03-07 16:42:12",
+    "policyType": "1",
+    "name": "九凤鸣岐",
+    "xpbl": 1.499719,
+    "style": "1",
+    "winRate": 0.488449,
+    "riskPreference": "1",
+    "status": 1,
+    "collection": 0,
+    "subscribe": 0
+  }
+}

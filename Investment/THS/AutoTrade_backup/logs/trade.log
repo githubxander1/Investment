@@ -1,0 +1,236 @@
+[32m2025-07-30 09:33:44 - INFO - 买入 凤竹纺织 700股 True 委托已提交[0m
+[32m2025-07-30 09:34:45 - INFO - 买入 春雪食品 400股 True 委托已提交[0m
+[32m2025-07-30 09:35:10 - INFO - 买入 百达精工 400股 True 委托已提交[0m
+[32m2025-07-30 09:35:49 - INFO - 买入 金鹰股份 700股 True 委托已提交[0m
+[32m2025-07-30 09:36:48 - INFO - 买入 双箭股份 700股 True 委托已提交[0m
+[32m2025-07-30 09:37:09 - INFO - 买入 中重科技 400股 True 委托已提交[0m
+[31m2025-07-30 09:38:05 - ERROR - 买入 林海股份 未知 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/ok_btn']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 157, in operate_stock
+    success, info = self.ths_page.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 275, in dialog_handle
+    confirm_button.click()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/ok_btn']", 'method': 'wait'}
+[31m2025-07-30 09:38:20 - ERROR - 买入 恒尚节能 未知 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/prompt_content'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 157, in operate_stock
+    success, info = self.ths_page.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 272, in dialog_handle
+    prompt_text = prompt_content.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 359, in get_text
+    return self.jsonrpc.getText(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/prompt_content'},))
+[31m2025-07-30 09:38:37 - ERROR - 买入 曙光股份 未知 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/prompt_content'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 157, in operate_stock
+    success, info = self.ths_page.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 272, in dialog_handle
+    prompt_text = prompt_content.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 359, in get_text
+    return self.jsonrpc.getText(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/prompt_content'},))
+[32m2025-07-30 09:41:21 - INFO - 买入 海南矿业 500股 True 委托已提交[0m
+[33m2025-07-30 09:41:35 - WARNING - 买入数量不足100股[0m
+[31m2025-07-30 09:41:35 - ERROR - 买入 诚邦股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 153, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-07-30 09:43:28 - WARNING - 卖出数量不足100股[0m
+[31m2025-07-30 09:43:33 - ERROR - 卖出 华勤技术 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 153, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-07-31 09:32:00 - WARNING - 买入数量不足100股[0m
+[31m2025-07-31 11:21:44 - ERROR - 卖出 东方锆业 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 145, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 143, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[32m2025-08-01 14:45:36 - INFO - 买入 锐明技术 100股 True 委托已提交[0m
+[33m2025-08-01 14:45:44 - WARNING - 卖出数量不足100股[0m
+[31m2025-08-01 14:45:49 - ERROR - 卖出 航天彩虹 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 163, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[31m2025-08-01 14:46:51 - ERROR - 买入 大金重工 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 16, 'childOrSibling': [], 'childOrSiblingSelector': [], 'className': 'android.widget.EditText'}], resourceId='com.hexin.plat.android:id/stockprice']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 154, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 198, in _get_real_price
+    price_text = price_edit.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 358, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 16, 'childOrSibling': [], 'childOrSiblingSelector': [], 'className': 'android.widget.EditText'}], resourceId='com.hexin.plat.android:id/stockprice']", 'method': 'wait'}
+[31m2025-08-01 14:47:37 - ERROR - 买入 文科园林 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 16, 'childOrSibling': [], 'childOrSiblingSelector': [], 'className': 'android.widget.EditText'}], resourceId='com.hexin.plat.android:id/stockprice']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 154, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 198, in _get_real_price
+    price_text = price_edit.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 358, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 16, 'childOrSibling': [], 'childOrSiblingSelector': [], 'className': 'android.widget.EditText'}], resourceId='com.hexin.plat.android:id/stockprice']", 'method': 'wait'}
+[32m2025-08-04 09:32:25 - INFO - 买入 振江股份 100股 True 委托已提交[0m
+[32m2025-08-04 09:32:43 - INFO - 买入 大业股份 400股 True 委托已提交[0m
+[32m2025-08-04 09:33:04 - INFO - 买入 中设股份 300股 True 委托已提交[0m
+[32m2025-08-05 09:31:41 - INFO - 买入 宝钛股份 100股 True 委托已提交[0m
+[33m2025-08-05 09:31:55 - WARNING - 买入数量不足100股[0m
+[32m2025-08-05 09:32:19 - INFO - 卖出 中设股份 100股 True 委托已提交[0m
+[31m2025-08-05 09:54:01 - ERROR - 买入 王子新材 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 145, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 143, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[32m2025-08-05 10:16:11 - INFO - 买入 光华科技 200股 True 委托已提交[0m
+[31m2025-08-06 09:40:08 - ERROR - 买入 梦网科技 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 145, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 143, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[32m2025-08-06 09:40:39 - INFO - 买入 城地香江 200股 True 委托已提交[0m
+[32m2025-08-06 09:59:33 - INFO - 买入 领益智造 800股 True 委托已提交[0m
+[32m2025-08-06 10:42:07 - INFO - 卖出 王子新材 100股 True 委托已提交[0m
+[31m2025-08-06 10:55:54 - ERROR - 买入 天赐材料 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 145, in operate_stock
+    self.ths_page.click_operate_button(operation)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 143, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[33m2025-08-06 11:26:24 - WARNING - 买入数量不足100股[0m
+[31m2025-08-06 13:01:49 - ERROR - 买入 奥飞娱乐 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 145, in operate_stock
+    self.ths_page.click_operate_button(operation)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 143, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[32m2025-08-07 09:28:25 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-07 09:28:33 - INFO - 买入 工商银行 100股 True 委托已提交[0m
+[32m2025-08-07 09:31:21 - INFO - 买入 云南锗业 200股 True 委托已提交[0m
+[32m2025-08-07 09:31:35 - INFO - 半仓卖出[0m
+[33m2025-08-07 09:31:35 - WARNING - 卖出数量不足100股[0m
+[31m2025-08-07 09:31:41 - ERROR - 卖出 大金重工 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 165, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[32m2025-08-07 09:33:21 - INFO - 买入 超讯通信 100股 True 委托已提交[0m
+[32m2025-08-07 10:45:59 - INFO - 半仓卖出[0m
+[33m2025-08-07 10:45:59 - WARNING - 卖出数量不足100股[0m
+[31m2025-08-07 10:46:05 - ERROR - 卖出 智微智能 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 165, in operate_stock
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[32m2025-08-07 14:01:16 - INFO - 买入 深圳华强 100股 True 委托已提交[0m
+[31m2025-08-07 14:01:29 - ERROR - 天赐材料 没有持仓[0m
+[32m2025-08-07 14:01:49 - INFO - 买入 国泰海通 200股 True 委托已提交[0m
+[32m2025-08-08 09:33:09 - INFO - 全部卖出[0m
+[32m2025-08-08 09:33:16 - INFO - 卖出 宝钛股份 100.0股 True 委托已提交[0m
+[31m2025-08-08 09:33:46 - ERROR - 买入 本钢板材 未知 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 172, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 122, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[31m2025-08-08 09:37:48 - ERROR - 三星医疗 没有持仓[0m
+[32m2025-08-08 09:38:11 - INFO - 买入 金诚信 100股 True 委托已提交[0m
+[32m2025-08-08 09:38:27 - INFO - 全部卖出[0m
+[32m2025-08-08 09:38:36 - INFO - 卖出 城地香江 200.0股 True 委托已提交[0m
+[32m2025-08-08 10:41:09 - INFO - 买入 宗申动力 200股 True 委托已提交[0m
+[32m2025-08-08 11:08:25 - INFO - 全部卖出[0m
+[32m2025-08-08 11:08:36 - INFO - 卖出 国泰海通 200.0股 True 委托已提交[0m
+[32m2025-08-08 13:57:18 - INFO - 全部卖出[0m
+[32m2025-08-08 13:57:26 - INFO - 卖出 深圳华强 100.0股 True 委托已提交[0m
+[32m2025-08-11 10:35:04 - INFO - 买入 梦网科技 300股 True 委托已提交[0m
+[32m2025-08-11 10:35:23 - INFO - 买入 博敏电子 400股 True 委托已提交[0m
+[33m2025-08-11 13:36:48 - WARNING - 买入数量不足100股[0m
+[32m2025-08-11 14:21:04 - INFO - 全部卖出[0m
+[32m2025-08-11 14:21:11 - INFO - 卖出 宗申动力 200.0股 True 委托已提交[0m

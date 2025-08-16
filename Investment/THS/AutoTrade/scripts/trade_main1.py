@@ -36,7 +36,7 @@ from Investment.THS.AutoTrade.config.settings import (
 from Investment.THS.AutoTrade.scripts.monitor_20day import daily_check
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.config.settings import OPERATION_HISTORY_FILE, MAX_RUN_TIME
-from Investment.THS.AutoTrade.scripts.data_process import read_operation_history
+from Investment.THS.AutoTrade.scripts.data_process2 import read_operation_history
 from Investment.THS.AutoTrade.trade_main import initialize_device, is_device_connected, check_morning_signals, trader
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 # 添加全局变量

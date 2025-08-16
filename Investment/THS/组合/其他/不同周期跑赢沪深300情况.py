@@ -33,7 +33,7 @@ def get_portfolio_profitability_period_win_hs300(id):
         pprint(result)
         # 翻译字段
         translated_result = {
-            "股票数据": {
+            "stock_data": {
                 "盈利水平": result["testdata"]["profitabilityLevel"],
                 "时间跨度": result["testdata"]["timeSpan"],
                 "盈利数据列表": [
@@ -49,7 +49,7 @@ def get_portfolio_profitability_period_win_hs300(id):
         pprint(translated_result)
 
         # 将翻译后的数据转换为DataFrame格式，方便后续保存为Excel
-        df = pd.DataFrame(translated_result["股票数据"]["盈利数据列表"])
+        df = pd.DataFrame(translated_result["stock_data"]["盈利数据列表"])
         df["组合收益"] = df["组合收益"].apply(lambda x: f"{x:.2%}")
         df["沪深300收益"] = df["沪深300收益"].apply(lambda x: f"{x:.2%}")
 

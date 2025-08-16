@@ -74,6 +74,7 @@ class CommonPage:
     def goto_account_page(self):
             """确保当前在账户页"""
             time.sleep(1)
+            logger.info("正在切换至: 账户页")
             current_page = self.where_page()
             logger.info(f"当前页面: {current_page}")
 
@@ -109,6 +110,7 @@ class CommonPage:
                 logger.error("❌ 无法返回账户页")
                 return False
     def goto_trade_page(self,max_retry=3):
+        logger.info("正在切换至: 交易页")
         for _ in range(max_retry):
             current_page = self.where_page()
             if current_page == "交易页":
@@ -142,6 +144,7 @@ class CommonPage:
         :param to_account: 目标账户名称（如 "模拟" / "川财证券" / "长城证券"）
         :return: 成功与否
         """
+        # self.current_account = None
         time.sleep(1)
         # 切换到交易页
         self.goto_trade_page()
@@ -178,6 +181,7 @@ class CommonPage:
     
             password_changcheng = '660493'
             password_chuangcai = '170212'
+            password_zhongtai = '170212'
 
             # 开始切换账户
             if self.current_account_trade.get_text() != to_account:
@@ -192,7 +196,9 @@ class CommonPage:
                     if to_account == '长城证券':
                         time.sleep(1)
                         password_input.set_text(password_changcheng)
-                    else:
+                    elif to_account == '中泰证券':
+                        password_input.set_text(password_zhongtai)
+                    elif to_account == '川财证券':
                         password_input.set_text(password_chuangcai)
     
                     keeplogin_checkbox.click()
