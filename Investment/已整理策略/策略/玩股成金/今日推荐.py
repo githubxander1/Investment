@@ -1,4 +1,9 @@
-def 今日推荐(page_size=10, index=1, cmd="9034"):
+
+import requests
+import json
+from pprint import pprint
+
+def today_recommend(page_size=10, index=1, cmd="9034"):
     url = "http://portal.api.traderwin.com/api/report/forecast/earning.json"
 
     headers = {
@@ -28,7 +33,7 @@ def 今日推荐(page_size=10, index=1, cmd="9034"):
 
 
 # 请求今日推荐数据
-result = 今日推荐()
+result = today_recommend()
 
 if result and result.get("message", {}).get("state") == 0:
     data_list = result.get("data", {}).get("data", [])

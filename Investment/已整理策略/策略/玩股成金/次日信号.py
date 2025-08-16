@@ -1,4 +1,9 @@
-def 次日信号(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862"):
+
+import requests
+import json
+from pprint import pprint
+
+def nextday_single(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862"):
     url = "http://ai.api.traderwin.com/api/ai/robot/tip.json"
 
     headers = {
@@ -27,7 +32,7 @@ def 次日信号(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862"):
 
 
 # 请求次日信号数据
-result = 次日信号()
+result = nextday_single()
 
 if result and result.get("message", {}).get("state") == 0:
     data_list = result.get("data", [])
