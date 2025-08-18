@@ -27,7 +27,7 @@ Robot_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Robot_portfolio
 Lhw_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Lhw_portfolio_today.xlsx')
 
 # 持仓
-Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'position', 'Ai_Strategy_position.xlsx')
+Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'position', 'Strategy_position.xlsx')
 ai_strategy_diff_file_path = os.path.join(DATA_DIR, 'position', "ai_strategy_diff.xlsx")
 
 Strategy_holding_file = os.path.join(DATA_DIR, 'position','Strategy_position.xlsx')

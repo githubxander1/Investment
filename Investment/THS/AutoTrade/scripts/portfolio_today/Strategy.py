@@ -76,7 +76,16 @@ def get_difference_holding():
     """
     file_path = Ai_Strategy_holding_file
     today = str(datetime.date.today())
-    yestoday = str(datetime.date.today() - datetime.timedelta(days=1))
+    today_date = datetime.date.today()
+
+    # ✅ 日期调整逻辑
+    if today_date.weekday() == 0:  # 周一
+        yestoday_date = today_date - datetime.timedelta(days=3)  # 上周五
+        logger.info(f"📅 周一特殊处理：对比日期调整为 {yestoday_date}")
+    else:
+        yestoday_date = today_date - datetime.timedelta(days=1)  # 普通日期
+
+    yestoday = str(yestoday_date)
 
     # ✅ 文件不存在直接退出
     if not os.path.exists(file_path):
@@ -94,23 +103,43 @@ def get_difference_holding():
             # ✅ 读取今天持仓数据
             today_positions_df = pd.read_excel(xls, sheet_name=today, index_col=0)
 
-            # ✅ 昨天sheet不存在，将今天所有持仓视为买入
-            if yestoday not in xls.sheet_names:
+            # ✅ 特殊处理：周一且周日sheet不存在时
+            if yestoday not in xls.sheet_names and today_date.weekday() == 0:
+                logger.warning(f"⚠️ 周一特殊处理：未找到 {yestoday} 的sheet，尝试查找最近交易日")
+
+                # ✅ 查找最近存在的sheet（倒序查找5个工作日）
+                for i in range(1, 6):  # 最多查找前5个工作日
+                    recent_date = today_date - datetime.timedelta(days=i)
+                    if str(recent_date) in xls.sheet_names:
+                        yestoday = str(recent_date)
+                        logger.info(f"🔁 找到最近交易日：{yestoday}")
+                        yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday, index_col=0)
+                        break
+                else:
+                    # ✅ 如果没有找到任何历史sheet，将今天所有持仓视为买入
+                    logger.info(f"🆕 未找到历史sheet，将今天所有持仓视为买入")
+                    today_positions_df['操作'] = '买入'
+                    return {
+                        'to_buy': today_positions_df,
+                        'to_sell': pd.DataFrame()
+                    }
+            elif yestoday not in xls.sheet_names:
+                # ✅ 非周一的常规处理
                 logger.info(f"⚠️ 昨天 {yestoday} 的sheet不存在，将今天所有持仓视为买入")
                 today_positions_df['操作'] = '买入'
                 return {
                     'to_buy': today_positions_df,
                     'to_sell': pd.DataFrame()
                 }
-
-            # ✅ 读取昨天持仓数据
-            yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday, index_col=0)
+            else:
+                # ✅ 正常读取昨天数据
+                yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday, index_col=0)
 
     except Exception as e:
         logger.error(f"❌ 读取Excel文件失败: {str(e)}")
         return {'to_buy': pd.DataFrame(), 'to_sell': pd.DataFrame()}
 
-    # ✅ 仅按“标的名称”比较
+    # ✅ 数据对比逻辑（保持不变）
     today_stocks = set(today_positions_df['标的名称'].str.strip().str.upper())
     yestoday_stocks = set(yestoday_positions_df['标的名称'].str.strip().str.upper())
 
@@ -124,8 +153,7 @@ def get_difference_holding():
 
     # ✅ 输出结果
     logger.info(f"📊 今日({today})持仓标的: {today_positions_df['标的名称'].tolist()}")
-    logger.info(f"📊 昨日{yestoday}持仓标的: {yestoday_positions_df['标的名称'].tolist()}")
-
+    logger.info(f"📊 对比日期: {yestoday}")
     logger.info(f"✅ 要买入标的:\n{to_buy[['标的名称']]}\n")
     logger.info(f"✅ 要卖出标的:\n{to_sell[['标的名称']]}\n")
 
@@ -136,7 +164,7 @@ def get_difference_holding():
 
 def sava_all_strategy_holding_data():
     """
-    获取所有策略的持仓数据，并保存到 Excel 文件中，保留历史sheet
+    获取所有策略的持仓数据，并保存到 Excel 文件中，当天数据保存在第一个sheet
     """
     all_holdings = []
     for id in Strategy_ids:
@@ -151,33 +179,43 @@ def sava_all_strategy_holding_data():
 
     file_path = Ai_Strategy_holding_file
 
+    # 创建一个字典来存储所有工作表数据
+    all_sheets_data = {}
+
     try:
-        # 如果文件存在，读取现有sheet
+        # 如果文件存在，读取现有数据
         if os.path.exists(file_path):
             with pd.ExcelFile(file_path) as xls:
                 existing_sheets = xls.sheet_names
 
-            # 如果今天sheet已存在，可以选择覆盖或跳过
-            if today in existing_sheets:
-                logger.warning(f"⚠️ 今天 {today} 的sheet已存在，是否覆盖？（当前为跳过）")
-                # 如果要覆盖，可以删除该sheet再写入
-                # 但本方案选择 **跳过写入**，保留历史数据
-                return
+            # 读取除今天以外的所有现有工作表
+            with pd.ExcelFile(file_path) as xls:
+                for sheet_name in existing_sheets:
+                    if sheet_name != today:
+                        all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name, index_col=0)
 
-        # 使用 ExcelWriter 以追加模式保存
-        with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-            all_holdings_df.to_excel(writer, sheet_name=today, index=True)
-            logger.info(f"✅ 所有持仓数据已保存为 sheet: {today}，共 {len(all_holdings_df)} 条")
+        # 将今天的数据放在第一位
+        all_sheets_data = {today: all_holdings_df, **all_sheets_data}
+
+        # 写入所有数据到Excel文件（覆盖模式）
+        with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+            for sheet_name, df in all_sheets_data.items():
+                df.to_excel(writer, sheet_name=sheet_name, index=True)
+
+        logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")
+
     except Exception as e:
         logger.error(f"❌ 保存持仓数据失败: {e}")
-        # 如果文件被占用或损坏，可以选择新建文件
-        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-            all_holdings_df.to_excel(writer, sheet_name=today, index=True)
-            logger.info(f"✅ 文件损坏，新建文件并保存 sheet: {today}")
-
+        # 如果出错，至少保存今天的数据
+        try:
+            with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+                all_holdings_df.to_excel(writer, sheet_name=today, index=True)
+            logger.info(f"✅ 文件保存完成，sheet: {today}")
+        except Exception as e2:
+            logger.error(f"❌ 保存今日数据也失败了: {e2}")
 def Smain():
-    # sava_all_strategy_holding_data()
-    # time.sleep(2)
+    sava_all_strategy_holding_data()
+    time.sleep(2)
     diff_result = get_difference_holding()
     logger.info(f"持仓数据差异:{len(diff_result)}条 \n{diff_result}")
     if diff_result:

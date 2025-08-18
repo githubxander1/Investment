@@ -14,7 +14,7 @@ response = client.chat.completions.create(
         },
         {
             'role': 'user',
-            'content': '你好'
+            'content': '写一个记忆中医12经络的方法，要形象，包括怎么找，为什么叫这个名'
         }
     ],
     stream=True

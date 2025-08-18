@@ -68,3 +68,45 @@ Traceback (most recent call last):
     raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
 uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
 [31m2025-08-15 17:42:08 - ERROR - 中国电信 没有持仓[0m
+[32m2025-08-18 09:31:59 - INFO - 全部卖出[0m
+[32m2025-08-18 09:32:07 - INFO - 卖出 金安国纪 300.0股 True 委托已提交[0m
+[31m2025-08-18 09:32:24 - ERROR - 河钢股份 没有持仓[0m
+[32m2025-08-18 09:32:37 - INFO - 买入 百隆东方 800股 True 委托已提交[0m
+[31m2025-08-18 09:41:32 - ERROR - 多氟多 没有持仓[0m
+[32m2025-08-18 09:48:17 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-18 09:48:19 - INFO - 买入 神州信息 200股 True 委托已提交[0m
+[32m2025-08-18 09:48:28 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-18 09:48:30 - INFO - 买入 湖南投资 200股 True 委托已提交[0m
+[32m2025-08-18 09:48:39 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-18 09:49:03 - ERROR - 买入 双枪科技 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 206, in operate_stock
+    success, info = self.ths_page.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 286, in dialog_handle
+    prompt_text = prompt_content.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 358, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[32m2025-08-18 09:49:13 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-18 09:49:16 - INFO - 买入 新大正 200股 True 委托已提交[0m
+[32m2025-08-18 09:49:24 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-18 09:49:26 - INFO - 买入 钱江生化 200股 True 委托已提交[0m
+[32m2025-08-18 09:49:35 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-18 09:49:37 - INFO - 买入 醋化股份 200股 True 委托已提交[0m
+[32m2025-08-18 09:49:55 - INFO - 全部卖出[0m
+[32m2025-08-18 09:50:03 - INFO - 卖出 中科金财 100.0股 True 委托已提交[0m
+[31m2025-08-18 09:50:15 - ERROR - 胜利股份 没有持仓[0m
+[31m2025-08-18 09:50:28 - ERROR - 楚环科技 没有持仓[0m
+[31m2025-08-18 09:50:41 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-18 09:50:54 - ERROR - 福建金森 没有持仓[0m
+[31m2025-08-18 09:51:10 - ERROR - 栖霞建设 没有持仓[0m
+[31m2025-08-18 09:51:15 - ERROR - 春兰股份 没有持仓[0m
+[32m2025-08-18 10:10:17 - INFO - 全部卖出[0m
+[32m2025-08-18 10:10:25 - INFO - 卖出 东睦股份 100.0股 True 委托已提交[0m
+[33m2025-08-18 10:57:16 - WARNING - 买入数量不足100股[0m
+[33m2025-08-18 11:10:23 - WARNING - 买入数量不足100股[0m
+[31m2025-08-18 14:25:44 - ERROR - 福莱新材 没有持仓[0m

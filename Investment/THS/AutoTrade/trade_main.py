@@ -283,80 +283,21 @@ async def main():
             combination_data = None
 
             # # 判断是否在策略任务时间窗口（9:30-9:33）
-            # if dt_time(9, 32) <= now <= dt_time(9, 35):
-            # # if dt_time(9, 31):
-            #     # holding_success, ai_datas = Ai_strategy_main()
-            #     #
-            #     # to_sell = ai_datas.get("to_sell")
-            #     # to_buy = ai_datas.get("to_buy")
-            #     #
-            #     # if not to_sell.empty or not to_buy.empty:
-            #     #     # 将 to_sell 和 to_buy 合并为一个 DataFrame
-            #     #     to_sell['操作'] = '卖出'
-            #     #     to_buy['操作'] = '买入'
-            #     #
-            #     #     combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-            #     #                             ignore_index=True)
-            #     #     combined_df['新比例%'] = None  # 可根据需要设置默认值
-            #     #
-            #     #     # 写入临时文件
-            #     #     combined_df.to_excel(ai_strategy_diff_file_path, index=False)
-            #     #     logger.warning(f"发现持仓差异，准备执行模拟账户交易操作：买\n{to_buy}，卖\n{to_sell}")
-            #
-            #     #     # 初始化设备
-            #     #     d = await initialize_device()
-            #     #     if not d:
-            #     #         logger.error("❌ 设备初始化失败，跳过模拟账户操作")
-            #     #     else:
-            #     #         # ths_page = THSPage(d)
-            #     #
-            #     #         # 切换到模拟账户
-            #     #         common_page.change_account("模拟练习区")
-            #     #         logger.info("✅ 已切换至模拟账户")
-            #     #
-            #     #         # 构造临时文件用于 process_excel_files
-            #     #         from tempfile import NamedTemporaryFile
-            #     #         import pandas as pd
-            #     #
-            #     #         temp_file_path = os.path.join(DATA_DIR, "temp_strategy_diff.xlsx")
-            #     #
-            #     #         # 将 to_sell 和 to_buy 合并为一个 DataFrame
-            #     #         to_sell['操作'] = '卖出'
-            #     #         to_buy['操作'] = '买入'
-            #     #
-            #     #         combined_df = pd.concat([to_sell[['标的名称', '操作']], to_buy[['标的名称', '操作']]],
-            #     #                                 ignore_index=True)
-            #     #         combined_df['新比例%'] = None  # 可根据需要设置默认值
-            #     #
-            #     #         # 写入临时文件
-            #     #         combined_df.to_excel(temp_file_path, index=False)
-            #     #
-            #     #         # 执行交易
-            #     #         process_excel_files(
-            #     #             ths_page=trader,
-            #     #             file_paths=[temp_file_path],
-            #     #             operation_history_file=OPERATION_HISTORY_FILE
-            #     #         )
-            #     #
-            #     #         logger.info("✅ 模拟账户持仓差异处理完成")
-            #     # else:
-            #     #     logger.info("✅ 当前无持仓差异，无需执行模拟账户操作")
-            #
-            #
-            #     logger.info("---------------------策略/Robot任务开始执行---------------------")
-            #     strategy_result = await Strategy_main()
-            #     robot_result = await Robot_main()
-            #     if strategy_result or robot_result:
-            #         strategy_success, strategy_data = strategy_result
-            #         robot_success, robot_data = robot_result
-            #     else:
-            #         logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
-            #     logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
-            # else:
-            #     logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
+            if dt_time(9, 32) <= now <= dt_time(9, 35):
+                logger.info("---------------------策略/Robot任务开始执行---------------------")
+                # strategy_result = await Strategy_main()
+                robot_result = await Robot_main()
+                if robot_result:
+                    # strategy_success, strategy_data = strategy_result
+                    robot_success, robot_data = robot_result
+                else:
+                    logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
+                logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
+            else:
+                logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
 
                 # 策略持仓差异任务（9:32-9:35）
-            if dt_time(9, 32) <= now <= dt_time(9, 40) and not strategy2_executed:
+            if dt_time(9, 32) <= now <= dt_time(10, 40) and not strategy2_executed:
 
                     logger.info("---------------------策略持仓差异分析开始---------------------")
                     try:
@@ -428,15 +369,21 @@ async def main():
                     logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
                 logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
 
-                # 如果有任何一个数据获取成功，则执行交易处理
-                # if strategy_success or combination_success or holding_success:
-                    # file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, ai_strategy_diff_file_path]
-                if strategy_success or combination_success or robot_success or lhw_success:
-                    file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
-                    process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
 
             else:
                 logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
+
+            # 如果有任何一个数据获取成功且有新数据，则执行交易处理
+            if (strategy_success and strategy_data is not None) or \
+               (combination_success and combination_data is not None) or \
+               (robot_success and robot_data is not None) or \
+               (lhw_success and lhw_data is not None):
+                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
+                process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
+            elif strategy_success or combination_success or robot_success or lhw_success:
+                logger.info("有任务执行成功，但无新增交易数据，跳过交易处理")
+            else:
+                logger.debug("无任务更新，跳过交易处理")
 
             # 国债逆回购操作（为每个账户执行一次）
             if dt_time(14, 56) <= now <= dt_time(15, 10):
@@ -444,16 +391,6 @@ async def main():
                 logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")
 
                 try:
-                    # 切换到当前账户
-                    # guozhai_page = GuozhaiPage(d)
-                    # if not guozhai_page.guozhai_change_account(current_account):
-                    #     logger.warning(f"切换到账户 {current_account} 失败")
-                    #     # 尝试切换到下一个账户
-                    #     current_account_index = switch_to_next_account(d, current_account_index)
-                    #     await asyncio.sleep(2)
-                    #     # 继续执行下一个账户而不是等待下一轮
-                    #     continue
-
                     # 如果当前账户还未成功执行，或者执行失败且还未重试
                     if not guozhai_status[current_account] or (not guozhai_retry_status[current_account] and guozhai_status[current_account]):
                         guozhai = GuozhaiPage(d)
@@ -487,8 +424,13 @@ async def main():
                         continue
                     else:
                         logger.debug(f"账户 {current_account} 已完成国债逆回购任务，跳过执行")
-                        # 切换到下一个账户
-                        current_account_index = switch_to_next_account(d, current_account_index)
+                        # 检查是否所有账户都已完成国债逆回购任务
+                        all_accounts_done = all(guozhai_status[account] for account in ACCOUNTS)
+                        if all_accounts_done:
+                            logger.info("所有账户国债逆回购任务已完成，跳过后续账户切换")
+                        else:
+                            # 只有在还有账户未完成时才切换到下一个账户
+                            current_account_index = switch_to_next_account(d, current_account_index)
                         continue
 
                 except Exception as e:

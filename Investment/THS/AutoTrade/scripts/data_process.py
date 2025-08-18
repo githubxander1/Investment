@@ -692,43 +692,66 @@ def process_excel_files(file_paths, operation_history_file, history_df=None):
     if not operations_by_account:
         return
 
+    # 导入通知模块
+    try:
+        from Investment.THS.AutoTrade.utils.notification import send_notification
+    except ImportError:
+        def send_notification(message):
+            logger.info(f"通知功能不可用: {message}")
+
+    # 汇总所有操作结果用于最终通知
+    all_operations_result = []
+
     # 按账户顺序处理
     for account, operations in operations_by_account.items():
         if not operations:
             continue
 
-        # 切换账户（仅当需要时）
-        logger.info(f"🔐 切换到账户: {account}")
+        logger.info(f"📋 开始处理账户 {account} 的 {len(operations)} 个操作")
+        # 切换到对应账户
         common_page.change_account(account)
+        logger.info(f"✅ 已切换到账户: {account}")
 
-        # 处理该账户下的所有交易
+        # 执行该账户下的所有操作
         for op in operations:
-            strategy_name = op['strategy_name']
-            stock_name = op['stock_name']
-            operation = op['operation']
-            new_ratio = op['new_ratio']
-            file_path = op['file_path']
+            strategy_name = op["strategy_name"]
+            stock_name = op["stock_name"]
+            operation = op["operation"]
+            new_ratio = op["new_ratio"]
 
             logger.info(f"🚀 开始交易: {operation} {stock_name}")
 
-            # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
-            if operation == "卖出" and new_ratio == 0:
-                logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
-                # 直接调用交易逻辑，不依赖自动计算数量
-                status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+            # 初始化状态和信息
+            status = None
+            info = "未知错误"
 
-            # 特殊处理：AI市场追踪策略买入时使用固定股数
-            elif strategy_name == "AI市场追踪策略" and operation == "买入":
-                fixed_volume = 200  # 固定买入200股
-                logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
-                status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
-            else:
-                status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+            try:
+                # 特殊处理：当新比例为0且操作为卖出时，强制全仓卖出
+                if operation == "卖出" and new_ratio == 0:
+                    logger.info(f"🎯 特殊处理: 新比例为0，将全仓卖出 {stock_name}")
+                    # 直接调用交易逻辑，不依赖自动计算数量
+                    status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
 
-            # 检查交易是否成功执行
-            if status is None:
-                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                continue
+                # 特殊处理：AI市场追踪策略买入时使用固定股数
+                elif strategy_name == "AI市场追踪策略" and operation == "买入":
+                    fixed_volume = 200  # 固定买入200股
+                    logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
+                    status, info = trader.operate_stock(operation, stock_name, volume=fixed_volume)
+                else:
+                    status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
+
+                # 检查交易是否成功执行
+                if status is None:
+                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                    all_operations_result.append(f"{account}: {operation} {stock_name} 失败 - {info}")
+                else:
+                    logger.info(f"✅ {operation} {stock_name} 交易执行成功: {info}")
+                    all_operations_result.append(f"{account}: {operation} {stock_name} 成功 - {info}")
+
+            except Exception as e:
+                logger.error(f"处理 {operation} {stock_name} 时发生异常: {e}", exc_info=True)
+                info = str(e)
+                all_operations_result.append(f"{account}: {operation} {stock_name} 异常 - {info}")
 
             # 构造记录
             operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -745,6 +768,19 @@ def process_excel_files(file_paths, operation_history_file, history_df=None):
             write_operation_history(record)
             logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
+            # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
+            history_df = pd.concat([history_df, record], ignore_index=True)
+
+        # except Exception as e:
+        #     logger.error(f"处理 {operation} {stock_name} 时发生错误: {e}", exc_info=True)
+
+
+    logger.info("✅ 所有文件处理完成")
+
+    # 发送操作结果通知
+    if all_operations_result:
+        summary_message = "交易操作结果汇总:\n" + "\n".join(all_operations_result)
+        send_notification(summary_message)
 
 if __name__ == '__main__':
     # diff_result = get_difference_holding()
