@@ -110,3 +110,115 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [33m2025-08-18 10:57:16 - WARNING - 买入数量不足100股[0m
 [33m2025-08-18 11:10:23 - WARNING - 买入数量不足100股[0m
 [31m2025-08-18 14:25:44 - ERROR - 福莱新材 没有持仓[0m
+[32m2025-08-19 09:32:54 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:32:57 - INFO - 买入 三柏硕 200股 True 委托已提交[0m
+[32m2025-08-19 09:33:05 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:33:07 - INFO - 买入 楚环科技 200股 True 委托已提交[0m
+[32m2025-08-19 09:33:16 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:33:18 - INFO - 买入 益盛药业 200股 True 委托已提交[0m
+[32m2025-08-19 09:33:28 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:33:30 - INFO - 买入 恒大高新 200股 True 委托已提交[0m
+[32m2025-08-19 09:33:38 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:33:40 - INFO - 买入 金花股份 200股 True 委托已提交[0m
+[32m2025-08-19 09:33:49 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:33:51 - INFO - 买入 凤竹纺织 200股 True 委托已提交[0m
+[32m2025-08-19 09:33:59 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:34:01 - INFO - 买入 百大集团 200股 True 委托已提交[0m
+[32m2025-08-19 09:34:09 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 09:34:11 - INFO - 买入 宁水集团 200股 True 委托已提交[0m
+[31m2025-08-19 09:34:25 - ERROR - 德龙汇能 没有持仓[0m
+[31m2025-08-19 09:34:35 - ERROR - 双枪科技 没有持仓[0m
+[31m2025-08-19 09:34:45 - ERROR - 龙星科技 没有持仓[0m
+[31m2025-08-19 09:34:56 - ERROR - 汇洁股份 没有持仓[0m
+[31m2025-08-19 09:35:06 - ERROR - 新大正 没有持仓[0m
+[31m2025-08-19 09:35:16 - ERROR - 宁波富邦 没有持仓[0m
+[31m2025-08-19 09:35:27 - ERROR - 扬州金泉 没有持仓[0m
+[31m2025-08-19 09:35:37 - ERROR - 醋化股份 没有持仓[0m
+[31m2025-08-19 09:35:47 - ERROR - 园林股份 没有持仓[0m
+[31m2025-08-19 09:38:09 - ERROR - 恒立液压 没有持仓[0m
+[32m2025-08-19 09:41:38 - INFO - 买入 海南华铁 400股 True 委托已提交[0m
+[32m2025-08-19 10:14:35 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-19 10:14:37 - INFO - 买入 三柏硕 200股 True 委托已提交[0m
+[32m2025-08-19 10:14:46 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-19 10:15:06 - ERROR - 买入 楚环科技 200 股失败: {'code': -32002, 'data': "Selector [className='android.widget.TextView', textMatches='.*买 入.*']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 204, in operate_stock
+    self.ths_page.click_submit_button(operation)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 201, in click_submit_button
+    submit_button.click()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.TextView', textMatches='.*买 入.*']", 'method': 'wait'}
+[32m2025-08-19 10:15:16 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-19 10:15:37 - ERROR - 买入 益盛药业 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 206, in operate_stock
+    success, info = self.ths_page.dialog_handle()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 286, in dialog_handle
+    prompt_text = prompt_content.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 358, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/prompt_content']", 'method': 'wait'}
+[32m2025-08-19 10:15:47 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-19 10:16:08 - ERROR - 买入 恒大高新 200 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 202, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 167, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-08-19 10:16:18 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-19 10:16:39 - ERROR - 买入 金花股份 200 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 202, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 167, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-08-19 10:16:49 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-19 10:17:10 - ERROR - 买入 凤竹纺织 200 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 202, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 167, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}

@@ -140,6 +140,7 @@ async def Robot_main():
     all_today_trades_df = standardize_dataframe(all_today_trades_df)
     history_data_df = standardize_dataframe(history_data_df)
     # print(f'读取历史记录: {history_data_df}')
+    # print(f'历史记录数据类型: {history_data_df.dtypes}')
 
     # 获取新增数据
     new_data_df = get_new_records(all_today_trades_df, history_data_df)
@@ -148,6 +149,12 @@ async def Robot_main():
     # 保存新增数据并通知
     if new_data_df.empty:
         logger.info("---------------Robot 无新增交易数据----------------")
+        # # 即使没有新增数据，也打印一下今日数据
+        # if not all_today_trades_df.empty:
+        #     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+        #     save_to_operation_history_excel(all_today_trades_df, history_data_file, f'{today}')
+        #     all_today_trades_df_print_without_header = all_today_trades_df.to_string(index=False)
+        #     send_notification(f"{len(all_today_trades_df)} 条Robot调仓（今日全部）：\n{all_today_trades_df_print_without_header}")
         return False, None
     # with open(OPRATION_RECORD_DONE_FILE, 'w') as f:
     #     f.write('1')
