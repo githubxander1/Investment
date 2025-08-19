@@ -1,8 +1,9 @@
-import re
 import json
 import os
+import re
 import time
-from playwright.sync_api import Playwright, sync_playwright, expect
+
+from playwright.sync_api import Playwright, sync_playwright
 
 # 定义存储状态的文件路径
 STORAGE_STATE_FILE = "jrtt_storage_state.json"
@@ -135,6 +136,7 @@ def run(playwright: Playwright,title, content) -> None:
         context = browser.new_context(storage_state=storage_state)
         page = context.new_page()
         page.goto("https://mp.toutiao.com/auth/page/login?redirect_url=JTJGcHJvZmlsZV92NCUyRmluZGV4")
+        # page.pause()
 
         # 检查是否已成功登录（通过检查页面是否存在特定元素）
         try:
@@ -170,14 +172,14 @@ def run(playwright: Playwright,title, content) -> None:
     # for i, topic in enumerate(topics, 1):
     #     print(f"{i}. {topic}")
 
-    # page.locator(".byte-drawer-mask").click()
-    page.get_by_role("textbox", name="请输入文章标题（2～30个字）").fill(title)
-    # page.get_by_role("paragraph").click()
+    # page.locator(".byte-drawer-mask").click()    # page.get_by_role("paragraph").click()
     page.locator("div").filter(has_text=re.compile(r"^请输入正文$")).fill(content)
     # page.locator("label").filter(has_text="单图").locator("div").click()
     # page.locator("label").filter(has_text="三图").locator("div").click()
     # 点击关闭头条创作助手
-    page.get_by_role("heading", name="头条创作助手").locator("svg").click()
+    ai_avg = page.get_by_role("heading", name="头条创作助手").locator("svg")
+    if ai_avg.is_visible():
+        ai_avg.click()
     # 展示封面
     page.mouse.wheel(0, 500)
     page.pause()
