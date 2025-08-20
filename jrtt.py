@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import re
 import time
 from plyer import notification
@@ -16,7 +17,8 @@ def send_notification(message):
         timeout=10
     )
 # 定义存储状态的文件路径
-STORAGE_STATE_FILE = "jrtt_storage_state_c.json"
+# STORAGE_STATE_FILE = "jrtt_storage_state_c.json"
+STORAGE_STATE_FILE = "jrtt_storage_state_h.json"
 
 def load_storage_state():
     """加载存储状态"""
@@ -135,7 +137,7 @@ def crawl_recommend_topics(page, batches=3):
 
     return all_topics
 
-def run(playwright: Playwright,title, content) -> None:
+def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False,args=['--start-maximized'])
 
     # 尝试加载已保存的登录状态
@@ -178,19 +180,29 @@ def run(playwright: Playwright,title, content) -> None:
     # page.get_by_role("link", name="问答").click()
     # page.get_by_role("link", name="音频").click()
 
-    # 替换原有的相关代码部分
-    page.pause()
+    # 爬取热点推荐内容
+    print("开始爬取创作热点推荐内容...")
+    topics = crawl_recommend_topics(page, batches=5)
+    print(f"总共爬取到 {len(topics)} 个独特话题:")
+    for i, topic in enumerate(topics, 1):
+        print(f"{i}. {topic}")
+
+    # 随机提取一个话题
+    topic = random.choice(topics)
+    # topic = topics[0]
+    print(f"已选择话题：{topic}")
+    # page.pause()
     # 主题
-    topic = "黑神话悟空的爆火"
-    page.get_by_role("textbox", name="请输入文章标题（2～30个字）").fill(topic)
+    # topic = "黑神话悟空的爆火"
+
     # copy_button = page.locator("body")
     content = (f"主题：{topic}"
                ",注意："
-               "1.语言风格：用日常交流的自然口语，避免生硬书面语，少用 '啊,啦, 等语气词，像平和聊天般表达。"
+               "1.语言风格：用日常交流的自然口语，避免生硬书面语，少用 “啊,啦,呢“ 等语气词，像平和聊天般表达，或者偶尔用点热梗，或者偶尔来点幽默搞笑的（但注意不要为了搞笑而搞笑，要恰到好处，适当）。"
                "2.细节添加：穿插生活中常见的具体场景（如 超市里偶尔听到的闲聊），不用过度个人化经历，让内容有真实感但不局限。"
-               "3.表述方式：适当用 “似乎”“可能” 等词弱化绝对感，少用 “我觉得” 这类强主观表达，保持客观中带点自然弹性。"
+               "3.表述方式：适当用 “似乎”“可能” 等词弱化绝对感，偶尔用 “我觉得” 这类强主观表达，保持客观中带点自然弹性。"
                "4.结构节奏：不用严格工整的分段，用 “另外”“不过” 等词自然衔接，让思路流动不刻意。"
-               "5.结尾处理：简洁收尾，不用强行升华,最好能引起评论区的讨论。")
+               "5.结尾处理：简洁收尾，不用强行升华,偶尔最好能引起评论区的讨论，不要每次都故意引起讨论。")
 
     # 更准确地定位输入框和发送按钮
     textarea = page.locator(".ai-input .byte-textarea.inner-input")
@@ -212,19 +224,42 @@ def run(playwright: Playwright,title, content) -> None:
 
     # 等待响应或页面更新
     page.wait_for_timeout(60000)
+    # # 使用更稳定的相对XPath定位
+    # ai_title_element = page.locator("//div[contains(@class, 'article-title')]//h1")
+    # # 等待元素可见
+    # ai_title_element.wait_for(timeout=10000)
+    # # 安全获取文本内容
+    # ai_title = ai_title_element.text_content() or ""
+    page.get_by_role("textbox", name="请输入文章标题（2～30个字）").fill(topic)
     # 点击添加到正文按钮
-    page.pause()
-    page.get_by_text("添加到正文").click()
+    # 'body > div.byte-drawer-wrapper.ai-assistant-drawer > div.byte-drawer.drawer.slideRight-enter-done > div > div > div.byte-drawer-content.byte-drawer-content-nofooter > div > div > div > div.byte-tabs-content.byte-tabs-content-horizontal > div > div.byte-tabs-content-item.byte-tabs-content-item-active > div > div > div.ai-message-container.f-min-scroll.f-hover-scroll > div:nth-child(2) > div.body > div > div.message-viewer > div:nth-child(1) > div > h1'
+    add_to_content = page.get_by_text("添加到正文")
+    if add_to_content.is_visible(timeout=60000):
+        add_to_content.click()
+        print("点击添加到正文按钮")
+    else:
+        print("没有添加到正文按钮")
+    # page.pause()
 
-    # page.get_by_text("重新检测").click()
-    # page.get_by_text("检测成功，暂无建议").click()
+    page.get_by_text('内容建议').click()
+    no_suggestion = page.get_by_role("paragraph").filter(has_text=re.compile(r"^暂无建议$")).locator("span")
+    # no_suggestion = page.get_by_text("暂无建议")[1]
 
-    # 爬取热点推荐内容
-    # print("开始爬取创作热点推荐内容...")
-    # topics = crawl_recommend_topics(page, batches=3)
-    # print(f"总共爬取到 {len(topics)} 个独特话题:")
-    # for i, topic in enumerate(topics, 1):
-    #     print(f"{i}. {topic}")
+    no_suggestion2 = page.get_by_text("检测成功，暂无建议")
+    if no_suggestion.is_visible():
+        page.get_by_text("重新检测").click()
+        time.sleep(2)
+        if no_suggestion2.is_visible():
+            print("检测成功，暂无建议")
+            page.get_by_text("AI 创作").click()
+        else:
+            pass
+    else:
+        print("有内容建议")
+        # page.get_by_text("查看详情").click()
+        # page.get_by_role("button", name="确定").click()
+
+
 
     # page.locator(".byte-drawer-mask").click()    # page.get_by_role("paragraph").click()
     # page.locator("div").filter(has_text=re.compile(r"^请输入正文$")).fill(content)
@@ -237,7 +272,7 @@ def run(playwright: Playwright,title, content) -> None:
     #     ai_avg.click()
     # 展示封面
     page.mouse.wheel(0, 500)
-    page.pause()
+    # page.pause()
     page.get_by_text("无封面").click()
     # page.locator("label").filter(has_text="无封面").locator("div").click()
     # 往下滑动一段距离
@@ -252,14 +287,25 @@ def run(playwright: Playwright,title, content) -> None:
     page.locator("label").filter(has_text="头条首发").locator("div").click()
     # 添加合集
     page.get_by_role("button", name="添加至合集").click()
-    page.pause()
+    # page.pause()
     select_collection_by_name(page, "所思所想集")
+
     # page.locator("li").filter(has_text="所思所想集2023-05-28 20:44展现 24,960阅读").locator("label div").click()
     page.locator("button").filter(has_text="确定").click()
-    page.pause()
+    # page.get_by_text("个人观点，仅供参考").click()
     page.get_by_role("button", name="预览并发布").click()
     time.sleep(1)
+    # page.pause()
+    # 在点击确认发布前添加监听器
+    def handle_dialog(dialog):
+        print(f"Dialog message: {dialog.message}")
+        assert "发布成功" in dialog.message
+        dialog.accept()
+
+    page.on("dialog", handle_dialog)
     page.get_by_role("button", name="确认发布").click()
+    print("发布成功")
+    page.pause()
 
     # ---------------------
     context.close()
@@ -281,7 +327,7 @@ def login_and_save_state(page, context):
     if reload_notice.is_visible():
         # 系统通知
         send_notification("请使用手机验证码登录")
-        page.pause()
+        # page.pause()
         # continue
     # else:
 
@@ -300,4 +346,4 @@ if __name__ == '__main__':
     title = "测试标题"
     content = "测试内容" * 100
     with sync_playwright() as playwright:
-        run(playwright,title, content)
+        run(playwright)
