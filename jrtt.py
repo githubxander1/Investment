@@ -2,9 +2,19 @@ import json
 import os
 import re
 import time
+from plyer import notification
 
 from playwright.sync_api import Playwright, sync_playwright
 
+def send_notification(message):
+    if len(message) > 256:
+        message = message[:256 - 3] + '...'
+    notification.notify(
+        title="trade通知",
+        message=message,
+        app_name="THS",
+        timeout=10
+    )
 # 定义存储状态的文件路径
 STORAGE_STATE_FILE = "jrtt_storage_state_c.json"
 
@@ -140,13 +150,15 @@ def run(playwright: Playwright,title, content) -> None:
 
         # 检查是否已成功登录（通过检查页面是否存在特定元素）
         try:
-            page.wait_for_selector("text=文章", timeout=5000)
+            # page.wait_for_selector("text=文章", timeout=5000)
+            page.wait_for_selector("text=Xander", timeout=5000)
+            #'#masterRoot > div > div.garr-header > div > div > div.user-panel > div.information > a > span > div > div > div.auth-avator-name"
             print("使用已保存的登录状态成功登录")
         except:
             print("保存的登录状态已失效，重新登录")
-            context.close()
-            context = browser.new_context()
-            page = context.new_page()
+            # context.close()
+            # context = browser.new_context()
+            # page = context.new_page()
             login_and_save_state(page, context)
     else:
         # 没有保存的登录状态，需要重新登录
@@ -164,6 +176,23 @@ def run(playwright: Playwright,title, content) -> None:
     # page.get_by_role("link", name="音频").click()
 
 
+    page.pause()
+    # copy_button = page.locator("body")
+    content = ("主题：黑神话悟空的爆火"
+               "注意："
+               "1.语言风格：用日常交流的自然口语，避免生硬书面语，少用 '啊,啦, 等语气词，像平和聊天般表达。"
+               "2.细节添加：穿插生活中常见的具体场景（如 超市里偶尔听到的闲聊），不用过度个人化经历，让内容有真实感但不局限。"
+               "3.表述方式：适当用 “似乎”“可能” 等词弱化绝对感，少用 “我觉得” 这类强主观表达，保持客观中带点自然弹性。"
+               "4.结构节奏：不用严格工整的分段，用 “另外”“不过” 等词自然衔接，让思路流动不刻意。"
+               "5.结尾处理：简洁收尾，不用强行升华,最好能引起评论区的讨论。")
+    page.get_by_role("textbox", name="输入创作主题、观点或大纲，AI 帮你写").fill(content)
+    add_to_content = page.get_by_role("button", name="添加到正文")
+    page.locator(".btn > svg > g > rect").click()
+    if add_to_content.is_visible(timeout=30000):
+        add_to_content.click()
+
+    # page.get_by_text("重新检测").click()
+    # page.get_by_text("检测成功，暂无建议").click()
 
     # 爬取热点推荐内容
     # print("开始爬取创作热点推荐内容...")
@@ -176,10 +205,11 @@ def run(playwright: Playwright,title, content) -> None:
     page.locator("div").filter(has_text=re.compile(r"^请输入正文$")).fill(content)
     # page.locator("label").filter(has_text="单图").locator("div").click()
     # page.locator("label").filter(has_text="三图").locator("div").click()
+
     # 点击关闭头条创作助手
-    ai_avg = page.get_by_role("heading", name="头条创作助手").locator("svg")
-    if ai_avg.is_visible():
-        ai_avg.click()
+    # ai_avg = page.get_by_role("heading", name="头条创作助手").locator("svg")
+    # if ai_avg.is_visible():
+    #     ai_avg.click()
     # 展示封面
     page.mouse.wheel(0, 500)
     page.pause()
@@ -213,7 +243,9 @@ def run(playwright: Playwright,title, content) -> None:
 def login_and_save_state(page, context):
     """执行登录流程并保存状态"""
     page.goto("https://mp.toutiao.com/auth/page/login?redirect_url=JTJGcHJvZmlsZV92NCUyRmluZGV4")
-    # page.pause()
+    reload_notice = page.get_by_role("alert", name="警告:为保证账号安全，请使用手机验证码登录")
+        # expect(page.get_by_label("警告:为保证账号安全，请使用手机验证码登录")).to_contain_text(
+        #     "为保证账号安全，请使用手机验证码登录")
     page.get_by_role("button", name="账密登录").click()
     page.get_by_role("textbox", name="请输入手机号或邮箱").click()
     page.get_by_role("textbox", name="请输入手机号或邮箱").fill("19918754473")
@@ -221,6 +253,12 @@ def login_and_save_state(page, context):
     page.get_by_role("textbox", name="请输入密码").fill("tth0520@XL")
     page.get_by_role("checkbox", name="协议勾选框").click()
     page.get_by_role("button", name="登录", exact=True).click()
+    if reload_notice.is_visible():
+        # 系统通知
+        send_notification("请使用手机验证码登录")
+        page.pause()
+        # continue
+    # else:
 
     # 等待登录完成
     page.wait_for_url("https://mp.toutiao.com/profile_v4/index?is_new_connect=0&is_new_user=0", timeout=10000)
