@@ -6,7 +6,7 @@ import time
 from playwright.sync_api import Playwright, sync_playwright
 
 # 定义存储状态的文件路径
-STORAGE_STATE_FILE = "jrtt_storage_state.json"
+STORAGE_STATE_FILE = "jrtt_storage_state_c.json"
 
 def load_storage_state():
     """加载存储状态"""

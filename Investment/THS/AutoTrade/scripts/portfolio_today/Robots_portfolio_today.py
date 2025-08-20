@@ -60,6 +60,7 @@ def extract_trade_data(robots):
     all_today_trades = []
     for robot_name, robot_id in robots.items():
         result = get_trade_details(robot_id)
+        pprint( result)
         if result and result.get("message", {}).get("state") == 0:
             data_list = result.get("data", {}).get("data", [])
 

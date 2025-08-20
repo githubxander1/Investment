@@ -31,7 +31,105 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位锁定\001234泰慕士.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位锁定\605188国光连锁.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\低位锁定\688291金橙子.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-13\000011深物业A.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-13\300433蓝思科技.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-13\601869长飞光纤.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-14\000011深物业A.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-14\300433蓝思科技.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\股票\持有周期回测\stock_data\双峰形态\2025-08-14\601869长飞光纤.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\财务\stock_final_score_history.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\财务\stock_finance_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\THS\财务\stock_profit_history.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\已整理策略\抄底机会数据.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\已整理策略\策略\大决策app\advisor_ranking.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\已整理策略\策略\大决策app\策略列表.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

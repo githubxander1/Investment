@@ -10,7 +10,7 @@ def convert_timestamp(timestamp):
         return datetime.fromtimestamp(timestamp / 1000).strftime('%Y-%m-%d %H:%M:%S')
     return None
 
-def 交易记录(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862", index=1, page_size=20, req_type=0):
+def trade_record(robot_id, index=1, page_size=20, req_type=0):
     url = "http://ai.api.traderwin.com/api/ai/robot/history.json"
 
     headers = {
@@ -40,43 +40,60 @@ def 交易记录(robot_id="9a09cbd9-be78-469c-b3d2-b2d07ad50862", index=1, page_
         print(f"请求失败: {e}")
         return None
 
-# 请求数据
-result = 交易记录()
 
-if result and result.get("message", {}).get("state") == 0:
-    data_list = result.get("data", {}).get("data", [])
-
+def extract_trades(robots):
+    """从机器人列表中提取交易记录"""
     trade_records = []
+    for robot_name,robot_id in robots.items():
+        result = trade_record(robot_id)
 
-    for trade in data_list:
-        trade_info = {
-            "交易ID": trade.get("id"),
-            "机器人ID": trade.get("robotId"),
-            "股票ID": trade.get("stockId"),
-            "股票代码": trade.get("symbol"),
-            "股票名称": trade.get("symbolName"),
-            "交易方向": "买入" if trade.get("buy") == 1 else "卖出" if trade.get("buy") == 0 else "未知",
-            "交易数量": trade.get("shares"),
-            "交易价格": trade.get("price"),
-            "交易时间": convert_timestamp(trade.get("created")),
-            "完成时间": convert_timestamp(trade.get("updated")),
-            "状态": "已完成" if trade.get("status") == 1 else "进行中" if trade.get("status") == 0 else "已取消",
-            "委托类型": trade.get("orderType"),
-            "成交金额": trade.get("amount"),
-            "手续费": trade.get("fee"),
-            "市场类型": trade.get("marketType"),
-            "备注": trade.get("remark")
-        }
-        trade_records.append(trade_info)
+        if result and result.get("message", {}).get("state") == 0:
+            data_list = result.get("data", {}).get("data", [])
+            totalRecord = result.get("totalRecord")
+            totalPage = result.get("totalPage")
+            pageSize = result.get("pageSize")
 
-    # 转换为 DataFrame
-    df_trades = pd.DataFrame(trade_records)
+            trade_records = []
 
-    # 保存到 Excel 文件
-    output_path = r"D:\1document\Investment\Investment\THS\大决策app\玩股成金\交易记录数据.xlsx"
-    df_trades.to_excel(output_path, sheet_name='交易记录', index=False)
+            for trade in data_list:
+                buy_price = trade.get("buyPrice")
+                sale_price = trade.get("price")
+                profit_rate = round((sale_price - buy_price) / buy_price * 100,2)
+                trade_info = {
+                    "交易ID": trade.get("logId"),
+                    "机器人ID": trade.get("robotId"),
+                    "股票代码": trade.get("symbol"),
+                    "股票名称": trade.get("symbolNmae"),
+                    # "交易方向": "买入" if trade.get("buy") == 1 else "卖出" if trade.get("buy") == 0 else "未知",
+                    "交易额": trade.get("balance"),
+                    "交易数量": trade.get("shares"),
+                    "买入价": trade.get("buyPrice"),
+                    "买入时间": convert_timestamp(trade.get("buyDate")),
+                    "卖出价": trade.get("price"),
+                    "卖出时间": convert_timestamp(trade.get("created")),
+                    "利润率": profit_rate,
+                    "类型": trade.get("type")
+                }
+                trade_records.append(trade_info)
 
-    print(f"✅ 数据已成功保存到：{output_path}")
+            # 转换为 DataFrame
+            df_trades = pd.DataFrame(trade_records)
+            print(df_trades)
 
-else:
-    print("未收到有效响应或状态码错误")
+            # 保存到 Excel 文件
+            output_path = "交易记录数据.xlsx"
+            df_trades.to_excel(output_path, sheet_name='交易记录', index=False)
+
+            print(f"✅ 数据已成功保存到：{output_path}")
+
+        else:
+            print("未收到有效响应或状态码错误")
+    return trade_records
+
+if __name__ == '__main__':
+    robots = {
+        "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
+        "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
+        "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
+    }
+    print(extract_trades(robots))

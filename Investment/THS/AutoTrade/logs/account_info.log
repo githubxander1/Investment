@@ -782,3 +782,400 @@ Index: [][0m
 [32m2025-08-19 10:16:43 - INFO - 账户表头信息完成: 
          仓位        总资产        总市值     浮动盈亏      可用    可取
 0  仓位 88.3%  21,898.16  19,333.60  +650.08  882.54  0.00[0m
+[32m2025-08-20 09:55:32 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 09:55:34 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用      可取
+0  仓位 96.3%  43,734.85  42,131.00  +767.35  1,603.85  603.81[0m
+[32m2025-08-20 09:59:46 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 09:59:48 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  43,713.75  43,266.00  +742.25  447.25  447.25[0m
+[32m2025-08-20 09:59:59 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 09:59:59 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-20 09:59:59 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-20 10:00:09 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:00:10 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-20 10:00:10 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-20 10:00:20 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:00:21 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 84.9%  58,813.38  49,959.20  +1,377.34  3,875.56  2,000.64[0m
+[32m2025-08-20 10:00:32 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:00:33 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-20 10:00:33 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-20 10:01:02 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:01:04 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 97.6%  58,790.05  57,400.90  +1,349.65  1,389.15  1,389.15[0m
+[32m2025-08-20 10:01:34 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:01:35 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 97.6%  58,793.95  57,404.80  +1,353.55  1,389.15  1,389.15[0m
+[32m2025-08-20 10:02:05 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:02:05 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:08 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:02:11 - INFO - 第 3 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:14 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:02:14 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:02:19 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:02:19 - INFO - ✅ 成功提取持仓数据，共 13 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,806.00       2.58/0.030%      200/0    39.018/39.030
+1       德龙汇能   1,346.00     -3.09/-0.240%      200/0      6.747/6.730
+2       双枪科技   4,970.00    -11.53/-0.250%      200/0    24.909/24.850
+3       美能能源   2,486.00     -1.86/-0.077%      200/0    12.440/12.430
+4     可转债ETF  12,052.80  1,220.17/11.268%    900/900    12.036/13.392
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,745.00    -68.18/-1.420%  1300/1300      3.703/3.650
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.917%    200/200    13.020/12.900
+9       紫光股份   2,629.00     135.25/5.420%    100/100    24.939/26.290
+10      梦网科技   3,020.00      75.98/2.572%    200/200    14.721/15.100
+11       瑞尔特   1,542.00    -19.03/-1.229%    200/200      7.806/7.710
+12       新大正   2,230.00     -3.50/-0.170%    200/200    11.168/11.150[0m
+[32m2025-08-20 10:02:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:02:30 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:33 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:02:36 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-20 10:02:39 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:02:39 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:02:43 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:02:43 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,808.00       4.57/0.056%      200/0    39.018/39.040
+1       德龙汇能   1,346.00     -3.09/-0.283%      200/0      6.747/6.730
+2       双枪科技   4,970.00    -11.53/-0.240%      200/0    24.909/24.850
+3       美能能源   2,484.00     -3.86/-0.160%      200/0    12.440/12.420
+4     可转债ETF  12,047.40  1,214.77/11.210%    900/900    12.036/13.386
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,745.00    -68.18/-1.420%  1300/1300      3.703/3.650
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.920%    200/200    13.020/12.900
+9       梦网科技   3,018.00      73.98/2.510%    200/200    14.721/15.090
+10       瑞尔特   1,544.00    -17.03/-1.100%    200/200      7.806/7.720
+11       新大正   2,230.00     -3.50/-0.170%    200/200    11.168/11.150[0m
+[33m2025-08-20 10:02:43 - WARNING - 国投智能 不在持仓中[0m
+[32m2025-08-20 10:02:46 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:02:46 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:49 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:02:51 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-20 10:02:54 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:02:54 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:02:59 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:02:59 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,804.00       0.58/0.008%      200/0    39.018/39.020
+1       德龙汇能   1,346.00     -3.09/-0.240%      200/0      6.747/6.730
+2       双枪科技   4,970.00    -11.53/-0.240%      200/0    24.909/24.850
+3       美能能源   2,484.00     -3.86/-0.160%      200/0    12.440/12.420
+4     可转债ETF  12,051.90  1,219.27/11.255%    900/900    12.036/13.391
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,745.00    -68.18/-1.420%  1300/1300      3.703/3.650
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.920%    200/200    13.020/12.900
+9       梦网科技   3,018.00      73.98/2.510%    200/200    14.721/15.090
+10       瑞尔特   1,544.00    -17.03/-1.100%    200/200      7.806/7.720
+11       新大正   2,228.00     -5.50/-0.267%    200/200    11.168/11.140[0m
+[33m2025-08-20 10:02:59 - WARNING - 湖北能源 不在持仓中[0m
+[32m2025-08-20 10:03:01 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:01 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:04 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:07 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-20 10:03:09 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:03:09 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:14 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:14 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,806.00       2.58/0.034%      200/0    39.018/39.030
+1       德龙汇能   1,348.00     -1.09/-0.085%      200/0      6.747/6.740
+2       双枪科技   4,970.00    -11.53/-0.240%      200/0    24.909/24.850
+3       美能能源   2,486.00     -1.86/-0.077%      200/0    12.440/12.430
+4     可转债ETF  12,052.80  1,220.17/11.263%    900/900    12.036/13.392
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,732.00    -81.18/-1.691%  1300/1300      3.703/3.640
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.920%    200/200    13.020/12.900
+9       梦网科技   3,020.00      75.98/2.578%    200/200    14.721/15.100
+10       瑞尔特   1,542.00    -19.03/-1.229%    200/200      7.806/7.710
+11       新大正   2,230.00     -3.50/-0.170%    200/200    11.168/11.150[0m
+[33m2025-08-20 10:03:14 - WARNING - *ST交投 不在持仓中[0m
+[32m2025-08-20 10:03:16 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:16 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[33m2025-08-20 10:03:19 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:03:19 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[31m2025-08-20 10:03:20 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 226, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[33m2025-08-20 10:03:21 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:03:21 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[31m2025-08-20 10:03:21 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 226, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-08-20 10:03:22 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:25 - INFO - 第 5 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:28 - INFO - ✅ 成功提取持仓数据，共 13 条:
+    标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   超讯通信  7,820.00     16.58/0.217%    200/0  39.018/39.100
+1   德龙汇能  1,346.00    -3.09/-0.240%    200/0    6.747/6.730
+2   双枪科技  4,970.00   -11.53/-0.240%    200/0  24.909/24.850
+3   美能能源  2,484.00    -3.86/-0.160%    200/0  12.440/12.420
+4    三柏硕  5,372.00    101.49/1.928%  400/400  13.176/13.430
+5   楚环科技  4,678.00     79.56/1.731%  200/200  22.992/23.390
+6   恒大高新  1,278.00     15.88/1.252%  200/200    6.311/6.390
+7   金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+8   凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+9   百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+10  宁水集团  2,550.00     37.76/1.505%  200/200  12.561/12.750
+11  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+12  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:28 - WARNING - 众兴菌业 不在持仓中[0m
+[32m2025-08-20 10:03:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:30 - INFO - 第 1 次尝试新增 6 条有效持仓[0m
+[32m2025-08-20 10:03:31 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:33 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:33 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0  金花股份  1,610.00     11.84/0.738%  200/200    7.991/8.050
+1  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+2  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+3  宁水集团  2,556.00     43.76/1.744%  200/200  12.561/12.780
+4  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+5  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:33 - WARNING - 黄山胶囊 不在持仓中[0m
+[32m2025-08-20 10:03:35 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:35 - INFO - 第 1 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:38 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:38 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:40 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:40 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,278.00     15.88/1.252%  200/200    6.311/6.390
+3  金花股份  1,610.00     11.84/0.738%  200/200    7.991/8.050
+4  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:40 - WARNING - 豪尔赛 不在持仓中[0m
+[32m2025-08-20 10:03:43 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:43 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:46 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:48 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:03:48 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:51 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:51 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:51 - WARNING - 天禾股份 不在持仓中[0m
+[32m2025-08-20 10:03:53 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:53 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:56 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:59 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:03:59 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:01 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:01 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,680.00     81.56/1.775%  200/200  22.992/23.400
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,850.00     35.83/1.974%  200/200    9.071/9.250
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:04:01 - WARNING - 锐奇股份 不在持仓中[0m
+[32m2025-08-20 10:04:03 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:04 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:06 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:09 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:09 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:11 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:11 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,380.00    109.49/2.080%  400/400  13.176/13.450
+1  楚环科技  4,680.00     81.56/1.775%  200/200  22.992/23.400
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,552.00     39.76/1.585%  200/200  12.561/12.760
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:04:11 - WARNING - 永清环保 不在持仓中[0m
+[32m2025-08-20 10:04:14 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:14 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:17 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:20 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:20 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:22 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:22 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,550.00     37.76/1.505%  200/200  12.561/12.750
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:04:22 - WARNING - 浙江力诺 不在持仓中[0m
+[32m2025-08-20 10:04:24 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:24 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:27 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:30 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:30 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:32 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:32 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,610.00     11.84/0.738%  200/200    7.991/8.050
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,854.00     39.83/2.194%  200/200    9.071/9.270
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:04:32 - WARNING - 冠中生态 不在持仓中[0m
+[32m2025-08-20 10:04:34 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:35 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:37 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:40 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:40 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:42 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:42 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,372.00    101.49/1.928%  400/400  13.176/13.430
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:04:42 - WARNING - 建研设计 不在持仓中[0m
+[32m2025-08-20 10:04:45 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:45 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:48 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:50 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:50 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:53 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:53 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,372.00    101.49/1.928%  400/400  13.176/13.430
+1  楚环科技  4,686.00     87.56/1.906%  200/200  22.992/23.430
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,552.00     39.76/1.585%  200/200  12.561/12.760
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:04:53 - WARNING - 森泰股份 不在持仓中[0m
+[32m2025-08-20 10:04:55 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:55 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:58 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:05:01 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:05:01 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:05:03 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:05:03 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,278.00     15.88/1.252%  200/200    6.311/6.390
+3  金花股份  1,606.00      7.84/0.488%  200/200    7.991/8.030
+4  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,552.00     39.76/1.585%  200/200  12.561/12.760
+7  首创奥莱    394.70  252.91/178.350%  100/100    1.418/3.947
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[32m2025-08-20 10:05:13 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-20 10:05:14 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:05:14 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-20 10:05:16 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:05:16 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-20 10:05:19 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:05:19 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:05:22 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:05:25 - INFO - 第 5 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:05:28 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,688.00     89.56/1.949%  200/200  22.992/23.440
+2  恒大高新  1,278.00     15.88/1.250%  200/200    6.311/6.390
+3  凤竹纺织  1,368.00     25.88/1.922%  200/200    6.711/6.840
+4  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+5  宁水集团  2,558.00     45.76/1.823%  200/200  12.561/12.790
+6  首创奥莱    394.70  252.91/178.350%  100/100    1.418/3.947
+7  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:05:28 - WARNING - 钱江生化 不在持仓中[0m
+[32m2025-08-20 10:05:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:05:30 - INFO - 第 1 次尝试新增 6 条有效持仓[0m
+[32m2025-08-20 10:05:30 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:05:32 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:05:32 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0  凤竹纺织  1,368.00     25.88/1.922%  200/200    6.711/6.840
+1  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+2  宁水集团  2,556.00     43.76/1.744%  200/200  12.561/12.780
+3  首创奥莱    394.70  252.91/178.350%  100/100    1.418/3.947
+4  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120
+5  金花股份      0.00      2.02/0.000%      0/0    0.000/8.030[0m
+[33m2025-08-20 10:05:32 - WARNING - 美腾科技 不在持仓中[0m
+[32m2025-08-20 11:16:10 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 11:16:12 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  43,630.75  43,183.00  +660.25  447.25  447.25[0m
+[32m2025-08-20 11:28:55 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 11:28:57 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  43,507.75  43,060.00  +536.25  447.25  447.25[0m
+[32m2025-08-20 13:00:13 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 13:00:14 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 98.9%  43,585.75  43,119.00  +601.25  447.25  447.25[0m

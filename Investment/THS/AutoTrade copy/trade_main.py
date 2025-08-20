@@ -363,52 +363,51 @@ async def main():
                         from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy import Smain
                         diff_result_df = Smain()
 
-                        # 遍历每一行，执行交易
-                        for index, row in diff_result_df.iterrows():
-                            stock_name = row['标的名称']
-                            operation = row['操作']
+                        # 检查返回的DataFrame是否为空
+                        if diff_result_df.empty:
+                            logger.info("✅ 当前无持仓差异，无需执行交易")
+                        else:
+                            # 遍历每一行，执行交易
+                            for index, row in diff_result_df.iterrows():
+                                stock_name = row['标的名称']
+                                operation = row['操作']
 
-                            logger.info(f"🛠️ 要处理: {operation} {stock_name}")
+                                logger.info(f"🛠️ 要处理: {operation} {stock_name}")
 
-                            # 特殊处理：卖出时全仓卖出
-                            if operation == "卖出":
-                                new_ratio = 0
-                            else:
-                                new_ratio = None  # 买入时无需新比例
+                                # 特殊处理：卖出时全仓卖出
+                                if operation == "卖出":
+                                    new_ratio = 0
+                                else:
+                                    new_ratio = None  # 买入时无需新比例
 
-                            # 调用交易逻辑
-                            status, info = trader.operate_stock(
-                                operation=operation,
-                                stock_name=stock_name,
-                                volume=200 if operation == "买入" else None,
-                                new_ratio=new_ratio
-                            )
+                                # 调用交易逻辑
+                                status, info = trader.operate_stock(
+                                    operation=operation,
+                                    stock_name=stock_name,
+                                    volume=200 if operation == "买入" else None,
+                                    new_ratio=new_ratio
+                                )
 
-                            # 检查交易是否成功执行
-                            if status is None:
-                                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                                continue
+                                # 检查交易是否成功执行
+                                if status is None:
+                                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                                    continue
 
-                            # 构造记录
-                            # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            record = pd.DataFrame([{
-                                '标的名称': stock_name,
-                                '操作': operation,
-                                '新比例%': new_ratio,
-                                '状态': status,
-                                '信息': info,
-                                '时间': operate_time
-                            }])
+                                # 构造记录
+                                # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                record = pd.DataFrame([{
+                                    '标的名称': stock_name,
+                                    '操作': operation,
+                                    '新比例%': new_ratio,
+                                    '状态': status,
+                                    '信息': info,
+                                    '时间': operate_time
+                                }])
 
-                            # 写入历史
-                            write_operation_history(record)
-                            logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
-
-                        # else:
-                        #     logger.info("✅ 当前无持仓差异，无需执行交易")
-                        # else:
-                        #     logger.warning("⚠️ 持仓差异分析返回空值，默认视为无更新")
+                                # 写入历史
+                                write_operation_history(record)
+                                logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
                     except Exception as e:
                         logger.error(f"❌ 持仓差异分析过程中发生异常: {e}")

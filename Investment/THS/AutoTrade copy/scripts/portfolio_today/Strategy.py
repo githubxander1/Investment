@@ -5,7 +5,8 @@ import fake_useragent
 import pandas as pd
 import requests
 
-from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file
+from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file, \
+    Strategy_holding_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 import os
 import datetime
@@ -57,7 +58,7 @@ def get_latest_position(strategy_id):
         # 提取市场为 沪深A股的数据，去掉st的
         position_stocks_df = position_stocks_df[position_stocks_df['市场'] == '沪深A股']
         # 去掉名称含st的
-        position_stocks_df = position_stocks_df[~position_stocks_df['标的名称'].str.contains('ST')]
+        # position_stocks_df = position_stocks_df[~position_stocks_df['标的名称'].str.contains('ST')]
         # print(position_stocks_df)
 
         # today = str(datetime.date.today())
@@ -74,7 +75,7 @@ def get_difference_holding():
     - 如果昨天sheet不存在，将今天所有持仓视为买入
     - 如果文件不存在，直接退出
     """
-    file_path = Ai_Strategy_holding_file
+    file_path = Strategy_holding_file
     today = str(datetime.date.today())
     yestoday = str(datetime.date.today() - datetime.timedelta(days=1))
 
@@ -188,11 +189,16 @@ def Smain():
             logger.info(
                 f"发现持仓差异，准备执行交易操作：买入 {len(to_buy)} 只，卖出 {len(to_sell)} 只")
             # 合并买入/卖出数据
-            combined_df = pd.concat([
-                to_buy[['标的名称', '操作']],
-                to_sell[['标的名称', '操作']]
-            ], ignore_index=True)
-    return combined_df
+            combined_dfs = []
+            if not to_buy.empty:
+                combined_dfs.append(to_buy[['标的名称', '操作']])
+            if not to_sell.empty:
+                combined_dfs.append(to_sell[['标的名称', '操作']])
+
+            combined_df = pd.concat(combined_dfs, ignore_index=True)
+            return combined_df
+    # 如果没有需要交易的股票，返回空DataFrame
+    return pd.DataFrame()
 
 if __name__ == '__main__':
     file_path = Ai_Strategy_holding_file

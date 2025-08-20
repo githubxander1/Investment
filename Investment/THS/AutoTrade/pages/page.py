@@ -1,6 +1,7 @@
 # page.py
 import time
 
+import uiautomator2
 import uiautomator2 as u2
 
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
@@ -61,49 +62,107 @@ class THSPage:
 
     def click_back(self):
         back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
-        back_button.click()
-        logger.info("点击返回按钮")
+        if back_button.exists:
+            back_button.click()
+            logger.info("点击返回按钮")
+            return True
+        else:
+            logger.warning("返回按钮未找到")
+            return False
 
     # 交易入口页
     def click_trade_entry(self):
         trade_entry = self.d(resourceId='com.hexin.plat.android:id/title', text='交易')
-        trade_entry.click()
-        logger.info("点击交易按钮(外)")
+        if trade_entry.exists:
+            trade_entry.click()
+            logger.info("点击交易按钮(外)")
+            return True
+        else:
+            logger.warning("交易按钮(外)未找到")
+            return False
+
     def click_holding_stock_entry(self): #持仓-入口处
         operate_entry = self.d(resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓')
-        operate_entry.click()
-        logger.info("点击持仓按钮(外)")
+        if operate_entry.exists:
+            operate_entry.click()
+            logger.info("点击持仓按钮(外)")
+            return True
+        else:
+            logger.warning("持仓按钮(外)未找到")
+            return False
+
     def click_operate_entry(self,operation):
         """外面入口处的操作按钮"""
         if operation == '买入':
             buy_entry = self.d(resourceId='com.hexin.plat.android:id/menu_buy_text')
-            buy_entry.click()
-            logger.info("点击买入按钮(外)")
+            if buy_entry.exists:
+                buy_entry.click()
+                logger.info("点击买入按钮(外)")
+                return True
+            else:
+                logger.warning("买入按钮(外)未找到")
+                return False
         elif operation == '卖出':
             sale_entry = self.d(resourceId='com.hexin.plat.android:id/menu_sale_text')
-            sale_entry.click()
-            logger.info("点击卖出按钮(外)")
+            if sale_entry.exists:
+                sale_entry.click()
+                logger.info("点击卖出按钮(外)")
+                return True
+            else:
+                logger.warning("卖出按钮(外)未找到")
+                return False
         else:
             raise ValueError("未知操作")
 
     # 账户页
     def click_holding_stock_button(self): # 持仓-里面
         holding_button = self.d(className='android.widget.TextView', text='持仓')
-        holding_button.click()
-        logger.info("点击持仓按钮(里)")
+        #'(//*[@resource-id="com.hexin.plat.android:id/btn"])[4]'
+        # 检查按钮是否已经选中，如果没有选中则点击
+        if holding_button.exists:
+            # 获取按钮的selected属性
+            selected = holding_button.info.get('selected', False)
+            if not selected:
+                holding_button.click()
+                logger.info("点击持仓按钮(里)")
+            else:
+                logger.info("持仓按钮(里)已处于选中状态")
+        else:
+            # 如果无法确定状态，直接点击
+            holding_button.click()
+            logger.info("点击持仓按钮(里)")
+
 
     def click_operate_button(self,operation):
         """里面的tab栏"""
         if operation == '买入':
             buy_button = self.d(className='android.widget.TextView', text='买入')
-            buy_button.click()
-            logger.info("点击买入按钮(里)")
-            return True
+            # 检查按钮是否存在并安全点击
+            if buy_button.exists:
+                selected = buy_button.info.get('selected', False)
+                if not selected:
+                    buy_button.click()
+                    logger.info("点击买入按钮(里)")
+                else:
+                    logger.info("买入按钮(里)已处于选中状态")
+                return True
+            else:
+                logger.warning("买入按钮未找到")
+                return False
         elif operation == '卖出':
             sale_button = self.d(className='android.widget.TextView', text='卖出')
-            sale_button.click()
-            logger.info("点击卖出按钮(里)")
-            return True
+            # 检查按钮是否存在并安全点击
+            if sale_button.exists:
+                selected = sale_button.info.get('selected', False)
+                if not selected:
+                    sale_button.click()
+                    logger.info("点击卖出按钮(里)")
+                else:
+                    logger.info("卖出按钮(里)已处于选中状态")
+                return True
+            else:
+                logger.warning("卖出按钮未找到")
+                return False
         else:
             raise ValueError("未知操作")
 
@@ -114,8 +173,13 @@ class THSPage:
 
     def click_refresh_button(self):
         refresh_button = self.d(resourceId='com.hexin.plat.android:id/refresh_container')
-        refresh_button.click()
-        logger.info("点击刷新按钮")
+        if refresh_button.exists:
+            refresh_button.click()
+            logger.info("点击刷新按钮")
+            return True
+        else:
+            logger.warning("刷新按钮未找到")
+            return False
 
     def search_stock(self, stock_name):
         stock_search = self.d(resourceId='com.hexin.plat.android:id/content_stock')
@@ -198,8 +262,15 @@ class THSPage:
             submit_button = self.d(className='android.widget.TextView', textMatches='.*卖 出.*')
         else:
             raise ValueError("Invalid operation")
-        submit_button.click()
-        logger.info(f"点击按钮: {operation} (提交)")
+
+        # 检查按钮是否存在再点击
+        if submit_button.exists:
+            submit_button.click()
+            logger.info(f"点击按钮: {operation} (提交)")
+            return True
+        else:
+            logger.error(f"提交按钮 {operation} 未找到")
+            return False
 
     def _get_real_price(self):
         """获取当前股票实时价格"""
@@ -272,32 +343,59 @@ class THSPage:
         # 定位弹窗相关控件
         dialog_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
         prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
-        # scroll_content = self.d.xpath('(//android.widget.TextView)[3]')  # 可用资金不足是[3]
+        prompt_content_second = self.d(className='//android.widget.TextView')[2]
         confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
-        # confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn")
+        confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn") #资金不足时的确定按钮
 
-        # 处理成功提交的情况
-        title_text = dialog_title.get_text()
-        if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
-           logger.info("检测到'委托确认'提示")
-           confirm_button.click()
-           logger.info("点击确认按钮")
+        try:
+            # 处理成功提交的情况
+            title_text = dialog_title.get_text() if dialog_title.exists else ""
+            if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
+               logger.info("检测到'委托确认'提示")
+               confirm_button.click()
+               logger.info("点击确认按钮")
 
-           prompt_text = prompt_content.get_text()
-           logger.info(f"提示信息：{prompt_text}")
-           if '委托已提交' in prompt_text:
-               confirm_button.click()
-               logger.info("委托已提交")
-               return True, "委托已提交"
-           else:
-               error_info = prompt_text
-               confirm_button.click()
-               logger.warning(error_info)
-               return False, error_info
-        else:
-            warning_info = "未检测到'委托确认'提示"
-            logger.info(warning_info)
-            return False, warning_info
+               # 处理委托已提交后的情况
+               prompt_text = prompt_content.get_text() if prompt_content.exists else ""
+               logger.info(f"提示信息：{prompt_text}")
+               if '委托已提交' in prompt_text:
+                   confirm_button.click()
+                   logger.info("委托已提交")
+                   return True, "委托已提交"
+               # elif '资金不足提示' in prompt_text:
+               #     error_info = prompt_content_second.get_text()
+               #     confirm_button_second.click()
+               #     logger.warning(error_info)
+               #     return False, "可用资金不足"
+               else:
+                   try:
+                       if prompt_content.exists:
+                          error_info = prompt_content.get_text()
+                       elif prompt_content_second.exists and len(prompt_content_second) > 2:
+                          error_info = prompt_content_second[2].get_text()
+                       else:
+                          error_info = "无提示信息"
+                       if confirm_button.exists:
+                          confirm_button.click()
+                       elif confirm_button_second.exists:
+                         confirm_button_second.click()
+                       else:
+                           logger.warning("未找到确认按钮")
+                           return False, "未找到确认按钮"
+                   except Exception as e:
+                       logger.error(f"点击确认按钮失败: {e}")
+                       return False, f"点击确认按钮失败: {e}"
+
+                   logger.warning(error_info)
+                   return False, error_info
+            else:
+                warning_info = "未检测到'委托确认'提示"
+                logger.info(warning_info)
+                return False, warning_info
+        except Exception as e:
+            logger.error(f"处理弹窗时发生异常: {e}")
+            return False, f"处理弹窗时发生异常: {e}"
+
 
     def update_holding_info_all(self):
         """
@@ -433,10 +531,11 @@ class THSPage:
 
 if __name__ == '__main__':
     pass
-    # d = uiautomator2.connect()
+    d = uiautomator2.connect()
 
     # d.screenshot("screenshot1.png")
-    # ths = TradeLogic()
+    ths = THSPage(d)
+    ths.click_holding_stock_button()
     # pom.guozhai_operation()
     # if ths.operate_stock('卖出', '东方创业'):
     #     # ths.trade_button_entry.click()
@@ -448,7 +547,7 @@ if __name__ == '__main__':
     # pom.common_page("川财证券")
     # pom.common_page("模拟")
     # ths.ensure_on_account_page()
-    # ths.operate_stock("买入", "中国平安")
+    # ths.operate_stock("买入", "超讯通讯", 200)
     # print(pom.where_page())
     # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')

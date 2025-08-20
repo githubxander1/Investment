@@ -9,11 +9,12 @@ from datetime import time as dt_time
 import pandas as pd
 import uiautomator2 as u2
 
+from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_device_connected
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
 from Investment.THS.AutoTrade.scripts.portfolio_today.Lhw_portfolio_today import Lhw_main
 from Investment.THS.AutoTrade.scripts.portfolio_today.Robots_portfolio_today import Robot_main
-from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy_portfolio_today import Strategy_main
+# from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 from Investment.THS.AutoTrade.pages.page import THSPage
 from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history, \
@@ -40,47 +41,6 @@ trader = TradeLogic()
 
 # 定义账户列表
 ACCOUNTS = ["长城证券", "川财证券", "中泰证券"]
-
-async def connect_to_device():
-    """连接设备"""
-    try:
-        d = u2.connect()
-        logger.info(f"连接设备: {d.serial}")
-        return d
-    except Exception as e:
-        logger.error(f"连接设备失败: {e}", exc_info=True)
-        return None
-
-async def start_app(d, package_name="com.hexin.plat.android"):
-    """启动同花顺App"""
-    try:
-        d.app_start(package_name, wait=True)
-        logger.info(f"启动App成功: {package_name}")
-        return True
-    except Exception as e:
-        logger.error(f"启动app失败 {package_name}: {e}", exc_info=True)
-        return False
-
-async def initialize_device():
-    """初始化设备"""
-    d = await connect_to_device()
-    if not d:
-        logger.error("设备连接失败")
-        return None
-
-    if not await start_app(d):
-        logger.error("App启动失败")
-        return None
-
-    return d
-
-def is_device_connected(d):
-    """简单心跳检测设备是否还在线"""
-    try:
-        return d.info['screenOn']
-    except:
-        return False
-
 
 # 添加全局变量来跟踪是否已执行过信号检测
 morning_signal_checked = False
@@ -216,9 +176,13 @@ async def main():
     guozhai_success = False
     strategy1_executed = False  # Strategy_portfolio_today 是否已执行
     strategy2_executed = False  # Strategy.py 的持仓差异 是否已执行
+    robot_extraced = False
 
     # 记录开始时间，用于最大运行时长控制
     start_time = datetime.datetime.now()
+
+    # 记录上一次执行策略持仓差异分析的日期
+    last_strategy2_date = None
 
     # 1. 提前读取历史记录
     history_df = read_operation_history(OPERATION_HISTORY_FILE)
@@ -233,6 +197,7 @@ async def main():
     while True:
         try:
             now = datetime.datetime.now().time()
+            today = datetime.date.today()
             logger.info(f"当前时间: {now}")
 
             # 检查是否超过最大运行时间
@@ -269,7 +234,7 @@ async def main():
             account_retries = {account: 0 for account in ACCOUNTS}  # 账户重试计数器
 
 
-            # 执行早盘信号检查
+            # 1. 执行早盘信号检查
             await check_morning_signals()
 
             # 2. 处理组合和策略文件
@@ -283,27 +248,33 @@ async def main():
             combination_data = None
 
             # # 判断是否在策略任务时间窗口（9:30-9:33）
-            if dt_time(9, 32) <= now <= dt_time(9, 35):
+            if dt_time(9, 30) <= now <= dt_time(9, 35):
                 logger.info("---------------------策略/Robot任务开始执行---------------------")
                 # strategy_result = await Strategy_main()
                 robot_result = await Robot_main()
                 if robot_result:
                     # strategy_success, strategy_data = strategy_result
                     robot_success, robot_data = robot_result
+                    robot_extraced = True
                 else:
                     logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
-                logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n---------------------策略/Robot任务执行结束---------------------")
+                    logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n"
+                                f"---------------------策略/Robot任务执行结束---------------------")
+
             else:
                 logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
 
                 # 策略持仓差异任务（9:32-9:35）
-            if dt_time(9, 32) <= now <= dt_time(10, 40) and not strategy2_executed:
+            if dt_time(9, 30) <= now <= dt_time(9, 35) and not strategy2_executed:
+                logger.info("---------------------策略持仓差异分析开始---------------------")
+                try:
+                    from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy import Smain
+                    diff_result_df = Smain()
 
-                    logger.info("---------------------策略持仓差异分析开始---------------------")
-                    try:
-                        from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy import Smain
-                        diff_result_df = Smain()
-
+                    # 检查返回的DataFrame是否为空
+                    if diff_result_df.empty:
+                        logger.info("✅ 当前无持仓差异，无需执行交易")
+                    else:
                         # 遍历每一行，执行交易
                         for index, row in diff_result_df.iterrows():
                             stock_name = row['标的名称']
@@ -346,16 +317,11 @@ async def main():
                             write_operation_history(record)
                             logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
-                        # else:
-                        #     logger.info("✅ 当前无持仓差异，无需执行交易")
-                        # else:
-                        #     logger.warning("⚠️ 持仓差异分析返回空值，默认视为无更新")
+                except Exception as e:
+                    logger.error(f"❌ 持仓差异分析过程中发生异常: {e}")
 
-                    except Exception as e:
-                        logger.error(f"❌ 持仓差异分析过程中发生异常: {e}")
-
-                    logger.info("---------------------策略持仓差异分析结束---------------------")
-                    strategy2_executed = True
+                logger.info("---------------------策略持仓差异分析结束---------------------")
+                strategy2_executed = True
 
             # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
             if dt_time(9, 25) <= now <= dt_time(15, 00):

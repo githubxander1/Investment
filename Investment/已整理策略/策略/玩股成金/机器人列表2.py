@@ -56,8 +56,9 @@ if result and result.get("message", {}).get("state") == 0:
         robot_info = {
             "机器人ID": robot.get("robotId"),
             "名称": robot.get("name"),
-            "备注": robot.get("remark"),
-            "当前资金": robot.get("funds"),
+            "总资产": robot.get("todayTotalRate"),
+            "总市值": robot.get("marketValue"),
+            "可用资金": robot.get("funds"),
             "初始资金": robot.get("startFunds"),
             "止损比例": robot.get("stopLost"),
             "止盈比例": robot.get("stopWin"),
@@ -65,7 +66,6 @@ if result and result.get("message", {}).get("state") == 0:
             "收益更新时间": convert_timestamp(robot.get("gainDate")),
             "标记": robot.get("flag"),
             "今日收益率": robot.get("todayRate"),
-            "总资产": robot.get("todayTotalRate"),
             "卖出收益": robot.get("sellGains"),
             "卖出时间": convert_timestamp(robot.get("sellDate")),
             "卖出市值": robot.get("sellMarketValue"),
@@ -78,7 +78,13 @@ if result and result.get("message", {}).get("state") == 0:
             "参考年份": robot.get("refYear"),
             "版本号": robot.get("version"),
             "风险等级": robot.get("risk"),
-            "总市值": robot.get("marketValue")
+            "备注": robot.get("remark"),
+            "expired": robot.get("expired"),
+            "startTime": robot.get("startTime"),
+            "robotType": robot.get("robotType"),
+            "最大持股数": robot.get("maxHolding"),
+            "stockType": robot.get("stockType"),
+            "行业id": robot.get("industryId"),
         }
         robot_basic_info.append(robot_info)
 
@@ -89,29 +95,29 @@ if result and result.get("message", {}).get("state") == 0:
                 "股票ID": log.get("stockId"),
                 "股票代码": log.get("symbol"),
                 "股票名称": log.get("symbolName"),
+                "市值": log.get("marketValue"),
                 "持有数量": log.get("shares"),
                 "买入价格": log.get("price"),
                 "建仓时间": convert_timestamp(log.get("created")),
-                "当前价格": log.get("nominal"),
+                "现价": log.get("nominal"),
+                "成本价": log.get("basePrice"),
+                "累计收益": log.get("totalGains"),
                 "前收盘价": log.get("prvClose"),
                 "当日收益": log.get("todayGains"),
+                "当日成本": log.get("todayCost"),
                 "总收益": log.get("totalGains"),
-                "市值": log.get("marketValue"),
+                "收益": log.get("gains"),
+                "卖出收益": log.get("sellGains"),
+                "累计市值": log.get("totalMarketValue"),
                 "锁定数量": log.get("locks"),
-                "成本价": log.get("basePrice"),
                 "锁定时间": convert_timestamp(log.get("lockDate")),
                 "更新时间": convert_timestamp(log.get("updated")),
                 "最高价": log.get("high"),
                 "锁定成本": log.get("lockCost"),
                 "卖出时间": convert_timestamp(log.get("sellDate")),
                 "卖出锁定数": log.get("sellLocks"),
-                "卖出收益": log.get("sellGains"),
-                "当日成本": log.get("todayCost"),
                 "市场类型": log.get("marketType"),
-                "成本价值": log.get("costValue"),
-                "收益": log.get("gains"),
-                "累计收益": log.get("totalGains"),
-                "累计市值": log.get("totalMarketValue")
+                "成本价值": log.get("costValue")
             }
             robot_stock_logs.append(stock_info)
 
