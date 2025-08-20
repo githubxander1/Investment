@@ -136,14 +136,14 @@ def crawl_recommend_topics(page, batches=3):
     return all_topics
 
 def run(playwright: Playwright,title, content) -> None:
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=False,args=['--start-maximized'])
 
     # 尝试加载已保存的登录状态
     storage_state = load_storage_state()
 
     if storage_state:
         # 如果有保存的登录状态，则直接使用
-        context = browser.new_context(storage_state=storage_state)
+        context = browser.new_context(storage_state=storage_state,no_viewport=True)
         page = context.new_page()
         page.goto("https://mp.toutiao.com/auth/page/login?redirect_url=JTJGcHJvZmlsZV92NCUyRmluZGV4")
         # page.pause()
@@ -169,27 +169,52 @@ def run(playwright: Playwright,title, content) -> None:
 
 
     # 继续执行其他操作
+    start_creat = page.get_by_role("link", name="开始创作")
+    if start_creat.is_visible():
+        start_creat.click()
     page.get_by_role("link", name="文章").click()
     # page.get_by_role("link", name="视频").click()
     # page.get_by_role("link", name="微头条").click()
     # page.get_by_role("link", name="问答").click()
     # page.get_by_role("link", name="音频").click()
 
-
+    # 替换原有的相关代码部分
     page.pause()
+    # 主题
+    topic = "黑神话悟空的爆火"
+    page.get_by_role("textbox", name="请输入文章标题（2～30个字）").fill(topic)
     # copy_button = page.locator("body")
-    content = ("主题：黑神话悟空的爆火"
-               "注意："
+    content = (f"主题：{topic}"
+               ",注意："
                "1.语言风格：用日常交流的自然口语，避免生硬书面语，少用 '啊,啦, 等语气词，像平和聊天般表达。"
                "2.细节添加：穿插生活中常见的具体场景（如 超市里偶尔听到的闲聊），不用过度个人化经历，让内容有真实感但不局限。"
                "3.表述方式：适当用 “似乎”“可能” 等词弱化绝对感，少用 “我觉得” 这类强主观表达，保持客观中带点自然弹性。"
                "4.结构节奏：不用严格工整的分段，用 “另外”“不过” 等词自然衔接，让思路流动不刻意。"
                "5.结尾处理：简洁收尾，不用强行升华,最好能引起评论区的讨论。")
-    page.get_by_role("textbox", name="输入创作主题、观点或大纲，AI 帮你写").fill(content)
-    add_to_content = page.get_by_role("button", name="添加到正文")
-    page.locator(".btn > svg > g > rect").click()
-    if add_to_content.is_visible(timeout=30000):
-        add_to_content.click()
+
+    # 更准确地定位输入框和发送按钮
+    textarea = page.locator(".ai-input .byte-textarea.inner-input")
+    send_button = page.locator(".ai-input .btn")
+
+    # 填入内容
+    textarea.fill(content)
+
+    # 等待发送按钮变为可用状态（移除disabled类）
+    page.wait_for_function("""
+        () => {
+            const button = document.querySelector('.ai-input .btn');
+            return button && !button.classList.contains('disabled');
+        }
+    """, timeout=10000)
+
+    # 点击发送按钮
+    send_button.click()
+
+    # 等待响应或页面更新
+    page.wait_for_timeout(60000)
+    # 点击添加到正文按钮
+    page.pause()
+    page.get_by_text("添加到正文").click()
 
     # page.get_by_text("重新检测").click()
     # page.get_by_text("检测成功，暂无建议").click()
@@ -202,7 +227,7 @@ def run(playwright: Playwright,title, content) -> None:
     #     print(f"{i}. {topic}")
 
     # page.locator(".byte-drawer-mask").click()    # page.get_by_role("paragraph").click()
-    page.locator("div").filter(has_text=re.compile(r"^请输入正文$")).fill(content)
+    # page.locator("div").filter(has_text=re.compile(r"^请输入正文$")).fill(content)
     # page.locator("label").filter(has_text="单图").locator("div").click()
     # page.locator("label").filter(has_text="三图").locator("div").click()
 
