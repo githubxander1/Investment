@@ -9,7 +9,9 @@ from datetime import time as dt_time
 import pandas as pd
 import uiautomator2 as u2
 
+from Investment.THS.AutoTrade.pages.account_info import common_page
 from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_device_connected
+from Investment.THS.AutoTrade.pages.page_common import CommonPage
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
 from Investment.THS.AutoTrade.scripts.portfolio_today.Lhw_portfolio_today import Lhw_main
@@ -17,8 +19,8 @@ from Investment.THS.AutoTrade.scripts.portfolio_today.Robots_portfolio_today imp
 # from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy_portfolio_today import Strategy_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 from Investment.THS.AutoTrade.pages.page import THSPage
-from Investment.THS.AutoTrade.scripts.data_process import process_excel_files, read_operation_history, \
-    write_operation_history
+from Investment.THS.AutoTrade.scripts.data_process import read_operation_history, process_data_to_operate
+from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy import operate_result
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import (
@@ -32,7 +34,7 @@ from Investment.THS.AutoTrade.config.settings import (
 )
 
 # 导入你的20日监控模块
-from Investment.THS.AutoTrade.scripts.monitor_20day import daily_check
+from Investment.THS.AutoTrade.scripts.monitor_20day import daily_check, check_morning_signals
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 # 设置日志
@@ -46,70 +48,70 @@ ACCOUNTS = ["长城证券", "川财证券", "中泰证券"]
 morning_signal_checked = False
 
 
-async def check_morning_signals():
-    """检查早盘信号"""
-    global morning_signal_checked
-
-    now = datetime.datetime.now()
-    current_time = now.time()
-
-    # 检查是否是交易日
-    if not is_trading_day(now.date()):
-        logger.info("今天是非交易日，跳过信号检查")
-        return
-
-    # 检查是否在信号检查时间窗口内（9:25-9:35）
-    if dt_time(9, 25) <= current_time <= dt_time(9, 28):
-        logger.info("开始执行早盘信号检查...")
-        # 检查是否已经执行过今天的信号检查
-        if not morning_signal_checked:
-            logger.info("开始执行早盘信号检查...")
-
-            try:
-                stocks_code = read_operation_history(Account_holding_file)
-                # 定义要监控的股票（从配置或其他地方获取）
-                MONITORED_STOCKS = {
-                    "601728": "中国电信",
-                    "601398": "工商银行",
-                    "600900": "长江电力"
-                }
-
-                # 定义要监控的ETF
-                MONITORED_ETFS = {
-                    "508011": "嘉实物美消费REIT",
-                    "508005": "华夏首创奥莱REIT",
-                    "511380": "可转债ETF",
-                    "511580": "国债证金债ETF",
-                    "518850": "黄金ETF华夏",
-                    "510300": "沪深300ETF",
-                    # "510050": "上证50ETF",
-                    # "510500": "中证500ETF",
-                }
-
-                # 执行股票信号检查（使用5日均线）
-                stock_signals_found, stock_signals = daily_check("stock", MONITORED_STOCKS, ma_window=20)
-
-                # 执行ETF信号检查（使用20日均线）
-                etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
-
-                # 如果有任何信号，发送汇总通知
-                if stock_signals_found or etf_signals_found:
-                    all_signals = stock_signals + etf_signals
-                    summary_msg = "📈📉 早盘信号提醒 📈📉\n" + "\n".join(all_signals)
-                    logger.info("早盘信号检查完成，发现信号")
-                else:
-                    logger.info("早盘信号检查完成，未发现明显信号")
-
-                # 标记今天已执行信号检查
-                morning_signal_checked = True
-                logger.info("早盘信号检查完成")
-
-            except Exception as e:
-                logger.error(f"执行早盘信号检查时发生异常: {e}")
-    else:
-        # 如果过了信号检查时间窗口，重置标记以便第二天使用
-        if current_time > dt_time(9, 35):
-            morning_signal_checked = False
+# async def check_morning_signals():
+#     """检查早盘信号"""
+#     global morning_signal_checked
+#
+#     now = datetime.datetime.now()
+#     current_time = now.time()
+#
+#     # 检查是否是交易日
+#     if not is_trading_day(now.date()):
+#         logger.info("今天是非交易日，跳过信号检查")
+#         return
+#
+#     # 检查是否在信号检查时间窗口内（9:25-9:35）
+#     if dt_time(9, 25) <= current_time <= dt_time(9, 28):
+#         logger.info("开始执行早盘信号检查...")
+#         # 检查是否已经执行过今天的信号检查
+#         if not morning_signal_checked:
+#             logger.info("开始执行早盘信号检查...")
+#
+#             try:
+#                 stocks_code = read_operation_history(Account_holding_file)
+#                 # 定义要监控的股票（从配置或其他地方获取）
+#                 MONITORED_STOCKS = {
+#                     "601728": "中国电信",
+#                     "601398": "工商银行",
+#                     "600900": "长江电力"
+#                 }
+#
+#                 # 定义要监控的ETF
+#                 MONITORED_ETFS = {
+#                     "508011": "嘉实物美消费REIT",
+#                     "508005": "华夏首创奥莱REIT",
+#                     "511380": "可转债ETF",
+#                     "511580": "国债证金债ETF",
+#                     "518850": "黄金ETF华夏",
+#                     "510300": "沪深300ETF",
+#                     # "510050": "上证50ETF",
+#                     # "510500": "中证500ETF",
+#                 }
+#
+#                 # 执行股票信号检查（使用5日均线）
+#                 stock_signals_found, stock_signals = daily_check("stock", MONITORED_STOCKS, ma_window=20)
+#
+#                 # 执行ETF信号检查（使用20日均线）
+#                 etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
+#
+#                 # 如果有任何信号，发送汇总通知
+#                 if stock_signals_found or etf_signals_found:
+#                     all_signals = stock_signals + etf_signals
+#                     summary_msg = "📈📉 早盘信号提醒 📈📉\n" + "\n".join(all_signals)
+#                     logger.info("早盘信号检查完成，发现信号")
+#                 else:
+#                     logger.info("早盘信号检查完成，未发现明显信号")
+#
+#                 # 标记今天已执行信号检查
+#                 morning_signal_checked = True
+#                 logger.info("早盘信号检查完成")
+#
+#             except Exception as e:
+#                 logger.error(f"执行早盘信号检查时发生异常: {e}")
+#     else:
+#         # 如果过了信号检查时间窗口，重置标记以便第二天使用
+#         if current_time > dt_time(9, 35):
+#             morning_signal_checked = False
 
 def is_trading_day(date: datetime.date) -> bool:
     """
@@ -175,20 +177,18 @@ async def main():
     # 初始化国债逆回购状态
     guozhai_success = False
     strategy1_executed = False  # Strategy_portfolio_today 是否已执行
-    strategy2_executed = False  # Strategy.py 的持仓差异 是否已执行
+    strategy_diff_executed = False  # Strategy.py 的持仓差异 是否已执行
     robot_extraced = False
-
-    # 记录开始时间，用于最大运行时长控制
-    start_time = datetime.datetime.now()
+    # 定义一个标志位，记录本时间段内是否已执行过任务
+    robot_has_executed = False  # 可根据实际代码结构放在全局或类属性中
+    combination_has_executed = False
 
     # 记录上一次执行策略持仓差异分析的日期
     last_strategy2_date = None
 
-    # 1. 提前读取历史记录
-    history_df = read_operation_history(OPERATION_HISTORY_FILE)
-
     # 标记是否已切换过账户
     account_switched_today = False
+
 
     # 国债逆回购状态跟踪 - 为每个账户分别跟踪
     guozhai_status = {account: False for account in ACCOUNTS}
@@ -196,9 +196,13 @@ async def main():
 
     while True:
         try:
+
+            #  1.运行时间控制
+            # 记录开始时间，用于最大运行时长控制
+            start_time = datetime.datetime.now()
             now = datetime.datetime.now().time()
-            today = datetime.date.today()
-            logger.info(f"当前时间: {now}")
+            # today = datetime.date.today()
+            logger.info(f"开始时间： {start_time} 当前时间: {now}")
 
             # 检查是否超过最大运行时间
             if (datetime.datetime.now() - start_time) > datetime.timedelta(hours=MAX_RUN_TIME):
@@ -216,7 +220,7 @@ async def main():
                 await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
                 continue
 
-            # 检测设备是否断开
+            # 2. 检测设备是否断开
             if not is_device_connected(d):
                 logger.warning("设备断开连接，尝试重新初始化...")
                 d = await initialize_device()
@@ -225,131 +229,103 @@ async def main():
                     await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
                     continue
 
-            # 更新页面对象引用
-            ths_page = THSPage(d)
-            # 在main函数中添加
-            MAX_ACCOUNT_RETRIES = 3  # 最大账户重试次数
+            # # 更新页面对象引用
+            # ths_page = THSPage(d)
+            # # 在main函数中添加
+            # MAX_ACCOUNT_RETRIES = 3  # 最大账户重试次数
+            #
+            # # 修改国债逆回购部分
+            # account_retries = {account: 0 for account in ACCOUNTS}  # 账户重试计数器
 
-            # 修改国债逆回购部分
-            account_retries = {account: 0 for account in ACCOUNTS}  # 账户重试计数器
-
-
-            # 1. 执行早盘信号检查
+            # 3. 开始任务
+            logger.warning("开始任务")
+            # 1). 执行早盘信号检查
             await check_morning_signals()
 
-            # 2. 处理组合和策略文件
+            # 2). 处理组合和策略文件
             # 初始化变量
             robot_success = False
             strategy_success = False
             combination_success = False
             lhw_success = False
 
-            strategy_data = None
-            combination_data = None
+            strategy_data_df = None
+            combination_data_df = None
 
-            # # 判断是否在策略任务时间窗口（9:30-9:33）
+            #  判断是否在策略任务时间窗口（9:30-9:33）
             if dt_time(9, 30) <= now <= dt_time(9, 35):
-                logger.info("---------------------策略/Robot任务开始执行---------------------")
-                # strategy_result = await Strategy_main()
-                robot_result = await Robot_main()
-                if robot_result:
-                    # strategy_success, strategy_data = strategy_result
-                    robot_success, robot_data = robot_result
-                    robot_extraced = True
-                else:
-                    logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
-                    logger.info(f"策略/Robot是否有新增数据: {strategy_success}\n"
-                                f"---------------------策略/Robot任务执行结束---------------------")
-
-            else:
-                logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
-
-                # 策略持仓差异任务（9:32-9:35）
-            if dt_time(9, 30) <= now <= dt_time(9, 35) and not strategy2_executed:
-                logger.info("---------------------策略持仓差异分析开始---------------------")
-                try:
-                    from Investment.THS.AutoTrade.scripts.portfolio_today.Strategy import Smain
-                    diff_result_df = Smain()
-
-                    # 检查返回的DataFrame是否为空
-                    if diff_result_df.empty:
-                        logger.info("✅ 当前无持仓差异，无需执行交易")
+                if not robot_has_executed:  # 仅当未执行过时才触发
+                    logger.warning("---------------------策略/Robot任务开始执行---------------------")
+                    robot_result = await Robot_main()
+                    if robot_result:
+                        robot_success, robot_data_df = robot_result
                     else:
-                        # 遍历每一行，执行交易
-                        for index, row in diff_result_df.iterrows():
-                            stock_name = row['标的名称']
-                            operation = row['操作']
+                        logger.warning("⚠️ 策略/Robot任务返回空值，默认视为无更新")
+                        robot_success = False  # 避免未定义变量
 
-                            logger.info(f"🛠️ 要处理: {operation} {stock_name}")
+                    logger.warning(f"策略/Robot是否有新增数据: {robot_success}\n"
+                                f"---------------------策略/Robot任务执行结束---------------------")
+                    robot_has_executed = True  # 执行后标记为已执行
+                else:
+                    logger.debug("本时间段内任务已执行，跳过重复执行")
+            else:
+                # 离开时间窗口后重置标志位，确保次日可重新执行
+                if robot_has_executed:
+                    robot_has_executed = False
+                    logger.debug("离开任务时间窗口，重置执行标志")
+                else:
+                    logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
 
-                            # 特殊处理：卖出时全仓卖出
-                            if operation == "卖出":
-                                new_ratio = 0
-                            else:
-                                new_ratio = None  # 买入时无需新比例
-
-                            # 调用交易逻辑
-                            status, info = trader.operate_stock(
-                                operation=operation,
-                                stock_name=stock_name,
-                                volume=200 if operation == "买入" else None,
-                                new_ratio=new_ratio
-                            )
-
-                            # 检查交易是否成功执行
-                            if status is None:
-                                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                                continue
-
-                            # 构造记录
-                            # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            record = pd.DataFrame([{
-                                '标的名称': stock_name,
-                                '操作': operation,
-                                '新比例%': new_ratio,
-                                '状态': status,
-                                '信息': info,
-                                '时间': operate_time
-                            }])
-
-                            # 写入历史
-                            write_operation_history(record)
-                            logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+            # 策略持仓差异任务（9:32-9:35）
+            if dt_time(9, 30) <= now <= dt_time(9, 35) and not strategy_diff_executed:
+                logger.warning("---------------------策略持仓差异分析开始---------------------")
+                try:
+                    operate_result()
 
                 except Exception as e:
                     logger.error(f"❌ 持仓差异分析过程中发生异常: {e}")
 
-                logger.info("---------------------策略持仓差异分析结束---------------------")
-                strategy2_executed = True
+                logger.warning("---------------------策略持仓差异分析结束---------------------")
+                strategy_diff_executed = True
+            else:
+                # 离开时间窗口后重置标志位，确保次日可重新执行
+                if strategy_diff_executed:
+                    strategy_diff_executed = False
+                    logger.debug("离开任务时间窗口，重置执行标志")
+                else:
+                    logger.debug("尚未进入策略/Robot任务时间窗口，跳过执行")
 
             # 判断是否在组合任务和自动化交易时间窗口（9:25-15:00）
             if dt_time(9, 25) <= now <= dt_time(15, 00):
-                logger.info("---------------------组合任务开始执行---------------------")
+                logger.warning("---------------------组合任务开始执行---------------------")
                 combination_result = await Combination_main()
                 lhw_result = await Lhw_main()
                 if combination_result:
-                    combination_success, combination_data = combination_result
-                    lhw_success, lhw_data = lhw_result
+                    combination_success, combination_data_df = combination_result
+                    lhw_success, lhw_data_df = lhw_result
                 else:
                     logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
-                logger.info(f"组合是否有新增数据: {combination_success}\n---------------------组合任务执行结束---------------------")
-
-
+                logger.warning(f"组合是否有新增数据: {combination_success}"
+                               f"---------------------组合任务执行结束---------------------")
             else:
                 logger.debug("尚未进入组合任务和自动化交易时间窗口，跳过执行")
 
+            # 1. 提前读取历史记录
+            # history_df = read_operation_history(OPERATION_HISTORY_FILE)
+
+            logger.warning("---------------开始自动化操作---------------")
             # 如果有任何一个数据获取成功且有新数据，则执行交易处理
-            if (strategy_success and strategy_data is not None) or \
-               (combination_success and combination_data is not None) or \
-               (robot_success and robot_data is not None) or \
-               (lhw_success and lhw_data is not None):
-                file_paths = [Strategy_portfolio_today_file, Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
-                process_excel_files(file_paths, OPERATION_HISTORY_FILE, history_df=history_df)
+            if (strategy_success and strategy_data_df is not None) or \
+               (combination_success and combination_data_df is not None) or \
+               (robot_success and robot_data_df is not None) or \
+               (lhw_success and lhw_data_df is not None):
+                file_paths = [Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
+                process_data_to_operate(file_paths)
             elif strategy_success or combination_success or robot_success or lhw_success:
                 logger.info("有任务执行成功，但无新增交易数据，跳过交易处理")
             else:
                 logger.debug("无任务更新，跳过交易处理")
+            logger.warning("---------------自动化操作结束---------------")
 
             # 国债逆回购操作（为每个账户执行一次）
             if dt_time(14, 56) <= now <= dt_time(15, 10):

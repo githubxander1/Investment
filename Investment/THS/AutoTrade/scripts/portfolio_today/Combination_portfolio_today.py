@@ -1,18 +1,16 @@
 # Combination_portfolio_today2.py
 import asyncio
 import datetime
+import os
 import re
+import sys
 import time
-from pprint import pprint
 
 import pandas as pd
 import requests
 
-import sys
-import os
-
 # 修改导入，使用新的读写函数
-from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_or_operation_data, write_to_excel_append,read_today_portfolio_record,save_to_operation_history_excel
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, write_operation_history
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 # # 获取根目录
@@ -245,7 +243,7 @@ async def Combination_main():
         # history_df.to_csv(history_df_file, index=False)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         # 使用新的写入函数进行初始化
-        save_to_operation_history_excel(history_df, history_df_file, f'{today}', index=False)
+        write_operation_history(history_df)
         logger.info(f'初始化历史记录文件: {history_df_file}')
 
     # 标准化数据格式
@@ -268,7 +266,7 @@ async def Combination_main():
 
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         # 使用新的写入函数
-        save_to_operation_history_excel(new_data, history_df_file, f'{today}', index=False)
+        write_operation_history(new_data)
         # logger.info(f"保存新增数据到文件：{history_df_file}")
         # 添加这一行：更新文件状态
         # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status

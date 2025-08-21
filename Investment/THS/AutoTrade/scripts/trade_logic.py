@@ -1,4 +1,5 @@
 # trade_logic.py
+import time
 
 from Investment.THS.AutoTrade.pages.page import THSPage
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
@@ -114,6 +115,7 @@ class TradeLogic:
         volume = self.calculate_sell_volume(available_positions, ratio)
         return volume
 
+
     def operate_stock(self, operation, stock_name, volume=None, new_ratio=None):
         """
         确保在账户页
@@ -140,6 +142,7 @@ class TradeLogic:
             # new_ratio = None  # 这行代码是多余的，因为new_ratio是参数传入的
 
             self.ths_page.click_holding_stock_button()
+            time.sleep(1)
             if operation == "买入":
                 buy_available = account_info.get_buying_power()
             else:

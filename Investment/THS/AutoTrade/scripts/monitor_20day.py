@@ -4,7 +4,10 @@ import pandas as pd
 import time
 import datetime
 import logging
+from datetime import time as dt_time
 
+from Investment.THS.AutoTrade.config.settings import Account_holding_file
+from Investment.THS.AutoTrade.scripts.data_process import read_operation_history
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 # 设置日志
@@ -274,6 +277,70 @@ def daily_check(monitor_type, monitor_ids=None, ma_window=20):
     # 如果有任何信号，返回True和信号列表
     return len(signals) > 0, signals
 
+async def check_morning_signals():
+    """检查早盘信号"""
+    global morning_signal_checked
+
+    now = datetime.datetime.now()
+    current_time = now.time()
+
+    # 检查是否是交易日
+    if not is_trading_day(now.date()):
+        logger.info("今天是非交易日，跳过信号检查")
+        return
+
+    # 检查是否在信号检查时间窗口内（9:25-9:35）
+    if dt_time(9, 25) <= current_time <= dt_time(9, 28):
+        logger.info("开始执行早盘信号检查...")
+        # 检查是否已经执行过今天的信号检查
+        if not morning_signal_checked:
+            logger.info("开始执行早盘信号检查...")
+
+            try:
+                stocks_code = read_operation_history(Account_holding_file)
+                # 定义要监控的股票（从配置或其他地方获取）
+                MONITORED_STOCKS = {
+                    "601728": "中国电信",
+                    "601398": "工商银行",
+                    "600900": "长江电力"
+                }
+
+                # 定义要监控的ETF
+                MONITORED_ETFS = {
+                    "508011": "嘉实物美消费REIT",
+                    "508005": "华夏首创奥莱REIT",
+                    "511380": "可转债ETF",
+                    "511580": "国债证金债ETF",
+                    "518850": "黄金ETF华夏",
+                    "510300": "沪深300ETF",
+                    # "510050": "上证50ETF",
+                    # "510500": "中证500ETF",
+                }
+
+                # 执行股票信号检查（使用5日均线）
+                stock_signals_found, stock_signals = daily_check("stock", MONITORED_STOCKS, ma_window=20)
+
+                # 执行ETF信号检查（使用20日均线）
+                etf_signals_found, etf_signals = daily_check("etf", MONITORED_ETFS, ma_window=20)
+
+                # 如果有任何信号，发送汇总通知
+                if stock_signals_found or etf_signals_found:
+                    all_signals = stock_signals + etf_signals
+                    summary_msg = "📈📉 早盘信号提醒 📈📉\n" + "\n".join(all_signals)
+                    logger.info("早盘信号检查完成，发现信号")
+                else:
+                    logger.info("早盘信号检查完成，未发现明显信号")
+
+                # 标记今天已执行信号检查
+                morning_signal_checked = True
+                logger.info("早盘信号检查完成")
+
+            except Exception as e:
+                logger.error(f"执行早盘信号检查时发生异常: {e}")
+    else:
+        # 如果过了信号检查时间窗口，重置标记以便第二天使用
+        if current_time > dt_time(9, 35):
+            morning_signal_checked = False
 # 定时执行器（每天15:00执行）
 def schedule_daily_task(target_time="15:00"):
     while True:

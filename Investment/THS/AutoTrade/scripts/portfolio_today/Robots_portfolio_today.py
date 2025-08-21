@@ -7,7 +7,7 @@ from pprint import pprint
 import asyncio
 
 from Investment.THS.AutoTrade.config.settings import Robot_portfolio_today_file
-from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, write_operation_history
 from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time, standardize_dataframe, \
     get_new_records
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -60,7 +60,7 @@ def extract_trade_data(robots):
     all_today_trades = []
     for robot_name, robot_id in robots.items():
         result = get_trade_details(robot_id)
-        pprint( result)
+        # pprint( result)
         if result and result.get("message", {}).get("state") == 0:
             data_list = result.get("data", {}).get("data", [])
 
@@ -101,7 +101,7 @@ def extract_trade_data(robots):
                     # f"买入价格：{trade_info['买入价格']}，"
 
         else:
-            print(f"⚠️ 获取 {robot_name} 成交记录失败")
+            logger.warning(f"⚠️ 获取 {robot_name} 成交记录失败")
 
     if all_today_trades:  # 列表非空（空列表 [] 会被视为 False，所以 if my_list 等价于"非空"）
        df = pd.DataFrame(all_today_trades)
@@ -133,7 +133,7 @@ async def Robot_main():
     except Exception:  # 读取历史数据失败，初始化保存一个
         history_data_df = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
-        save_to_operation_history_excel(history_data_df, history_data_file, f'{today}', index=False)
+        write_operation_history(history_data_df)
         # history_data_df.to_csv(history_data_df_file, index=False)
         # print(f'初始化历史记录文件: {history_data_df_file}')
 
@@ -165,7 +165,7 @@ async def Robot_main():
 
     today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
     # header = not os.path.exists(history_data_file) or os.path.getsize(history_data_file) == 0
-    save_to_operation_history_excel(new_data_df, history_data_file, f'{today}')
+    write_operation_history(new_data_df)
     # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data_df}")
     # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
     # update_file_status(history_data_df_file)

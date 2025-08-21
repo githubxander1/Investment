@@ -265,8 +265,8 @@ class AccountInfo:
                 if isinstance(position_available, str):
                     parts = position_available.strip().split('/')
                     if len(parts) >= 2:
-                        position = float(parts[0])
-                        available = float(parts[1])
+                        position = int(parts[0])
+                        available = int(parts[1])
                         return True, available
                     else:
                         logger.warning(f"持仓/可用字段格式错误: {position_available}")

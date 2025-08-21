@@ -1,18 +1,21 @@
 import time
-from pprint import pprint
+# from pprint import pprint
 
 import fake_useragent
 import pandas as pd
 import requests
 
 from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file
+from Investment.THS.AutoTrade.pages.page_common import CommonPage
+from Investment.THS.AutoTrade.scripts.data_process import write_operation_history
+from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 import os
 import datetime
 from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time
 
 logger = setup_logger(__name__)
-
+trader = TradeLogic()
 ua = fake_useragent.UserAgent()
 def get_latest_position(strategy_id):
     """单接口：获取并提取保存今日数据"""
@@ -43,13 +46,14 @@ def get_latest_position(strategy_id):
             stk_code = str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6)
             position_stocks_results.append({
                 '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
+                '操作': '买入',
                 '标的名称': position_stock_info.get('stkName', ''),
                 '代码': str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6),
                 '市场': determine_market(stk_code),
                 '最新价': round(float(position_stock_info.get('price', 0)), 2),
                 '盈亏比例%': round(float(position_stock_info.get('profitAndLossRatio', 0)) * 100, 2),
-                '持仓比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
-                '持仓时间': position_stock_info.get('positionDate', ''),
+                '新比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
+                '时间': position_stock_info.get('positionDate', ''),
                 '行业': position_stock_info.get('industry', ''),
             })
 
@@ -144,22 +148,22 @@ def get_difference_holding():
     yestoday_stocks = set(yestoday_positions_df['标的名称'].str.strip().str.upper())
 
     # ✅ 找出买入和卖出
-    to_buy = today_positions_df[~today_positions_df['标的名称'].isin(yestoday_stocks)].copy()
-    to_sell = yestoday_positions_df[~yestoday_positions_df['标的名称'].isin(today_stocks)].copy()
+    to_buy_df = today_positions_df[~today_positions_df['标的名称'].isin(yestoday_stocks)].copy()
+    to_sell_df = yestoday_positions_df[~yestoday_positions_df['标的名称'].isin(today_stocks)].copy()
 
     # ✅ 添加操作列
-    to_buy['操作'] = '买入'
-    to_sell['操作'] = '卖出'
+    to_buy_df['操作'] = '买入'
+    to_sell_df['操作'] = '卖出'
 
     # ✅ 输出结果
     logger.info(f"📊 今日({today})持仓标的: {today_positions_df['标的名称'].tolist()}")
     logger.info(f"📊 对比日期: {yestoday}")
-    logger.info(f"✅ 要买入标的:\n{to_buy[['标的名称']]}\n")
-    logger.info(f"✅ 要卖出标的:\n{to_sell[['标的名称']]}\n")
+    logger.info(f"✅ 要买入标的:\n{to_buy_df[['标的名称']]}\n")
+    logger.info(f"✅ 要卖出标的:\n{to_sell_df[['标的名称']]}\n")
 
     return {
-        'to_buy': to_buy,
-        'to_sell': to_sell
+        'to_buy': to_buy_df,
+        'to_sell': to_sell_df
     }
 
 def sava_all_strategy_holding_data():
@@ -218,6 +222,10 @@ def Smain():
     time.sleep(2)
     diff_result = get_difference_holding()
     logger.info(f"持仓数据差异:{len(diff_result)}条 \n{diff_result}")
+
+    # 初始化combined_df为空的DataFrame
+    combined_df = pd.DataFrame()
+
     if diff_result:
         to_buy = diff_result.get('to_buy')
         to_sell = diff_result.get('to_sell')
@@ -232,10 +240,65 @@ def Smain():
             ], ignore_index=True)
     return combined_df
 
+def operate_result():
+    diff_result_df = Smain()
+
+    # 检查返回的DataFrame是否为空
+    if diff_result_df.empty:
+        logger.info("✅ 当前无持仓差异，无需执行交易")
+    else:
+        # 遍历每一行，执行交易
+        for index, row in diff_result_df.iterrows():
+            stock_name = row['标的名称']
+            operation = row['操作']
+            strategy_name = row['名称']
+
+            logger.info(f"🛠️ 要处理:{strategy_name} {operation} {stock_name}")
+
+            # 特殊处理：卖出时全仓卖出
+            if operation == "卖出":
+                new_ratio = 0
+            else:
+                new_ratio = None  # 买入时无需新比例
+
+            # 切换到对应账户
+            common_page = CommonPage()
+            common_page.change_account('川财证券')
+            logger.info(f"✅ 已切换到账户: 川财证券")
+
+            # 调用交易逻辑
+            status, info = trader.operate_stock(
+                operation=operation,
+                stock_name=stock_name,
+                volume=200 if operation == "买入" else None,
+                new_ratio=new_ratio
+            )
+
+            # 检查交易是否成功执行
+            if status is None:
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                continue
+
+            # 构造记录
+            # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            record = pd.DataFrame([{
+                '标的名称': stock_name,
+                '操作': operation,
+                '新比例%': new_ratio,
+                '状态': status,
+                '信息': info,
+                '时间': operate_time
+            }])
+
+            # 写入历史
+            write_operation_history(record)
+            logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 if __name__ == '__main__':
     file_path = Ai_Strategy_holding_file
     # if os.path.exists(file_path):
         # print(f"文件 {file_path} 已存在，请勿重复生成")
     # get_latest_position(156275)
     # get_difference_holding()
-    Smain()
+    # Smain()
+    operate_result()
