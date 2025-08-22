@@ -5,7 +5,8 @@ import fake_useragent
 import pandas as pd
 import requests
 
-from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file
+from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file, \
+    Strategy_portfolio_today_file
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.data_process import write_operation_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
@@ -61,7 +62,7 @@ def get_latest_position(strategy_id):
         # 提取市场为 沪深A股的数据，去掉st的
         position_stocks_df = position_stocks_df[position_stocks_df['市场'] == '沪深A股']
         # 去掉名称含st的
-        position_stocks_df = position_stocks_df[~position_stocks_df['标的名称'].str.contains('ST')]
+        # position_stocks_df = position_stocks_df[~position_stocks_df['标的名称'].str.contains('ST')]
         # print(position_stocks_df)
 
         # today = str(datetime.date.today())
@@ -247,13 +248,24 @@ def operate_result():
     if diff_result_df.empty:
         logger.info("✅ 当前无持仓差异，无需执行交易")
     else:
+        # 按操作类型分组，优先执行卖出操作
+        sell_operations = diff_result_df[diff_result_df['操作'] == '卖出']
+        buy_operations = diff_result_df[diff_result_df['操作'] == '买入']
+
+        # 合并操作，将卖出操作放在前面
+        ordered_operations = pd.concat([sell_operations, buy_operations], ignore_index=True)
+
+        # 准备保存到今日调仓文件的数据
+        today_trades = []
+
         # 遍历每一行，执行交易
-        for index, row in diff_result_df.iterrows():
+        for index, row in ordered_operations.iterrows():
             stock_name = row['标的名称']
             operation = row['操作']
-            strategy_name = row['名称']
+            # 修复：从原始数据中获取策略名称，而不是从合并后的DataFrame中
+            # strategy_name = row['名称']
 
-            logger.info(f"🛠️ 要处理:{strategy_name} {operation} {stock_name}")
+            logger.info(f"🛠️ 要处理: {operation} {stock_name}")
 
             # 特殊处理：卖出时全仓卖出
             if operation == "卖出":
@@ -285,7 +297,7 @@ def operate_result():
             record = pd.DataFrame([{
                 '标的名称': stock_name,
                 '操作': operation,
-                '新比例%': new_ratio,
+                '新比例%': new_ratio if new_ratio is not None else 0,
                 '状态': status,
                 '信息': info,
                 '时间': operate_time
@@ -294,6 +306,48 @@ def operate_result():
             # 写入历史
             write_operation_history(record)
             logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+
+            # 添加到今日调仓数据中，用于保存到Strategy_portfolio_today.xlsx
+            today_trades.append({
+                '名称': 'AI市场追踪策略',  # 默认策略名称
+                '操作': operation,
+                '标的名称': stock_name,
+                '代码': '',  # 代码信息在当前数据中不可用
+                '最新价': 0,  # 价格信息在当前数据中不可用
+                '新比例%': new_ratio if new_ratio is not None else 0,
+                '市场': '沪深A股',  # 默认市场
+                '时间': datetime.datetime.now().strftime('%Y-%m-%d')
+            })
+
+        # 将今日调仓数据保存到Strategy_portfolio_today.xlsx
+        if today_trades:
+            today_trades_df = pd.DataFrame(today_trades)
+            today = datetime.datetime.now().strftime('%Y-%m-%d')
+
+            try:
+                # 如果文件存在，读取现有数据
+                if os.path.exists(Strategy_portfolio_today_file):
+                    with pd.ExcelFile(Strategy_portfolio_today_file) as xls:
+                        # 读取除今天以外的所有现有工作表
+                        all_sheets_data = {}
+                        for sheet_name in xls.sheet_names:
+                            if sheet_name != today:
+                                all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
+
+                    # 将今天的数据放在第一位
+                    all_sheets_data = {today: today_trades_df, **all_sheets_data}
+                else:
+                    # 文件不存在，创建新文件
+                    all_sheets_data = {today: today_trades_df}
+
+                # 写入所有数据到Excel文件
+                with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+                    for sheet_name, df in all_sheets_data.items():
+                        df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+                logger.info(f"✅ 今日调仓数据已保存到 {Strategy_portfolio_today_file}，sheet: {today}")
+            except Exception as e:
+                logger.error(f"❌ 保存今日调仓数据失败: {e}")
 if __name__ == '__main__':
     file_path = Ai_Strategy_holding_file
     # if os.path.exists(file_path):

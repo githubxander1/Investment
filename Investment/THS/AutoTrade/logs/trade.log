@@ -391,3 +391,57 @@ uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomat
 [31m2025-08-21 14:03:51 - ERROR - 卖出数量计算失败[0m
 [33m2025-08-21 14:17:31 - WARNING - 无可用数量: available_shares=0[0m
 [31m2025-08-21 14:17:31 - ERROR - 卖出数量计算失败[0m
+[32m2025-08-22 09:40:38 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:40:41 - INFO - 买入 居然智家 200股 False 无提示信息[0m
+[32m2025-08-22 09:40:56 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:40:59 - INFO - 买入 梦网科技 200股 False 无提示信息[0m
+[32m2025-08-22 09:41:13 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-22 09:41:34 - ERROR - 买入 德龙汇能 200 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 205, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 231, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-08-22 09:41:49 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:41:52 - INFO - 买入 永安林业 200股 False 无提示信息[0m
+[32m2025-08-22 09:42:07 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:42:10 - INFO - 买入 湖北能源 200股 False 无提示信息[0m
+[32m2025-08-22 09:42:24 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:42:27 - INFO - 买入 金房能源 200股 False 无提示信息[0m
+[32m2025-08-22 09:42:41 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:42:44 - INFO - 买入 摩恩电气 200股 False 无提示信息[0m
+[32m2025-08-22 09:42:58 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:43:01 - INFO - 买入 世龙实业 200股 False 无提示信息[0m
+[32m2025-08-22 09:43:15 - INFO - 使用固定股数进行买入: 200股[0m
+[31m2025-08-22 09:46:44 - ERROR - 神州信息 没有持仓[0m
+[31m2025-08-22 09:47:02 - ERROR - 茂化实华 没有持仓[0m
+[31m2025-08-22 09:47:19 - ERROR - 双枪科技 没有持仓[0m
+[31m2025-08-22 09:47:36 - ERROR - 农心科技 没有持仓[0m
+[31m2025-08-22 09:47:54 - ERROR - 恒大高新 没有持仓[0m
+[31m2025-08-22 09:48:11 - ERROR - 嘉美包装 没有持仓[0m
+[31m2025-08-22 09:48:29 - ERROR - 天禾股份 没有持仓[0m
+[31m2025-08-22 09:48:46 - ERROR - 宁波联合 没有持仓[0m
+[31m2025-08-22 09:49:04 - ERROR - 菲达环保 没有持仓[0m
+[31m2025-08-22 09:49:21 - ERROR - 扬州金泉 没有持仓[0m
+[31m2025-08-22 09:49:39 - ERROR - 金海高科 没有持仓[0m
+[32m2025-08-22 09:49:54 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:49:56 - INFO - 买入 居然智家 200股 False 委托已提交，合同号为：25175[0m
+[32m2025-08-22 09:50:13 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:50:16 - INFO - 买入 梦网科技 200股 False 委托已提交，合同号为：25369[0m
+[32m2025-08-22 09:50:30 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-22 09:50:32 - INFO - 买入 德龙汇能 200股 False 委托已提交，合同号为：25550[0m
+[31m2025-08-22 10:06:35 - ERROR - 神州信息 没有持仓[0m
+[31m2025-08-22 10:06:58 - ERROR - 茂化实华 没有持仓[0m
+[31m2025-08-22 10:10:33 - ERROR - 神州信息 没有持仓[0m
+[33m2025-08-22 13:00:46 - WARNING - 买入数量不足100股[0m

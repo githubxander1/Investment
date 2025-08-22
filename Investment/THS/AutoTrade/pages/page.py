@@ -375,6 +375,7 @@ class THSPage:
                           error_info = prompt_content_second[2].get_text()
                        else:
                           error_info = "无提示信息"
+
                        if confirm_button.exists:
                           confirm_button.click()
                        elif confirm_button_second.exists:

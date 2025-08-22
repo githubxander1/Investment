@@ -8,7 +8,7 @@ import re
 from pprint import pprint
 
 # 导入必要的工具函数和配置
-from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, write_operation_history
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, determine_market
@@ -189,7 +189,7 @@ async def Lhw_main():
         # 显式创建带列名的空DataFrame
         history_df = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
-        write_operation_history(history_df)
+        save_to_operation_history_excel(history_df, history_df_file, f'{today}', index=False)
         logger.info(f'初始化历史记录文件: {history_df_file}')
 
     # 标准化数据格式
@@ -207,7 +207,7 @@ async def Lhw_main():
 
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         # 保存到文件
-        write_operation_history(new_data)
+        save_to_operation_history_excel(new_data, history_df_file, f'{today}', index=False)
 
         # 发送通知
         new_data_print_without_header = new_data_without_content.to_string(index=False)

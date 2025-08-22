@@ -9,7 +9,8 @@ from fake_useragent import UserAgent
 
 from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
     Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids, Strategy_holding_file
-from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, write_operation_history
+from Investment.THS.AutoTrade.scripts.data_process import save_to_operation_history_excel, read_today_portfolio_record, \
+    save_to_excel_append, read_portfolio_or_operation_data
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
@@ -159,7 +160,7 @@ async def Strategy_main():
         history_data_df = pd.DataFrame(columns=expected_columns)
         today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
         # 修复：保持函数一致性
-        write_operation_history(history_data_df)
+        save_to_operation_history_excel(history_data_df, history_data_file, f'{today}', index=False)
         # history_data_df.to_csv(history_data_df_file, index=False)
         # print(f'初始化历史记录文件: {history_data_df_file}')
 
@@ -184,7 +185,7 @@ async def Strategy_main():
 
     today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
     # 修复：保持函数一致性
-    write_operation_history(new_data_df)
+    save_to_operation_history_excel(new_data_df, history_data_file, f'{today}', index=False)
     position_stocks_results_df.to_excel(Strategy_holding_file, sheet_name=today, index=False)
     logger.info(f'保存今日持仓数据:\n{position_stocks_results_df}')
     # logger.info(f"✅ 保存新增调仓数据成功 \n{new_data_df}")

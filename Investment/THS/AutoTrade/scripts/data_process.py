@@ -90,7 +90,7 @@ def read_portfolio_or_operation_data(file_path, sheet_name=None):
     return combined_df
 
 
-def append_to_excel(df, filename, sheet_name=None, index=False):
+def save_to_excel_append(df, filename, sheet_name=None, index=False):
     """
     通用函数：将DataFrame追加写入Excel文件的指定工作表。
 
@@ -290,6 +290,80 @@ def safe_concat(history_df, new_df):
 
     return pd.concat([history_df, new_df], ignore_index=True, sort=False)
 
+
+def save_to_operation_history_excel(df, filename, sheet_name, index=False):
+    """追加保存DataFrame到Excel文件，默认今天的在第一张表"""
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))  # 获取今天的日期
+
+    # 统一数据类型
+    df['新比例%'] = df['新比例%'].astype(float).round(2)
+    df['最新价'] = df['最新价'].astype(float).round(2)
+    df['代码'] = df['代码'].astype(str).str.zfill(6)
+
+    # 保存到 Excel
+    try:
+        # 标准化数据类型
+        df = df.fillna('')
+        df = df.infer_objects(copy=False)
+        # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
+        if not os.path.exists(filename):
+            # print(f"保存的df {df}")
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=today, index=index)
+                #打印数据类型
+                # print(f"保存的数据类型: \n{df.dtypes}")
+            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {today} \n{df}")
+            return
+
+        # 文件存在，读取现有数据
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            history_sheets = xls.sheet_names
+            history_df = pd.read_excel(xls, sheet_name=sheet_name) if sheet_name in history_sheets else pd.DataFrame()
+
+        # 如果今天的数据需要保存到第一个 sheet
+        if sheet_name == today:
+            # 读取现有第一个 sheet 的数据（如果存在）
+            if history_sheets and history_sheets[0] == today:
+                history_df = pd.read_excel(filename, sheet_name=today)
+                # 读取的数据类型
+                # print(f"保存时，读取的数据类型: \n{history_df.dtypes}")
+                combined_df = safe_concat(history_df, df)
+                # 显式清理无效值
+                combined_df = combined_df.replace(['nan', 'NaN', 'N/A', 'None', None], '').infer_objects(copy=False)
+
+                # 重新排序并设置索引
+                # combined_df = combined_df[expected_columns]
+
+                combined_df.drop_duplicates(subset=['名称', '操作', '标的名称', '代码', '最新价', '新比例%'], inplace=True)
+            else:
+                combined_df = df
+
+            # 保存到第一个 sheet
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                combined_df.to_excel(writer, sheet_name=today, index=index)
+                #打印数据类型
+                # print(f"保存的数据类型: \n{combined_df.dtypes}")
+
+            # 读取并保存其他 sheet 的数据
+            other_sheets_data = {}
+            for sheet in history_sheets:
+                if sheet != today:
+                    other_sheets_data[sheet] = pd.read_excel(filename, sheet_name=sheet)
+
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
+                combined_df.to_excel(writer, sheet_name=today, index=index)
+                for sheet, data in other_sheets_data.items():
+                    data.to_excel(writer, sheet_name=sheet, index=index)
+
+            logger.info(f"✅ 成功追加数据到Excel文件的第一个sheet: {filename}, 表名称: {today} \n{combined_df}")
+        else:
+            # 对于非今天的 sheet，直接追加或替换
+            with pd.ExcelWriter(filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=index)
+            logger.info(f"✅ 成功追加数据到Excel文件的指定sheet: {filename}, 表名称: {sheet_name} \n{df}")
+
+    except Exception as e:
+        logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
 
 
 def write_operation_history(df):

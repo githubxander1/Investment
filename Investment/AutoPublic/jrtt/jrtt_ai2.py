@@ -13,7 +13,7 @@ from playwright.sync_api import Playwright, sync_playwright
 from Investment.AutoPublic.jrtt.jrtt_ai import get_default_topics, select_unique_topic, load_storage_state, \
     send_notification, STORAGE_STATE_FILE
 
-
+#获取热门话题
 def get_hot_topics_from_ai():
     """
     使用Qwen大模型获取当前热门话题
@@ -73,6 +73,7 @@ def get_hot_topics_from_ai():
         print(f"获取AI推荐话题失败: {e}")
         return get_default_topics()
 
+# qwen生成文章
 def generate_article_with_qwen(topic):
     """
     使用Qwen大模型获取当前热门话题
