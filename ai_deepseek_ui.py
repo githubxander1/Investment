@@ -118,53 +118,50 @@ class DeepSeekClient:
     def wait_and_extract_content(self):
         """等待并提取回答内容"""
         print("等待回答完成...")
+        # self.page.pause()
 
         try:
-            # 等待一段时间让AI生成回答，使用计数显示进度
-            # wait_time = 60  # 总等待时间（秒）
-            # interval = 5    # 每次等待间隔（秒）
-            # max_attempts = wait_time // interval
-            #
-            # print(f"⏳ 开始等待，最长等待 {wait_time} 秒...")
-            #
-            # for attempt in range(max_attempts):
-            #     elapsed = (attempt + 1) * interval
-            #     print(f"⏳ 已等待 {elapsed} 秒，共 {wait_time} 秒...")
-            #
-            #     # 检查是否已经生成了回答
-            #     try:
-            #         # 尝试查找包含"已深度思考"或类似文本的元素
-            #         thinking_elements = self.page.query_selector_all("div:has-text('已深度思考'), div:has-text('思考完成'), div:has-text('已完成')")
-            #         if thinking_elements:
-            #             print("✅ 检测到回答已完成")
-            #             break
-            #     except:
-            #         pass
-            #
-            #     # 等待间隔时间
-            #     self.page.wait_for_timeout(interval * 1000)  # 转换为毫秒
+            # 等待深度思考完成或复制按钮出现
+            print("⏳ 等待AI回答完成...")
+            start_time = time.time()
 
-            self.page.wait_for_timeout(65000)
-            print("🔍 尝试查找复制按钮...")
+            # 等待深度思考完成标识出现或者复制按钮出现
+            max_wait_time = 90  # 最大等待时间90秒
+            check_interval = 2   # 每2秒检查一次
 
-            # 尝试多种方式找到复制按钮
-            copy_button_selectors = [
-                ".ds-flex > .ds-flex > div > .ds-icon > svg",  # 根据您之前的尝试
-                ".ds-flex > .ds-flex > div"  # 更通用的选择器
-            ]
+            while time.time() - start_time < max_wait_time:
+                elapsed_time = int(time.time() - start_time)
+                print(f"\r⏰ 已等待 {elapsed_time} 秒", end="", flush=True)
 
-            copy_button = None
-            for selector in copy_button_selectors:
+                # 检查是否出现"已深度思考"
                 try:
-                    # 先检查元素是否存在
-                    if self.page.query_selector(selector):
-                        copy_button = self.page.query_selector(selector)
-                        if copy_button.is_visible():
-                            print(f"✅ 找到复制按钮，使用选择器: {selector}")
-                            break
-                except Exception as e:
-                    print(f"⚠️ 使用选择器 {selector} 时出错: {e}")
-                    continue
+                    deep_thinking_element = self.page.get_by_text("已深度思考")
+                    if deep_thinking_element.is_visible():
+                        print(f"\n✅ 检测到'已深度思考'标识，用时 {elapsed_time} 秒")
+                        break
+                except:
+                    pass
+
+                # 检查是否出现复制按钮（SVG图标）
+                try:
+                    # 查找复制按钮，通过SVG图标定位
+                    copy_button = self.page.locator(".ds-flex > .ds-flex > div > .ds-icon > svg").first
+                    if copy_button.is_visible():
+                        print(f"\n✅ 检测到复制按钮，AI回答已完成，用时 {elapsed_time} 秒")
+                        break
+                except:
+                    pass
+
+                # 等待下次检查
+                time.sleep(check_interval)
+            else:
+                print(f"\n⚠️ 等待超时 ({max_wait_time} 秒)，继续尝试提取内容...")
+
+            self.page.wait_for_timeout(75000)
+            print("🔍 尝试查找复制按钮...")
+            # 尝试多种方式找到复制按钮
+            copy_button = self.page.locator(".ds-flex > .ds-flex > div > .ds-icon > svg")
+
 
             if copy_button:
                 # 点击复制按钮
@@ -290,7 +287,8 @@ def run(playwright: Playwright) -> None:
         client.enable_web_search()
 
         # 发送问题
-        question = "机器学习系统学习路径"
+        # question = "机器学习系统学习路径"
+        question = "计算1+2="
         client.send_message(question)
 
         # client.page.pause()
