@@ -1,7 +1,14 @@
+import re
 import subprocess
 import os
 
-'git clone https://gitee.com/aiwep/FunClip.git'
+from playwright.sync_api import sync_playwright
+
+from Investment.AutoPublic.jrtt.jrtt_ai import login_and_save_state
+from Investment.AutoPublic.qwen_create import get_hot_topics_from_ai
+
+
+# 'git clone https://gitee.com/aiwep/FunClip.git'
 def auto_clip_video(input_video_path, output_video_path, keywords):
     """
     使用funclip自动剪辑视频
