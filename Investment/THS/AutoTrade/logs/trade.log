@@ -445,3 +445,396 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [31m2025-08-22 10:06:58 - ERROR - 茂化实华 没有持仓[0m
 [31m2025-08-22 10:10:33 - ERROR - 神州信息 没有持仓[0m
 [33m2025-08-22 13:00:46 - WARNING - 买入数量不足100股[0m
+[32m2025-08-25 09:32:09 - INFO - 买入 中山公用 100股 False 委托已提交，合同号为：78317[0m
+[33m2025-08-25 09:32:19 - WARNING - 计算买入数量失败：buying_power=None, real_price=20.73[0m
+[32m2025-08-25 09:35:49 - INFO - 全部卖出[0m
+[32m2025-08-25 09:35:57 - INFO - 卖出 共进股份 100股 True 委托已提交[0m
+[32m2025-08-25 09:38:39 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:38:42 - INFO - 买入 居然智家 200股 False 无提示信息[0m
+[32m2025-08-25 09:38:58 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:42:55 - INFO - 全部卖出[0m
+[32m2025-08-25 09:43:04 - INFO - 卖出 湖北能源 100股 False 委托已提交，合同号为：25987[0m
+[31m2025-08-25 09:43:30 - ERROR - 金房能源 没有持仓[0m
+[31m2025-08-25 09:43:55 - ERROR - 三柏硕 没有持仓[0m
+[32m2025-08-25 09:44:20 - INFO - 全部卖出[0m
+[32m2025-08-25 09:44:28 - INFO - 卖出 双箭股份 400股 False 委托已提交，合同号为：27283[0m
+[31m2025-08-25 09:44:55 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-25 09:45:20 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-25 09:45:44 - ERROR - 浙矿股份 没有持仓[0m
+[31m2025-08-25 09:46:09 - ERROR - 浙江力诺 没有持仓[0m
+[31m2025-08-25 09:46:34 - ERROR - 建研设计 没有持仓[0m
+[31m2025-08-25 09:46:59 - ERROR - 普莱得 没有持仓[0m
+[31m2025-08-25 09:47:24 - ERROR - 森泰股份 没有持仓[0m
+[31m2025-08-25 09:47:49 - ERROR - 凤竹纺织 没有持仓[0m
+[32m2025-08-25 09:48:14 - INFO - 全部卖出[0m
+[32m2025-08-25 09:48:22 - INFO - 卖出 百川能源 100股 False 委托已提交，合同号为：30480[0m
+[31m2025-08-25 09:48:48 - ERROR - 恒尚节能 没有持仓[0m
+[32m2025-08-25 09:49:13 - INFO - 全部卖出[0m
+[32m2025-08-25 09:49:21 - INFO - 卖出 中持股份 100股 False 未找到确认按钮[0m
+[31m2025-08-25 09:49:59 - ERROR - 高铁电气 没有持仓[0m
+[31m2025-08-25 09:50:24 - ERROR - 美腾科技 没有持仓[0m
+[31m2025-08-25 09:50:48 - ERROR - 友车科技 没有持仓[0m
+[32m2025-08-25 09:51:03 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:51:06 - INFO - 买入 三木集团 200股 False 委托已提交，合同号为：32525[0m
+[32m2025-08-25 09:51:23 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:51:25 - INFO - 买入 茂化实华 200股 False 未找到确认按钮[0m
+[32m2025-08-25 09:51:52 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:51:54 - INFO - 买入 光华股份 200股 False 点击确认按钮失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/prompt_content'},))[0m
+[32m2025-08-25 09:52:13 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:52:15 - INFO - 买入 蓝丰生化 200股 False 未找到确认按钮[0m
+[32m2025-08-25 09:52:36 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:52:39 - INFO - 买入 豪尔赛 200股 False 委托已提交，合同号为：33577[0m
+[32m2025-08-25 09:52:56 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:52:58 - INFO - 买入 万里股份 200股 False 未找到确认按钮[0m
+[32m2025-08-25 09:53:14 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:53:16 - INFO - 买入 三峰环境 200股 False 无提示信息[0m
+[32m2025-08-25 09:53:32 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:53:34 - INFO - 买入 爱普股份 200股 False 无提示信息[0m
+[32m2025-08-25 09:53:50 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:53:53 - INFO - 买入 金海高科 200股 False 无提示信息[0m
+[32m2025-08-25 09:54:07 - INFO - 使用固定股数进行买入: 200股[0m
+[32m2025-08-25 09:54:10 - INFO - 买入 威奥股份 200股 False 无提示信息[0m
+[31m2025-08-26 09:30:47 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 09:31:07 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 09:31:23 - ERROR - 卖出 湖北能源 未知 股失败: {'code': -32002, 'data': "Selector [className='android.widget.TextView', text='持仓']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 144, in operate_stock
+    self.ths_page.click_holding_stock_button()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 132, in click_holding_stock_button
+    holding_button.click()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [className='android.widget.TextView', text='持仓']", 'method': 'wait'}
+[31m2025-08-26 09:32:34 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 09:32:55 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 09:33:15 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 09:33:36 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 09:42:39 - ERROR - 卖出 奥飞娱乐 未知 股失败: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 17, 'childOrSibling': [], 'childOrSiblingSelector': [], 'className': 'android.widget.TextView', 'text': '持仓'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.isFocused(UiObject2.java:468)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:75)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 144, in operate_stock
+    self.ths_page.click_holding_stock_button()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 126, in click_holding_stock_button
+    holding_button.click()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 androidx.test.uiautomator.StaleObjectException', ({'mask': 17, 'childOrSibling': [], 'childOrSiblingSelector': [], 'className': 'android.widget.TextView', 'text': '持仓'},), 'androidx.test.uiautomator.StaleObjectException\n\tat androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)\n\tat androidx.test.uiautomator.UiObject2.isFocused(UiObject2.java:468)\n\tat com.wetest.uia2.stub.ObjInfo.<init>(ObjInfo.java:75)\n\tat com.wetest.uia2.stub.ObjInfo.getObjInfo(ObjInfo.java:44)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.objInfo(AutomatorServiceImpl.java:844)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\n')
+[32m2025-08-26 09:44:05 - INFO - 全部卖出[0m
+[32m2025-08-26 09:44:13 - INFO - 卖出 锐明技术 100股 True 委托已提交[0m
+[32m2025-08-26 09:45:27 - INFO - 买入 御银股份 500股 False 委托已提交，合同号为：157055[0m
+[32m2025-08-26 10:45:44 - INFO - 买入 爱婴室 200股 False 委托已提交，合同号为：320189[0m
+[31m2025-08-26 13:34:49 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 13:35:10 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 13:35:31 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 13:35:52 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 13:36:13 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 13:36:34 - ERROR - 浙矿股份 没有持仓[0m
+[31m2025-08-26 13:36:55 - ERROR - 浙江力诺 没有持仓[0m
+[31m2025-08-26 13:37:16 - ERROR - 建研设计 没有持仓[0m
+[31m2025-08-26 13:37:56 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 13:38:17 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 13:38:38 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 13:38:59 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 13:39:20 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 13:39:40 - ERROR - 浙矿股份 没有持仓[0m
+[31m2025-08-26 13:40:01 - ERROR - 浙江力诺 没有持仓[0m
+[31m2025-08-26 13:40:22 - ERROR - 建研设计 没有持仓[0m
+[31m2025-08-26 13:40:43 - ERROR - 普莱得 没有持仓[0m
+[31m2025-08-26 13:41:04 - ERROR - 森泰股份 没有持仓[0m
+[31m2025-08-26 13:41:24 - ERROR - 百川能源 没有持仓[0m
+[31m2025-08-26 13:41:44 - ERROR - 中持股份 没有持仓[0m
+[31m2025-08-26 13:42:05 - ERROR - 高铁电气 没有持仓[0m
+[31m2025-08-26 13:42:25 - ERROR - 美腾科技 没有持仓[0m
+[31m2025-08-26 13:42:46 - ERROR - 友车科技 没有持仓[0m
+[32m2025-08-26 13:56:44 - INFO - 全部卖出[0m
+[31m2025-08-26 13:56:45 - ERROR - 卖出 豪尔赛 200 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 175, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 186, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))
+[31m2025-08-26 13:58:49 - ERROR - 海南华铁 没有持仓[0m
+[32m2025-08-26 13:59:05 - INFO - 买入 均胜电子 200股 True 委托已提交[0m
+[31m2025-08-26 13:59:39 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 14:00:00 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 14:00:21 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 14:00:42 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 14:01:02 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 14:01:22 - ERROR - 浙矿股份 没有持仓[0m
+[31m2025-08-26 14:01:42 - ERROR - 浙江力诺 没有持仓[0m
+[31m2025-08-26 14:02:03 - ERROR - 建研设计 没有持仓[0m
+[31m2025-08-26 14:02:24 - ERROR - 普莱得 没有持仓[0m
+[31m2025-08-26 14:02:46 - ERROR - 森泰股份 没有持仓[0m
+[31m2025-08-26 14:03:07 - ERROR - 百川能源 没有持仓[0m
+[31m2025-08-26 14:03:27 - ERROR - 中持股份 没有持仓[0m
+[31m2025-08-26 14:03:48 - ERROR - 高铁电气 没有持仓[0m
+[31m2025-08-26 14:04:09 - ERROR - 美腾科技 没有持仓[0m
+[31m2025-08-26 14:04:30 - ERROR - 友车科技 没有持仓[0m
+[32m2025-08-26 14:04:51 - INFO - 全部卖出[0m
+[32m2025-08-26 14:04:58 - INFO - 卖出 豪尔赛 200股 False 未检测到'委托确认'提示[0m
+[31m2025-08-26 14:05:24 - ERROR - 三峰环境 没有持仓[0m
+[31m2025-08-26 14:05:45 - ERROR - 爱普股份 没有持仓[0m
+[31m2025-08-26 14:06:06 - ERROR - 威奥股份 没有持仓[0m
+[32m2025-08-26 14:06:21 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:06:23 - INFO - 买入 居然智家 100股 True 委托已提交[0m
+[32m2025-08-26 14:06:40 - INFO - 使用固定股数进行买入: 100股[0m
+[31m2025-08-26 14:07:01 - ERROR - 买入 梦网科技 100 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 205, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 231, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-08-26 14:07:16 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:07:19 - INFO - 买入 湖南投资 100股 False 委托已提交，合同号为：86265[0m
+[32m2025-08-26 14:07:35 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:07:38 - INFO - 买入 德龙汇能 100股 False 无提示信息[0m
+[32m2025-08-26 14:07:53 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:07:56 - INFO - 买入 永安林业 100股 False 无提示信息[0m
+[32m2025-08-26 14:08:11 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:08:14 - INFO - 买入 利仁科技 100股 False 无提示信息[0m
+[32m2025-08-26 14:08:29 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:08:31 - INFO - 买入 坤泰股份 100股 False 无提示信息[0m
+[32m2025-08-26 14:08:47 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:08:50 - INFO - 买入 美能能源 100股 False 无提示信息[0m
+[32m2025-08-26 14:09:05 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:09:08 - INFO - 买入 箭牌家居 100股 False 无提示信息[0m
+[32m2025-08-26 14:09:23 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-26 14:09:26 - INFO - 买入 楚环科技 100股 False 未找到确认按钮[0m
+[31m2025-08-26 14:47:38 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 14:47:58 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 14:48:19 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 14:48:40 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 14:49:00 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 14:49:39 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 14:50:00 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 14:50:20 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 14:50:41 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 14:51:02 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 14:51:23 - ERROR - 浙矿股份 没有持仓[0m
+[31m2025-08-26 14:52:08 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 14:52:28 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 14:52:49 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 15:07:51 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 15:08:11 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 15:08:31 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 15:08:52 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 15:09:12 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 15:09:48 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 15:10:08 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 15:10:29 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 15:10:50 - ERROR - 新宏泽 没有持仓[0m
+[31m2025-08-26 15:11:12 - ERROR - 锐奇股份 没有持仓[0m
+[31m2025-08-26 15:11:33 - ERROR - 浙矿股份 没有持仓[0m
+[31m2025-08-26 15:11:54 - ERROR - 浙江力诺 没有持仓[0m
+[31m2025-08-26 15:12:15 - ERROR - 建研设计 没有持仓[0m
+[31m2025-08-26 15:12:40 - ERROR - 普莱得 没有持仓[0m
+[31m2025-08-26 15:13:01 - ERROR - 森泰股份 没有持仓[0m
+[31m2025-08-26 15:13:23 - ERROR - 百川能源 没有持仓[0m
+[31m2025-08-26 15:13:45 - ERROR - 中持股份 没有持仓[0m
+[31m2025-08-26 15:14:06 - ERROR - 高铁电气 没有持仓[0m
+[31m2025-08-26 15:14:27 - ERROR - 美腾科技 没有持仓[0m
+[31m2025-08-26 15:14:49 - ERROR - 友车科技 没有持仓[0m
+[32m2025-08-26 15:15:10 - INFO - 全部卖出[0m
+[32m2025-08-26 15:15:18 - INFO - 卖出 豪尔赛 200股 False [120144][当前时间不允许此类证券交易][entrust_prop=0,en_entrust_prop=,4,8,Z,f,][0m
+[31m2025-08-26 15:27:09 - ERROR - 湖北能源 没有持仓[0m
+[31m2025-08-26 15:27:30 - ERROR - 三柏硕 没有持仓[0m
+[31m2025-08-26 15:27:50 - ERROR - 双箭股份 没有持仓[0m
+[31m2025-08-26 15:28:11 - ERROR - 新宏泽 没有持仓[0m
+[32m2025-08-27 09:31:14 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:31:19 - INFO - 买入 双枪科技 100股 False 无提示信息[0m
+[32m2025-08-27 09:31:56 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:31:59 - INFO - 买入 双枪科技 100股 False 无提示信息[0m
+[32m2025-08-27 09:32:14 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:32:17 - INFO - 买入 农心科技 100股 False 无提示信息[0m
+[32m2025-08-27 09:32:33 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:32:35 - INFO - 买入 双箭股份 100股 False 无提示信息[0m
+[32m2025-08-27 09:32:51 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:32:54 - INFO - 买入 摩恩电气 100股 False 无提示信息[0m
+[32m2025-08-27 09:33:09 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:33:12 - INFO - 买入 ST瑞和 100股 False 该股票为风险警示股票 ,请谨慎购买!当日通过竞价交易、大宗交易和盘后定价累计买入的单只风险警示股票 ,委托买入数量与当日已买入数量及已申报买入但尚未成交、也未撤销的数量之和 ,不得超过50万股。上市公司回购、5%以上股东根据已披露的增持计划增持股份等情形除外。[0m
+[32m2025-08-27 09:38:16 - INFO - 全部卖出[0m
+[32m2025-08-27 09:38:24 - INFO - 卖出 三木集团 200股 False 委托已提交，合同号为：18513[0m
+[32m2025-08-27 09:38:47 - INFO - 全部卖出[0m
+[32m2025-08-27 09:38:55 - INFO - 卖出 永安林业 100股 True 委托已提交[0m
+[31m2025-08-27 09:39:17 - ERROR - 广田集团 没有持仓[0m
+[32m2025-08-27 09:39:38 - INFO - 全部卖出[0m
+[32m2025-08-27 09:39:46 - INFO - 卖出 瑞尔特 200股 True 委托已提交[0m
+[31m2025-08-27 09:40:12 - ERROR - 天禾股份 没有持仓[0m
+[31m2025-08-27 09:40:38 - ERROR - 万里股份 没有持仓[0m
+[31m2025-08-27 09:41:02 - ERROR - 恒尚节能 没有持仓[0m
+[32m2025-08-27 09:41:17 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:41:20 - INFO - 买入 双枪科技 100股 False 委托已提交，合同号为：21179[0m
+[32m2025-08-27 09:41:36 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:41:39 - INFO - 买入 农心科技 100股 False 无提示信息[0m
+[32m2025-08-27 09:41:54 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:41:57 - INFO - 买入 双箭股份 100股 False 委托已提交，合同号为：21715[0m
+[32m2025-08-27 09:42:13 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:42:16 - INFO - 买入 摩恩电气 100股 False 无提示信息[0m
+[32m2025-08-27 09:42:31 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:42:33 - INFO - 买入 ST瑞和 100股 False 该股票为风险警示股票 ,请谨慎购买!当日通过竞价交易、大宗交易和盘后定价累计买入的单只风险警示股票 ,委托买入数量与当日已买入数量及已申报买入但尚未成交、也未撤销的数量之和 ,不得超过50万股。上市公司回购、5%以上股东根据已披露的增持计划增持股份等情形除外。[0m
+[32m2025-08-27 09:42:55 - INFO - 使用固定股数进行买入: 100股[0m
+[31m2025-08-27 09:43:16 - ERROR - 买入 永东股份 100 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 205, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 231, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[31m2025-08-27 09:52:08 - ERROR - 三木集团 没有持仓[0m
+[31m2025-08-27 09:52:28 - ERROR - 永安林业 没有持仓[0m
+[31m2025-08-27 09:52:49 - ERROR - 广田集团 没有持仓[0m
+[31m2025-08-27 09:53:09 - ERROR - 瑞尔特 没有持仓[0m
+[31m2025-08-27 09:53:29 - ERROR - 天禾股份 没有持仓[0m
+[31m2025-08-27 09:53:49 - ERROR - 万里股份 没有持仓[0m
+[31m2025-08-27 09:54:10 - ERROR - 恒尚节能 没有持仓[0m
+[32m2025-08-27 09:54:24 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:54:27 - INFO - 买入 双枪科技 100股 False 无提示信息[0m
+[32m2025-08-27 09:54:42 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:54:43 - INFO - 买入 农心科技 100股 False 未检测到'委托确认'提示[0m
+[31m2025-08-27 09:55:11 - ERROR - 买入 双箭股份 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 175, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 186, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[32m2025-08-27 09:55:26 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:55:29 - INFO - 买入 摩恩电气 100股 False 无提示信息[0m
+[32m2025-08-27 09:55:43 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 09:55:45 - INFO - 买入 ST瑞和 100股 False 该股票为风险警示股票 ,请谨慎购买!当日通过竞价交易、大宗交易和盘后定价累计买入的单只风险警示股票 ,委托买入数量与当日已买入数量及已申报买入但尚未成交、也未撤销的数量之和 ,不得超过50万股。上市公司回购、5%以上股东根据已披露的增持计划增持股份等情形除外。[0m
+[31m2025-08-27 09:57:34 - ERROR - 海南华铁 没有持仓[0m
+[33m2025-08-27 09:57:46 - WARNING - 买入数量不足100股[0m
+[33m2025-08-27 09:57:58 - WARNING - 买入数量不足100股[0m
+[33m2025-08-27 09:58:10 - WARNING - 买入数量不足100股[0m
+[31m2025-08-27 09:58:26 - ERROR - 嘉诚国际 没有持仓[0m
+[32m2025-08-27 09:59:43 - INFO - 全部卖出[0m
+[32m2025-08-27 09:59:54 - INFO - 卖出 均胜电子 200股 True 委托已提交[0m
+[32m2025-08-27 10:14:32 - INFO - 买入 三花智控 100股 False 委托已提交，合同号为：251505[0m
+[31m2025-08-27 10:15:46 - ERROR - 三木集团 没有持仓[0m
+[31m2025-08-27 10:16:06 - ERROR - 永安林业 没有持仓[0m
+[31m2025-08-27 10:16:26 - ERROR - 广田集团 没有持仓[0m
+[31m2025-08-27 10:16:46 - ERROR - 瑞尔特 没有持仓[0m
+[31m2025-08-27 10:17:07 - ERROR - 天禾股份 没有持仓[0m
+[31m2025-08-27 10:17:27 - ERROR - 万里股份 没有持仓[0m
+[31m2025-08-27 10:17:47 - ERROR - 恒尚节能 没有持仓[0m
+[32m2025-08-27 10:18:02 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:18:05 - INFO - 买入 嘉美包装 100股 False 无提示信息[0m
+[32m2025-08-27 10:18:19 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:18:22 - INFO - 买入 ST瑞和 100股 False 该股票为风险警示股票 ,请谨慎购买!当日通过竞价交易、大宗交易和盘后定价累计买入的单只风险警示股票 ,委托买入数量与当日已买入数量及已申报买入但尚未成交、也未撤销的数量之和 ,不得超过50万股。上市公司回购、5%以上股东根据已披露的增持计划增持股份等情形除外。[0m
+[32m2025-08-27 10:18:46 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:18:49 - INFO - 买入 钱江生化 100股 False 无提示信息[0m
+[32m2025-08-27 10:19:04 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:19:07 - INFO - 买入 摩恩电气 100股 False 无提示信息[0m
+[32m2025-08-27 10:19:22 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:19:24 - INFO - 买入 双箭股份 100股 False 无提示信息[0m
+[32m2025-08-27 10:19:39 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:19:42 - INFO - 买入 永东股份 100股 False 无提示信息[0m
+[32m2025-08-27 10:19:57 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:20:00 - INFO - 买入 万丰股份 100股 False 无提示信息[0m
+[32m2025-08-27 10:20:15 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:20:18 - INFO - 买入 农心科技 100股 False 无提示信息[0m
+[32m2025-08-27 10:20:33 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:20:35 - INFO - 买入 双枪科技 100股 False 无提示信息[0m
+[31m2025-08-27 10:27:28 - ERROR - 三木集团 没有持仓[0m
+[31m2025-08-27 10:27:49 - ERROR - 永安林业 没有持仓[0m
+[31m2025-08-27 10:28:10 - ERROR - 广田集团 没有持仓[0m
+[31m2025-08-27 10:28:30 - ERROR - 瑞尔特 没有持仓[0m
+[31m2025-08-27 10:28:51 - ERROR - 天禾股份 没有持仓[0m
+[31m2025-08-27 10:29:12 - ERROR - 万里股份 没有持仓[0m
+[31m2025-08-27 10:29:33 - ERROR - 恒尚节能 没有持仓[0m
+[32m2025-08-27 10:29:48 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:29:51 - INFO - 买入 嘉美包装 100股 False 无提示信息[0m
+[32m2025-08-27 10:30:06 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:30:09 - INFO - 买入 ST瑞和 100股 False 该股票为风险警示股票 ,请谨慎购买!当日通过竞价交易、大宗交易和盘后定价累计买入的单只风险警示股票 ,委托买入数量与当日已买入数量及已申报买入但尚未成交、也未撤销的数量之和 ,不得超过50万股。上市公司回购、5%以上股东根据已披露的增持计划增持股份等情形除外。[0m
+[32m2025-08-27 10:30:31 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:30:33 - INFO - 买入 钱江生化 100股 False 无提示信息[0m
+[32m2025-08-27 10:30:46 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:30:49 - INFO - 买入 摩恩电气 100股 False 无提示信息[0m
+[32m2025-08-27 10:31:08 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:31:09 - INFO - 买入 双箭股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-08-27 10:31:10 - INFO - 半仓卖出[0m
+[32m2025-08-27 10:31:24 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:31:24 - INFO - 卖出 弘业期货 100股 False 未检测到'委托确认'提示[0m
+[32m2025-08-27 10:31:26 - INFO - 买入 永东股份 100股 False 委托已提交，合同号为：293235[0m
+[32m2025-08-27 10:31:43 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:31:46 - INFO - 买入 万丰股份 100股 False 无提示信息[0m
+[32m2025-08-27 10:32:01 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:32:03 - INFO - 买入 农心科技 100股 False 无提示信息[0m
+[32m2025-08-27 10:32:18 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-08-27 10:32:21 - INFO - 买入 双枪科技 100股 False 无提示信息[0m
+[33m2025-08-27 10:32:35 - WARNING - 买入数量不足100股[0m
+[33m2025-08-27 10:38:53 - WARNING - 买入数量不足100股[0m
+[31m2025-08-27 13:06:24 - ERROR - 慧智微-U 没有持仓[0m

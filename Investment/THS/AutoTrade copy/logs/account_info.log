@@ -1,0 +1,2304 @@
+[32m2025-08-13 09:33:09 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:33:09 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:33:11 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-13 09:33:14 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-13 09:33:14 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[31m2025-08-13 09:33:18 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 256, 360, 1024, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 222, in extract_stock_info
+    self.return_to_top()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 36, in return_to_top
+    self.d.swipe(0.5, 0.2, 0.5, 0.8, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 256, 360, 1024, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-08-13 09:33:19 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[31m2025-08-13 09:33:19 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 226, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-08-13 09:33:20 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:33:23 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值         当日盈亏/盈亏率      持仓/可用            成本/现价
+0      中科金财   3,128.00   -10.10/-0.330%    100/100    31.383/31.280
+1       瑞尔特   1,552.00    -9.04/-0.590%    200/200      7.806/7.760
+2      超讯通信   3,709.00  -187.50/-4.820%    100/100    38.968/37.090
+3      梦网科技   2,932.00   -11.97/-0.410%    200/200    14.721/14.660
+4      金鹰股份     817.00   177.47/27.730%    100/100      6.396/8.170
+5      曙光股份   4,784.00   -29.21/-0.610%  1300/1300      3.703/3.680
+6      恒尚节能   4,920.00   485.74/10.960%    300/300    14.781/16.400
+7      双箭股份     729.00     29.52/4.190%    100/100      6.997/7.290
+8    可转债ETF  11,828.70    996.07/9.200%    900/900    12.036/13.143
+9  国债政金债ETF  10,793.30     32.58/0.300%    100/100  107.607/107.933[0m
+[32m2025-08-13 09:33:25 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 09:33:27 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-13 09:33:27 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-13 09:33:44 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:33:44 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:33:47 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:33:47 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 09:33:49 - INFO - 已回到顶部[0m
+[32m2025-08-13 09:33:49 - INFO - ✅ 成功提取持仓数据，共 4 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   金诚信  5,204.00    338.53/6.957%  100/100  48.655/52.040
+1  大业股份  4,216.00    199.62/4.970%  400/400  10.041/10.540
+2  首创奥莱    415.80  274.01/193.230%  100/100    1.418/4.158
+3  物美消费    434.60  329.07/311.943%  100/100    1.055/4.346[0m
+[32m2025-08-13 09:34:00 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-13 09:34:01 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:01 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:03 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:03 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:06 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:06 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:09 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:09 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[33m2025-08-13 09:34:12 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-13 09:34:12 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:34:14 - INFO - ✅ 成功提取持仓数据，共 0 条:
+Empty DataFrame
+Columns: []
+Index: [][0m
+[31m2025-08-13 09:34:14 - ERROR - 获取持仓失败: '标的名称'[0m
+[32m2025-08-13 09:34:17 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:34:17 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:34:20 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:34:20 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 09:34:22 - INFO - 已回到顶部[0m
+[32m2025-08-13 09:34:22 - INFO - ✅ 成功提取持仓数据，共 4 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   金诚信  5,199.00    333.53/6.854%  100/100  48.655/51.990
+1  大业股份  3,162.00    194.08/6.540%    300/0   9.893/10.540
+2  首创奥莱    415.80  274.01/193.230%  100/100    1.418/4.158
+3  物美消费    434.60  329.07/311.943%  100/100    1.055/4.346[0m
+[33m2025-08-13 09:34:22 - WARNING - 农尚环境 不在持仓中[0m
+[32m2025-08-13 09:34:30 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 09:34:33 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用      可取
+0  仓位 92.4%  43,095.19  39,814.00  +155.32  3,285.19  285.07[0m
+[32m2025-08-13 09:40:53 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 09:40:53 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:40:56 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 09:40:58 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 09:40:59 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 09:41:01 - INFO - 已回到顶部[0m
+[32m2025-08-13 09:41:01 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  卫光生物  2,950.00   -1.25/-0.044%    100/0  29.513/29.500
+1  神州数码  8,178.00    77.31/0.956%  200/200  40.503/40.890
+2  鲁西化工  4,888.00  -36.42/-0.739%  400/400  12.311/12.220
+3  银轮股份  6,186.00   193.49/3.227%  200/200  29.963/30.930
+4  博敏电子  4,332.00   103.60/2.450%  400/400  10.571/10.830
+5  梦网科技  8,880.00  -45.76/-0.511%  600/600  14.876/14.800
+6  奥飞娱乐  2,832.00  -83.51/-2.861%  300/300    9.718/9.440
+7  锐明技术  4,650.00    78.61/1.719%  100/100  45.714/46.500[0m
+[32m2025-08-13 10:20:40 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-13 10:20:40 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 10:20:43 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-13 10:20:45 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-13 10:20:45 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-13 10:20:48 - INFO - 已回到顶部[0m
+[32m2025-08-13 10:20:48 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  卫光生物  2,925.00  -26.25/-0.891%    100/0  29.513/29.250
+1  神州数码  8,236.00   135.31/1.671%  200/200  40.503/41.180
+2  鲁西化工  4,856.00  -68.42/-1.389%  400/400  12.311/12.140
+3  博敏电子  4,348.00   119.60/2.828%  400/400  10.571/10.870
+4  梦网科技  9,090.00   164.24/1.842%  600/600  14.876/15.150
+5  奥飞娱乐  2,817.00  -98.51/-3.375%  300/300    9.718/9.390
+6  锐明技术  4,639.00    67.61/1.479%  100/100  45.714/46.390
+7  银轮股份      0.00   231.85/0.000%      0/0   0.000/31.570[0m
+[32m2025-08-13 10:21:00 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 10:21:01 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-13 10:21:01 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-13 13:37:27 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-13 13:37:30 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用      可取
+0  仓位 59.5%  43,535.83  25,924.00  +591.96  17,611.33  285.07[0m
+[32m2025-08-14 09:31:58 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-14 09:31:58 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-14 09:32:01 - INFO - 第 2 次尝试新增 2 条有效持仓[0m
+[32m2025-08-14 09:32:01 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-14 09:32:03 - INFO - 已回到顶部[0m
+[32m2025-08-14 09:32:03 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  顺络电子  3,162.00    95.74/3.121%  100/100  30.663/31.620
+1  卫光生物  2,937.00  -14.25/-0.484%  100/100  29.513/29.370
+2  鲁西化工  4,884.00  -40.42/-0.819%  400/400  12.311/12.210
+3  博敏电子  4,360.00   131.60/3.112%  400/400  10.571/10.900
+4  梦网科技  9,048.00   122.24/1.371%  600/600  14.876/15.080
+5  锐明技术  4,705.00   133.61/2.922%  100/100  45.714/47.050[0m
+[32m2025-08-14 09:54:35 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-14 09:54:35 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-14 09:54:38 - INFO - 第 2 次尝试新增 2 条有效持仓[0m
+[32m2025-08-14 09:54:38 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-14 09:54:41 - INFO - 已回到顶部[0m
+[32m2025-08-14 09:54:41 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  卫光生物  2,929.00  -22.25/-0.756%  100/100  29.513/29.290
+1  鲁西化工  4,884.00  -40.42/-0.820%  400/400  12.311/12.210
+2  博敏电子  4,344.00   115.60/2.734%  400/400  10.571/10.860
+3  梦网科技  8,946.00    20.24/0.228%  600/600  14.876/14.910
+4  锐明技术  4,689.00   117.61/2.573%  100/100  45.714/46.890
+5  顺络电子      0.00    90.89/0.000%      0/0   0.000/31.470[0m
+[33m2025-08-14 09:54:41 - WARNING - 京北方 不在持仓中[0m
+[32m2025-08-14 09:55:51 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-14 09:55:54 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用      可取
+0  仓位 59.3%  43,492.25  25,789.00  +278.67  17,702.75  545.56[0m
+[32m2025-08-14 10:31:07 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-14 10:31:07 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-14 10:31:10 - INFO - 第 2 次尝试新增 3 条有效持仓[0m
+[32m2025-08-14 10:31:12 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-14 10:31:12 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-14 10:31:15 - INFO - 已回到顶部[0m
+[32m2025-08-14 10:31:15 - INFO - ✅ 成功提取持仓数据，共 7 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  弘业期货  3,897.00     5.67/0.146%    300/0  12.971/12.990
+1  卫光生物  2,928.00  -23.25/-0.789%  100/100  29.513/29.280
+2  鲁西化工  4,860.00  -64.42/-1.308%  400/400  12.311/12.150
+3  博敏电子  4,336.00   107.60/2.544%  400/400  10.571/10.840
+4  梦网科技  8,994.00    68.24/0.766%  600/600  14.876/14.990
+5  锐明技术  4,700.00   128.61/2.813%  100/100  45.714/47.000
+6  顺络电子      0.00    90.89/0.000%      0/0   0.000/32.030[0m
+[32m2025-08-15 10:34:21 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-15 10:34:23 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用      可取
+0  仓位 57.2%  43,592.97  24,928.00  +353.87  18,674.97  673.06[0m
+[32m2025-08-15 10:34:34 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-15 10:34:34 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-15 10:34:37 - INFO - 第 2 次尝试新增 1 条有效持仓[0m
+[32m2025-08-15 10:34:38 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-15 10:34:40 - INFO - 已回到顶部[0m
+[32m2025-08-15 10:34:40 - INFO - ✅ 成功提取持仓数据，共 5 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  弘业期货  3,924.00    32.67/0.840%  300/300  12.971/13.080
+1  卫光生物  2,915.00  -36.25/-1.230%  100/100  29.513/29.150
+2  博敏电子  4,452.00   223.60/5.288%  400/400  10.571/11.130
+3  梦网科技  8,934.00     8.24/0.099%  600/600  14.876/14.890
+4  锐明技术  4,697.00   125.61/2.748%  100/100  45.714/46.970[0m
+[33m2025-08-15 10:34:40 - WARNING - 科达利 不在持仓中[0m
+[32m2025-08-15 10:34:42 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-15 10:34:43 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-15 10:34:43 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-15 10:34:51 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-15 10:34:51 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-15 10:34:54 - INFO - 第 2 次尝试新增 2 条有效持仓[0m
+[32m2025-08-15 10:34:54 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-15 10:34:56 - INFO - 已回到顶部[0m
+[32m2025-08-15 10:34:56 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值        当日盈亏/盈亏率    持仓/可用          成本/现价
+0  弘业期货  3,921.00    29.67/0.763%  300/300  12.971/13.070
+1  东睦股份  2,700.00   -2.26/-0.096%    100/0  27.023/27.000
+2  卫光生物  2,915.00  -36.25/-1.230%  100/100  29.513/29.150
+3  博敏电子  4,452.00   223.60/5.288%  400/400  10.571/11.130
+4  梦网科技  8,928.00     2.24/0.026%  600/600  14.876/14.880
+5  锐明技术  4,695.00   123.61/2.704%  100/100  45.714/46.950[0m
+[33m2025-08-15 10:34:56 - WARNING - 得邦照明 不在持仓中[0m
+[32m2025-08-15 10:42:21 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-15 10:42:21 - INFO - 第 1 次尝试新增 3 条有效持仓[0m
+[32m2025-08-15 10:42:23 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-15 10:42:24 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-15 10:42:26 - INFO - 已回到顶部[0m
+[32m2025-08-15 10:42:26 - INFO - ✅ 成功提取持仓数据，共 3 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   金诚信  5,372.00   506.53/10.410%    100/0  48.655/53.720
+1  首创奥莱    412.50  270.71/190.903%  100/100    1.418/4.125
+2  物美消费    427.80  322.27/305.498%  100/100    1.055/4.278[0m
+[33m2025-08-15 10:42:26 - WARNING - 立中集团 不在持仓中[0m
+[32m2025-08-15 10:42:28 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-15 10:42:28 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-15 10:42:28 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-15 10:42:31 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-15 10:42:31 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-15 10:42:34 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-15 10:42:34 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[33m2025-08-15 10:42:36 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-15 10:42:36 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[33m2025-08-15 10:42:39 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-15 10:42:39 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-15 10:42:42 - INFO - ✅ 成功提取持仓数据，共 0 条:
+Empty DataFrame
+Columns: []
+Index: [][0m
+[31m2025-08-15 10:42:42 - ERROR - 获取持仓失败: '标的名称'[0m
+[32m2025-08-15 11:14:50 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-15 11:14:52 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用      可取
+0  仓位 72.3%  43,489.38  31,429.00  +246.28  12,059.88  673.06[0m
+[32m2025-08-15 13:20:28 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-15 13:20:29 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用      可取
+0  仓位 81.3%  43,956.05  35,746.00  +710.95  8,207.55  673.06[0m
+[32m2025-08-15 17:41:30 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-15 17:41:32 - INFO - 账户表头信息完成: 
+        仓位        总资产     总市值       浮动盈亏      可用      可取
+0  仓位 3.7%  22,781.13  835.90  +1,088.37  940.02  940.02[0m
+[32m2025-08-15 17:42:03 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-15 17:42:03 - INFO - 第 1 次尝试新增 3 条有效持仓[0m
+[32m2025-08-15 17:42:06 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-15 17:42:06 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-15 17:42:08 - INFO - 已回到顶部[0m
+[32m2025-08-15 17:42:08 - INFO - ✅ 成功提取持仓数据，共 3 条:
+   标的名称      市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0  首创奥莱  411.10  269.31/189.915%  100/100    1.418/4.111
+1  物美消费  424.80  319.27/302.654%  100/100    1.055/4.248
+2   金诚信    0.00   499.79/10.256%      0/0  48.732/53.770[0m
+[33m2025-08-15 17:42:08 - WARNING - 中国电信 不在持仓中[0m
+[32m2025-08-18 09:31:51 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:31:51 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:31:54 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:31:57 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-18 09:31:57 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:31:59 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:31:59 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0  弘业期货  4,008.00   116.67/2.999%    300/300  12.971/13.360
+1  广宇集团  3,912.00   -0.33/-0.008%  1200/1200    3.260/3.260
+2  金安国纪  4,131.00   278.67/7.234%    300/300  12.841/13.770
+3  东睦股份  2,775.00    72.74/2.690%    100/100  27.023/27.750
+4  卫光生物  2,922.00  -29.25/-0.993%    100/100  29.513/29.220
+5  博敏电子  4,484.00   255.60/6.045%    400/400  10.571/11.210
+6  梦网科技  9,048.00   122.24/1.371%    600/600  14.876/15.080
+7  锐明技术  4,736.00   164.61/3.601%    100/100  45.714/47.360[0m
+[32m2025-08-18 09:32:10 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-18 09:32:10 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:32:10 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:32:13 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:32:13 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:32:16 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:32:16 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:32:19 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:32:19 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:32:21 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:32:21 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-18 09:32:24 - INFO - ✅ 成功提取持仓数据，共 0 条:
+Empty DataFrame
+Columns: []
+Index: [][0m
+[31m2025-08-18 09:32:24 - ERROR - 获取持仓失败: '标的名称'[0m
+[32m2025-08-18 09:32:26 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:32:28 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用        可取
+0  仓位 72.1%  44,128.78  31,810.00  +885.54  12,318.28  4,208.05[0m
+[32m2025-08-18 09:41:24 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:41:24 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:41:27 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:41:29 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-18 09:41:30 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:41:32 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:41:32 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0  百隆东方  4,576.00  -24.44/-0.539%      800/0    5.751/5.720
+1  弘业期货  3,966.00    74.67/1.920%    300/300  12.971/13.220
+2  广宇集团  3,948.00    35.67/0.920%  1200/1200    3.260/3.290
+3  东睦股份  2,704.00     1.74/0.061%    100/100  27.023/27.040
+4  卫光生物  2,933.00  -18.25/-0.620%    100/100  29.513/29.330
+5  博敏电子  4,500.00   271.60/6.424%    400/400  10.571/11.250
+6  梦网科技  9,042.00   116.24/1.305%    600/600  14.876/15.070
+7  锐明技术  4,714.00   142.61/3.119%    100/100  45.714/47.140
+8  金安国纪      0.00   258.26/0.000%        0/0   0.000/13.800[0m
+[33m2025-08-18 09:41:32 - WARNING - 多氟多 不在持仓中[0m
+[32m2025-08-18 09:48:09 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:48:10 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 82.6%  44,337.34  36,616.00  +1,091.10  7,717.84  4,208.05[0m
+[32m2025-08-18 09:48:22 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:48:23 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-18 09:48:23 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-18 09:48:32 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:48:33 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-18 09:48:33 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-18 09:49:05 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:49:07 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏         可用      可取
+0  仓位 64.3%  59,389.06  38,186.20  +1,642.56  21,202.86  202.13[0m
+[32m2025-08-18 09:49:18 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:49:19 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-18 09:49:19 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-18 09:49:29 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 09:49:30 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-18 09:49:30 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-18 09:49:39 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-18 09:49:40 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:49:40 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:49:42 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:49:42 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[32m2025-08-18 09:49:45 - INFO - 第 3 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:49:48 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 09:49:51 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-18 09:49:51 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:49:55 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:49:55 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      钱江生化   1,186.00     -0.99/-0.100%      200/0      5.936/5.930
+1      醋化股份   2,602.00     -1.94/-0.079%      200/0    13.021/13.010
+2       新大正   2,228.00     -5.69/-0.260%      200/0    11.169/11.140
+3      紫光股份   2,619.00     125.26/5.020%    100/100    24.939/26.190
+4      中科金财   3,501.00    362.68/11.556%    100/100    31.383/35.010
+5       瑞尔特   1,522.00    -39.02/-2.510%    200/200      7.806/7.610
+6      梦网科技   3,030.00      85.97/2.910%    200/200    14.721/15.150
+7      曙光股份   4,732.00    -81.18/-1.690%  1300/1300      3.703/3.640
+8    可转债ETF  11,983.50  1,150.87/10.628%    900/900    12.036/13.315
+9  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[32m2025-08-18 09:50:05 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:50:05 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:50:08 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 09:50:11 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-18 09:50:11 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:50:15 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:50:15 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      钱江生化   1,184.00     -2.99/-0.270%      200/0      5.936/5.920
+1      醋化股份   2,600.00     -3.94/-0.162%      200/0    13.021/13.000
+2       新大正   2,228.00     -5.69/-0.260%      200/0    11.169/11.140
+3      紫光股份   2,617.00     123.26/4.940%    100/100    24.939/26.170
+4      中科金财   3,498.00    359.68/11.460%      100/0    31.383/34.980
+5       瑞尔特   1,520.00    -41.02/-2.640%    200/200      7.806/7.600
+6      梦网科技   3,026.00      81.98/2.782%    200/200    14.721/15.130
+7      曙光股份   4,719.00    -94.18/-1.961%  1300/1300      3.703/3.630
+8    可转债ETF  11,980.80  1,148.17/10.603%    900/900    12.036/13.312
+9  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[33m2025-08-18 09:50:15 - WARNING - 胜利股份 不在持仓中[0m
+[32m2025-08-18 09:50:18 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:50:18 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:50:21 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 09:50:23 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-18 09:50:24 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:50:28 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:50:28 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      钱江生化   1,184.00     -2.99/-0.270%      200/0      5.936/5.920
+1      醋化股份   2,600.00     -3.94/-0.162%      200/0    13.021/13.000
+2       新大正   2,228.00     -5.69/-0.260%      200/0    11.169/11.140
+3      紫光股份   2,616.00     122.26/4.900%    100/100    24.939/26.160
+4      中科金财   3,492.00    353.68/11.269%      100/0    31.383/34.920
+5       瑞尔特   1,522.00    -39.02/-2.511%    200/200      7.806/7.610
+6      梦网科技   3,026.00      81.98/2.782%    200/200    14.721/15.130
+7      曙光股份   4,719.00    -94.18/-1.961%  1300/1300      3.703/3.630
+8    可转债ETF  11,977.20  1,144.57/10.570%    900/900    12.036/13.308
+9  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[33m2025-08-18 09:50:28 - WARNING - 楚环科技 不在持仓中[0m
+[32m2025-08-18 09:50:31 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:50:31 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:50:34 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 09:50:37 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-18 09:50:37 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:50:41 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:50:41 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      钱江生化   1,186.00     -0.99/-0.089%      200/0      5.936/5.930
+1      醋化股份   2,600.00     -3.94/-0.162%      200/0    13.021/13.000
+2       新大正   2,228.00     -5.69/-0.260%      200/0    11.169/11.140
+3      紫光股份   2,614.00     120.26/4.820%    100/100    24.939/26.140
+4      中科金财   3,491.00    352.68/11.237%      100/0    31.383/34.910
+5       瑞尔特   1,522.00    -39.02/-2.511%    200/200      7.806/7.610
+6      梦网科技   3,022.00      77.98/2.646%    200/200    14.721/15.110
+7      曙光股份   4,719.00    -94.18/-1.961%  1300/1300      3.703/3.630
+8    可转债ETF  11,976.30  1,143.67/10.562%    900/900    12.036/13.307
+9  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[33m2025-08-18 09:50:41 - WARNING - 双箭股份 不在持仓中[0m
+[32m2025-08-18 09:50:43 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:50:43 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 09:50:46 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 09:50:49 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-18 09:50:49 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:50:54 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:50:54 - INFO - ✅ 成功提取持仓数据，共 10 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      钱江生化   1,186.00     -0.99/-0.089%      200/0      5.936/5.930
+1      醋化股份   2,600.00     -3.94/-0.162%      200/0    13.021/13.000
+2       新大正   2,228.00     -5.69/-0.260%      200/0    11.169/11.140
+3      紫光股份   2,613.00     119.26/4.780%    100/100    24.939/26.130
+4      中科金财   3,488.00    349.68/11.141%      100/0    31.383/34.880
+5       瑞尔特   1,522.00    -39.02/-2.511%    200/200      7.806/7.610
+6      梦网科技   3,020.00      75.98/2.579%    200/200    14.721/15.100
+7      曙光股份   4,719.00    -94.18/-1.961%  1300/1300      3.703/3.630
+8    可转债ETF  11,979.00  1,146.37/10.587%    900/900    12.036/13.310
+9  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[33m2025-08-18 09:50:54 - WARNING - 福建金森 不在持仓中[0m
+[32m2025-08-18 09:50:56 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-18 09:50:56 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:50:56 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:50:59 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:50:59 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:51:02 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:51:02 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[33m2025-08-18 09:51:05 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-18 09:51:05 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-18 09:51:07 - INFO - 第 5 次尝试新增 8 条有效持仓[0m
+[32m2025-08-18 09:51:10 - INFO - ✅ 成功提取持仓数据，共 8 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      醋化股份   2,600.00     -3.94/-0.160%      200/0    13.021/13.000
+1       新大正   2,228.00     -5.69/-0.260%      200/0    11.169/11.140
+2      紫光股份   2,616.00     122.26/4.900%    100/100    24.939/26.160
+3       瑞尔特   1,520.00    -41.02/-2.640%    200/200      7.806/7.600
+4      梦网科技   3,020.00      75.98/2.580%    200/200    14.721/15.100
+5      曙光股份   4,719.00    -94.17/-1.960%  1300/1300      3.703/3.630
+6    可转债ETF  11,981.70  1,149.07/10.610%    900/900    12.036/13.313
+7  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[33m2025-08-18 09:51:10 - WARNING - 栖霞建设 不在持仓中[0m
+[32m2025-08-18 09:51:12 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 09:51:12 - INFO - 第 1 次尝试新增 6 条有效持仓[0m
+[32m2025-08-18 09:51:13 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 09:51:15 - INFO - 已回到顶部[0m
+[32m2025-08-18 09:51:15 - INFO - ✅ 成功提取持仓数据，共 6 条:
+       标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0      紫光股份   2,618.00     124.26/4.980%    100/100    24.939/26.180
+1       瑞尔特   1,520.00    -41.02/-2.640%    200/200      7.806/7.600
+2      梦网科技   3,022.00      77.98/2.648%    200/200    14.721/15.110
+3      曙光股份   4,732.00    -81.17/-1.689%  1300/1300      3.703/3.640
+4    可转债ETF  11,981.70  1,149.07/10.610%    900/900    12.036/13.313
+5  国债政金债ETF  10,795.10      34.38/0.320%    100/100  107.607/107.951[0m
+[33m2025-08-18 09:51:15 - WARNING - 春兰股份 不在持仓中[0m
+[32m2025-08-18 10:10:06 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 10:10:07 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 10:10:09 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 10:10:12 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-18 10:10:13 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 10:10:17 - INFO - 已回到顶部[0m
+[32m2025-08-18 10:10:17 - INFO - ✅ 成功提取持仓数据，共 11 条:
+    标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0   湖南投资  1,120.00   -0.10/-0.018%      200/0    5.601/5.600
+1   神州信息  2,768.00   -2.24/-0.080%      200/0  13.851/13.840
+2   百隆东方  4,584.00  -16.44/-0.365%      800/0    5.751/5.730
+3   弘业期货  4,014.00   122.67/3.153%    300/300  12.971/13.380
+4   广宇集团  3,948.00    35.67/0.920%  1200/1200    3.260/3.290
+5   东睦股份  2,732.00    29.74/1.099%    100/100  27.023/27.320
+6   卫光生物  2,917.00  -34.25/-1.162%    100/100  29.513/29.170
+7   博敏电子  4,736.00  507.60/12.005%    400/400  10.571/11.840
+8   梦网科技  9,090.00   164.24/1.842%    600/600  14.876/15.150
+9   锐明技术  4,786.00   214.61/4.694%    100/100  45.714/47.860
+10  金安国纪      0.00   258.26/0.000%        0/0   0.000/14.030[0m
+[32m2025-08-18 10:57:08 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 10:57:09 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 85.3%  44,561.37  38,002.00  +1,317.13  6,557.87  4,208.05[0m
+[32m2025-08-18 11:10:15 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-18 11:10:17 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 85.3%  44,537.37  37,979.00  +1,294.13  6,557.87  4,208.05[0m
+[32m2025-08-18 14:25:34 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-18 14:25:34 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-18 14:25:37 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-18 14:25:40 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-18 14:25:40 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-18 14:25:44 - INFO - 已回到顶部[0m
+[32m2025-08-18 14:25:44 - INFO - ✅ 成功提取持仓数据，共 11 条:
+    标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0   湖南投资  1,112.00   -8.10/-0.732%      200/0    5.601/5.560
+1   神州信息  2,746.00  -24.24/-0.874%      200/0  13.851/13.730
+2   百隆东方  4,592.00   -8.44/-0.187%      800/0    5.751/5.740
+3   弘业期货  4,011.00   119.67/3.076%    300/300  12.971/13.370
+4   广宇集团  3,864.00  -48.33/-1.227%  1200/1200    3.260/3.220
+5   卫光生物  2,922.00  -29.25/-0.993%    100/100  29.513/29.220
+6   博敏电子  4,764.00  535.60/12.667%    400/400  10.571/11.910
+7   梦网科技  9,090.00   164.24/1.842%    600/600  14.876/15.150
+8   锐明技术  4,772.00   200.61/4.388%    100/100  45.714/47.720
+9   金安国纪      0.00   258.26/0.000%        0/0   0.000/13.670
+10  东睦股份      0.00    28.11/0.000%        0/0   0.000/27.460[0m
+[33m2025-08-18 14:25:44 - WARNING - 福莱新材 不在持仓中[0m
+[32m2025-08-19 09:32:47 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:32:49 - INFO - 账户表头信息完成: 
+        仓位        总资产     总市值     浮动盈亏         可用    可取
+0  仓位 3.7%  21,816.26  815.50  +568.18  21,000.76  0.00[0m
+[32m2025-08-19 09:32:59 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:33:00 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 09:33:00 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 09:33:10 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:33:10 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 09:33:10 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 09:33:20 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:33:22 - INFO - 账户表头信息完成: 
+         仓位        总资产       总市值     浮动盈亏         可用    可取
+0  仓位 36.8%  21,804.18  8,033.50  +556.10  12,088.66  0.00[0m
+[32m2025-08-19 09:33:32 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:33:33 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 09:33:33 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 09:33:42 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:33:43 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 09:33:43 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 09:33:53 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:33:54 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 09:33:54 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 09:34:03 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:34:04 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 09:34:04 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 09:34:14 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:34:14 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:34:17 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:34:20 - INFO - 第 3 次尝试新增 1 条有效持仓[0m
+[32m2025-08-19 09:34:22 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:34:23 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:34:25 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:34:25 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,622.00    -5.03/-0.189%    200/0  13.135/13.110
+1  楚环科技  4,608.00      4.95/0.109%    200/0  23.015/23.040
+2  恒大高新  1,262.00    -5.01/-0.395%    200/0    6.335/6.310
+3  金花股份  1,604.00      0.98/0.062%    200/0    8.015/8.020
+4  凤竹纺织  1,340.00    -7.01/-0.520%    200/0    6.735/6.700
+5  百大集团  1,812.00    -7.02/-0.385%    200/0    9.095/9.060
+6  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+7  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145
+8  宁水集团  2,512.00    -5.03/-0.199%    200/0  12.585/12.560[0m
+[33m2025-08-19 09:34:25 - WARNING - 德龙汇能 不在持仓中[0m
+[32m2025-08-19 09:34:27 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:34:27 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:34:30 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:34:33 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:34:33 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:34:35 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:34:35 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,624.00    -3.03/-0.114%    200/0  13.135/13.120
+1  楚环科技  4,608.00      4.95/0.109%    200/0  23.015/23.040
+2  恒大高新  1,262.00    -5.01/-0.395%    200/0    6.335/6.310
+3  金花股份  1,602.00    -1.02/-0.065%    200/0    8.015/8.010
+4  凤竹纺织  1,340.00    -7.01/-0.520%    200/0    6.735/6.700
+5  百大集团  1,812.00    -7.02/-0.385%    200/0    9.095/9.060
+6  宁水集团  2,510.00    -7.03/-0.278%    200/0  12.585/12.550
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:34:35 - WARNING - 双枪科技 不在持仓中[0m
+[32m2025-08-19 09:34:37 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:34:37 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:34:40 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:34:43 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:34:43 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:34:45 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:34:45 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,626.00    -1.03/-0.039%    200/0  13.135/13.130
+1  楚环科技  4,594.00    -9.05/-0.199%    200/0  23.015/22.970
+2  恒大高新  1,262.00    -5.01/-0.395%    200/0    6.335/6.310
+3  金花股份  1,604.00      0.98/0.062%    200/0    8.015/8.020
+4  凤竹纺织  1,340.00    -7.01/-0.520%    200/0    6.735/6.700
+5  百大集团  1,812.00    -7.02/-0.385%    200/0    9.095/9.060
+6  宁水集团  2,508.00    -9.03/-0.357%    200/0  12.585/12.540
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:34:45 - WARNING - 龙星科技 不在持仓中[0m
+[32m2025-08-19 09:34:48 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:34:48 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:34:51 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:34:53 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:34:54 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:34:56 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:34:56 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,626.00    -1.03/-0.039%    200/0  13.135/13.130
+1  楚环科技  4,596.00    -7.05/-0.155%    200/0  23.015/22.980
+2  恒大高新  1,260.00    -7.01/-0.552%    200/0    6.335/6.300
+3  金花股份  1,602.00    -1.02/-0.065%    200/0    8.015/8.010
+4  凤竹纺织  1,340.00    -7.01/-0.520%    200/0    6.735/6.700
+5  百大集团  1,810.00    -9.02/-0.495%    200/0    9.095/9.050
+6  宁水集团  2,510.00    -7.03/-0.278%    200/0  12.585/12.550
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:34:56 - WARNING - 汇洁股份 不在持仓中[0m
+[32m2025-08-19 09:34:58 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:34:58 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:35:01 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:35:04 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:35:04 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:35:06 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:35:06 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,626.00    -1.03/-0.039%    200/0  13.135/13.130
+1  楚环科技  4,594.00    -9.05/-0.199%    200/0  23.015/22.970
+2  恒大高新  1,264.00    -3.01/-0.237%    200/0    6.335/6.320
+3  金花股份  1,600.00    -3.02/-0.191%    200/0    8.015/8.000
+4  凤竹纺织  1,340.00    -7.01/-0.520%    200/0    6.735/6.700
+5  百大集团  1,812.00    -7.02/-0.385%    200/0    9.095/9.060
+6  宁水集团  2,514.00    -3.03/-0.120%    200/0  12.585/12.570
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:35:06 - WARNING - 新大正 不在持仓中[0m
+[32m2025-08-19 09:35:08 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:35:09 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:35:11 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:35:14 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:35:14 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:35:16 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:35:16 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,626.00    -1.03/-0.039%    200/0  13.135/13.130
+1  楚环科技  4,594.00    -9.05/-0.199%    200/0  23.015/22.970
+2  恒大高新  1,260.00    -7.01/-0.552%    200/0    6.335/6.300
+3  金花股份  1,602.00    -1.02/-0.065%    200/0    8.015/8.010
+4  凤竹纺织  1,338.00    -9.01/-0.668%    200/0    6.735/6.690
+5  百大集团  1,810.00    -9.02/-0.495%    200/0    9.095/9.050
+6  宁水集团  2,510.00    -7.03/-0.278%    200/0  12.585/12.550
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:35:16 - WARNING - 宁波富邦 不在持仓中[0m
+[32m2025-08-19 09:35:19 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:35:19 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:35:22 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:35:24 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:35:25 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:35:27 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:35:27 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,624.00    -3.03/-0.114%    200/0  13.135/13.120
+1  楚环科技  4,594.00    -9.05/-0.199%    200/0  23.015/22.970
+2  恒大高新  1,262.00    -5.01/-0.395%    200/0    6.335/6.310
+3  金花股份  1,602.00    -1.02/-0.065%    200/0    8.015/8.010
+4  凤竹纺织  1,336.00   -11.01/-0.817%    200/0    6.735/6.680
+5  百大集团  1,810.00    -9.02/-0.495%    200/0    9.095/9.050
+6  宁水集团  2,514.00    -3.03/-0.120%    200/0  12.585/12.570
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:35:27 - WARNING - 扬州金泉 不在持仓中[0m
+[32m2025-08-19 09:35:29 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:35:29 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:35:32 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:35:35 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:35:35 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:35:37 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:35:37 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,626.00    -1.03/-0.039%    200/0  13.135/13.130
+1  楚环科技  4,594.00    -9.05/-0.199%    200/0  23.015/22.970
+2  恒大高新  1,262.00    -5.01/-0.395%    200/0    6.335/6.310
+3  金花股份  1,600.00    -3.02/-0.191%    200/0    8.015/8.000
+4  凤竹纺织  1,334.00   -13.01/-0.965%    200/0    6.735/6.670
+5  百大集团  1,810.00    -9.02/-0.495%    200/0    9.095/9.050
+6  宁水集团  2,514.00    -3.03/-0.120%    200/0  12.585/12.570
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:35:37 - WARNING - 醋化股份 不在持仓中[0m
+[32m2025-08-19 09:35:39 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:35:40 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:35:42 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:35:45 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:35:45 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:35:47 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:35:47 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  2,624.00    -3.03/-0.114%    200/0  13.135/13.120
+1  楚环科技  4,594.00    -9.05/-0.199%    200/0  23.015/22.970
+2  恒大高新  1,260.00    -7.01/-0.552%    200/0    6.335/6.300
+3  金花股份  1,600.00    -3.02/-0.191%    200/0    8.015/8.000
+4  凤竹纺织  1,334.00   -13.01/-0.965%    200/0    6.735/6.670
+5  百大集团  1,812.00    -7.02/-0.385%    200/0    9.095/9.060
+6  宁水集团  2,514.00    -3.03/-0.120%    200/0  12.585/12.570
+7  首创奥莱    401.00  259.21/182.793%  100/100    1.418/4.010
+8  物美消费    414.50  308.97/292.891%  100/100    1.055/4.145[0m
+[33m2025-08-19 09:35:47 - WARNING - 园林股份 不在持仓中[0m
+[32m2025-08-19 09:38:01 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-19 09:38:01 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-19 09:38:04 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-19 09:38:07 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-19 09:38:07 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-19 09:38:09 - INFO - 已回到顶部[0m
+[32m2025-08-19 09:38:09 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0  湖南投资  1,110.00  -10.10/-0.911%    200/200    5.601/5.550
+1  神州信息  2,748.00  -22.24/-0.801%    200/200  13.851/13.740
+2  弘业期货  3,990.00    98.67/2.536%    300/300  12.971/13.300
+3  广宇集团  3,936.00    23.67/0.613%  1200/1200    3.260/3.280
+4  卫光生物  2,940.00  -11.25/-0.383%    100/100  29.513/29.400
+5  锐明技术  4,782.00   210.61/4.607%    100/100  45.714/47.820
+6  百隆东方  4,560.00  -40.44/-0.886%    800/800    5.751/5.700
+7  博敏电子  4,752.00  523.60/12.383%    400/400  10.571/11.880
+8  梦网科技  9,066.00   140.24/1.573%    600/600  14.876/15.110[0m
+[33m2025-08-19 09:38:09 - WARNING - 恒立液压 不在持仓中[0m
+[32m2025-08-19 09:41:27 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 09:41:28 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用    可取
+0  仓位 86.3%  43,877.22  37,866.00  +908.76  6,000.22  0.00[0m
+[32m2025-08-19 10:14:26 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 10:14:28 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用    可取
+0  仓位 76.2%  21,913.09  16,695.50  +665.01  3,535.57  0.00[0m
+[32m2025-08-19 10:14:39 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 10:14:40 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-19 10:14:40 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-19 10:15:08 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 10:15:10 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用    可取
+0  仓位 88.3%  21,900.06  19,335.50  +651.98  882.54  0.00[0m
+[32m2025-08-19 10:15:39 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 10:15:41 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用    可取
+0  仓位 88.3%  21,886.76  19,322.20  +638.68  882.54  0.00[0m
+[32m2025-08-19 10:16:10 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 10:16:12 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用    可取
+0  仓位 88.3%  21,892.16  19,327.60  +644.08  882.54  0.00[0m
+[32m2025-08-19 10:16:41 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-19 10:16:43 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用    可取
+0  仓位 88.3%  21,898.16  19,333.60  +650.08  882.54  0.00[0m
+[32m2025-08-20 09:55:32 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 09:55:34 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏        可用      可取
+0  仓位 96.3%  43,734.85  42,131.00  +767.35  1,603.85  603.81[0m
+[32m2025-08-20 09:59:46 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 09:59:48 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  43,713.75  43,266.00  +742.25  447.25  447.25[0m
+[32m2025-08-20 09:59:59 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 09:59:59 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-20 09:59:59 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-20 10:00:09 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:00:10 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-20 10:00:10 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-20 10:00:20 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:00:21 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 84.9%  58,813.38  49,959.20  +1,377.34  3,875.56  2,000.64[0m
+[32m2025-08-20 10:00:32 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:00:33 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-20 10:00:33 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-20 10:01:02 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:01:04 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 97.6%  58,790.05  57,400.90  +1,349.65  1,389.15  1,389.15[0m
+[32m2025-08-20 10:01:34 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 10:01:35 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用        可取
+0  仓位 97.6%  58,793.95  57,404.80  +1,353.55  1,389.15  1,389.15[0m
+[32m2025-08-20 10:02:05 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:02:05 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:08 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:02:11 - INFO - 第 3 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:14 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:02:14 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:02:19 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:02:19 - INFO - ✅ 成功提取持仓数据，共 13 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,806.00       2.58/0.030%      200/0    39.018/39.030
+1       德龙汇能   1,346.00     -3.09/-0.240%      200/0      6.747/6.730
+2       双枪科技   4,970.00    -11.53/-0.250%      200/0    24.909/24.850
+3       美能能源   2,486.00     -1.86/-0.077%      200/0    12.440/12.430
+4     可转债ETF  12,052.80  1,220.17/11.268%    900/900    12.036/13.392
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,745.00    -68.18/-1.420%  1300/1300      3.703/3.650
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.917%    200/200    13.020/12.900
+9       紫光股份   2,629.00     135.25/5.420%    100/100    24.939/26.290
+10      梦网科技   3,020.00      75.98/2.572%    200/200    14.721/15.100
+11       瑞尔特   1,542.00    -19.03/-1.229%    200/200      7.806/7.710
+12       新大正   2,230.00     -3.50/-0.170%    200/200    11.168/11.150[0m
+[32m2025-08-20 10:02:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:02:30 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:33 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:02:36 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-20 10:02:39 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:02:39 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:02:43 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:02:43 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,808.00       4.57/0.056%      200/0    39.018/39.040
+1       德龙汇能   1,346.00     -3.09/-0.283%      200/0      6.747/6.730
+2       双枪科技   4,970.00    -11.53/-0.240%      200/0    24.909/24.850
+3       美能能源   2,484.00     -3.86/-0.160%      200/0    12.440/12.420
+4     可转债ETF  12,047.40  1,214.77/11.210%    900/900    12.036/13.386
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,745.00    -68.18/-1.420%  1300/1300      3.703/3.650
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.920%    200/200    13.020/12.900
+9       梦网科技   3,018.00      73.98/2.510%    200/200    14.721/15.090
+10       瑞尔特   1,544.00    -17.03/-1.100%    200/200      7.806/7.720
+11       新大正   2,230.00     -3.50/-0.170%    200/200    11.168/11.150[0m
+[33m2025-08-20 10:02:43 - WARNING - 国投智能 不在持仓中[0m
+[32m2025-08-20 10:02:46 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:02:46 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:02:49 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:02:51 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-20 10:02:54 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:02:54 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:02:59 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:02:59 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,804.00       0.58/0.008%      200/0    39.018/39.020
+1       德龙汇能   1,346.00     -3.09/-0.240%      200/0      6.747/6.730
+2       双枪科技   4,970.00    -11.53/-0.240%      200/0    24.909/24.850
+3       美能能源   2,484.00     -3.86/-0.160%      200/0    12.440/12.420
+4     可转债ETF  12,051.90  1,219.27/11.255%    900/900    12.036/13.391
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,745.00    -68.18/-1.420%  1300/1300      3.703/3.650
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.920%    200/200    13.020/12.900
+9       梦网科技   3,018.00      73.98/2.510%    200/200    14.721/15.090
+10       瑞尔特   1,544.00    -17.03/-1.100%    200/200      7.806/7.720
+11       新大正   2,228.00     -5.50/-0.267%    200/200    11.168/11.140[0m
+[33m2025-08-20 10:02:59 - WARNING - 湖北能源 不在持仓中[0m
+[32m2025-08-20 10:03:01 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:01 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:04 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:07 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-20 10:03:09 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:03:09 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:14 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:14 - INFO - ✅ 成功提取持仓数据，共 12 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       超讯通信   7,806.00       2.58/0.034%      200/0    39.018/39.030
+1       德龙汇能   1,348.00     -1.09/-0.085%      200/0      6.747/6.740
+2       双枪科技   4,970.00    -11.53/-0.240%      200/0    24.909/24.850
+3       美能能源   2,486.00     -1.86/-0.077%      200/0    12.440/12.430
+4     可转债ETF  12,052.80  1,220.17/11.263%    900/900    12.036/13.392
+5   国债政金债ETF  10,793.00      32.28/0.300%    100/100  107.607/107.930
+6       曙光股份   4,732.00    -81.18/-1.691%  1300/1300      3.703/3.640
+7       钱江生化   1,188.00       1.21/0.080%    200/200      5.935/5.940
+8       醋化股份   2,580.00    -23.73/-0.920%    200/200    13.020/12.900
+9       梦网科技   3,020.00      75.98/2.578%    200/200    14.721/15.100
+10       瑞尔特   1,542.00    -19.03/-1.229%    200/200      7.806/7.710
+11       新大正   2,230.00     -3.50/-0.170%    200/200    11.168/11.150[0m
+[33m2025-08-20 10:03:14 - WARNING - *ST交投 不在持仓中[0m
+[32m2025-08-20 10:03:16 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:16 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[33m2025-08-20 10:03:19 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:03:19 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[31m2025-08-20 10:03:20 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 226, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[33m2025-08-20 10:03:21 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:03:21 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[31m2025-08-20 10:03:21 - ERROR - 处理持仓信息失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\account_info.py", line 226, in extract_stock_info
+    self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 896, 360, 384, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[32m2025-08-20 10:03:22 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:25 - INFO - 第 5 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:28 - INFO - ✅ 成功提取持仓数据，共 13 条:
+    标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   超讯通信  7,820.00     16.58/0.217%    200/0  39.018/39.100
+1   德龙汇能  1,346.00    -3.09/-0.240%    200/0    6.747/6.730
+2   双枪科技  4,970.00   -11.53/-0.240%    200/0  24.909/24.850
+3   美能能源  2,484.00    -3.86/-0.160%    200/0  12.440/12.420
+4    三柏硕  5,372.00    101.49/1.928%  400/400  13.176/13.430
+5   楚环科技  4,678.00     79.56/1.731%  200/200  22.992/23.390
+6   恒大高新  1,278.00     15.88/1.252%  200/200    6.311/6.390
+7   金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+8   凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+9   百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+10  宁水集团  2,550.00     37.76/1.505%  200/200  12.561/12.750
+11  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+12  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:28 - WARNING - 众兴菌业 不在持仓中[0m
+[32m2025-08-20 10:03:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:30 - INFO - 第 1 次尝试新增 6 条有效持仓[0m
+[32m2025-08-20 10:03:31 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:33 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:33 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0  金花股份  1,610.00     11.84/0.738%  200/200    7.991/8.050
+1  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+2  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+3  宁水集团  2,556.00     43.76/1.744%  200/200  12.561/12.780
+4  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+5  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:33 - WARNING - 黄山胶囊 不在持仓中[0m
+[32m2025-08-20 10:03:35 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:35 - INFO - 第 1 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:38 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:38 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:40 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:40 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,278.00     15.88/1.252%  200/200    6.311/6.390
+3  金花股份  1,610.00     11.84/0.738%  200/200    7.991/8.050
+4  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:40 - WARNING - 豪尔赛 不在持仓中[0m
+[32m2025-08-20 10:03:43 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:43 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:46 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:48 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:03:48 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:03:51 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:03:51 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:03:51 - WARNING - 天禾股份 不在持仓中[0m
+[32m2025-08-20 10:03:53 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:03:53 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:03:56 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:03:59 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:03:59 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:01 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:01 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,680.00     81.56/1.775%  200/200  22.992/23.400
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,850.00     35.83/1.974%  200/200    9.071/9.250
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:04:01 - WARNING - 锐奇股份 不在持仓中[0m
+[32m2025-08-20 10:04:03 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:04 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:06 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:09 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:09 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:11 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:11 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,380.00    109.49/2.080%  400/400  13.176/13.450
+1  楚环科技  4,680.00     81.56/1.775%  200/200  22.992/23.400
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,552.00     39.76/1.585%  200/200  12.561/12.760
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:04:11 - WARNING - 永清环保 不在持仓中[0m
+[32m2025-08-20 10:04:14 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:14 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:17 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:20 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:20 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:22 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:22 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,550.00     37.76/1.505%  200/200  12.561/12.750
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    411.00  305.47/289.573%  100/100    1.055/4.110[0m
+[33m2025-08-20 10:04:22 - WARNING - 浙江力诺 不在持仓中[0m
+[32m2025-08-20 10:04:24 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:24 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:27 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:30 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:30 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:32 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:32 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,610.00     11.84/0.738%  200/200    7.991/8.050
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,854.00     39.83/2.194%  200/200    9.071/9.270
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:04:32 - WARNING - 冠中生态 不在持仓中[0m
+[32m2025-08-20 10:04:34 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:35 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:37 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:40 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:40 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:42 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:42 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,372.00    101.49/1.928%  400/400  13.176/13.430
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,368.00     25.88/1.921%  200/200    6.711/6.840
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,554.00     41.76/1.664%  200/200  12.561/12.770
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:04:42 - WARNING - 建研设计 不在持仓中[0m
+[32m2025-08-20 10:04:45 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:45 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:48 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:04:50 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:04:50 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:04:53 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:04:53 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,372.00    101.49/1.928%  400/400  13.176/13.430
+1  楚环科技  4,686.00     87.56/1.906%  200/200  22.992/23.430
+2  恒大高新  1,280.00     17.88/1.410%  200/200    6.311/6.400
+3  金花股份  1,608.00      9.84/0.613%  200/200    7.991/8.040
+4  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,552.00     39.76/1.585%  200/200  12.561/12.760
+7  首创奥莱    393.90  252.11/177.785%  100/100    1.418/3.939
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:04:53 - WARNING - 森泰股份 不在持仓中[0m
+[32m2025-08-20 10:04:55 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:04:55 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:04:58 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-20 10:05:01 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:05:01 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:05:03 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:05:03 - INFO - ✅ 成功提取持仓数据，共 9 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,684.00     85.56/1.862%  200/200  22.992/23.420
+2  恒大高新  1,278.00     15.88/1.252%  200/200    6.311/6.390
+3  金花股份  1,606.00      7.84/0.488%  200/200    7.991/8.030
+4  凤竹纺织  1,366.00     23.88/1.773%  200/200    6.711/6.830
+5  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+6  宁水集团  2,552.00     39.76/1.585%  200/200  12.561/12.760
+7  首创奥莱    394.70  252.91/178.350%  100/100    1.418/3.947
+8  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[32m2025-08-20 10:05:13 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-20 10:05:14 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:05:14 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[33m2025-08-20 10:05:16 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:05:16 - INFO - 第 2 次尝试新增 0 条有效持仓[0m
+[33m2025-08-20 10:05:19 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-20 10:05:19 - INFO - 第 3 次尝试新增 0 条有效持仓[0m
+[32m2025-08-20 10:05:22 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:05:25 - INFO - 第 5 次尝试新增 4 条有效持仓[0m
+[32m2025-08-20 10:05:28 - INFO - ✅ 成功提取持仓数据，共 8 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0   三柏硕  5,376.00    105.49/2.004%  400/400  13.176/13.440
+1  楚环科技  4,688.00     89.56/1.949%  200/200  22.992/23.440
+2  恒大高新  1,278.00     15.88/1.250%  200/200    6.311/6.390
+3  凤竹纺织  1,368.00     25.88/1.922%  200/200    6.711/6.840
+4  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+5  宁水集团  2,558.00     45.76/1.823%  200/200  12.561/12.790
+6  首创奥莱    394.70  252.91/178.350%  100/100    1.418/3.947
+7  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120[0m
+[33m2025-08-20 10:05:28 - WARNING - 钱江生化 不在持仓中[0m
+[32m2025-08-20 10:05:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-20 10:05:30 - INFO - 第 1 次尝试新增 6 条有效持仓[0m
+[32m2025-08-20 10:05:30 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-20 10:05:32 - INFO - 已回到顶部[0m
+[32m2025-08-20 10:05:32 - INFO - ✅ 成功提取持仓数据，共 6 条:
+   标的名称        市值         当日盈亏/盈亏率    持仓/可用          成本/现价
+0  凤竹纺织  1,368.00     25.88/1.922%  200/200    6.711/6.840
+1  百大集团  1,852.00     37.83/2.084%  200/200    9.071/9.260
+2  宁水集团  2,556.00     43.76/1.744%  200/200  12.561/12.780
+3  首创奥莱    394.70  252.91/178.350%  100/100    1.418/3.947
+4  物美消费    412.00  306.47/290.521%  100/100    1.055/4.120
+5  金花股份      0.00      2.02/0.000%      0/0    0.000/8.030[0m
+[33m2025-08-20 10:05:32 - WARNING - 美腾科技 不在持仓中[0m
+[32m2025-08-20 11:16:10 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 11:16:12 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  43,630.75  43,183.00  +660.25  447.25  447.25[0m
+[32m2025-08-20 11:28:55 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 11:28:57 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 99.0%  43,507.75  43,060.00  +536.25  447.25  447.25[0m
+[32m2025-08-20 13:00:13 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-20 13:00:14 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏      可用      可取
+0  仓位 98.9%  43,585.75  43,119.00  +601.25  447.25  447.25[0m
+[32m2025-08-21 09:31:16 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 09:31:17 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-21 09:31:17 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-21 09:35:00 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 09:35:01 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-21 09:35:01 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-21 09:36:56 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 09:36:57 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-21 09:36:57 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-21 09:40:39 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 09:40:41 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用     可取
+0  仓位 99.0%  57,239.59  56,664.40  +1,666.29  575.19  15.42[0m
+[32m2025-08-21 09:43:45 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 09:43:47 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用     可取
+0  仓位 99.0%  57,217.59  56,642.40  +1,644.31  575.19  15.42[0m
+[32m2025-08-21 09:44:08 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 09:44:09 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.0%  44,054.75  43,621.00  +1,097.25  447.75  447.75[0m
+[32m2025-08-21 10:33:23 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 10:33:24 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.0%  44,209.75  43,762.00  +1,242.25  447.75  447.75[0m
+[32m2025-08-21 11:14:16 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 11:14:17 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 96.4%  44,185.07  42,579.00  +1,213.57  1,605.57  447.75[0m
+[32m2025-08-21 11:16:17 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 11:16:18 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 96.4%  44,182.07  42,580.00  +1,214.57  1,605.57  447.75[0m
+[32m2025-08-21 11:18:33 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-21 11:18:35 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用     可取
+0  仓位 96.6%  57,300.59  55,372.40  +1,728.08  1,928.19  15.42[0m
+[32m2025-08-21 13:47:15 - INFO - 正在获取账户持仓信息...[0m
+[33m2025-08-21 13:47:15 - WARNING - 未找到 recyclerview_id 节点[0m
+[32m2025-08-21 13:47:15 - INFO - 第 1 次尝试新增 0 条有效持仓[0m
+[32m2025-08-21 13:47:19 - INFO - 第 2 次尝试新增 4 条有效持仓[0m
+[32m2025-08-21 13:47:22 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-21 13:47:24 - INFO - 第 4 次尝试新增 3 条有效持仓[0m
+[32m2025-08-21 13:47:27 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-21 13:47:27 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-21 13:47:32 - INFO - 已回到顶部[0m
+[32m2025-08-21 13:47:32 - INFO - ✅ 成功提取持仓数据，共 12 条:
+    标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0   双箭股份  1,444.00     1.88/0.125%      200/0    7.211/7.220
+1   海南华铁  4,300.00  -96.41/-2.193%    400/400  10.991/10.750
+2   湖南投资  1,138.00    17.90/1.589%    200/200    5.601/5.690
+3   神州信息  2,792.00    21.76/0.787%    200/200  13.851/13.960
+4   弘业期货  3,906.00    14.67/0.378%    300/300  12.971/13.020
+5   广宇集团  4,056.00   143.67/3.681%  1200/1200    3.260/3.380
+6   卫光生物  2,952.00     0.75/0.024%    100/100  29.513/29.520
+7   锐明技术  5,049.00  477.61/10.447%    100/100  45.714/50.490
+8   百隆东方  4,600.00   -0.44/-0.017%    800/800    5.751/5.750
+9   博敏电子  4,520.00   291.60/6.897%    400/400  10.571/11.300
+10  梦网科技  9,702.00   776.24/8.699%    600/600  14.876/16.170
+11  川发龙蟒      0.00     2.22/0.000%        0/0   0.000/11.600[0m
+[32m2025-08-21 13:55:36 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-21 13:55:37 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-21 13:55:39 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-21 13:55:42 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-21 13:55:45 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-21 13:55:45 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-21 13:55:49 - INFO - 已回到顶部[0m
+[32m2025-08-21 13:55:49 - INFO - ✅ 成功提取持仓数据，共 12 条:
+    标的名称        市值         当日盈亏/盈亏率      持仓/可用          成本/现价
+0   双箭股份  1,440.00    -2.12/-0.153%      200/0    7.211/7.200
+1   海南华铁  4,288.00  -108.41/-2.466%    400/400  10.991/10.720
+2   湖南投资  1,138.00     17.90/1.589%    200/200    5.601/5.690
+3   神州信息  2,788.00     17.76/0.642%    200/200  13.851/13.940
+4   弘业期货  3,900.00      8.67/0.224%    300/300  12.971/13.000
+5   广宇集团  4,056.00    143.67/3.681%  1200/1200    3.260/3.380
+6   卫光生物  2,949.00    -2.25/-0.078%    100/100  29.513/29.490
+7   锐明技术  5,048.00   476.61/10.426%    100/100  45.714/50.480
+8   百隆东方  4,584.00   -16.44/-0.365%    800/800    5.751/5.730
+9   博敏电子  4,516.00    287.60/6.802%    400/400  10.571/11.290
+10  梦网科技  9,690.00    764.24/8.564%    600/600  14.876/16.150
+11  川发龙蟒      0.00      2.22/0.000%        0/0   0.000/11.570[0m
+[32m2025-08-21 13:57:00 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-21 13:57:01 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-21 13:57:03 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-21 13:57:06 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-21 13:57:09 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-21 13:57:09 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-21 13:57:13 - INFO - 已回到顶部[0m
+[32m2025-08-21 13:57:13 - INFO - ✅ 成功提取持仓数据，共 12 条:
+    标的名称        市值         当日盈亏/盈亏率      持仓/可用          成本/现价
+0   双箭股份  1,440.00    -2.12/-0.153%      200/0    7.211/7.200
+1   海南华铁  4,288.00  -108.41/-2.466%    400/400  10.991/10.720
+2   湖南投资  1,138.00     17.90/1.589%    200/200    5.601/5.690
+3   神州信息  2,786.00     15.76/0.570%    200/200  13.851/13.930
+4   弘业期货  3,900.00      8.67/0.224%    300/300  12.971/13.000
+5   广宇集团  4,056.00    143.67/3.681%  1200/1200    3.260/3.380
+6   卫光生物  2,949.00    -2.25/-0.078%    100/100  29.513/29.490
+7   锐明技术  5,053.00   481.61/10.535%    100/100  45.714/50.530
+8   百隆东方  4,592.00    -8.44/-0.187%    800/800    5.751/5.740
+9   博敏电子  4,516.00    287.60/6.802%    400/400  10.571/11.290
+10  梦网科技  9,684.00    758.24/8.497%    600/600  14.876/16.140
+11  川发龙蟒      0.00      2.22/0.000%        0/0   0.000/11.570[0m
+[32m2025-08-21 14:03:38 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-21 14:03:38 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-21 14:03:41 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-21 14:03:44 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-21 14:03:46 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-21 14:03:47 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-21 14:03:51 - INFO - 已回到顶部[0m
+[32m2025-08-21 14:03:51 - INFO - ✅ 成功提取持仓数据，共 12 条:
+    标的名称        市值         当日盈亏/盈亏率      持仓/可用          成本/现价
+0   双箭股份  1,438.00    -4.12/-0.291%      200/0    7.211/7.190
+1   海南华铁  4,280.00  -116.41/-2.648%    400/400  10.991/10.700
+2   湖南投资  1,138.00     17.90/1.589%    200/200    5.601/5.690
+3   神州信息  2,788.00     17.76/0.643%    200/200  13.851/13.940
+4   弘业期货  3,891.00    -0.33/-0.009%    300/300  12.971/12.970
+5   广宇集团  4,056.00    143.67/3.681%  1200/1200    3.260/3.380
+6   卫光生物  2,948.00    -3.25/-0.112%    100/100  29.513/29.480
+7   锐明技术  5,051.00   479.61/10.491%    100/100  45.714/50.510
+8   百隆东方  4,584.00   -16.44/-0.365%    800/800    5.751/5.730
+9   博敏电子  4,516.00    287.60/6.801%    400/400  10.571/11.290
+10  梦网科技  9,696.00    770.24/8.631%    600/600  14.876/16.160
+11  川发龙蟒      0.00      2.22/0.000%        0/0   0.000/11.570[0m
+[32m2025-08-21 14:17:18 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-21 14:17:18 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-21 14:17:21 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-21 14:17:23 - INFO - 第 3 次尝试新增 3 条有效持仓[0m
+[32m2025-08-21 14:17:26 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-21 14:17:26 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-21 14:17:31 - INFO - 已回到顶部[0m
+[32m2025-08-21 14:17:31 - INFO - ✅ 成功提取持仓数据，共 12 条:
+    标的名称        市值         当日盈亏/盈亏率      持仓/可用          成本/现价
+0   双箭股份  1,436.00    -6.12/-0.430%      200/0    7.211/7.180
+1   海南华铁  4,280.00  -116.41/-2.648%    400/400  10.991/10.700
+2   湖南投资  1,138.00     17.90/1.589%    200/200    5.601/5.690
+3   神州信息  2,794.00     23.76/0.859%    200/200  13.851/13.970
+4   弘业期货  3,885.00    -6.33/-0.162%    300/300  12.971/12.950
+5   广宇集团  4,056.00    143.67/3.681%  1200/1200    3.260/3.380
+6   卫光生物  2,948.00    -3.25/-0.112%    100/100  29.513/29.480
+7   锐明技术  5,035.00   463.61/10.141%    100/100  45.714/50.350
+8   百隆东方  4,592.00    -8.44/-0.187%    800/800    5.751/5.740
+9   博敏电子  4,512.00    283.60/6.707%    400/400  10.571/11.280
+10  梦网科技  9,750.00    824.24/9.236%    600/600  14.876/16.250
+11  川发龙蟒      0.00      2.22/0.000%        0/0   0.000/11.570[0m
+[32m2025-08-22 09:40:29 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:40:32 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,785.67  57,299.20  +2,219.01  486.47  486.47[0m
+[32m2025-08-22 09:40:48 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:40:50 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,756.57  57,270.10  +2,189.91  486.47  486.47[0m
+[32m2025-08-22 09:41:06 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:41:07 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,748.37  57,261.90  +2,181.71  486.47  486.47[0m
+[32m2025-08-22 09:41:41 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:41:43 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,640.47  57,154.00  +2,073.81  486.47  486.47[0m
+[32m2025-08-22 09:41:59 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:42:00 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,625.97  57,139.50  +2,059.31  486.47  486.47[0m
+[32m2025-08-22 09:42:16 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:42:18 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,619.67  57,133.20  +2,053.01  486.47  486.47[0m
+[32m2025-08-22 09:42:34 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:42:35 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,639.97  57,153.50  +2,073.31  486.47  486.47[0m
+[32m2025-08-22 09:42:51 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:42:53 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,655.77  57,169.30  +2,077.10  486.47  486.47[0m
+[32m2025-08-22 09:43:08 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:43:09 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏      可用      可取
+0  仓位 99.2%  57,644.87  57,158.40  +2,066.20  486.47  486.47[0m
+[32m2025-08-22 09:46:34 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:46:34 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:46:37 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:46:39 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:46:39 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:46:44 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:46:44 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,860.00    -23.91/-0.831%    400/400      7.210/7.150
+1       超讯通信   8,130.00     326.58/4.186%    200/200    39.017/40.650
+2       美能能源   2,480.00     -7.66/-0.335%    200/200    12.439/12.400
+3     可转债ETF  12,200.40  1,367.77/12.628%    900/900    12.036/13.556
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,823.00       9.77/0.212%  1300/1300      3.703/3.710
+6       钱江生化   1,202.00      15.20/1.264%    200/200      5.935/6.010
+7       醋化股份   2,590.00    -13.74/-0.538%    200/200    13.020/12.950
+8       梦网科技   3,264.00    319.84/10.860%    200/200    14.721/16.320
+9        瑞尔特   1,560.00     -1.04/-0.080%    200/200      7.806/7.800
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:46:44 - WARNING - 神州信息 不在持仓中[0m
+[32m2025-08-22 09:46:51 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:46:51 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:46:54 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:46:57 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:46:57 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:47:02 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:47:02 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,860.00    -23.91/-0.831%    400/400      7.210/7.150
+1       超讯通信   8,126.00     322.58/4.135%    200/200    39.017/40.630
+2       美能能源   2,480.00     -7.66/-0.335%    200/200    12.439/12.400
+3     可转债ETF  12,199.50  1,366.87/12.620%    900/900    12.036/13.555
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,810.00     -3.23/-0.070%  1300/1300      3.703/3.700
+6       钱江生化   1,202.00      15.20/1.264%    200/200      5.935/6.010
+7       醋化股份   2,588.00    -15.74/-0.617%    200/200    13.020/12.940
+8       梦网科技   3,262.00    317.84/10.792%    200/200    14.721/16.310
+9        瑞尔特   1,560.00     -1.04/-0.080%    200/200      7.806/7.800
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:47:02 - WARNING - 茂化实华 不在持仓中[0m
+[32m2025-08-22 09:47:09 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:47:09 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:47:12 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:47:14 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:47:15 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:47:19 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:47:19 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,860.00    -23.91/-0.831%    400/400      7.210/7.150
+1       超讯通信   8,130.00     326.58/4.186%    200/200    39.017/40.650
+2       美能能源   2,476.00    -11.66/-0.510%    200/200    12.439/12.380
+3     可转债ETF  12,193.20  1,360.57/12.562%    900/900    12.036/13.548
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,810.00     -3.23/-0.070%  1300/1300      3.703/3.700
+6       钱江生化   1,202.00      15.20/1.264%    200/200      5.935/6.010
+7       醋化股份   2,586.00    -17.74/-0.695%    200/200    13.020/12.930
+8       梦网科技   3,258.00    313.84/10.656%    200/200    14.721/16.290
+9        瑞尔特   1,558.00     -3.04/-0.234%    200/200      7.806/7.790
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:47:19 - WARNING - 双枪科技 不在持仓中[0m
+[32m2025-08-22 09:47:26 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:47:26 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:47:29 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:47:32 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:47:32 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:47:36 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:47:36 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,864.00    -19.91/-0.692%    400/400      7.210/7.160
+1       超讯通信   8,132.00     328.58/4.212%    200/200    39.017/40.660
+2       美能能源   2,474.00    -13.66/-0.597%    200/200    12.439/12.370
+3     可转债ETF  12,190.50  1,357.87/12.537%    900/900    12.036/13.545
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,797.00    -16.23/-0.352%  1300/1300      3.703/3.690
+6       钱江生化   1,202.00      15.20/1.264%    200/200      5.935/6.010
+7       醋化股份   2,588.00    -15.74/-0.617%    200/200    13.020/12.940
+8       梦网科技   3,256.00    311.84/10.588%    200/200    14.721/16.280
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:47:36 - WARNING - 农心科技 不在持仓中[0m
+[32m2025-08-22 09:47:43 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:47:43 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:47:46 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:47:49 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:47:49 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:47:54 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:47:54 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,860.00    -23.91/-0.831%    400/400      7.210/7.150
+1       超讯通信   8,126.00     322.58/4.135%    200/200    39.017/40.630
+2       美能能源   2,474.00    -13.66/-0.597%    200/200    12.439/12.370
+3     可转债ETF  12,193.20  1,360.57/12.562%    900/900    12.036/13.548
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,797.00    -16.23/-0.352%  1300/1300      3.703/3.690
+6       钱江生化   1,204.00      17.20/1.430%    200/200      5.935/6.020
+7       醋化股份   2,588.00    -15.74/-0.617%    200/200    13.020/12.940
+8       梦网科技   3,248.00    303.84/10.317%    200/200    14.721/16.240
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:47:54 - WARNING - 恒大高新 不在持仓中[0m
+[32m2025-08-22 09:48:01 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:48:01 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:48:04 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:48:07 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:48:07 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:48:11 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:48:11 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,860.00    -23.91/-0.831%    400/400      7.210/7.150
+1       超讯通信   8,134.00     330.58/4.237%    200/200    39.017/40.670
+2       美能能源   2,474.00    -13.66/-0.597%    200/200    12.439/12.370
+3     可转债ETF  12,196.80  1,364.17/12.595%    900/900    12.036/13.552
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,797.00    -16.23/-0.352%  1300/1300      3.703/3.690
+6       钱江生化   1,202.00      15.20/1.264%    200/200      5.935/6.010
+7       醋化股份   2,586.00    -17.74/-0.695%    200/200    13.020/12.930
+8       梦网科技   3,260.00    315.84/10.724%    200/200    14.721/16.300
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:48:11 - WARNING - 嘉美包装 不在持仓中[0m
+[32m2025-08-22 09:48:18 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:48:19 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:48:22 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:48:25 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:48:25 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:48:29 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:48:29 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,860.00    -23.91/-0.831%    400/400      7.210/7.150
+1       超讯通信   8,152.00     348.58/4.468%    200/200    39.017/40.760
+2       美能能源   2,474.00    -13.66/-0.597%    200/200    12.439/12.370
+3     可转债ETF  12,196.80  1,364.17/12.595%    900/900    12.036/13.552
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,797.00    -16.23/-0.352%  1300/1300      3.703/3.690
+6       钱江生化   1,200.00      13.20/1.097%    200/200      5.935/6.000
+7       醋化股份   2,586.00    -17.74/-0.695%    200/200    13.020/12.930
+8       梦网科技   3,284.00    339.84/11.539%    200/200    14.721/16.420
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,238.00       4.50/0.180%    200/200    11.168/11.190[0m
+[33m2025-08-22 09:48:29 - WARNING - 天禾股份 不在持仓中[0m
+[32m2025-08-22 09:48:36 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:48:36 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:48:39 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:48:42 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:48:42 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:48:46 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:48:46 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,864.00    -19.91/-0.692%    400/400      7.210/7.160
+1       超讯通信   8,158.00     354.58/4.545%    200/200    39.017/40.790
+2       美能能源   2,476.00    -11.66/-0.510%    200/200    12.439/12.380
+3     可转债ETF  12,195.90  1,363.27/12.587%    900/900    12.036/13.551
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,797.00    -16.23/-0.352%  1300/1300      3.703/3.690
+6       钱江生化   1,198.00      11.20/0.931%    200/200      5.935/5.990
+7       醋化股份   2,588.00    -15.74/-0.617%    200/200    13.020/12.940
+8       梦网科技   3,286.00    341.84/11.607%    200/200    14.721/16.430
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,238.00       4.50/0.180%    200/200    11.168/11.190[0m
+[33m2025-08-22 09:48:46 - WARNING - 宁波联合 不在持仓中[0m
+[32m2025-08-22 09:48:54 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:48:54 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:48:56 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:48:59 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:48:59 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:49:04 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:49:04 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,864.00    -19.91/-0.692%    400/400      7.210/7.160
+1       超讯通信   8,176.00     372.58/4.776%    200/200    39.017/40.880
+2       美能能源   2,476.00    -11.66/-0.510%    200/200    12.439/12.380
+3     可转债ETF  12,195.90  1,363.27/12.587%    900/900    12.036/13.551
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,810.00     -3.23/-0.070%  1300/1300      3.703/3.700
+6       钱江生化   1,198.00      11.20/0.931%    200/200      5.935/5.990
+7       醋化股份   2,588.00    -15.74/-0.617%    200/200    13.020/12.940
+8       梦网科技   3,284.00    339.84/11.539%    200/200    14.721/16.420
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,238.00       4.50/0.180%    200/200    11.168/11.190[0m
+[33m2025-08-22 09:49:04 - WARNING - 菲达环保 不在持仓中[0m
+[32m2025-08-22 09:49:11 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:49:11 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:49:14 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:49:17 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:49:17 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:49:21 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:49:21 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,864.00    -19.91/-0.692%    400/400      7.210/7.160
+1       超讯通信   8,150.00     346.58/4.443%    200/200    39.017/40.750
+2       美能能源   2,474.00    -13.66/-0.597%    200/200    12.439/12.370
+3     可转债ETF  12,193.20  1,360.57/12.562%    900/900    12.036/13.548
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,810.00     -3.23/-0.070%  1300/1300      3.703/3.700
+6       钱江生化   1,198.00      11.20/0.931%    200/200      5.935/5.990
+7       醋化股份   2,588.00    -15.74/-0.617%    200/200    13.020/12.940
+8       梦网科技   3,278.00    333.84/11.335%    200/200    14.721/16.390
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,240.00       6.50/0.260%    200/200    11.168/11.200[0m
+[33m2025-08-22 09:49:21 - WARNING - 扬州金泉 不在持仓中[0m
+[32m2025-08-22 09:49:29 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 09:49:29 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 09:49:32 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 09:49:35 - INFO - 第 3 次尝试新增 2 条有效持仓[0m
+[32m2025-08-22 09:49:35 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 09:49:39 - INFO - 已回到顶部[0m
+[32m2025-08-22 09:49:39 - INFO - ✅ 成功提取持仓数据，共 11 条:
+        标的名称         市值          当日盈亏/盈亏率      持仓/可用            成本/现价
+0       双箭股份   2,864.00    -19.91/-0.692%    400/400      7.210/7.160
+1       超讯通信   8,150.00     346.58/4.443%    200/200    39.017/40.750
+2       美能能源   2,474.00    -13.66/-0.597%    200/200    12.439/12.370
+3     可转债ETF  12,188.70  1,356.07/12.520%    900/900    12.036/13.543
+4   国债政金债ETF  10,792.40      31.68/0.290%    100/100  107.607/107.924
+5       曙光股份   4,810.00     -3.23/-0.070%  1300/1300      3.703/3.700
+6       钱江生化   1,196.00       9.20/0.765%    200/200      5.935/5.980
+7       醋化股份   2,586.00    -17.74/-0.695%    200/200    13.020/12.930
+8       梦网科技   3,274.00    329.84/11.200%    200/200    14.721/16.370
+9        瑞尔特   1,556.00     -5.04/-0.388%    200/200      7.806/7.780
+10       新大正   2,236.00       2.50/0.100%    200/200    11.168/11.180[0m
+[33m2025-08-22 09:49:39 - WARNING - 金海高科 不在持仓中[0m
+[32m2025-08-22 09:49:46 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:49:48 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 90.5%  57,578.26  52,116.90  +2,002.56  5,461.36  486.47[0m
+[32m2025-08-22 09:50:05 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:50:07 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 91.6%  57,555.21  52,706.10  +1,979.15  4,849.11  486.47[0m
+[32m2025-08-22 09:50:22 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 09:50:24 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 91.6%  57,600.61  52,751.50  +2,024.55  1,570.63  486.47[0m
+[32m2025-08-22 10:06:19 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 10:06:20 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 10:06:22 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:06:25 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:06:28 - INFO - 第 4 次尝试新增 3 条有效持仓[0m
+[32m2025-08-22 10:06:31 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-22 10:06:31 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 10:06:35 - INFO - 已回到顶部[0m
+[32m2025-08-22 10:06:35 - INFO - ✅ 成功提取持仓数据，共 17 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     中持股份     861.00     -4.77/-0.570%      100/0    8.660/8.610
+1     永安林业     710.00       7.32/1.010%      100/0    7.029/7.100
+2     居然智家     608.00     -4.60/-0.790%      200/0    3.064/3.040
+3     摩恩电气     719.00     -3.68/-0.540%      100/0    7.229/7.190
+4     世龙实业     976.00     -3.85/-0.413%      100/0    9.800/9.760
+5     汇洁股份     728.00     -3.68/-0.530%      100/0    7.319/7.280
+6     双箭股份   2,840.00    -43.90/-1.529%    400/400    7.210/7.100
+7     超讯通信   8,092.00     288.60/3.703%    200/100  39.017/40.460
+8     德龙汇能   1,336.00     -5.09/-0.388%      200/0    6.707/6.680
+9     美能能源   2,464.00    -23.65/-0.960%    200/200  12.439/12.320
+10  可转债ETF  12,162.60  1,329.97/12.282%    900/900  12.036/13.514
+11    曙光股份   4,771.00    -42.21/-0.880%  1300/1300    3.703/3.670
+12    钱江生化   1,190.00       3.20/0.250%    200/200    5.935/5.950
+13    醋化股份   2,576.00    -27.73/-1.078%    200/200  13.020/12.880
+14    梦网科技   3,278.00    333.83/11.334%    200/200  14.721/16.390
+15     瑞尔特   1,548.00    -13.04/-0.850%    200/200    7.806/7.740
+16     新大正   2,222.00    -11.49/-0.520%    200/200  11.168/11.110[0m
+[33m2025-08-22 10:06:35 - WARNING - 神州信息 不在持仓中[0m
+[32m2025-08-22 10:06:42 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 10:06:42 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 10:06:45 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:06:48 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:06:51 - INFO - 第 4 次尝试新增 3 条有效持仓[0m
+[32m2025-08-22 10:06:53 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-22 10:06:53 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 10:06:58 - INFO - 已回到顶部[0m
+[32m2025-08-22 10:06:58 - INFO - ✅ 成功提取持仓数据，共 17 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     中持股份     861.00     -4.77/-0.570%      100/0    8.660/8.610
+1     永安林业     708.00       5.32/0.734%      100/0    7.029/7.080
+2     居然智家     610.00     -2.60/-0.447%      200/0    3.064/3.050
+3     摩恩电气     718.00     -4.68/-0.687%      100/0    7.229/7.180
+4     世龙实业     975.00     -4.85/-0.520%      100/0    9.800/9.750
+5     汇洁股份     729.00     -2.68/-0.386%      100/0    7.319/7.290
+6     双箭股份   2,840.00    -43.90/-1.529%    400/400    7.210/7.100
+7     超讯通信   8,090.00     286.60/3.677%    200/100  39.017/40.450
+8     德龙汇能   1,334.00     -7.09/-0.540%      200/0    6.707/6.670
+9     美能能源   2,464.00    -23.65/-0.960%    200/200  12.439/12.320
+10  可转债ETF  12,163.50  1,330.87/12.290%    900/900  12.036/13.515
+11    曙光股份   4,784.00    -29.21/-0.609%  1300/1300    3.703/3.680
+12    钱江生化   1,192.00       5.20/0.406%    200/200    5.935/5.960
+13    醋化股份   2,576.00    -27.73/-1.078%    200/200  13.020/12.880
+14    梦网科技   3,282.00    337.83/11.470%    200/200  14.721/16.410
+15     瑞尔特   1,548.00    -13.04/-0.850%    200/200    7.806/7.740
+16     新大正   2,222.00    -11.49/-0.520%    200/200  11.168/11.110[0m
+[33m2025-08-22 10:06:58 - WARNING - 茂化实华 不在持仓中[0m
+[32m2025-08-22 10:07:05 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 10:07:05 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 10:07:08 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:10:17 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 10:10:17 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 10:10:20 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:10:23 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 10:10:26 - INFO - 第 4 次尝试新增 3 条有效持仓[0m
+[32m2025-08-22 10:10:29 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-22 10:10:29 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-22 10:10:33 - INFO - 已回到顶部[0m
+[32m2025-08-22 10:10:33 - INFO - ✅ 成功提取持仓数据，共 17 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     中持股份     859.00     -6.77/-0.809%      100/0    8.660/8.590
+1     永安林业     709.00       6.32/0.872%      100/0    7.029/7.090
+2     居然智家     606.00     -6.60/-1.133%      200/0    3.064/3.030
+3     摩恩电气     717.00     -5.68/-0.833%      100/0    7.229/7.170
+4     世龙实业     974.00     -5.85/-0.627%      100/0    9.800/9.740
+5     汇洁股份     728.00     -3.68/-0.530%      100/0    7.319/7.280
+6     双箭股份   2,836.00    -47.90/-1.669%    400/400    7.210/7.090
+7     超讯通信   8,102.00     298.60/3.831%    200/100  39.017/40.510
+8     德龙汇能   1,332.00     -9.09/-0.692%      200/0    6.707/6.660
+9     美能能源   2,460.00    -27.65/-1.122%    200/200  12.439/12.300
+10  可转债ETF  12,141.00  1,308.37/12.082%    900/900  12.036/13.490
+11    曙光股份   4,771.00    -42.21/-0.880%  1300/1300    3.703/3.670
+12    钱江生化   1,188.00       1.20/0.094%    200/200    5.935/5.940
+13    醋化股份   2,570.00    -33.73/-1.311%    200/200  13.020/12.850
+14    梦网科技   3,308.00    363.83/12.352%    200/200  14.721/16.540
+15     瑞尔特   1,544.00    -17.04/-1.111%    200/200    7.806/7.720
+16     新大正   2,216.00    -17.49/-0.792%    200/200  11.168/11.080[0m
+[33m2025-08-22 10:10:33 - WARNING - 神州信息 不在持仓中[0m
+[32m2025-08-22 10:27:43 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-22 10:27:44 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-22 10:27:46 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-22 13:00:37 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-22 13:00:39 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏     可用     可取
+0  仓位 99.9%  44,828.97  44,777.00  +1,846.25  51.47  51.47[0m
+[32m2025-08-25 09:31:58 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:32:00 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 96.7%  45,052.17  43,577.00  +1,970.31  1,475.17  475.14[0m
+[32m2025-08-25 09:32:12 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:32:13 - INFO - 账户表头信息完成: 
+     仓位   总资产   总市值  浮动盈亏    可用    可取
+0  None  None  None  None  None  None[0m
+[31m2025-08-25 09:32:13 - ERROR - 获取可用资金失败: could not convert string to float: 'None'[0m
+[32m2025-08-25 09:35:36 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:35:36 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:35:39 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:35:42 - INFO - 第 3 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:35:45 - INFO - 第 4 次尝试新增 0 条有效持仓[0m
+[32m2025-08-25 09:35:45 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:35:49 - INFO - 已回到顶部[0m
+[32m2025-08-25 09:35:49 - INFO - ✅ 成功提取持仓数据，共 13 条:
+    标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0   吉林敖东  2,082.00     3.82/0.188%      100/0  20.782/20.820
+1   中山公用  1,049.00   -3.10/-0.295%      100/0  10.521/10.490
+2   湖南投资  1,122.00     1.90/0.342%    200/200    5.601/5.610
+3   弘业期货  3,894.00     2.67/0.069%    300/300  12.971/12.980
+4   广宇集团  4,008.00    95.67/2.453%  1200/1200    3.260/3.340
+5   卫光生物  2,926.00  -25.25/-0.858%    100/100  29.513/29.260
+6   锐明技术  5,041.00  469.61/10.272%    100/100  45.714/50.410
+7   用友网络  1,730.00    25.84/1.514%    100/100  17.042/17.300
+8   百隆东方  4,520.00  -80.44/-1.760%    800/800    5.751/5.650
+9   共进股份  1,355.00    54.88/4.223%    100/100  13.001/13.550
+10  海南华铁  4,548.00   151.59/3.448%    400/400  10.991/11.370
+11  博敏电子  4,480.00   251.60/5.950%    400/400  10.571/11.200
+12  梦网科技  4,938.00  965.34/24.301%    300/300  13.242/16.460[0m
+[32m2025-08-25 09:38:31 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:38:34 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 87.2%  57,941.19  50,530.00  +2,331.16  7,411.19  410.96[0m
+[32m2025-08-25 09:38:50 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:38:53 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 88.3%  57,933.84  51,136.90  +2,323.48  6,796.94  410.96[0m
+[32m2025-08-25 09:42:41 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:42:41 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:42:44 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:42:47 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:42:50 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:42:53 - INFO - 第 5 次尝试新增 3 条有效持仓[0m
+[32m2025-08-25 09:42:55 - INFO - ✅ 成功提取持仓数据，共 22 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     377.00       2.75/0.697%    100/100    3.744/3.770
+1    *ST星农     603.00     -2.40/-0.446%    100/100    6.056/6.030
+2     湖北能源     465.00       4.69/0.980%    100/100    4.605/4.650
+3    *ST交投     735.00       1.51/0.224%    100/100    7.337/7.350
+4     钧达股份   4,811.00    -12.23/-0.274%    100/100  48.234/48.110
+5     中持股份     920.00      54.40/6.255%    100/100    8.658/9.200
+6     永安林业     700.00     -2.47/-0.380%    100/100    7.027/7.000
+7     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+8     摩恩电气     718.00     -4.48/-0.657%    100/100    7.227/7.180
+9     世龙实业     981.00       1.35/0.148%    100/100    9.799/9.810
+10    汇洁股份     726.00     -5.48/-0.769%    100/100    7.317/7.260
+11    双箭股份   2,848.00    -35.90/-1.251%    400/400    7.210/7.120
+12    超讯通信   4,306.00    605.45/16.370%    100/100  37.004/43.060
+13    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+14    美能能源   2,478.00     -9.66/-0.396%    200/200  12.439/12.390
+15  可转债ETF  12,384.90  1,552.27/14.329%    900/900  12.036/13.761
+16    曙光股份   4,771.00    -42.19/-0.879%  1300/1300    3.703/3.670
+17    钱江生化   1,194.00       7.20/0.582%    200/200    5.935/5.970
+18    醋化股份     -29.72           -29.72/       200/        13.020/
+19    梦网科技   3,324.00    379.82/12.905%    200/200  14.721/16.620
+20     瑞尔特   1,546.00    -15.03/-0.980%    200/200    7.806/7.730
+21     新大正   2,234.00       0.51/0.023%    200/200  11.168/11.170[0m
+[32m2025-08-25 09:43:13 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:43:13 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:43:15 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:43:18 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:43:21 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:43:24 - INFO - 第 5 次尝试新增 2 条有效持仓[0m
+[32m2025-08-25 09:43:24 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:43:30 - INFO - ✅ 成功提取持仓数据，共 21 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     378.00       3.75/0.950%    100/100    3.744/3.780
+1    *ST星农     603.00     -2.40/-0.430%    100/100    6.056/6.030
+2    *ST交投     735.00       1.51/0.180%    100/100    7.337/7.350
+3     钧达股份   4,810.00    -13.22/-0.279%    100/100  48.234/48.100
+4     中持股份     921.00      55.39/6.380%    100/100    8.658/9.210
+5     永安林业     700.00     -2.47/-0.380%    100/100    7.027/7.000
+6     居然智家   1,224.00     -3.01/-0.260%    400/200    3.068/3.060
+7     摩恩电气     717.00     -5.48/-0.795%    100/100    7.227/7.170
+8     世龙实业     980.00       0.35/0.020%    100/100    9.799/9.800
+9     汇洁股份     726.00     -5.48/-0.780%    100/100    7.317/7.260
+10    双箭股份   2,848.00    -35.90/-1.250%    400/400    7.210/7.120
+11    超讯通信   4,315.00    614.41/16.611%    100/100  37.004/43.150
+12    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+13    美能能源   2,478.00     -9.66/-0.398%    200/200  12.439/12.390
+14  可转债ETF  12,376.80  1,544.17/14.259%    900/900  12.036/13.752
+15    曙光股份   4,771.00    -42.21/-0.880%  1300/1300    3.703/3.670
+16    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+17    醋化股份   2,574.00    -29.73/-1.150%    200/200  13.020/12.870
+18    梦网科技     369.81           369.81/       200/        14.721/
+19     瑞尔特   1,546.00    -15.03/-0.980%    200/200    7.806/7.730
+20     新大正   2,230.00     -3.50/-0.187%    200/200  11.168/11.150[0m
+[33m2025-08-25 09:43:30 - WARNING - 金房能源 不在持仓中[0m
+[32m2025-08-25 09:43:37 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:43:37 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:43:40 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:43:43 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:43:46 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:43:49 - INFO - 第 5 次尝试新增 2 条有效持仓[0m
+[32m2025-08-25 09:43:49 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:43:55 - INFO - ✅ 成功提取持仓数据，共 21 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     377.00       2.75/0.697%    100/100    3.744/3.770
+1    *ST星农     604.00     -1.40/-0.251%    100/100    6.056/6.040
+2    *ST交投     735.00       1.51/0.180%    100/100    7.337/7.350
+3     钧达股份   4,811.00    -12.22/-0.258%    100/100  48.234/48.110
+4     中持股份     922.00      56.39/6.495%    100/100    8.658/9.220
+5     永安林业     700.00     -2.47/-0.380%    100/100    7.027/7.000
+6     居然智家   1,224.00     -3.01/-0.260%    400/200    3.068/3.060
+7     摩恩电气     717.00     -5.48/-0.795%    100/100    7.227/7.170
+8     世龙实业     981.00       1.35/0.077%    100/100    9.799/9.810
+9     汇洁股份     725.00     -6.48/-0.922%    100/100    7.317/7.250
+10    双箭股份   2,844.00    -39.90/-1.389%    400/400    7.210/7.110
+11    超讯通信   4,312.00    611.41/16.530%    100/100  37.004/43.120
+12    德龙汇能   1,354.00      13.10/0.956%    200/200    6.705/6.770
+13    美能能源      -9.66            -9.66/       200/        12.439/
+14  可转债ETF  12,382.20  1,549.57/14.308%    900/900  12.036/13.758
+15    曙光股份   4,784.00    -29.21/-0.609%  1300/1300    3.703/3.680
+16    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+17    醋化股份   2,574.00    -29.73/-1.150%    200/200  13.020/12.870
+18    梦网科技     365.81           365.81/       200/        14.721/
+19     瑞尔特   1,546.00    -15.03/-0.980%    200/200    7.806/7.730
+20     新大正   2,234.00       0.50/0.027%    200/200  11.168/11.170[0m
+[33m2025-08-25 09:43:55 - WARNING - 三柏硕 不在持仓中[0m
+[32m2025-08-25 09:44:02 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:44:02 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:44:05 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:44:08 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:44:11 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:44:13 - INFO - 第 5 次尝试新增 2 条有效持仓[0m
+[32m2025-08-25 09:44:13 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:44:20 - INFO - ✅ 成功提取持仓数据，共 21 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     378.00       3.75/0.950%    100/100    3.744/3.780
+1    *ST星农     605.00     -0.40/-0.072%    100/100    6.056/6.050
+2    *ST交投     733.00     -0.49/-0.058%    100/100    7.337/7.330
+3     钧达股份   4,810.00    -13.22/-0.279%    100/100  48.234/48.100
+4     中持股份     920.00      54.39/6.264%    100/100    8.658/9.200
+5     永安林业     701.00     -1.47/-0.226%    100/100    7.027/7.010
+6     居然智家   1,228.00       0.99/0.086%    400/200    3.068/3.070
+7     摩恩电气     718.00     -4.48/-0.650%    100/100    7.227/7.180
+8     世龙实业     982.00       2.35/0.134%    100/100    9.799/9.820
+9     汇洁股份     725.00     -6.48/-0.922%    100/100    7.317/7.250
+10    双箭股份   2,852.00    -31.90/-1.111%    400/400    7.210/7.130
+11    超讯通信   4,297.00    596.41/16.124%    100/100  37.004/42.970
+12    德龙汇能   1,354.00      13.10/0.956%    200/200    6.705/6.770
+13    美能能源   2,474.00    -13.66/-0.562%    200/200  12.439/12.370
+14  可转债ETF  12,375.90  1,543.27/14.250%    900/900  12.036/13.751
+15    曙光股份   4,784.00    -29.21/-0.609%  1300/1300    3.703/3.680
+16    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+17    醋化股份   2,574.00    -29.73/-1.150%    200/200  13.020/12.870
+18    梦网科技     365.81           365.81/       200/        14.721/
+19     瑞尔特   1,546.00    -15.03/-0.980%    200/200    7.806/7.730
+20     新大正   2,232.00     -1.50/-0.080%    200/200  11.168/11.160[0m
+[32m2025-08-25 09:44:37 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:44:37 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:44:40 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:44:43 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:44:45 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:44:48 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:44:48 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:44:55 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     377.00       2.75/0.680%    100/100    3.744/3.770
+1    *ST星农     605.00     -0.40/-0.100%    100/100    6.056/6.050
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,807.00    -16.22/-0.341%    100/100  48.234/48.070
+4     中持股份     917.00      51.39/5.915%    100/100    8.658/9.170
+5     永安林业     701.00     -1.47/-0.226%    100/100    7.027/7.010
+6     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气     717.00     -5.48/-0.790%    100/100    7.227/7.170
+8     世龙实业     982.00       2.35/0.209%    100/100    9.799/9.820
+9     汇洁股份     725.00     -6.48/-0.910%    100/100    7.317/7.250
+10    超讯通信   4,288.00    587.44/15.880%    100/100  37.004/42.880
+11    德龙汇能   1,354.00      13.10/0.956%    200/200    6.705/6.770
+12    美能能源   2,474.00    -13.66/-0.560%    200/200  12.439/12.370
+13  可转债ETF  12,378.60  1,545.97/14.270%    900/900  12.036/13.754
+14    曙光股份   4,771.00    -42.21/-0.881%  1300/1300    3.703/3.670
+15    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+16    醋化股份   2,572.00    -31.73/-1.230%    200/200  13.020/12.860
+17    梦网科技   3,320.00    375.81/12.766%    200/200  14.721/16.600
+18     瑞尔特     -15.03           -15.03/       200/         7.806/
+19     新大正   2,234.00       0.50/0.027%    200/200  11.168/11.170[0m
+[33m2025-08-25 09:44:55 - WARNING - 新宏泽 不在持仓中[0m
+[32m2025-08-25 09:45:02 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:45:02 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:45:05 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:07 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:10 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:13 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:45:13 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:45:20 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     377.00       2.75/0.680%    100/100    3.744/3.770
+1    *ST星农     606.00       0.60/0.150%    100/100    6.056/6.060
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,806.00    -17.22/-0.362%    100/100  48.234/48.060
+4     中持股份     915.00      49.39/5.685%    100/100    8.658/9.150
+5     永安林业     701.00     -1.47/-0.226%    100/100    7.027/7.010
+6     居然智家   1,224.00     -3.01/-0.213%    400/200    3.068/3.060
+7     摩恩电气     718.00     -4.48/-0.646%    100/100    7.227/7.180
+8     世龙实业     982.00       2.35/0.209%    100/100    9.799/9.820
+9     汇洁股份     725.00     -6.48/-0.910%    100/100    7.317/7.250
+10    超讯通信   4,274.00    573.44/15.502%    100/100  37.004/42.740
+11    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+12    美能能源   2,472.00    -15.66/-0.642%    200/200  12.439/12.360
+13  可转债ETF  12,376.80  1,544.17/14.253%    900/900  12.036/13.752
+14    曙光股份   4,771.00    -42.21/-0.881%  1300/1300    3.703/3.670
+15    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+16    醋化股份   2,574.00    -29.73/-1.152%    200/200  13.020/12.870
+17    梦网科技   3,314.00    369.81/12.562%    200/200  14.721/16.570
+18     瑞尔特     -17.03           -17.03/       200/         7.806/
+19     新大正   2,234.00       0.50/0.027%    200/200  11.168/11.170[0m
+[33m2025-08-25 09:45:20 - WARNING - 锐奇股份 不在持仓中[0m
+[32m2025-08-25 09:45:26 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:45:27 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:45:29 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:32 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:35 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:38 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:45:38 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:45:44 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     377.00       2.75/0.680%    100/100    3.744/3.770
+1    *ST星农     604.00     -1.40/-0.350%    100/100    6.056/6.040
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,804.00    -19.22/-0.404%    100/100  48.234/48.040
+4     中持股份     913.00      47.39/5.455%    100/100    8.658/9.130
+5     永安林业     701.00     -1.47/-0.226%    100/100    7.027/7.010
+6     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气     718.00     -4.48/-0.646%    100/100    7.227/7.180
+8     世龙实业     983.00       3.35/0.298%    100/100    9.799/9.830
+9     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+10    超讯通信   4,270.00    569.44/15.393%    100/100  37.004/42.700
+11    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+12    美能能源   2,474.00    -13.66/-0.560%    200/200  12.439/12.370
+13  可转债ETF  12,366.00  1,533.37/14.154%    900/900  12.036/13.740
+14    曙光股份   4,771.00    -42.21/-0.881%  1300/1300    3.703/3.670
+15    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+16    醋化股份   2,572.00    -31.73/-1.230%    200/200  13.020/12.860
+17    梦网科技   3,312.00    367.81/12.494%    200/200  14.721/16.560
+18     瑞尔特     -15.03           -15.03/       200/         7.806/
+19     新大正   2,236.00       2.50/0.133%    200/200  11.168/11.180[0m
+[33m2025-08-25 09:45:44 - WARNING - 浙矿股份 不在持仓中[0m
+[32m2025-08-25 09:45:51 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:45:52 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:45:54 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:45:57 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:00 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:03 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:46:03 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:46:09 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     377.00       2.75/0.680%    100/100    3.744/3.770
+1    *ST星农     605.00     -0.40/-0.100%    100/100    6.056/6.050
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,801.00    -22.22/-0.467%    100/100  48.234/48.010
+4     中持股份     916.00      50.39/5.800%    100/100    8.658/9.160
+5     永安林业     701.00     -1.47/-0.226%    100/100    7.027/7.010
+6     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气     718.00     -4.48/-0.646%    100/100    7.227/7.180
+8     世龙实业     982.00       2.35/0.209%    100/100    9.799/9.820
+9     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+10    超讯通信   4,260.00    559.44/15.123%    100/100  37.004/42.600
+11    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+12    美能能源   2,474.00    -13.66/-0.560%    200/200  12.439/12.370
+13  可转债ETF  12,357.00  1,524.37/14.071%    900/900  12.036/13.730
+14    曙光股份   4,784.00    -29.21/-0.610%  1300/1300    3.703/3.680
+15    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+16    醋化股份   2,574.00    -29.73/-1.152%    200/200  13.020/12.870
+17    梦网科技   3,310.00    365.81/12.426%    200/200  14.721/16.550
+18     瑞尔特     -17.03           -17.03/       200/         7.806/
+19     新大正   2,236.00       2.50/0.133%    200/200  11.168/11.180[0m
+[33m2025-08-25 09:46:09 - WARNING - 浙江力诺 不在持仓中[0m
+[32m2025-08-25 09:46:16 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:46:16 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:46:19 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:22 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:25 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:28 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:46:28 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:46:34 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称        市值        当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源    377.00     2.75/0.680%    100/100    3.744/3.770
+1    *ST星农    603.00   -2.40/-0.600%    100/100    6.056/6.030
+2    *ST交投    733.00   -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份  4,806.00  -17.22/-0.362%    100/100  48.234/48.060
+4     中持股份    916.00    50.39/5.800%    100/100    8.658/9.160
+5     永安林业    702.00   -0.47/-0.072%    100/100    7.027/7.020
+6     居然智家  1,228.00     0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气    717.00   -5.48/-0.790%    100/100    7.227/7.170
+8     世龙实业    984.00     4.35/0.387%    100/100    9.799/9.840
+9     汇洁股份    724.00   -7.48/-1.050%    100/100    7.317/7.240
+10    超讯通信  4,238.00  537.44/14.528%    100/100  37.004/42.380
+11    德龙汇能  1,352.00    11.10/0.810%    200/200    6.705/6.760
+12    美能能源  2,480.00   -7.66/-0.314%    200/200  12.439/12.400
+13  可转债ETF  1,524.37       1,524.37/       900/        12.036/
+14    曙光股份  4,784.00  -29.21/-0.610%  1300/1300    3.703/3.680
+15    钱江生化  1,194.00     7.20/0.582%    200/200    5.935/5.970
+16    醋化股份  2,580.00  -23.73/-0.920%    200/200  13.020/12.900
+17    梦网科技  3,306.00  361.81/12.290%    200/200  14.721/16.530
+18     瑞尔特    -17.03         -17.03/       200/         7.806/
+19     新大正  2,244.00    10.50/0.560%    200/200  11.168/11.220[0m
+[33m2025-08-25 09:46:34 - WARNING - 建研设计 不在持仓中[0m
+[32m2025-08-25 09:46:41 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:46:41 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:46:44 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:47 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:49 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:46:52 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:46:52 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:46:59 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     378.00       3.75/0.927%    100/100    3.744/3.780
+1    *ST星农     603.00     -2.40/-0.600%    100/100    6.056/6.030
+2    *ST交投     734.00       0.51/0.094%    100/100    7.337/7.340
+3     钧达股份   4,793.00    -30.22/-0.635%    100/100  48.234/47.930
+4     中持股份     915.00      49.39/5.685%    100/100    8.658/9.150
+5     永安林业     702.00     -0.47/-0.072%    100/100    7.027/7.020
+6     居然智家   1,232.00       4.99/0.353%    400/200    3.068/3.080
+7     摩恩电气     717.00     -5.48/-0.790%    100/100    7.227/7.170
+8     世龙实业     985.00       5.35/0.476%    100/100    9.799/9.850
+9     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+10    超讯通信   4,230.00    529.44/14.312%    100/100  37.004/42.300
+11    德龙汇能   1,354.00      13.10/0.956%    200/200    6.705/6.770
+12    美能能源   2,480.00     -7.66/-0.314%    200/200  12.439/12.400
+13  可转债ETF  12,351.60  1,518.97/14.021%    900/900  12.036/13.724
+14    曙光股份   4,784.00    -29.21/-0.610%  1300/1300    3.703/3.680
+15    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+16    醋化股份   2,572.00    -31.73/-1.230%    200/200  13.020/12.860
+17    梦网科技   3,300.00    355.81/12.086%    200/200  14.721/16.500
+18     瑞尔特     -17.03           -17.03/       200/         7.806/
+19     新大正   2,240.00       6.50/0.347%    200/200  11.168/11.200[0m
+[33m2025-08-25 09:46:59 - WARNING - 普莱得 不在持仓中[0m
+[32m2025-08-25 09:47:06 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:47:06 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:47:09 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:47:12 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:47:14 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:47:17 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:47:17 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:47:24 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     378.00       3.75/0.927%    100/100    3.744/3.780
+1    *ST星农     603.00     -2.40/-0.600%    100/100    6.056/6.030
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,793.00    -30.22/-0.635%    100/100  48.234/47.930
+4     中持股份     915.00      49.39/5.685%    100/100    8.658/9.150
+5     永安林业     702.00     -0.47/-0.072%    100/100    7.027/7.020
+6     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气     717.00     -5.48/-0.790%    100/100    7.227/7.170
+8     世龙实业     984.00       4.35/0.387%    100/100    9.799/9.840
+9     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+10    超讯通信   4,236.00    535.44/14.474%    100/100  37.004/42.360
+11    德龙汇能   1,354.00      13.10/0.956%    200/200    6.705/6.770
+12    美能能源   2,480.00     -7.66/-0.314%    200/200  12.439/12.400
+13  可转债ETF  12,352.50  1,519.87/14.029%    900/900  12.036/13.725
+14    曙光股份   4,784.00    -29.21/-0.610%  1300/1300    3.703/3.680
+15    钱江生化   1,194.00       7.20/0.582%    200/200    5.935/5.970
+16    醋化股份   2,572.00    -31.73/-1.230%    200/200  13.020/12.860
+17    梦网科技   3,294.00    349.81/11.883%    200/200  14.721/16.470
+18     瑞尔特     -17.03           -17.03/       200/         7.806/
+19     新大正   2,240.00       6.50/0.347%    200/200  11.168/11.200[0m
+[33m2025-08-25 09:47:24 - WARNING - 森泰股份 不在持仓中[0m
+[32m2025-08-25 09:47:31 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:47:31 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:47:34 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:47:37 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:47:39 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:47:42 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:47:42 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:47:49 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     378.00       3.75/0.927%    100/100    3.744/3.780
+1    *ST星农     604.00     -1.40/-0.350%    100/100    6.056/6.040
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,793.00    -30.22/-0.635%    100/100  48.234/47.930
+4     中持股份     915.00      49.39/5.685%    100/100    8.658/9.150
+5     永安林业     702.00     -0.47/-0.072%    100/100    7.027/7.020
+6     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气     716.00     -6.48/-0.934%    100/100    7.227/7.160
+8     世龙实业     983.00       3.35/0.298%    100/100    9.799/9.830
+9     汇洁股份     725.00     -6.48/-0.910%    100/100    7.317/7.250
+10    超讯通信   4,247.00    546.44/14.772%    100/100  37.004/42.470
+11    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+12    美能能源   2,478.00     -9.66/-0.396%    200/200  12.439/12.390
+13  可转债ETF  12,350.70  1,518.07/14.012%    900/900  12.036/13.723
+14    曙光股份   4,771.00    -42.21/-0.881%  1300/1300    3.703/3.670
+15    钱江生化   1,194.00       7.20/0.582%    200/200    5.935/5.970
+16    醋化股份   2,568.00    -35.73/-1.385%    200/200  13.020/12.840
+17    梦网科技   3,292.00    347.81/11.815%    200/200  14.721/16.460
+18     瑞尔特     -17.03           -17.03/       200/         7.806/
+19     新大正   2,236.00       2.50/0.133%    200/200  11.168/11.180[0m
+[33m2025-08-25 09:47:49 - WARNING - 凤竹纺织 不在持仓中[0m
+[32m2025-08-25 09:47:56 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:47:56 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:47:59 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:48:01 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:48:04 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:48:07 - INFO - 第 5 次尝试新增 1 条有效持仓[0m
+[32m2025-08-25 09:48:07 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:48:14 - INFO - ✅ 成功提取持仓数据，共 20 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0     百川能源     378.00       3.75/0.927%    100/100    3.744/3.780
+1    *ST星农     601.00     -4.40/-1.100%    100/100    6.056/6.010
+2    *ST交投     733.00     -0.49/-0.090%    100/100    7.337/7.330
+3     钧达股份   4,790.00    -33.22/-0.698%    100/100  48.234/47.900
+4     中持股份     917.00      51.39/5.915%    100/100    8.658/9.170
+5     永安林业     702.00     -0.47/-0.072%    100/100    7.027/7.020
+6     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+7     摩恩电气     716.00     -6.48/-0.934%    100/100    7.227/7.160
+8     世龙实业     983.00       3.35/0.298%    100/100    9.799/9.830
+9     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+10    超讯通信   4,254.00    553.44/14.961%    100/100  37.004/42.540
+11    德龙汇能   1,354.00      13.10/0.956%    200/200    6.705/6.770
+12    美能能源   2,478.00     -9.66/-0.396%    200/200  12.439/12.390
+13  可转债ETF  12,344.40  1,511.77/13.954%    900/900  12.036/13.716
+14    曙光股份   4,771.00    -42.21/-0.881%  1300/1300    3.703/3.670
+15    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+16    醋化股份   2,566.00    -37.73/-1.463%    200/200  13.020/12.830
+17    梦网科技   3,288.00    343.81/11.679%    200/200  14.721/16.440
+18     瑞尔特     -15.03           -15.03/       200/         7.806/
+19     新大正   2,232.00     -1.50/-0.080%    200/200  11.168/11.160[0m
+[32m2025-08-25 09:48:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:48:30 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:48:33 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:48:36 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:48:39 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:48:42 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-25 09:48:42 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:48:48 - INFO - ✅ 成功提取持仓数据，共 19 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0    *ST星农     601.00     -4.40/-0.760%    100/100    6.056/6.010
+1    *ST交投     732.00     -1.49/-0.230%    100/100    7.337/7.320
+2     钧达股份   4,784.00    -39.21/-0.820%    100/100  48.234/47.840
+3     中持股份     925.00      59.39/6.845%    100/100    8.658/9.250
+4     永安林业     703.00       0.53/0.050%    100/100    7.027/7.030
+5     居然智家   1,224.00     -3.01/-0.213%    400/200    3.068/3.060
+6     摩恩电气     715.00     -7.48/-1.060%    100/100    7.227/7.150
+7     世龙实业     984.00       4.35/0.420%    100/100    9.799/9.840
+8     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+9     超讯通信   4,240.00    539.46/14.579%    100/100  37.004/42.400
+10    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+11    美能能源   2,478.00     -9.66/-0.400%    200/200  12.439/12.390
+12  可转债ETF  12,349.80  1,517.17/14.002%    900/900  12.036/13.722
+13    曙光股份   4,758.00    -55.19/-1.150%  1300/1300    3.703/3.660
+14    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+15    醋化股份   2,570.00    -33.72/-1.303%    200/200  13.020/12.850
+16    梦网科技   3,284.00    339.83/11.538%    200/200  14.721/16.420
+17     瑞尔特   1,544.00    -17.03/-1.100%    200/200    7.806/7.720
+18     新大正       0.50             0.50/       200/        11.168/[0m
+[33m2025-08-25 09:48:48 - WARNING - 恒尚节能 不在持仓中[0m
+[32m2025-08-25 09:48:55 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:48:55 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:48:58 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:49:01 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:49:04 - INFO - 第 4 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:49:07 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-25 09:49:07 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:49:13 - INFO - ✅ 成功提取持仓数据，共 19 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0    *ST星农     601.00     -4.40/-0.760%    100/100    6.056/6.010
+1    *ST交投     733.00     -0.49/-0.076%    100/100    7.337/7.330
+2     钧达股份   4,778.00    -45.21/-0.945%    100/100  48.234/47.780
+3     中持股份     922.00      56.39/6.499%    100/100    8.658/9.220
+4     永安林业     705.00       2.53/0.239%    100/100    7.027/7.050
+5     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+6     摩恩电气     715.00     -7.48/-1.060%    100/100    7.227/7.150
+7     世龙实业     985.00       5.35/0.517%    100/100    9.799/9.850
+8     汇洁股份     724.00     -7.48/-1.050%    100/100    7.317/7.240
+9     超讯通信   4,241.00    540.46/14.606%    100/100  37.004/42.410
+10    德龙汇能   1,352.00      11.10/0.810%    200/200    6.705/6.760
+11    美能能源   2,480.00     -7.66/-0.317%    200/200  12.439/12.400
+12  可转债ETF  12,350.70  1,518.07/14.010%    900/900  12.036/13.723
+13    曙光股份   4,758.00    -55.19/-1.150%  1300/1300    3.703/3.660
+14    钱江生化   1,192.00       5.20/0.420%    200/200    5.935/5.960
+15    醋化股份   2,568.00    -35.72/-1.380%    200/200  13.020/12.840
+16    梦网科技   3,286.00    341.83/11.606%    200/200  14.721/16.430
+17     瑞尔特   1,546.00    -15.03/-0.971%    200/200    7.806/7.730
+18     新大正       0.50             0.50/       200/        11.168/[0m
+[32m2025-08-25 09:49:41 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:49:41 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:49:44 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:49:47 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:49:50 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:49:52 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-25 09:49:52 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:49:59 - INFO - ✅ 成功提取持仓数据，共 18 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0    *ST星农     601.00     -4.40/-0.760%    100/100    6.056/6.010
+1    *ST交投     735.00       1.51/0.180%    100/100    7.337/7.350
+2     钧达股份   4,792.00    -31.22/-0.650%    100/100  48.234/47.920
+3     永安林业     705.00       2.53/0.330%    100/100    7.027/7.050
+4     居然智家   1,232.00       4.99/0.353%    400/200    3.068/3.080
+5     摩恩电气     717.00     -5.48/-0.778%    100/100    7.227/7.170
+6     世龙实业     984.00       4.35/0.420%    100/100    9.799/9.840
+7     汇洁股份     726.00     -5.48/-0.780%    100/100    7.317/7.260
+8     超讯通信   4,236.00    535.46/14.470%    100/100  37.004/42.360
+9     德龙汇能   1,354.00      13.09/0.960%    200/200    6.705/6.770
+10    美能能源   2,480.00     -7.66/-0.320%    200/200  12.439/12.400
+11  可转债ETF  12,362.40  1,529.77/14.125%    900/900  12.036/13.736
+12    曙光股份   4,784.00    -29.21/-0.609%  1300/1300    3.703/3.680
+13    钱江生化   1,194.00       7.20/0.590%    200/200    5.935/5.970
+14    醋化股份   2,570.00    -33.73/-1.302%    200/200  13.020/12.850
+15    梦网科技   3,294.00    349.82/11.878%    200/200  14.721/16.470
+16     瑞尔特   1,550.00    -11.04/-0.721%    200/200    7.806/7.750
+17     新大正   2,242.00       8.50/0.370%    200/200  11.168/11.210[0m
+[33m2025-08-25 09:49:59 - WARNING - 高铁电气 不在持仓中[0m
+[32m2025-08-25 09:50:06 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:50:06 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:50:09 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:50:11 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:50:14 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:50:17 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-25 09:50:17 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:50:24 - INFO - ✅ 成功提取持仓数据，共 18 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0    *ST星农     602.00     -3.40/-0.587%    100/100    6.056/6.020
+1    *ST交投     737.00       3.51/0.418%    100/100    7.337/7.370
+2     钧达股份   4,786.00    -37.22/-0.775%    100/100  48.234/47.860
+3     永安林业     705.00       2.53/0.330%    100/100    7.027/7.050
+4     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+5     摩恩电气     716.00     -6.48/-0.920%    100/100    7.227/7.160
+6     世龙实业     983.00       3.35/0.323%    100/100    9.799/9.830
+7     汇洁股份     726.00     -5.48/-0.780%    100/100    7.317/7.260
+8     超讯通信   4,239.00    538.46/14.551%    100/100  37.004/42.390
+9     德龙汇能   1,350.00       9.09/0.667%    200/200    6.705/6.750
+10    美能能源   2,480.00     -7.66/-0.320%    200/200  12.439/12.400
+11  可转债ETF  12,352.50  1,519.87/14.034%    900/900  12.036/13.725
+12    曙光股份   4,771.00    -42.21/-0.880%  1300/1300    3.703/3.670
+13    钱江生化   1,194.00       7.20/0.590%    200/200    5.935/5.970
+14    醋化股份   2,572.00    -31.73/-1.224%    200/200  13.020/12.860
+15    梦网科技   3,290.00    345.82/11.742%    200/200  14.721/16.450
+16     瑞尔特   1,550.00    -11.04/-0.721%    200/200    7.806/7.750
+17     新大正   2,240.00       6.50/0.283%    200/200  11.168/11.200[0m
+[33m2025-08-25 09:50:24 - WARNING - 美腾科技 不在持仓中[0m
+[32m2025-08-25 09:50:30 - INFO - 正在获取账户持仓信息...[0m
+[32m2025-08-25 09:50:31 - INFO - 第 1 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:50:33 - INFO - 第 2 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:50:36 - INFO - 第 3 次尝试新增 5 条有效持仓[0m
+[32m2025-08-25 09:50:39 - INFO - 第 4 次尝试新增 4 条有效持仓[0m
+[32m2025-08-25 09:50:42 - INFO - 第 5 次尝试新增 0 条有效持仓[0m
+[32m2025-08-25 09:50:42 - INFO - 检测到‘查看已清仓股票’，已加载全部持仓[0m
+[32m2025-08-25 09:50:48 - INFO - ✅ 成功提取持仓数据，共 18 条:
+      标的名称         市值          当日盈亏/盈亏率      持仓/可用          成本/现价
+0    *ST星农     603.00     -2.40/-0.415%    100/100    6.056/6.030
+1    *ST交投     738.00       4.51/0.538%    100/100    7.337/7.380
+2     钧达股份   4,785.00    -38.22/-0.796%    100/100  48.234/47.850
+3     永安林业     705.00       2.53/0.330%    100/100    7.027/7.050
+4     居然智家   1,228.00       0.99/0.070%    400/200    3.068/3.070
+5     摩恩电气     716.00     -6.48/-0.920%    100/100    7.227/7.160
+6     世龙实业     985.00       5.35/0.517%    100/100    9.799/9.850
+7     汇洁股份     726.00     -5.48/-0.780%    100/100    7.317/7.260
+8     超讯通信   4,250.00    549.46/14.848%    100/100  37.004/42.500
+9     德龙汇能   1,352.00      11.09/0.813%    200/200    6.705/6.760
+10    美能能源   2,480.00     -7.66/-0.320%    200/200  12.439/12.400
+11  可转债ETF  12,355.20  1,522.57/14.058%    900/900  12.036/13.728
+12    曙光股份   4,784.00    -29.21/-0.609%  1300/1300    3.703/3.680
+13    钱江生化   1,194.00       7.20/0.590%    200/200    5.935/5.970
+14    醋化股份   2,574.00    -29.73/-1.147%    200/200  13.020/12.870
+15    梦网科技   3,288.00    343.82/11.674%    200/200  14.721/16.440
+16     瑞尔特   1,548.00    -13.04/-0.851%    200/200    7.806/7.740
+17     新大正   2,246.00      12.50/0.544%    200/200  11.168/11.230[0m
+[33m2025-08-25 09:50:48 - WARNING - 友车科技 不在持仓中[0m
+[32m2025-08-25 09:50:55 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:50:58 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏         可用      可取
+0  仓位 80.3%  57,971.35  46,565.90  +2,363.63  11,405.45  410.96[0m
+[32m2025-08-25 09:51:14 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:51:17 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏         可用      可取
+0  仓位 81.7%  57,963.08  47,383.90  +2,354.91  10,579.18  410.96[0m
+[32m2025-08-25 09:51:44 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:51:47 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 83.3%  57,989.81  48,276.90  +2,381.10  9,712.91  410.96[0m
+[32m2025-08-25 09:52:05 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:52:07 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 91.0%  57,986.63  52,780.30  +2,375.28  5,206.33  410.96[0m
+[32m2025-08-25 09:52:28 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:52:31 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 93.0%  57,971.93  53,887.90  +2,359.93  4,084.03  410.96[0m
+[32m2025-08-25 09:52:48 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:52:51 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 97.6%  57,968.40  56,598.80  +2,354.80  1,369.60  410.96[0m
+[32m2025-08-25 09:53:05 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:53:08 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 97.6%  57,983.60  56,614.00  +2,370.00  1,369.60  410.96[0m
+[32m2025-08-25 09:53:23 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:53:26 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 97.6%  58,009.10  56,639.50  +2,395.50  1,369.60  410.96[0m
+[32m2025-08-25 09:53:41 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:53:44 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 97.6%  58,036.80  56,667.20  +2,423.20  1,369.60  410.96[0m
+[32m2025-08-25 09:53:59 - INFO - 正在获取账户表头信息...[0m
+[32m2025-08-25 09:54:02 - INFO - 账户表头信息完成: 
+         仓位        总资产        总市值       浮动盈亏        可用      可取
+0  仓位 97.6%  58,064.10  56,694.50  +2,450.50  1,369.60  410.96[0m

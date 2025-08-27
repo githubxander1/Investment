@@ -6,7 +6,7 @@ from pprint import pprint
 import pandas
 import pandas as pd
 
-from Investment.AutoPublic.jrtt.jrtt import send_notification
+# from Investment.AutoPublic.jrtt.jrtt import send_notification
 from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
     Combination_holding_file, Strategy_portfolio_today_file, Combination_portfolio_today_file, Lhw_portfolio_today_file, \
@@ -16,6 +16,7 @@ from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.utils.format_data import normalize_time
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(trade_operations_log_file)
 common_page = CommonPage()
@@ -366,7 +367,7 @@ def save_to_operation_history_excel(df, filename, sheet_name, index=False):
         logger.error(f"❌ 保存数据到Excel文件失败: {e}", exc_info=True)
 
 
-def write_operation_history(df):
+def write_operation_history1(df):
     """将操作记录写入Excel文件，按日期作为sheet名，并确保今日sheet位于第一个"""
     global _operation_history_cache
 
@@ -415,7 +416,57 @@ def write_operation_history(df):
         logger.error(error_info)
         send_notification(error_info)
         raise
+def write_operation_history(df):
+    """将操作记录写入Excel文件，按日期作为sheet名，并确保今日sheet位于第一个"""
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    filename = OPERATION_HISTORY_FILE
 
+    try:
+        # 确保数据包含必要的列
+        expected_columns = ['名称', '标的名称', '操作', '新比例%', '状态', '信息', '账户', '时间']
+        for col in expected_columns:
+            if col not in df.columns:
+                df[col] = ''  # 添加缺失的列
+
+        # 重新排列列的顺序
+        df = df[expected_columns]
+
+        # 如果文件不存在，创建新文件并将数据保存到第一个 sheet
+        if not os.path.exists(filename):
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name=today, index=False)
+            logger.info(f"✅ 创建并保存数据到Excel文件: {filename}, 表名称: {today} \n{df}")
+            return
+
+        # ✅ 先读取今天的sheet已有数据
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            history_sheets = xls.sheet_names
+            old_df = pd.read_excel(xls, sheet_name=today) if today in history_sheets else pd.DataFrame(columns=expected_columns)
+
+        # 合并新旧数据并去重
+        combined_df = pd.concat([old_df, df], ignore_index=True)
+        combined_df.drop_duplicates(subset=['名称', '标的名称', '操作', '新比例%', '账户'], keep='last', inplace=True)
+
+        # 读取其他 sheet 的数据
+        other_sheets_data = {}
+        with pd.ExcelFile(filename, engine='openpyxl') as xls:
+            for sheet in xls.sheet_names:
+                if sheet != today:
+                    other_sheets_data[sheet] = pd.read_excel(xls, sheet_name=sheet)
+
+        # 重新写入所有 sheet，确保 today 是第一个
+        with pd.ExcelWriter(filename, engine='openpyxl', mode='w') as writer:
+            combined_df.to_excel(writer, sheet_name=today, index=False)
+            for sheet, data in other_sheets_data.items():
+                data.to_excel(writer, sheet_name=sheet, index=False)
+
+        logger.info(f"✅ 成功写入操作记录到 {today} 表 {filename}")
+
+    except Exception as e:
+        error_info = f"❌ 写入操作记录失败: {e}"
+        logger.error(error_info)
+        send_notification(error_info)
+        raise
 
 def get_difference_holding():
     """

@@ -738,3 +738,293 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-08-22 14:58:42 - INFO - 点击 1天期 成功[0m
 [32m2025-08-22 14:58:44 - INFO - 当前页面为 GC001(1天期)[0m
 [32m2025-08-22 14:58:45 - INFO - 已点击: 借出按钮[0m
+[32m2025-08-25 14:56:13 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-25 14:56:16 - ERROR - 进入国债逆回购入口失败[0m
+[33m2025-08-25 14:56:16 - WARNING - 无法从账户信息中提取中文名称: **8250[0m
+[32m2025-08-25 14:56:17 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-25 14:56:17 - INFO - 已切换账户: 川财证券[0m
+[32m2025-08-25 14:56:19 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:56:22 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:56:24 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:56:27 - INFO - 点击 1天期 成功[0m
+[32m2025-08-25 14:56:28 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-25 14:56:30 - INFO - 已点击: 借出按钮[0m
+[32m2025-08-25 14:56:34 - INFO - 委托成功: 委托已提交，合同号为：109172, 内容:['交易品种', 'GC001(1天期) 204001', '年化收益率', '1.125%', '出借资金', '1000元 (1千元)', '您是否确认以上委托？'][0m
+[32m2025-08-25 14:56:34 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[33m2025-08-25 14:56:34 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-08-25 14:56:35 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-25 14:56:35 - INFO - 已切换账户: 中泰证券[0m
+[32m2025-08-25 14:56:35 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:56:37 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:56:38 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:56:39 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:56:41 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:56:42 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:56:43 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:56:46 - INFO - 点击 1天期 成功[0m
+[32m2025-08-25 14:56:47 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-25 14:56:48 - INFO - 已点击: 借出按钮[0m
+[32m2025-08-25 14:56:52 - INFO - 委托成功: 委托已提交，合同号为：714444, 内容:['交易品种', 'GC001(1天期) 204001', '年化收益率', '1.120%', '出借资金', '6000元 (6千元)', '您是否确认以上委托？'][0m
+[32m2025-08-25 14:56:52 - INFO - 点击 1天期 成功[0m
+[32m2025-08-25 14:56:52 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[32m2025-08-25 14:56:53 - INFO - 已点击: 账户切换按钮[0m
+[31m2025-08-25 14:56:53 - ERROR - 当前页面不是 GC001(1天期)[0m
+[31m2025-08-25 14:56:53 - ERROR - 当前页面不是 GC001(1天期)[0m
+[32m2025-08-25 14:56:54 - INFO - 已切换账户: 长城证券[0m
+[31m2025-08-25 14:56:54 - ERROR - 操作失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_img'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 160, in guozhai_operation
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_img'},))
+[32m2025-08-25 14:56:56 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:56:56 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-25 14:57:02 - ERROR - 无法返回账户页[0m
+[31m2025-08-25 14:57:03 - ERROR - 操作失败: 'UiObject' object is not callable[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 136, in guozhai_operation
+    self.back_button()
+    ~~~~~~~~~~~~~~~~^^
+TypeError: 'UiObject' object is not callable
+[33m2025-08-25 14:57:03 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[32m2025-08-25 14:57:03 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-25 14:57:03 - INFO - 已进入: 国债逆回购入口[0m
+[33m2025-08-25 14:57:04 - WARNING - 无法找到账户: 中泰证券[0m
+[32m2025-08-25 14:57:08 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-25 14:57:08 - ERROR - 操作失败: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 150, in guozhai_operation
+    if not self._find_and_click_product("1天期"):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 51, in _find_and_click_product
+    self.d.swipe(0.5, 0.8, 0.5, 0.2)  # 纵向滑动
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 448, in swipe
+    return self.jsonrpc.swipe(fx, fy, tx, ty, steps)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 162, in _jsonrpc_call
+    raise RPCUnknownError(f"Unknown RPC error: {code} {message}", params, stacktrace)
+uiautomator2.exceptions.RPCUnknownError: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 55), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createException(Parcel.java:1950)\n\tat android.os.Parcel.readException(Parcel.java:1918)\n\tat android.os.Parcel.readException(Parcel.java:1868)\n\tat android.hardware.input.IInputManager$Stub$Proxy.injectInputEvent(IInputManager.java:575)\n\tat android.hardware.input.InputManager.injectInputEvent(InputManager.java:880)\n\tat android.app.UiAutomationConnection.injectInputEvent(UiAutomationConnection.java:127)\n\tat android.app.UiAutomation.injectInputEvent(UiAutomation.java:516)\n\tat androidx.test.uiautomator.InteractionController.injectEventSync(InteractionController.java:494)\n\tat androidx.test.uiautomator.InteractionController.touchMove(InteractionController.java:259)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:334)\n\tat androidx.test.uiautomator.InteractionController.swipe(InteractionController.java:303)\n\tat androidx.test.uiautomator.UiDevice.swipe(UiDevice.java:631)\n\tat com.wetest.uia2.stub.AutomatorServiceImpl.swipe(AutomatorServiceImpl.java:232)\n\tat java.lang.reflect.Method.invoke(Native Method)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:467)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:352)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:283)\n\tat com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:251)\n\tat com.wetest.uia2.stub.AutomatorHttpServer.serve(AutomatorHttpServer.java:101)\n\tat fi.iki.elonen.NanoHTTPD.serve(NanoHTTPD.java:2244)\n\tat fi.iki.elonen.NanoHTTPD$HTTPSession.execute(NanoHTTPD.java:945)\n\tat fi.iki.elonen.NanoHTTPD$ClientHandler.run(NanoHTTPD.java:192)\n\tat java.lang.Thread.run(Thread.java:764)\nCaused by: android.os.RemoteException: Remote stack trace:\n\tat com.android.server.input.InputManagerService.injectInputEventInternal(InputManagerService.java:621)\n\tat com.android.server.input.InputManagerService.injectInputEvent(InputManagerService.java:595)\n\tat android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:143)\n\tat android.os.Binder.execTransact(Binder.java:731)\n\n')
+[33m2025-08-25 14:57:09 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[32m2025-08-25 14:57:09 - INFO - 已点击: 账户切换按钮[0m
+[33m2025-08-25 14:57:09 - WARNING - 无法找到账户: 川财证券[0m
+[32m2025-08-25 14:57:11 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:57:11 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:57:12 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:57:15 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:57:15 - INFO - 点击 1天期 成功[0m
+[32m2025-08-25 14:57:16 - INFO - 已滑动到底部[0m
+[31m2025-08-25 14:57:16 - ERROR - 当前页面不是 GC001(1天期)[0m
+[31m2025-08-25 14:57:16 - ERROR - 当前页面不是 GC001(1天期)[0m
+[33m2025-08-25 14:57:18 - WARNING - 未找到账户信息元素[0m
+[33m2025-08-25 14:57:34 - WARNING - 未找到 1天期，已滑动到底部[0m
+[31m2025-08-25 14:57:34 - ERROR - 未找到目标产品[0m
+[33m2025-08-25 14:57:34 - WARNING - 未找到账户信息元素[0m
+[32m2025-08-25 14:57:40 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:57:56 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-25 14:57:59 - ERROR - 无法返回账户页[0m
+[31m2025-08-25 14:57:59 - ERROR - 操作失败: 'UiObject' object is not callable[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 136, in guozhai_operation
+    self.back_button()
+    ~~~~~~~~~~~~~~~~^^
+TypeError: 'UiObject' object is not callable
+[33m2025-08-25 14:57:59 - WARNING - 未找到账户信息元素[0m
+[32m2025-08-25 14:58:07 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-25 14:58:07 - INFO - 已切换账户: 川财证券[0m
+[32m2025-08-25 14:58:09 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:58:12 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:58:13 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:58:17 - INFO - 点击 1天期 成功[0m
+[32m2025-08-25 14:58:18 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-25 14:58:20 - INFO - 已点击: 借出按钮[0m
+[31m2025-08-25 14:58:21 - ERROR - 委托失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-08-25 14:58:21 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[33m2025-08-25 14:58:22 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-08-25 14:58:22 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-25 14:58:23 - INFO - 已切换账户: 中泰证券[0m
+[32m2025-08-25 14:58:25 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-25 14:58:28 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-25 14:58:29 - INFO - 已滑动到底部[0m
+[32m2025-08-25 14:58:32 - INFO - 点击 1天期 成功[0m
+[32m2025-08-25 14:58:34 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-25 14:58:35 - INFO - 已点击: 借出按钮[0m
+[31m2025-08-25 14:58:36 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 300, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\util\retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 300, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 113, in _http_request
+    r = requests.request(method, url, json=data, timeout=timeout, headers=headers)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\adapters.py", line 682, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 126, in _http_request
+    raise HTTPError(f"HTTP request failed: {e}") from e
+uiautomator2.exceptions.HTTPError: HTTP request failed: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 179, in guozhai_operation
+    result = self._handle_transaction_confirm()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 114, in _handle_transaction_confirm
+    prompt_text = self.prompt_content.get_text()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 358, in get_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 342, in must_wait
+    if not self.wait(exists, timeout):
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 312, in wait
+    return self.jsonrpc.waitForExists(self.selector,
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+                                      int(timeout * 1000),
+                                      ^^^^^^^^^^^^^^^^^^^^
+                                      http_timeout=http_wait)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 282, in jsonrpc_call
+    self.stop_uiautomator()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 272, in stop_uiautomator
+    if not self._check_alive():
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 258, in _check_alive
+    response = _http_request(self._dev, "GET", "/ping")
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[32m2025-08-26 14:56:06 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-26 14:56:08 - ERROR - 进入国债逆回购入口失败[0m
+[33m2025-08-26 14:56:09 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-08-26 14:56:09 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-26 14:56:10 - INFO - 已切换账户: 川财证券[0m
+[32m2025-08-26 14:56:12 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-26 14:56:15 - ERROR - 进入国债逆回购入口失败[0m
+[32m2025-08-27 14:56:31 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-27 14:56:33 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-27 14:56:34 - INFO - 已滑动到底部[0m
+[32m2025-08-27 14:56:37 - INFO - 点击 1天期 成功[0m
+[31m2025-08-27 14:56:39 - ERROR - 当前页面不是 GC001(1天期)[0m
+[31m2025-08-27 14:56:39 - ERROR - 当前页面不是 GC001(1天期)[0m
+[33m2025-08-27 14:56:41 - WARNING - 无法从账户信息中提取中文名称: **8250[0m
+[32m2025-08-27 14:56:41 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-08-27 14:56:42 - INFO - 已切换账户: 川财证券[0m
+[32m2025-08-27 14:56:44 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-08-27 14:56:47 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-27 14:56:48 - INFO - 已滑动到底部[0m
+[32m2025-08-27 14:56:51 - INFO - 点击 1天期 成功[0m
+[32m2025-08-27 14:56:52 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-08-27 14:56:54 - INFO - 已点击: 借出按钮[0m
