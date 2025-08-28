@@ -4,13 +4,15 @@ import os
 import datetime
 import traceback
 from datetime import datetime as dt
+from pprint import pprint
 
 import fake_useragent
 import pandas as pd
 import requests
 
 from Investment.THS.AutoTrade.config.settings import Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file, \
-    Strategy_portfolio_today_file, OPERATION_HISTORY_FILE
+    Strategy_portfolio_today_file, OPERATION_HISTORY_FILE, Account_holding_file, Strategy_holding_file
+from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.data_process import write_operation_history, save_to_excel_append, read_operation_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
@@ -33,7 +35,7 @@ def get_latest_position(strategy_id):
         data.raise_for_status()
         data = data.json()
         # logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
-        # pprint(data)
+        pprint(data)
 
         result = data.get('result', {})
         latest_trade_infos = result.get('latestTrade', {})
@@ -42,9 +44,14 @@ def get_latest_position(strategy_id):
         # 计算lastest_trade_infos和position_stocks里各有多少条数据
         trade_count = len(latest_trade_infos.get('tradeStocks', []))
         position_count = len(position_stocks)
-        logger.info(f"交易数据: {trade_count} 条,持仓数据: {position_count} 条")
         lastest_trade_date = normalize_time(latest_trade_infos.get('tradeDate', ''))
         # logger.info(f"策略 {strategy_id} 获取数据成功，持仓数据: {position_count} 条，{lastest_trade_date}交易数据: {trade_count} 条")
+        allProfit = round(result.get('allProfit', 0),2)
+        allProfitPrice = round(result.get('allProfitPrice', 0),2)
+        foundDate = result.get('foundDate', '')
+        todayProfit = round(result.get('todayProfit', 0),2)
+        todayProfitPrice = round(result.get('todayProfitPrice', 0),2)
+        logger.info(f"{strategy_id}成立时间{foundDate}, 总盈亏{allProfitPrice}({allProfit}), 今日盈亏: {todayProfit} 盈亏金额: {todayProfitPrice}, \n今日交易数据: {trade_count} 条,持仓数据: {position_count} 条, ")
 
         # today = datetime.datetime.now().date()
         # yestoday = (datetime.date.today() - datetime.timedelta(days=1))
@@ -53,167 +60,151 @@ def get_latest_position(strategy_id):
             stk_code = str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6)
             position_stocks_results.append({
                 '名称': Strategy_id_to_name.get(strategy_id, '未知策略'),
-                '操作': '买入',
+                # '操作': '买入',
                 '标的名称': position_stock_info.get('stkName', ''),
                 '代码': str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6),
                 '市场': determine_market(stk_code),
-                '最新价': round(float(position_stock_info.get('price', 0)), 2),
+                '最新价': round(float(position_stock_info.get('price', 0)), 2),# 成交价
                 '盈亏比例%': round(float(position_stock_info.get('profitAndLossRatio', 0)) * 100, 2),
-                '新比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
-                '时间': position_stock_info.get('positionDate', ''),
+                '新比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),# 持仓比例
+                '时间': position_stock_info.get('positionDate', ''),#持仓时间
                 '行业': position_stock_info.get('industry', ''),
             })
 
         position_stocks_df = pd.DataFrame(position_stocks_results)
-        # 提取市场为 沪深A股的数据，去掉st的
-        position_stocks_df = position_stocks_df[position_stocks_df['市场'] == '沪深A股']
-        # 去掉名称含st的
-        # position_stocks_df = position_stocks_df[~position_stocks_df['标的名称'].str.contains('ST')]
-        # print(position_stocks_df)
-
-        # today = str(datetime.date.today())
-        # position_stocks_df.to_excel('AiStrategy_position.xlsx', sheet_name= today,index=False)
         return position_stocks_df
     except requests.RequestException as e:
-        # logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
+        logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
         return []
 
 
 def get_difference_holding():
     """
-    对比 AiStrategy_position.xlsx 中当天和前一天的持仓数据，找出买入和卖出标的
-    - 如果昨天sheet不存在，将今天所有持仓视为买入
-    - 如果文件不存在，直接退出
+    对比账户实际持仓与策略今日持仓数据，找出差异：
+        - 需要卖出：在账户中存在，但不在策略今日持仓中；
+        - 需要买入：在策略今日持仓中存在，但不在账户中；
     """
-    file_path = Ai_Strategy_holding_file
-    today = str(datetime.date.today())
-    today_date = datetime.date.today()
-
-    # ✅ 日期调整逻辑
-    if today_date.weekday() == 0:  # 周一
-        yestoday_date = today_date - datetime.timedelta(days=3)  # 上周五
-        logger.info(f"📅 周一特殊处理：对比日期调整为 {yestoday_date}")
-    else:
-        yestoday_date = today_date - datetime.timedelta(days=1)  # 普通日期
-
-    # 定义昨天的日期：如果周一，则对比日期调整为周五
-    yestoday = str(yestoday_date)
-
-    # ✅ 文件不存在直接退出
-    if not os.path.exists(file_path):
-        logger.error(f"❌ 文件 {file_path} 不存在，程序退出")
-        return pd.DataFrame()
-
-    # 读取Excel文件
     try:
-        with pd.ExcelFile(file_path) as xls:
-            # ✅ 今天sheet不存在，直接退出
-            if today not in xls.sheet_names:
-                logger.warning(f"❌ 今天 {today} 的sheet不存在，返回空")
-                return pd.DataFrame()
+        # 检查必要文件是否存在
+        required_files = {
+            "账户持仓文件": Account_holding_file,
+            "策略持仓文件": Ai_Strategy_holding_file,
+        }
 
-            # ✅ 读取今天持仓数据
-            today_positions_df = pd.read_excel(xls, sheet_name=today, index_col=0)
-            logger.info(f"今天的持仓数据：\n{today_positions_df}")
+        for file_desc, file_path in required_files.items():
+            if not os.path.exists(file_path):
+                logger.error(f"{file_desc}不存在: {file_path}")
+                return {"error": f"{file_desc}不存在"}
 
-            # ✅ 特殊处理：周一且周日sheet不存在时
-            if yestoday not in xls.sheet_names and today_date.weekday() == 0:
-                logger.warning(f"⚠️ 周一特殊处理：未找到 {yestoday} 的sheet，尝试查找最近交易日")
+        # 更新川财证券账户持仓数据
+        logger.info("正在更新川财证券账户持仓数据...")
+        account_info = AccountInfo()
+        update_success = account_info.update_holding_info_for_account("川财证券")
+        if not update_success:
+            logger.warning("更新川财证券账户持仓数据失败，将继续使用现有数据进行对比")
+        else:
+            logger.info("✅ 川财证券账户持仓数据更新完成")
 
-                # ✅ 查找最近存在的sheet（倒序查找5个工作日）
-                for i in range(1, 6):  # 最多查找前5个工作日
-                    recent_date = today_date - datetime.timedelta(days=i)
-                    if str(recent_date) in xls.sheet_names:
-                        yestoday = str(recent_date)
-                        logger.info(f"🔁 找到最近交易日：{yestoday}")
-                        yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday, index_col=0)
-                        logger.info(f"上一交易日持仓数据：{yestoday_positions_df}")
-                        break
+        # 读取川财证券账户持仓数据
+        account_df = pd.DataFrame()
+        try:
+            with pd.ExcelFile(Account_holding_file, engine='openpyxl') as xls:
+                # 只读取川财证券的持仓数据
+                sheet_name = "川财证券_持仓数据"
+                if sheet_name in xls.sheet_names:
+                    df = pd.read_excel(xls, sheet_name=sheet_name)
+                    if not df.empty and '标的名称' in df.columns:
+                        # 只保留标的名称列
+                        account_df = df[['标的名称']].copy()
+                        account_df['账户'] = "川财证券"
+                        logger.info(f"✅ 成功读取川财证券账户的持仓数据，共 {len(account_df)} 条记录")
+                    else:
+                        logger.warning(f"川财证券账户持仓数据为空或不包含标的名称列")
                 else:
-                    # ✅ 如果没有找到任何历史sheet，将今天所有持仓视为买入
-                    logger.info(f"🆕 未找到历史sheet，将今天所有持仓视为买入")
-                    today_positions_df['操作'] = '买入'
-                    return today_positions_df
-            elif yestoday not in xls.sheet_names:
-                # ✅ 非周一的常规处理
-                logger.info(f"⚠️ 昨天 {yestoday} 的sheet不存在，将今天所有持仓视为买入")
-                today_positions_df['操作'] = '买入'
-                return today_positions_df
+                    logger.warning(f"账户文件中没有川财证券的持仓数据表: {sheet_name}")
+        except Exception as e:
+            logger.error(f"读取川财证券账户持仓文件失败: {e}")
+            return {"error": "读取川财证券账户持仓文件失败"}
+
+        if account_df.empty:
+            logger.info("川财证券账户无持仓数据")
+
+        # 读取策略今日持仓数据
+        today = str(datetime.date.today())
+        try:
+            if os.path.exists(Ai_Strategy_holding_file):
+                with pd.ExcelFile(Ai_Strategy_holding_file, engine='openpyxl') as xls:
+                    if today in xls.sheet_names:
+                        strategy_df = pd.read_excel(xls, sheet_name=today)
+                        if strategy_df.empty:
+                            logger.warning("策略持仓文件为空")
+                            strategy_df = pd.DataFrame(columns=['标的名称'])
+                    else:
+                        logger.warning(f"策略持仓文件中没有今天的sheet: {today}")
+                        strategy_df = pd.DataFrame(columns=['标的名称'])
             else:
-                # ✅ 正常读取昨天数据
-                yestoday_positions_df = pd.read_excel(xls, sheet_name=yestoday, index_col=0)
-                logger.info(f"昨天持仓数据：\n{yestoday_positions_df}")
+                logger.warning("策略持仓文件不存在")
+                strategy_df = pd.DataFrame(columns=['标的名称'])
+        except Exception as e:
+            logger.error(f"读取策略持仓文件失败: {e}")
+            strategy_df = pd.DataFrame(columns=['标的名称'])
+
+        logger.info(f"川财证券账户持仓数据:\n{account_df[['标的名称']] if not account_df.empty else '无数据'}\n")
+        if not strategy_df.empty:
+            logger.info(f"策略今日持仓数据:\n{strategy_df[['标的名称']]}\n")
+
+        # 需要排除的标的名称
+        excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+
+        # 1. 找出需要卖出的标的（在账户中存在，但不在策略今日持仓中，且不在排除列表中）
+        if not account_df.empty and not strategy_df.empty:
+            to_sell_candidates = account_df[~account_df['标的名称'].isin(strategy_df['标的名称'])]
+            to_sell = to_sell_candidates[~to_sell_candidates['标的名称'].isin(excluded_holdings)].copy()
+        elif not account_df.empty:
+            # 如果策略持仓为空，则所有账户持仓都是需要卖出的（除去排除项）
+            to_sell = account_df[~account_df['标的名称'].isin(excluded_holdings)].copy()
+        else:
+            to_sell = pd.DataFrame(columns=account_df.columns) if not account_df.empty else pd.DataFrame()
+
+        if not to_sell.empty:
+            logger.warning("⚠️ 发现需卖出的标的:")
+            logger.info(f"\n{to_sell[['标的名称']] if '标的名称' in to_sell.columns else to_sell}")
+            # 添加操作列
+            to_sell['操作'] = '卖出'
+        else:
+            logger.info("✅ 当前无需卖出的标的")
+
+        # 2. 找出需要买入的标的（在策略今日持仓中存在，但不在账户中，且不在排除列表中）
+        if not strategy_df.empty and not account_df.empty:
+            to_buy_candidates = strategy_df[~strategy_df['标的名称'].isin(account_df['标的名称'])]
+            to_buy = to_buy_candidates[~to_buy_candidates['标的名称'].isin(excluded_holdings)]
+        elif not strategy_df.empty:
+            # 如果账户持仓为空，则所有策略持仓都是需要买入的（除去排除项）
+            to_buy = strategy_df[~strategy_df['标的名称'].isin(excluded_holdings)]
+        else:
+            to_buy = pd.DataFrame(columns=['标的名称'])
+
+        if not to_buy.empty:
+            logger.warning("⚠️ 发现需买入的标的:")
+            logger.info(f"\n{to_buy[['标的名称']] if '标的名称' in to_buy.columns else to_buy}")
+            # 添加操作列
+            to_buy['操作'] = '买入'
+        else:
+            logger.info("✅ 当前无需买入的标的")
+
+        # 构建完整差异报告
+        difference_report = {
+            "to_sell": to_sell,
+            "to_buy": to_buy
+        }
+
+        return difference_report
 
     except Exception as e:
-        logger.error(f"❌ 读取Excel文件失败: {str(e)}")
-        return pd.DataFrame()
+        error_msg = f"处理持仓差异时发生错误: {e}"
+        logger.error(error_msg, exc_info=True)
+        return {"error": error_msg}
 
-    # ✅ 数据对比逻辑（保持不变）
-    today_stocks = set(today_positions_df['标的名称'].str.strip().str.upper())
-    yestoday_stocks = set(yestoday_positions_df['标的名称'].str.strip().str.upper())
-
-    # ✅ 找出买入和卖出
-    to_buy_df = today_positions_df[~today_positions_df['标的名称'].isin(yestoday_stocks)].copy()
-    to_sell_df = yestoday_positions_df[~yestoday_positions_df['标的名称'].isin(today_stocks)].copy()
-
-    # ✅ 为买入数据添加操作标识
-    to_buy_df['操作'] = '买入'
-
-    # ✅ 为卖出数据添加操作标识
-    to_sell_df['操作'] = '卖出'
-
-    # ✅ 统一列结构以避免NaN
-    # 确保两份数据都有相同的列
-    common_columns = ['名称', '操作', '标的名称', '代码', '最新价', '盈亏比例%', '新比例%', '市场', '时间', '行业']
-
-    # 为买入数据填充缺失的列（如果有的话）
-    for col in common_columns:
-        if col not in to_buy_df.columns:
-            if col == '操作':
-                to_buy_df[col] = '买入'
-            elif col in ['代码', '最新价', '盈亏比例%', '新比例%']:
-                to_buy_df[col] = None  # 或者可以设置为0
-            elif col == '市场':
-                to_buy_df[col] = '沪深A股'  # 假设默认市场
-            elif col == '行业':
-                to_buy_df[col] = None
-            else:
-                to_buy_df[col] = ''
-
-    # 为卖出数据填充缺失的列
-    for col in common_columns:
-        if col not in to_sell_df.columns:
-            if col == '操作':
-                to_sell_df[col] = '卖出'
-            elif col in ['最新价', '盈亏比例%', '新比例%']:
-                to_sell_df[col] = 0
-            elif col == '行业':
-                to_sell_df[col] = None
-            elif col == '代码':
-                to_sell_df[col] = None
-            else:
-                to_sell_df[col] = ''
-
-    # 确保列的顺序一致
-    to_buy_df = to_buy_df[common_columns]
-    to_sell_df = to_sell_df[common_columns]
-
-    # 合并
-    portfolio_df = pd.concat([to_buy_df, to_sell_df], ignore_index=True)
-
-    # 去重
-    portfolio_df = portfolio_df.drop_duplicates(subset=['标的名称'])
-    portfolio_df = portfolio_df.reset_index(drop=True)
-    logger.info(f"汇总的调仓数据：{len(portfolio_df)} 条 \n{portfolio_df}")
-    save_to_excel_append(portfolio_df, Strategy_portfolio_today_file, sheet_name=today)
-
-    # ✅ 输出结果
-    logger.info(f"📊 今日({today})持仓标的: {today_positions_df['标的名称'].tolist()}")
-    logger.info(f"📊 对比日期: {yestoday}")
-    logger.info(f"✅ 要买入标的:\n{to_buy_df}\n")
-    logger.info(f"✅ 要卖出标的:\n{to_sell_df}\n")
-
-    return portfolio_df
 
 
 def sava_all_strategy_holding_data():
@@ -223,6 +214,9 @@ def sava_all_strategy_holding_data():
     all_holdings = []
     for id in Strategy_ids:
         positions_df = get_latest_position(id)
+        # 只保留沪深A股的
+        positions_df = positions_df[positions_df['市场'] == '沪深A股']
+        print(f"{id}持仓数据:\n{positions_df}")
         if positions_df is not None and not positions_df.empty:
             all_holdings.append(positions_df)
         else:
@@ -245,20 +239,24 @@ def sava_all_strategy_holding_data():
         if os.path.exists(file_path):
             with pd.ExcelFile(file_path) as xls:
                 existing_sheets = xls.sheet_names
+                logger.info(f"保存前文件中已存在的工作表: {existing_sheets}")
 
             # 读取除今天以外的所有现有工作表
             with pd.ExcelFile(file_path) as xls:
                 for sheet_name in existing_sheets:
                     if sheet_name != today:
-                        all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name, index_col=0)
+                        # 注意不使用index_col参数
+                        all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
 
         # 将今天的数据放在第一位
         all_sheets_data = {today: all_holdings_df, **all_sheets_data}
+        logger.info(f"即将保存的所有工作表: {list(all_sheets_data.keys())}")
 
-        # 写入所有数据到Excel文件（覆盖模式）
+        # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
         with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
             for sheet_name, df in all_sheets_data.items():
-                df.to_excel(writer, sheet_name=sheet_name, index=True)
+                logger.info(f"正在保存工作表: {sheet_name}")
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
 
         logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")
 
@@ -267,7 +265,7 @@ def sava_all_strategy_holding_data():
         # 如果出错，至少保存今天的数据
         try:
             with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-                all_holdings_df.to_excel(writer, sheet_name=today, index=True)
+                all_holdings_df.to_excel(writer, sheet_name=today, index=False)
             logger.info(f"✅ 文件保存完成，sheet: {today}")
         except Exception as e2:
             logger.error(f"❌ 保存今日数据也失败了: {e2}")
@@ -336,47 +334,57 @@ def operate_result(max_retries=3):
         try:
             sava_all_strategy_holding_data()
             time.sleep(2)
-            diff_result_df = get_difference_holding()
 
-            # 检查返回的DataFrame是否为空
-            if diff_result_df.empty:
+            # 获取持仓差异
+
+            diff_result = get_difference_holding()
+
+            if 'error' in diff_result:
+                logger.error(f"获取持仓差异失败: {diff_result['error']}")
+                return False
+
+            to_sell = diff_result.get('to_sell', pd.DataFrame())
+            to_buy = diff_result.get('to_buy', pd.DataFrame())
+
+            # 检查是否需要执行任何操作
+            if to_sell.empty and to_buy.empty:
                 logger.info("✅ 当前无持仓差异，无需执行交易")
                 return True
 
-            # 按操作类型分组，优先执行卖出操作
-            sell_operations = diff_result_df[diff_result_df['操作'] == '卖出']
-            buy_operations = diff_result_df[diff_result_df['操作'] == '买入']
+            # 准备所有操作的列表
+            all_operations = []
 
-            # 对买入操作按最新价排序（从低到高）
-            if not buy_operations.empty:
-                # 确保最新价列存在且为数值类型
-                buy_operations = buy_operations.copy()
-                buy_operations['最新价'] = pd.to_numeric(buy_operations['最新价'], errors='coerce')
-                buy_operations = buy_operations.sort_values('最新价', ascending=True, na_position='last')
-                buy_operations = buy_operations.reset_index(drop=True)
-                logger.info(f"📈 买入顺序（按价格从低到高）: {buy_operations[['标的名称', '最新价']].to_string(index=False)}")
+            # 添加卖出操作
+            if not to_sell.empty:
+                for _, row in to_sell.iterrows():
+                    all_operations.append({
+                        'stock_name': row['标的名称'],
+                        'operation': '卖出',
+                        'new_ratio': 0,  # 卖出时新比例为0
+                        'strategy_name': 'AI市场追踪策略'
+                    })
 
-            # 合并操作，将卖出操作放在前面，买入操作按价格排序
-            ordered_operations = pd.concat([sell_operations, buy_operations], ignore_index=True)
+            # 添加买入操作
+            if not to_buy.empty:
+                for _, row in to_buy.iterrows():
+                    all_operations.append({
+                        'stock_name': row['标的名称'],
+                        'operation': '买入',
+                        'new_ratio': None,  # 买入时无需新比例
+                        'strategy_name': 'AI市场追踪策略'
+                    })
 
             # 准备保存到今日调仓文件的数据
             today_trades = []
 
-            # 遍历每一行，执行交易
-            for index, row in ordered_operations.iterrows():
-                stock_name = row['标的名称']
-                operation = row['操作']
-                strategy_name = row.get('名称', 'AI市场追踪策略')  # 获取策略名称，默认为AI市场追踪策略
-                # 修复：从原始数据中获取策略名称，而不是从合并后的DataFrame中
-                # strategy_name = row['名称']
+            # 遍历每一项操作，执行交易
+            for op in all_operations:
+                stock_name = op['stock_name']
+                operation = op['operation']
+                new_ratio = op['new_ratio']
+                strategy_name = op['strategy_name']
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name}")
-
-                # 特殊处理：卖出时全仓卖出
-                if operation == "卖出":
-                    new_ratio = 0
-                else:
-                    new_ratio = None  # 买入时无需新比例
 
                 # 切换到对应账户
                 common_page.change_account('川财证券')
@@ -396,10 +404,9 @@ def operate_result(max_retries=3):
                     continue
 
                 # 构造记录
-                # operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 record = pd.DataFrame([{
-                    '名称': strategy_name,  # 策略名称
+                    '名称': strategy_name,
                     '标的名称': stock_name,
                     '操作': operation,
                     '新比例%': new_ratio if new_ratio is not None else 0,
@@ -413,7 +420,7 @@ def operate_result(max_retries=3):
                 write_operation_history(record)
                 logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
-                # 添加到今日调仓数据中，用于保存到Strategy_portfolio_today.xlsx
+                # 添加到今日调仓数据中
                 today_trades.append({
                     '名称': strategy_name,  # 策略名称
                     '操作': operation,

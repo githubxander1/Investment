@@ -2996,3 +2996,13 @@ adbutils.errors.AdbError: Can't find any android device/emulator
 [32m2025-08-27 09:31:39 - INFO - 启动App成功: com.hexin.plat.android[0m
 [32m2025-08-27 10:40:45 - INFO - 连接设备: 127.0.0.1:21503[0m
 [32m2025-08-27 10:40:45 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-08-28 09:45:35 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-08-28 09:45:35 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-08-28 10:19:37 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-08-28 10:19:37 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-08-28 10:20:09 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-08-28 10:20:10 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-08-28 10:49:05 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-08-28 10:49:05 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-08-28 10:49:36 - INFO - 连接设备: 127.0.0.1:21503[0m
+[32m2025-08-28 10:49:36 - INFO - 启动App成功: com.hexin.plat.android[0m

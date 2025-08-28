@@ -1,4 +1,5 @@
 # account_info1.py
+import os
 import time
 import xml.etree.ElementTree as ET
 import pandas as pd
@@ -280,6 +281,64 @@ class AccountInfo:
         except Exception as e:
             logger.error(f"获取持仓失败: {e}")
             return False, 0
+    # 更新指定账户的持仓信息
+    def update_holding_info_for_account(self, account_name):
+        """
+        获取指定账户的持仓信息，并保存到 Excel 文件
+        """
+        logger.info(f"开始更新 {account_name} 账户持仓信息...")
+
+        try:
+            # 切换到指定账户
+            logger.info(f"正在切换到 {account_name} 账户...")
+            common_page.change_account(account_name)
+
+            # 等待账户切换完成
+            time.sleep(2)
+
+            # 提取该账户的数据
+            header_info_df = self.extract_header_info()
+            stocks_df = self.extract_stock_info()
+
+            # 如果数据为空，记录警告
+            if header_info_df.empty and stocks_df.empty:
+                logger.warning(f"{account_name} 账户数据为空")
+                return False
+
+            # 将数据保存到Excel文件的指定工作表中
+            try:
+                # 如果文件已存在，先读取现有数据
+                all_sheets_data = {}
+                if os.path.exists(Account_holding_file):
+                    with pd.ExcelFile(Account_holding_file, engine='openpyxl') as xls:
+                        existing_sheets = xls.sheet_names
+
+                        # 读取除当前账户以外的其他工作表
+                        for sheet_name in existing_sheets:
+                            if not sheet_name.startswith(f"{account_name}_"):
+                                all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
+
+                # 添加当前账户的数据
+                if not header_info_df.empty:
+                    all_sheets_data[f"{account_name}_表头数据"] = header_info_df
+                if not stocks_df.empty:
+                    all_sheets_data[f"{account_name}_持仓数据"] = stocks_df
+
+                # 写入所有数据到Excel文件
+                with pd.ExcelWriter(Account_holding_file, engine='openpyxl', mode='w') as writer:
+                    for sheet_name, df in all_sheets_data.items():
+                        df.to_excel(writer, index=False, sheet_name=sheet_name)
+
+                logger.info(f"✅ {account_name} 账户持仓信息已更新并保存至 {Account_holding_file}")
+                return True
+
+            except Exception as e:
+                logger.error(f"❌ 保存 {account_name} 账户数据失败: {e}", exc_info=True)
+                return False
+
+        except Exception as e:
+            logger.error(f"❌ 获取 {account_name} 账户持仓信息失败: {e}", exc_info=True)
+            return False
 
     # 更新持仓信息
     def update_holding_info_all(self):

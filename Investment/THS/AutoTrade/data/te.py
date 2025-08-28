@@ -16,7 +16,7 @@ def test_read_excel_to_db():
     # test_file = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Combination_position.xlsx'
     # test_file = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Strategy_position.xlsx'
     # test_file = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\Robots_position.xlsx'
-    test_file = r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\account_info.xlsx'
+    test_file = r'/Investment/THS/AutoTrade/data/position/account_info.xlsx'
 
     if not os.path.exists(test_file):
         print(f"测试文件不存在: {test_file}")

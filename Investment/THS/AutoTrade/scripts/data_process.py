@@ -418,7 +418,7 @@ def write_operation_history1(df):
         raise
 def write_operation_history(df):
     """将操作记录写入Excel文件，按日期作为sheet名，并确保今日sheet位于第一个"""
-    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    today = datetime.now().strftime('%Y-%m-%d')
     filename = OPERATION_HISTORY_FILE
 
     try:
@@ -804,14 +804,15 @@ def process_data_to_operate(file_paths):
                 info = str(e)
                 all_operations_result.append(f"{account}: {operation} {stock_name} 异常 - {info}")
 
-            # 构造记录
             operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             record = pd.DataFrame([{
+                '名称': strategy_name,
                 '标的名称': stock_name,
                 '操作': operation,
                 '新比例%': new_ratio,
                 '状态': status,
                 '信息': info,
+                '账户': account,
                 '时间': operate_time
             }])
 
