@@ -198,14 +198,20 @@ class THSPage:
         time.sleep(1)
 
         # 如果clear按钮在，则点击匹配，如果找不到，则pass，继续下一步
+        clear = self.d(resourceId='com.hexin.plat.android:id/clearable_edittext_btn_clear')
         if clear.exists():
             # 显式等待搜索结果加载
             recycler_view = self.d(resourceId='com.hexin.plat.android:id/recyclerView')
             if recycler_view.wait(timeout=5):  # 等待最多5秒
                 first_item = recycler_view.child(index=0)
+                time.sleep(1)
                 first_item.click()
                 logger.info("点击匹配的第一个股票")
                 time.sleep(1)
+                cancel_button = self.d(resourceId='com.hexin.plat.android:id/close_btn')
+                if cancel_button.exists:
+                    first_item.click()
+                    logger.info("再次点击匹配的第一个股票")
             else:
                 logger.warning("未找到搜索结果列表，尝试使用股票代码搜索")
                 # 如果没找到，尝试输入股票代码
@@ -229,7 +235,14 @@ class THSPage:
         # volumn_input = self.d(className='android.widget.EditText')[3]
         volumn_input = self.d(resourceId="com.hexin.plat.android:id/stockvolume").child(index=0)
         volumn_input.send_keys(volume)
-        logger.info(f"输入数量: {volume}手")
+        # volume_text = self.d(className='android.widget.EditText')[3].get_text()# 会报错
+        volume_text = int(self.d(resourceId="com.hexin.plat.android:id/stockvolume").child(index=0).get_text())
+        if volume_text == volume:
+            logger.info(f"输入数量:{volume}手")
+            return True
+        else:
+            logger.warning(f"输入数量错误 {volume_text}")
+            return False, volume_text
 
     def click_half_volume(self):
         volumn = self.d(resourceId='com.hexin.plat.android:id/tv_flashorder_cangwei', text='1/2仓')
@@ -292,111 +305,101 @@ class THSPage:
         raise ValueError("无法获取实时价格")
         # return None
 
-    # def calculate_volume(self, operation: str, real_price=None, buy_available=None, sale_available=None, new_ratio: float = None, ):
-    #     """
-    #     根据当前持仓和策略动态计算交易数量
-    #     :param operation: '买入' 或 '卖出'
-    #     :param new_ratio: 新仓位比例（可选）
-    #     :param real_price: 实时价格
-    #     :param buy_available: 可用资金
-    #     :param sale_available: 可卖数量
-    #     :return: tuple(success: bool, message: str, volume: int | None)
-    #     """
-    #     try:
-    #         if operation == "买入":
-    #             if not real_price:
-    #                 return False, "无法获取实时价格", None
-    #
-    #             if not buy_available:
-    #                 return False, "无法获取可用资金", None
-    #
-    #             volume = trader.calculate_buy_volume(real_price, buy_available)
-    #             if not volume:
-    #                 return False, "买入数量计算失败", None
-    #
-    #             logger.info(f"实时价格: {real_price}, 操作数量: {volume}, 共{operation}: {real_price * volume}")
-    #             return True, '数量计算成功', volume
-    #
-    #         elif operation == "卖出":
-    #             if not sale_available:
-    #                 return False, f'{self._current_stock_name} 没有可用持仓', None
-    #
-    #             volume = trader.calculate_sell_volume(sale_available, new_ratio)
-    #             if not volume:
-    #                 return False, "卖出数量计算失败", None
-    #
-    #             logger.info(f"{operation}数量: {volume} (共可用：{sale_available})")
-    #             return True, '数量计算成功', volume
-    #
-    #         else:
-    #             logger.warning("未知操作类型")
-    #             return False, '失败', None
-    #
-    #     except Exception as e:
-    #         logger.error(f"数量计算失败: {e}", exc_info=True)
-    #         return False, '失败', None
 
     def dialog_handle(self):
         """处理交易后的各种弹窗情况"""
         logger.info("开始处理弹窗")
-
         # 定位弹窗相关控件
         dialog_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
         prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
         prompt_content_second = self.d(className='//android.widget.TextView')[2]
+        prompt_content_third = self.d(className='//android.widget.TextView')[3]
         confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
-        confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn") #资金不足时的确定按钮
+        confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn")  # 资金不足时的确定按钮
 
         try:
+            # 获取弹窗标题和内容
+            title_text = dialog_title.get_text() if dialog_title.exists else "未找到弹窗标题"
+            prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+            confirm_button = confirm_button if confirm_button.exists else confirm_button_second if confirm_button_second.exists else '未找到确定按钮'
+
+            # 如果主提示内容为空，尝试获取其他位置的内容
+            # if not prompt_text:
+            #     prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+            #     if not prompt_text:
+            #         prompt_text = prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+
+            # 提取关键信息
+            # stock_name, stock_code, volume = self._extract_trade_info(prompt_text)
+            #
+            # # 打印提取的信息
+            # if stock_name or stock_code or volume:
+            #     logger.info(f"提取到交易信息: 名称={stock_name}, 代码={stock_code}, 数量={volume}")
+
             # 处理成功提交的情况
-            title_text = dialog_title.get_text() if dialog_title.exists else ""
             if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
-               logger.info("检测到'委托确认'提示")
-               confirm_button.click()
-               logger.info("点击确认按钮")
+                logger.info("检测到'委托确认'提示")
+                confirm_button.click()
+                logger.info("点击确认按钮")
 
-               # 处理委托已提交后的情况
-               prompt_text = prompt_content.get_text() if prompt_content.exists else ""
-               logger.info(f"提示信息：{prompt_text}")
-               if '委托已提交' in prompt_text:
-                   confirm_button.click()
-                   logger.info("委托已提交")
-                   return True, "委托已提交"
-               # elif '资金不足提示' in prompt_text:
-               #     error_info = prompt_content_second.get_text()
-               #     confirm_button_second.click()
-               #     logger.warning(error_info)
-               #     return False, "可用资金不足"
-               else:
-                   try:
-                       if prompt_content.exists:
-                          error_info = prompt_content.get_text()
-                       elif prompt_content_second.exists and len(prompt_content_second) > 2:
-                          error_info = prompt_content_second[2].get_text()
-                       else:
-                          error_info = "无提示信息"
+                # 处理委托已提交后的情况
+                if '委托已提交' in prompt_text:
+                    confirm_button.click()
+                    logger.info("委托已提交")
+                    return True, "委托已提交"
+                else:
+                    # 处理委托失败的情况
+                    time.sleep(1)
 
-                       if confirm_button.exists:
-                          confirm_button.click()
-                       elif confirm_button_second.exists:
-                         confirm_button_second.click()
-                       else:
-                           logger.warning("未找到确认按钮")
-                           return False, "未找到确认按钮"
-                   except Exception as e:
-                       logger.error(f"点击确认按钮失败: {e}")
-                       return False, f"点击确认按钮失败: {e}"
-
-                   logger.warning(error_info)
-                   return False, error_info
+                    prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+                    # 尝试点击确认按钮
+                    confirm_button.click()
+                    error_info = prompt_text
+                    logger.warning(error_info)
+                    time.sleep(1)
+                    # 更新prompt_text的内容
+                    if confirm_button.exists:
+                        time.sleep(1)
+                        prompt_text1 = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+                        confirm_button.click()
+                        error_info = prompt_text1
+                        logger.warning(error_info)
+                    return False, error_info
             else:
                 warning_info = "未检测到'委托确认'提示"
                 logger.info(warning_info)
                 return False, warning_info
+
         except Exception as e:
             logger.error(f"处理弹窗时发生异常: {e}")
             return False, f"处理弹窗时发生异常: {e}"
 
+    def _extract_trade_info(self, prompt_text):
+        """
+        从提示文本中提取股票名称、代码和数量
+        """
+        if not prompt_text:
+            return None, None, None
+
+        # 使用正则表达式提取信息
+        import re
+
+        # 提取股票名称（通常在文本开头或中间）
+        name_pattern = r'(?:[A-Za-z\u4e00-\u9fa5]+(?:\s*[\u4e00-\u9fa5]+)*)'
+        name_match = re.search(name_pattern, prompt_text)
+        stock_name = name_match.group(0) if name_match else None
+
+        # 提取股票代码（通常是6位数字）
+        code_pattern = r'\d{6}'
+        code_match = re.search(code_pattern, prompt_text)
+        stock_code = code_match.group(0) if code_match else None
+
+        # 提取数量（通常是数字，可能带单位）
+        volume_pattern = r'(\d+)(?:手|股)?'
+        volume_match = re.search(volume_pattern, prompt_text)
+        volume = int(volume_match.group(1)) if volume_match else None
+
+        return stock_name, stock_code, volume
 
     def update_holding_info_all(self):
         """
@@ -536,7 +539,7 @@ if __name__ == '__main__':
 
     # d.screenshot("screenshot1.png")
     ths = THSPage(d)
-    ths.click_holding_stock_button()
+    # ths.click_holding_stock_button()
     # pom.guozhai_operation()
     # if ths.operate_stock('卖出', '东方创业'):
     #     # ths.trade_button_entry.click()
@@ -548,7 +551,7 @@ if __name__ == '__main__':
     # pom.common_page("川财证券")
     # pom.common_page("模拟")
     # ths.ensure_on_account_page()
-    # ths.operate_stock("买入", "超讯通讯", 200)
+    ths.operate_stock("买入", "超讯通讯", 200)
     # print(pom.where_page())
     # pom.get_price_by_volume()
 #     # pom.sell_stock('中国电信','半仓')

@@ -129,7 +129,7 @@ class TradeLogic:
         """
         # self.goto_account_page()
         # self.ths_page.ensure_on_account_page()
-        # 进入到 交易 页面
+        # 进入到 账户 页面
         common_page.goto_account_page()
         try:
             # 更新账户数据
@@ -141,8 +141,10 @@ class TradeLogic:
             sale_available = None
             # new_ratio = None  # 这行代码是多余的，因为new_ratio是参数传入的
 
+            # 点击持仓
             self.ths_page.click_holding_stock_button()
             time.sleep(1)
+            # 如果是买入，则获取可用资金，如果是卖出，则获取可卖数量
             if operation == "买入":
                 buy_available = account_info.get_buying_power()
             else:
@@ -223,4 +225,5 @@ class TradeLogic:
 
 if __name__ == '__main__':
     trader = TradeLogic()
-    trader.operate_stock('买', '工商银行', 100)
+    trader.operate_stock('买入', 'ST瑞和', 100)
+    # trader.operate_stock('买入', '中国电信', 100)

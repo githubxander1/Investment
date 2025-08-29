@@ -291,10 +291,15 @@ class AccountInfo:
         try:
             # 切换到指定账户
             logger.info(f"正在切换到 {account_name} 账户...")
-            common_page.change_account(account_name)
+            switch_success = common_page.change_account(account_name)
 
             # 等待账户切换完成
             time.sleep(2)
+
+            # 检查账户切换是否成功
+            if not switch_success:
+                logger.warning(f"❌ {account_name} 账户切换失败")
+                return False
 
             # 提取该账户的数据
             header_info_df = self.extract_header_info()

@@ -1074,3 +1074,12 @@ adbutils.errors.AdbError
 [32m2025-08-28 14:57:22 - INFO - 已切换账户: 川财证券[0m
 [32m2025-08-28 14:57:24 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
 [32m2025-08-28 14:57:27 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-08-29 14:56:52 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-08-29 14:56:58 - ERROR - 无法返回账户页[0m
+[31m2025-08-29 14:56:58 - ERROR - 操作失败: 'UiObject' object is not callable[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 136, in guozhai_operation
+    self.back_button()
+    ~~~~~~~~~~~~~~~~^^
+TypeError: 'UiObject' object is not callable
+[33m2025-08-29 14:56:58 - WARNING - 未找到账户信息元素[0m

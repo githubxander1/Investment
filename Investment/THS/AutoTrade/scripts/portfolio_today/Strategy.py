@@ -35,7 +35,7 @@ def get_latest_position(strategy_id):
         data.raise_for_status()
         data = data.json()
         # logger.info(f"策略 获取数据成功id:{strategy_id} {Strategy_id_to_name.get(strategy_id, '未知策略')} ")
-        pprint(data)
+        # pprint(data)
 
         result = data.get('result', {})
         latest_trade_infos = result.get('latestTrade', {})
@@ -51,7 +51,7 @@ def get_latest_position(strategy_id):
         foundDate = result.get('foundDate', '')
         todayProfit = round(result.get('todayProfit', 0),2)
         todayProfitPrice = round(result.get('todayProfitPrice', 0),2)
-        logger.info(f"{strategy_id}成立时间{foundDate}, 总盈亏{allProfitPrice}({allProfit}), 今日盈亏: {todayProfit} 盈亏金额: {todayProfitPrice}, \n今日交易数据: {trade_count} 条,持仓数据: {position_count} 条, ")
+        logger.info(f"{strategy_id} 成立时间: {foundDate}, 总盈亏: {allProfitPrice}({allProfit}%), 今日盈亏: {todayProfit}% 盈亏金额: {todayProfitPrice}, \n今日交易数据: {trade_count} 条,持仓数据: {position_count} 条, ")
 
         # today = datetime.datetime.now().date()
         # yestoday = (datetime.date.today() - datetime.timedelta(days=1))
@@ -101,9 +101,10 @@ def get_difference_holding():
         account_info = AccountInfo()
         update_success = account_info.update_holding_info_for_account("川财证券")
         if not update_success:
-            logger.warning("更新川财证券账户持仓数据失败，将继续使用现有数据进行对比")
-        else:
-            logger.info("✅ 川财证券账户持仓数据更新完成")
+            logger.warning("更新川财证券账户持仓数据失败")
+            return {"error": "更新川财证券账户持仓数据失败"}
+
+        logger.info("✅ 川财证券账户持仓数据更新完成")
 
         # 读取川财证券账户持仓数据
         account_df = pd.DataFrame()
@@ -151,7 +152,7 @@ def get_difference_holding():
 
         logger.info(f"川财证券账户持仓数据:\n{account_df[['标的名称']] if not account_df.empty else '无数据'}\n")
         if not strategy_df.empty:
-            logger.info(f"策略今日持仓数据:\n{strategy_df[['标的名称']]}\n")
+            logger.info(f"策略今日持仓数据:{len(strategy_df)} 条记录)\n{strategy_df[['标的名称']]}\n")
 
         # 需要排除的标的名称
         excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
@@ -167,7 +168,7 @@ def get_difference_holding():
             to_sell = pd.DataFrame(columns=account_df.columns) if not account_df.empty else pd.DataFrame()
 
         if not to_sell.empty:
-            logger.warning("⚠️ 发现需卖出的标的:")
+            logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
             logger.info(f"\n{to_sell[['标的名称']] if '标的名称' in to_sell.columns else to_sell}")
             # 添加操作列
             to_sell['操作'] = '卖出'
@@ -185,7 +186,7 @@ def get_difference_holding():
             to_buy = pd.DataFrame(columns=['标的名称'])
 
         if not to_buy.empty:
-            logger.warning("⚠️ 发现需买入的标的:")
+            logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
             logger.info(f"\n{to_buy[['标的名称']] if '标的名称' in to_buy.columns else to_buy}")
             # 添加操作列
             to_buy['操作'] = '买入'
@@ -216,7 +217,7 @@ def sava_all_strategy_holding_data():
         positions_df = get_latest_position(id)
         # 只保留沪深A股的
         positions_df = positions_df[positions_df['市场'] == '沪深A股']
-        print(f"{id}持仓数据:\n{positions_df}")
+        logger.info(f"{id}持仓数据:\n{positions_df}")
         if positions_df is not None and not positions_df.empty:
             all_holdings.append(positions_df)
         else:
@@ -336,7 +337,6 @@ def operate_result(max_retries=3):
             time.sleep(2)
 
             # 获取持仓差异
-
             diff_result = get_difference_holding()
 
             if 'error' in diff_result:
@@ -351,28 +351,80 @@ def operate_result(max_retries=3):
                 logger.info("✅ 当前无持仓差异，无需执行交易")
                 return True
 
+            # 读取操作历史记录
+            try:
+                history_df = read_operation_history(OPERATION_HISTORY_FILE)
+                logger.info("历史操作记录:")
+                logger.info(f"\n{history_df.to_string(index=False) if not history_df.empty else '无历史记录'}")
+            except Exception as e:
+                logger.error(f"读取操作历史记录失败: {e}")
+                history_df = pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+
             # 准备所有操作的列表
             all_operations = []
 
-            # 添加卖出操作
+            # 添加卖出操作（先执行卖出）
             if not to_sell.empty:
+                logger.info("🔍 检查卖出操作是否已执行...")
                 for _, row in to_sell.iterrows():
+                    stock_name = row['标的名称']
+                    operation = '卖出'
+                    new_ratio = 0
+
+                    # 检查是否已在历史记录中
+                    if not history_df.empty:
+                        exists = history_df[
+                            (history_df['标的名称'] == stock_name) &
+                            (history_df['操作'] == operation) &
+                            (abs(history_df['新比例%'] - new_ratio) < 0.01)
+                        ]
+
+                        if not exists.empty:
+                            logger.info(f"✅ 卖出 {stock_name} 已在历史记录中存在，跳过")
+                            continue
+
                     all_operations.append({
-                        'stock_name': row['标的名称'],
-                        'operation': '卖出',
-                        'new_ratio': 0,  # 卖出时新比例为0
+                        'stock_name': stock_name,
+                        'operation': operation,
+                        'new_ratio': new_ratio,
                         'strategy_name': 'AI市场追踪策略'
                     })
 
-            # 添加买入操作
+            # 添加买入操作（后执行买入）
             if not to_buy.empty:
-                for _, row in to_buy.iterrows():
+                logger.info("🔍 检查买入操作是否已执行...")
+                # 按最新价从低到高排序买入操作
+                to_buy_sorted = to_buy.sort_values('最新价', ascending=True)
+                logger.info(f"📈 买入顺序（按价格从低到高）: \n{to_buy_sorted[['标的名称', '最新价']].to_string(index=False)}")
+
+                for _, row in to_buy_sorted.iterrows():
+                    stock_name = row['标的名称']
+                    operation = '买入'
+                    new_ratio = None  # 买入时无需新比例
+
+                    # 检查是否已在历史记录中
+                    if not history_df.empty:
+                        # 对于买入操作，我们检查是否已经买入该股票
+                        exists = history_df[
+                            (history_df['标的名称'] == stock_name) &
+                            (history_df['操作'] == operation)
+                        ]
+
+                        if not exists.empty:
+                            logger.info(f"✅ 买入 {stock_name} 已在历史记录中存在，跳过")
+                            continue
+
                     all_operations.append({
-                        'stock_name': row['标的名称'],
-                        'operation': '买入',
-                        'new_ratio': None,  # 买入时无需新比例
+                        'stock_name': stock_name,
+                        'operation': operation,
+                        'new_ratio': new_ratio,
                         'strategy_name': 'AI市场追踪策略'
                     })
+
+            # 检查是否有需要执行的操作
+            if not all_operations:
+                logger.info("✅ 所有操作均已执行过，无需重复操作")
+                return True
 
             # 准备保存到今日调仓文件的数据
             today_trades = []
