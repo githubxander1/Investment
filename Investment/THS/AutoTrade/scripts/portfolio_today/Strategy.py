@@ -525,8 +525,8 @@ def operate_result(max_retries=3):
             send_notification(f"策略调仓执行异常: {str(e)}")
 
             if retry_count < max_retries:
-                logger.info(f"等待30秒后进行第 {retry_count + 1} 次重试...")
-                time.sleep(30)
+                logger.info(f"等待10秒后进行第 {retry_count + 1} 次重试...")
+                time.sleep(10)
 
                 # 尝试重新进入交易页面
                 try:

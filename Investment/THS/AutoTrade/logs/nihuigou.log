@@ -1083,3 +1083,255 @@ Traceback (most recent call last):
     ~~~~~~~~~~~~~~~~^^
 TypeError: 'UiObject' object is not callable
 [33m2025-08-29 14:56:58 - WARNING - 未找到账户信息元素[0m
+[32m2025-09-01 14:56:21 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-01 14:56:23 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 57, in where_page
+    if self.application_store.exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[33m2025-09-01 14:56:24 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-09-01 14:56:25 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-01 14:56:25 - INFO - 已切换账户: 川财证券[0m
+[32m2025-09-01 14:56:27 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-01 14:56:29 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 57, in where_page
+    if self.application_store.exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[33m2025-09-01 14:56:30 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-09-01 14:56:30 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-01 14:56:31 - INFO - 已切换账户: 中泰证券[0m
+[32m2025-09-01 14:56:34 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-01 14:56:36 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 57, in where_page
+    if self.application_store.exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[33m2025-09-01 14:56:36 - WARNING - 无法从账户信息中提取中文名称: **8250[0m
+[32m2025-09-01 14:56:37 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-01 14:56:37 - INFO - 已切换账户: 长城证券[0m
+[32m2025-09-01 14:56:40 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-01 14:56:42 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 57, in where_page
+    if self.application_store.exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[33m2025-09-01 14:56:42 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[32m2025-09-01 14:56:43 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-01 14:56:43 - INFO - 已切换账户: 川财证券[0m
+[32m2025-09-01 14:56:45 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-01 14:56:47 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 57, in where_page
+    if self.application_store.exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[33m2025-09-01 14:56:48 - WARNING - 无法从账户信息中提取中文名称: **6331[0m
+[32m2025-09-01 14:56:48 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-01 14:56:49 - INFO - 已切换账户: 中泰证券[0m
+[32m2025-09-01 14:56:51 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-01 14:56:53 - ERROR - 操作失败: [0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 57, in where_page
+    if self.application_store.exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[33m2025-09-01 14:56:53 - WARNING - 无法从账户信息中提取中文名称: **8250[0m
+[32m2025-09-01 14:56:53 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-01 14:56:54 - INFO - 已切换账户: 长城证券[0m

@@ -407,7 +407,8 @@ class AccountInfo:
 
 if __name__ == '__main__':
     account = AccountInfo()
-    account.update_holding_info_all()
+    # account.update_holding_info_all()
+    account.update_holding_info_for_account('川财证券')
     # get_stock_holding('中国电信')
     # header_info = extract_header_info()
     # buy_available = float(header_info["可用"].iloc[0].replace(',', ''))
