@@ -1403,3 +1403,224 @@ uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomat
 [32m2025-09-01 09:55:42 - INFO - 卖出 创新医疗 100股 False 委托已提交，合同号为：211071[0m
 [32m2025-09-01 11:24:52 - INFO - 买入 博敏电子 400股 False 委托已提交，合同号为：398681[0m
 [33m2025-09-01 11:25:04 - WARNING - 买入数量不足100股[0m
+[31m2025-09-02 09:37:17 - ERROR - 南山铝业 没有持仓[0m
+[31m2025-09-02 09:37:34 - ERROR - 安道麦A 没有持仓[0m
+[31m2025-09-02 09:37:49 - ERROR - 买入 塔牌集团 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 305, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 09:38:03 - ERROR - 买入 联发股份 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 305, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[32m2025-09-02 09:41:05 - INFO - 全部卖出[0m
+[32m2025-09-02 09:41:13 - INFO - 卖出 民丰特纸 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:41:34 - INFO - 全部卖出[0m
+[32m2025-09-02 09:41:44 - INFO - 卖出 广电电气 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:42:06 - INFO - 全部卖出[0m
+[32m2025-09-02 09:42:13 - INFO - 卖出 三峰环境 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:42:35 - INFO - 全部卖出[0m
+[32m2025-09-02 09:42:43 - INFO - 卖出 嘉华生物科技股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:43:04 - INFO - 全部卖出[0m
+[32m2025-09-02 09:43:12 - INFO - 卖出 金海高科 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:43:34 - INFO - 全部卖出[0m
+[32m2025-09-02 09:43:41 - INFO - 卖出 *ST星农 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:44:03 - INFO - 全部卖出[0m
+[32m2025-09-02 09:44:10 - INFO - 卖出 湖南投资 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:44:32 - INFO - 全部卖出[0m
+[32m2025-09-02 09:44:39 - INFO - 卖出 三木集团 100股 False 未检测到'委托确认'提示[0m
+[31m2025-09-02 09:45:01 - ERROR - 茂化实华 没有持仓[0m
+[32m2025-09-02 09:45:17 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:45:18 - INFO - 买入 嘉美包装 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:45:36 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:45:37 - INFO - 买入 亚邦股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:45:54 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:45:56 - INFO - 买入 乔治白 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:46:13 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:46:15 - INFO - 买入 华斯股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:46:31 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:46:33 - INFO - 买入 同德化工 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:46:50 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:46:51 - INFO - 买入 福建水泥 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:47:09 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:47:10 - INFO - 买入 蓝丰生化 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:47:27 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:47:29 - INFO - 买入 重庆燃气 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:47:45 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:47:47 - INFO - 买入 中天服务 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:48:04 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:48:06 - INFO - 买入 *ST交投 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:48:23 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:48:25 - INFO - 买入 瑞尔特 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:48:42 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:48:43 - INFO - 买入 金花股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:49:00 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:49:02 - INFO - 买入 黄山胶囊 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:49:18 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:49:20 - INFO - 买入 箭牌家居 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:49:36 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:49:38 - INFO - 买入 新宏泽 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:49:55 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:49:57 - INFO - 买入 美芝股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:50:14 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:50:16 - INFO - 买入 春雪食品 100股 False 未检测到'委托确认'提示[0m
+[31m2025-09-02 09:50:28 - ERROR - 买入 万里股份 100 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 186, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))
+[32m2025-09-02 09:50:43 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-02 09:50:44 - INFO - 买入 新大正 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:52:36 - INFO - 全部卖出[0m
+[32m2025-09-02 09:52:44 - INFO - 卖出 民丰特纸 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:54:00 - INFO - 全部卖出[0m
+[32m2025-09-02 09:54:08 - INFO - 卖出 广电电气 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:54:30 - INFO - 全部卖出[0m
+[32m2025-09-02 09:54:37 - INFO - 卖出 三峰环境 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:54:59 - INFO - 全部卖出[0m
+[32m2025-09-02 09:55:07 - INFO - 卖出 嘉华生物科技股份 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 09:55:29 - INFO - 全部卖出[0m
+[32m2025-09-02 09:55:36 - INFO - 卖出 金海高科 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 10:02:06 - INFO - 全部卖出[0m
+[31m2025-09-02 10:02:06 - ERROR - 卖出 *ST星农 100 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 186, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))
+[32m2025-09-02 10:02:28 - INFO - 全部卖出[0m
+[31m2025-09-02 10:03:59 - ERROR - 湖南投资 没有持仓[0m
+[31m2025-09-02 10:05:07 - ERROR - 广电电气 没有持仓[0m
+[31m2025-09-02 10:05:50 - ERROR - *ST星农 没有持仓[0m
+[32m2025-09-02 10:07:04 - INFO - 使用固定股数: 100[0m
+[31m2025-09-02 10:08:50 - ERROR - *ST星农 没有持仓[0m
+[32m2025-09-02 10:09:38 - INFO - 使用固定股数: 100[0m
+[31m2025-09-02 10:12:23 - ERROR - *ST星农 没有持仓[0m
+[32m2025-09-02 10:12:55 - INFO - 使用固定股数: 100[0m
+[32m2025-09-02 10:15:18 - INFO - 使用固定股数: 100[0m
+[31m2025-09-02 10:17:10 - ERROR - *ST星农 没有持仓[0m
+[32m2025-09-02 10:17:35 - INFO - 使用固定股数: 100[0m
+[32m2025-09-02 10:23:14 - INFO - 全部卖出[0m
+[32m2025-09-02 10:23:21 - INFO - 卖出 湖南投资 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 13:30:57 - INFO - 全部卖出[0m
+[32m2025-09-02 13:31:05 - INFO - 卖出 弘业期货 200股 False 未检测到'委托确认'提示[0m
+[31m2025-09-02 13:32:35 - ERROR - 买入 福莱新材 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 305, in _get_real_price
+    logger.warning(f"解析价格失败: {e}")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:21:25 - ERROR - 买入 西藏矿业 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[33m2025-09-02 14:21:34 - WARNING - 计算买入数量失败：buying_power=None, real_price=9.51[0m
+[31m2025-09-02 14:21:50 - ERROR - 买入 驰宏锌锗 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:22:05 - ERROR - 买入 永兴材料 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:22:19 - ERROR - 买入 大西洋 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:22:33 - ERROR - 买入 首钢股份 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:22:47 - ERROR - 买入 森特股份 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:23:00 - ERROR - 买入 江河集团 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[31m2025-09-02 14:23:14 - ERROR - 买入 中毅达 未知 股失败: 无法获取实时价格[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 186, in operate_stock
+    real_price = self.ths_page._get_real_price()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 307, in _get_real_price
+    raise ValueError("无法获取实时价格")
+ValueError: 无法获取实时价格
+[32m2025-09-02 14:24:30 - INFO - 全部卖出[0m
+[32m2025-09-02 14:24:37 - INFO - 卖出 首创奥莱 100股 False 未检测到'委托确认'提示[0m
+[32m2025-09-02 14:24:53 - INFO - 全部卖出[0m
+[32m2025-09-02 14:25:00 - INFO - 卖出 物美消费 100股 False 未检测到'委托确认'提示[0m

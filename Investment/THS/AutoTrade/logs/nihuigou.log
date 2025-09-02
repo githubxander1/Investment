@@ -1335,3 +1335,50 @@ adbutils.errors.AdbError
 [33m2025-09-01 14:56:53 - WARNING - 无法从账户信息中提取中文名称: **8250[0m
 [32m2025-09-01 14:56:53 - INFO - 已点击: 账户切换按钮[0m
 [32m2025-09-01 14:56:54 - INFO - 已切换账户: 长城证券[0m
+[32m2025-09-02 14:56:10 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-09-02 14:56:13 - INFO - 已进入: 国债逆回购入口[0m
+[32m2025-09-02 14:56:16 - INFO - 已滑动到底部[0m
+[32m2025-09-02 14:56:20 - INFO - 点击 1天期 成功[0m
+[32m2025-09-02 14:56:21 - INFO - 当前页面为 GC001(1天期)[0m
+[32m2025-09-02 14:56:22 - INFO - 已点击: 借出按钮[0m
+[31m2025-09-02 14:56:24 - ERROR - 委托失败: 交易深市国债，借出资金必须为1000的整数倍[0m
+[32m2025-09-02 14:56:24 - INFO - ---------------------国债逆回购任务执行完毕---------------------[0m
+[33m2025-09-02 14:56:25 - WARNING - 无法从账户信息中提取中文名称: **5735[0m
+[32m2025-09-02 14:56:25 - INFO - 已点击: 账户切换按钮[0m
+[32m2025-09-02 14:56:26 - INFO - 已切换账户: 川财证券[0m
+[32m2025-09-02 14:56:26 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-09-02 14:56:27 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-09-02 14:56:52 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[33m2025-09-02 14:56:53 - WARNING - 未找到账户信息元素[0m
+[31m2025-09-02 14:56:53 - ERROR - 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_guozhai.py", line 132, in guozhai_operation
+    if not common_page.goto_account_page():
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 78, in goto_account_page
+    current_page = self.where_page()
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page_common.py", line 72, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[33m2025-09-02 14:56:53 - WARNING - 未找到账户信息元素[0m

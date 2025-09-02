@@ -33,6 +33,7 @@ ai_strategy_diff_file_path = os.path.join(DATA_DIR, 'position', "ai_strategy_dif
 Strategy_holding_file = os.path.join(DATA_DIR, 'position','Strategy_position.xlsx')
 Combination_holding_file = os.path.join(DATA_DIR, 'position','Combination_position.xlsx')
 Robot_holding_file = os.path.join(DATA_DIR, 'position','Robots_position.xlsx')
+Lhw_holding_file = os.path.join(DATA_DIR, 'position','Lhw_position.xlsx')
 Account_holding_file = os.path.join(DATA_DIR, 'position','account_info.xlsx')
 
 # 对比
@@ -99,7 +100,7 @@ Combination_ids = ['9800','7152','12404','20811']
 Combination_ids_to_name = {
     '20811': '组-一枝梨花压海棠',#胜率低，收益高
     '9800': '组-逻辑为王',#胜率低，收益高
-    '20811': '组-一枝梨花压海棠',
+    # '20811': '组-一枝梨花压海棠',
     '7152': '组-中线龙头',#胜率低，收益高
     '12404': '组-精选个股',#
     '11094': '组-低位题材埋伏',#胜率高，回撤小，收益高

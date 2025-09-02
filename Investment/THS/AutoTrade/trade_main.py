@@ -392,7 +392,7 @@ async def main():
 
 
             # 随机等待，降低请求频率规律性
-            delay = random.uniform(50, 70)
+            delay = random.uniform(15, 30)
             logger.info(f"💤 等待 {delay:.2f} 秒后继续下一轮检测")
             await asyncio.sleep(delay)
         except Exception as e:

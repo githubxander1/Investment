@@ -186,7 +186,9 @@ class THSPage:
         stock_search.click()
         logger.info(f"点击股票搜索框")
 
-        auto_search = self.d(resourceId='com.hexin.plat.android:id/auto_stockcode', text='股票代码/简拼')
+        # auto_search = self.d(resourceId='com.hexin.plat.android:id/auto_stockcode', text='股票代码/简拼')
+        # auto_search = self.d(resourceId=("com.hexin.plat.android:id/auto_stockcode"))[3]
+        auto_search = self.d(text="股票代码/简拼")
         clear = self.d(resourceId='com.hexin.plat.android:id/clearable_edittext_btn_clear')
         if clear.exists():
             clear.click()
