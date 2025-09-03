@@ -310,6 +310,7 @@ async def main():
             logger.warning("开始任务")
 
             # 1. 执行早盘信号检查
+            global morning_signal_checked
             await check_morning_signals()
 
             # 2. AI策略持仓差异分析任务（9:30-9:35）

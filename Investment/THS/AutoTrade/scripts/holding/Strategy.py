@@ -92,7 +92,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             if os.path.exists(file_path):
                 with pd.ExcelFile(file_path) as xls:
                     existing_sheets = xls.sheet_names
-                    logger.info(f"保存前文件中已存在的工作表: {existing_sheets}")
+                    logger.info(f"保存前文件中已存在的工作表: {file_path}\n{existing_sheets}")
 
                 # 读取除今天以外的所有现有工作表
                 with pd.ExcelFile(file_path) as xls:

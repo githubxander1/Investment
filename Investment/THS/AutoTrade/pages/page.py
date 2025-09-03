@@ -354,6 +354,7 @@ class THSPage:
                     time.sleep(1)
 
                     prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+                    confirm_button = confirm_button if confirm_button.exists else confirm_button_second if confirm_button_second.exists else '未找到确定按钮'
                     # 尝试点击确认按钮
                     confirm_button.click()
                     error_info = prompt_text
@@ -363,6 +364,7 @@ class THSPage:
                     if confirm_button.exists:
                         time.sleep(1)
                         prompt_text1 = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+                        confirm_button = confirm_button if confirm_button.exists else confirm_button_second if confirm_button_second.exists else '未找到确定按钮'
                         confirm_button.click()
                         error_info = prompt_text1
                         logger.warning(error_info)
