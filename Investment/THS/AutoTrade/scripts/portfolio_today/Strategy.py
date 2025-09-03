@@ -84,6 +84,7 @@ def get_difference_holding():
         - 需要卖出：在账户中存在，但不在策略今日持仓中；
         - 需要买入：在策略今日持仓中存在，但不在账户中；
     """
+    logger.info("开始对比账户实际持仓与策略今日持仓数据...")
     try:
         # 检查必要文件是否存在
         required_files = {
@@ -150,7 +151,7 @@ def get_difference_holding():
             logger.error(f"读取策略持仓文件失败: {e}")
             strategy_df = pd.DataFrame(columns=['标的名称'])
 
-        logger.info(f"川财证券账户持仓数据:\n{account_df[['标的名称']] if not account_df.empty else '无数据'}\n")
+        # logger.info(f"川财证券账户持仓数据:\n{account_df[['标的名称']] if not account_df.empty else '无数据'}\n")
         if not strategy_df.empty:
             logger.info(f"策略今日持仓数据:{len(strategy_df)} 条记录)\n{strategy_df[['标的名称']]}\n")
 
