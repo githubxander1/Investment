@@ -216,6 +216,8 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
 
             # 只保留沪深A股
             all_positions_df = all_positions_df[all_positions_df['市场'] == '沪深A股']
+            # 按价格从低到高排序
+            all_positions_df = all_positions_df.sort_values('最新价', ascending=True)
 
             # 保存合并后的数据到Excel
             today = datetime.now().strftime('%Y-%m-%d')

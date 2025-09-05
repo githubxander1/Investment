@@ -792,7 +792,7 @@ def process_data_to_operate(file_paths):
                     status, info = trader.operate_stock(operation, stock_name, volume=None, new_ratio=new_ratio)
 
                 # 检查交易是否成功执行
-                if status is None:
+                if status is None or status == False:
                     logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
                     all_operations_result.append(f"{account}: {operation} {stock_name} 失败 - {info}")
                 else:
@@ -803,6 +803,7 @@ def process_data_to_operate(file_paths):
                 logger.error(f"处理 {operation} {stock_name} 时发生异常: {e}", exc_info=True)
                 info = str(e)
                 all_operations_result.append(f"{account}: {operation} {stock_name} 异常 - {info}")
+                status = False  # 确保异常情况下状态为False
 
             operate_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             record = pd.DataFrame([{
@@ -891,7 +892,7 @@ if __name__ == '__main__':
     # file_paths = [
     #     Lhw_portfolio_today_file
     # ]
-    # # from auto_trade_on_ths import THSPage
+    # from auto_trade_on_ths import THSPage
     # import uiautomator2 as u2
     # d = u2.connect()
     # package_name = "com.hexin.plat.android"

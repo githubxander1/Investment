@@ -74,6 +74,8 @@ class LhwHoldingProcessor(CommonHoldingProcessor):
             positions_df = self.get_latest_position(id)
             # 只保留沪深A股的
             positions_df = positions_df[positions_df['市场'] == '沪深A股']
+            # 按价格从低到高排序
+            positions_df = positions_df.sort_values('最新价', ascending=True)
             logger.info(f"{id}持仓数据:\n{positions_df}")
             if positions_df is not None and not positions_df.empty:
                 all_holdings.append(positions_df)
