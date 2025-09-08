@@ -7,7 +7,7 @@ import requests
 import json
 from datetime import datetime
 
-from Investment.THS.AutoTrade.config.settings import Robot_holding_file
+from Investment.THS.AutoTrade.config.settings import Robot_portfolio_today_file, robots
 from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.format_data import determine_market
@@ -175,18 +175,11 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
         # 加载所有股票信息
         self.load_all_stocks()
 
-        # 机器人列表
-        robots = {
-            "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
-            "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
-            "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
-        }
-
         # 收集所有机器人的持仓数据
         all_positions = []
 
         # 创建一个Excel写入器
-        with pd.ExcelWriter(Robot_holding_file, engine='openpyxl') as writer:
+        with pd.ExcelWriter(Robot_portfolio_today_file, engine='openpyxl') as writer:
             # 遍历所有机器人
             for robot_name, robot_id in robots.items():
                 logger.info(f"正在获取 {robot_name} 的数据...")
@@ -227,13 +220,13 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
 
             try:
                 # 如果文件存在，读取现有数据
-                if os.path.exists(Robot_holding_file):
-                    with pd.ExcelFile(Robot_holding_file) as xls:
+                if os.path.exists(Robot_portfolio_today_file):
+                    with pd.ExcelFile(Robot_portfolio_today_file) as xls:
                         existing_sheets = xls.sheet_names
                         logger.info(f"保存前文件中已存在的工作表: {existing_sheets}")
 
                     # 读取除今天以外的所有现有工作表
-                    with pd.ExcelFile(Robot_holding_file) as xls:
+                    with pd.ExcelFile(Robot_portfolio_today_file) as xls:
                         for sheet_name in existing_sheets:
                             if sheet_name != today:
                                 all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
@@ -243,7 +236,7 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
                 logger.info(f"即将保存的所有工作表: {list(all_sheets_data.keys())}")
 
                 # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
-                with pd.ExcelWriter(Robot_holding_file, engine='openpyxl', mode='w') as writer:
+                with pd.ExcelWriter(Robot_portfolio_today_file, engine='openpyxl', mode='w') as writer:
                     for sheet_name, df in all_sheets_data.items():
                         logger.info(f"正在保存工作表: {sheet_name}")
                         df.to_excel(writer, sheet_name=sheet_name, index=False)
@@ -254,7 +247,7 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
                 logger.error(f"❌ 保存持仓数据失败: {e}")
                 # 如果出错，至少保存今天的数据
                 try:
-                    with pd.ExcelWriter(Robot_holding_file, engine='openpyxl') as writer:
+                    with pd.ExcelWriter(Robot_portfolio_today_file, engine='openpyxl') as writer:
                         all_positions_df.to_excel(writer, sheet_name=today, index=False)
                     logger.info(f"✅ 文件保存完成，sheet: {today}")
                     return True
@@ -278,7 +271,7 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
             # 执行调仓操作
             from Investment.THS.AutoTrade.config.settings import Robot_portfolio_today_file
             success = self.operate_result(
-                holding_file=Robot_holding_file,
+                holding_file=Robot_portfolio_today_file,
                 portfolio_today_file=Robot_portfolio_today_file,
                 account_name="长城证券"
             )

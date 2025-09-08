@@ -8,7 +8,7 @@ import requests
 import json
 from datetime import datetime
 
-from Investment.THS.AutoTrade.config.settings import Robot_holding_file
+from Investment.THS.AutoTrade.config.settings import Robot_holding_file, robots
 from Investment.THS.AutoTrade.utils.format_data import determine_market
 
 # 所有股票信息文件路径
@@ -190,11 +190,11 @@ def main():
     load_all_stocks()
 
     # 机器人列表
-    robots = {
-        "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
-        "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
-        "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
-    }
+    # robots = {
+    #     "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
+    #     "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
+    #     "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
+    # }
 
     # 收集所有机器人的持仓数据
     all_positons = []

@@ -148,6 +148,7 @@ class AccountInfo:
     # 获取账户表头信息
     def extract_header_info(self):
         """提取账户表头信息：总资产、浮动盈亏、总市值、可用、可取"""
+        logger.info("-" * 50)
         logger.info('正在获取账户表头信息...')
         header_info = {}
 
@@ -189,6 +190,7 @@ class AccountInfo:
     # 获取持仓股票信息
     def extract_stock_info(self,max_swipe_attempts=5):
         """提取持仓股票信息，支持滑动加载更多，并过滤无效条目"""
+        logger.info("-" * 50)
         logger.info('正在获取账户持仓信息...')
 
         stocks = []
@@ -286,6 +288,7 @@ class AccountInfo:
         """
         获取指定账户的持仓信息，并保存到 Excel 文件
         """
+        logger.info("-" * 50)
         logger.info(f"开始更新 {account_name} 账户持仓信息...")
 
         try:
@@ -345,11 +348,13 @@ class AccountInfo:
             logger.error(f"❌ 获取 {account_name} 账户持仓信息失败: {e}", exc_info=True)
             return False
 
+
     # 更新持仓信息
     def update_holding_info_all(self):
         """
         获取当前账户持仓信息，并保存到 Excel 文件
         """
+        logger.info("-" * 50)
         logger.info("开始更新账户持仓信息...")
         # ths = GuozhaiPage(d)
         # ths.ensure_on_holding_page()

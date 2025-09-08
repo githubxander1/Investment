@@ -177,7 +177,7 @@ async def main():
     # 初始化国债逆回购状态
     guozhai_success = False
     strategy1_executed = False  # Strategy_portfolio_today 是否已执行
-    strategy_diff_executed = False  # Strategy.py 的持仓差异 是否已执行
+    strategy_diff_executed = False  # StrategyHoldingProcessor.py 的持仓差异 是否已执行
     robot_extraced = False
     # 定义一个标志位，记录本时间段内是否已执行过任务
     robot_has_executed = False  # 可根据实际代码结构放在全局或类属性中

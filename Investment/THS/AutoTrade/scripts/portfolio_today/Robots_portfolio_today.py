@@ -6,7 +6,7 @@ import requests
 from pprint import pprint
 import asyncio
 
-from Investment.THS.AutoTrade.config.settings import Robot_portfolio_today_file
+from Investment.THS.AutoTrade.config.settings import Robot_portfolio_today_file, robots
 from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time, standardize_dataframe, \
     get_new_records
@@ -111,11 +111,11 @@ def extract_trade_data(robots):
 
 async def Robot_main():
     # 机器人列表
-    robots = {
-        "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
-        "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
-        "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
-    }
+    # robots = {
+    #     "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
+    #     "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
+    #     # "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
+    # }
     all_today_trades_df = extract_trade_data(robots)
     # all_today_trades_df = all_today_trades_df[all_today_trades_df["市场"] == "沪深A股"]
     # 读取历史数据

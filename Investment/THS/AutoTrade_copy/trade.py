@@ -4,7 +4,7 @@ import traceback
 import datetime
 from Investment.THS.AutoTrade.scripts.portfolio_today.Lhw_portfolio_today import Lhw_main
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
-from Investment.THS.AutoTrade.scripts.holding.Strategy import StrategyHoldingProcessor
+from Investment.THS.AutoTrade.scripts.holding.StrategyHoldingProcessor import StrategyHoldingProcessor
 from Investment.THS.AutoTrade.scripts.holding.LhwHoldingProcessor import LhwHoldingProcessor
 from Investment.THS.AutoTrade.scripts.holding.CombinationHoldingProcessor import CombinationHoldingProcessor
 from Investment.THS.AutoTrade.utils.logger import setup_logger

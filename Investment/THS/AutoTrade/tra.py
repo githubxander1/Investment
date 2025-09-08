@@ -19,7 +19,7 @@ from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 from Investment.THS.AutoTrade.pages.page import THSPage
 from Investment.THS.AutoTrade.scripts.data_process import read_operation_history, process_data_to_operate
 # 导入新的策略处理模块
-from Investment.THS.AutoTrade.scripts.holding.Strategy import StrategyHoldingProcessor
+from Investment.THS.AutoTrade.scripts.holding.StrategyHoldingProcessor import StrategyHoldingProcessor
 from Investment.THS.AutoTrade.scripts.holding.LhwHoldingProcessor import LhwHoldingProcessor
 from Investment.THS.AutoTrade.scripts.holding.CombinationHoldingProcessor import CombinationHoldingProcessor
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic

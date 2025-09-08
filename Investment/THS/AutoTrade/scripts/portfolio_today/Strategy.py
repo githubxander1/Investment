@@ -98,7 +98,10 @@ def get_difference_holding():
                 return {"error": f"{file_desc}不存在"}
 
         # 更新川财证券账户持仓数据
-        logger.info("正在更新川财证券账户持仓数据...")
+        # logger.info("正在更新川财证券账户持仓数据")
+        logger.info("-" * 50)
+        print("正在更新川财证券账户持仓数据")
+        # 打印50个-
         account_info = AccountInfo()
         update_success = account_info.update_holding_info_for_account("川财证券")
         if not update_success:
@@ -106,6 +109,7 @@ def get_difference_holding():
             return {"error": "更新川财证券账户持仓数据失败"}
 
         logger.info("✅ 川财证券账户持仓数据更新完成")
+        logger.info("-" * 50)
 
         # 读取川财证券账户持仓数据
         account_df = pd.DataFrame()
