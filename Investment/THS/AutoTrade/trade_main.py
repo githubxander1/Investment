@@ -299,10 +299,10 @@ async def main():
             if dt_time(9, 25) <= now <= dt_time(15, 00):
                 logger.warning("---------------------组合任务开始执行---------------------")
                 combination_result = await Combination_main()
-                lhw_result = await Lhw_main()
+                # lhw_result = await Lhw_main()
                 if combination_result:
                     combination_success, combination_data_df = combination_result
-                    lhw_success, lhw_data_df = lhw_result
+                    # lhw_success, lhw_data_df = lhw_result
                 else:
                     logger.warning("⚠️ 组合任务返回空值，默认视为无更新")
                 logger.warning(f"组合是否有新增数据: {combination_success}"
@@ -317,9 +317,8 @@ async def main():
             # 如果有任何一个数据获取成功且有新数据，则执行交易处理
             if (strategy_success and strategy_data_df is not None) or \
                (combination_success and combination_data_df is not None) or \
-               (robot_success and robot_data_df is not None) or \
-               (lhw_success and lhw_data_df is not None):
-                file_paths = [Combination_portfolio_today_file, Robot_portfolio_today_file, Lhw_portfolio_today_file]
+               (robot_success and robot_data_df is not None):
+                file_paths = [Combination_portfolio_today_file, Robot_portfolio_today_file]
                 process_data_to_operate(file_paths)
             elif strategy_success or combination_success or robot_success or lhw_success:
                 logger.info("有任务执行成功，但无新增交易数据，跳过交易处理")

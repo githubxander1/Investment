@@ -188,7 +188,7 @@ class AccountInfo:
             return pd.DataFrame()
 
     # 获取持仓股票信息
-    def extract_stock_info(self,max_swipe_attempts=5):
+    def extract_stock_info(self,max_swipe_attempts=40):
         """提取持仓股票信息，支持滑动加载更多，并过滤无效条目"""
         logger.info("-" * 50)
         logger.info('正在获取账户持仓信息...')
@@ -226,7 +226,7 @@ class AccountInfo:
                     break
 
                 # 向下滑动
-                self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.25)
+                self.d.swipe(0.5, 0.7, 0.5, 0.5, duration=0.25)
                 time.sleep(1.5)
 
             except Exception as e:

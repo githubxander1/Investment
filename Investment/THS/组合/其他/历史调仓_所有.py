@@ -113,8 +113,9 @@ def process_ids(ids):
                     "调仓后比例": newRatio,
                     "操作类型": operation
                 })
-        all_data.append((portfolio_id, extract_info))
-    return all_data
+        all_data.extend(extract_info)
+    df = pd.DataFrame(all_data)
+    return df
 
 def save_to_excel(data, file_path):
     with pd.ExcelWriter(file_path) as writer:

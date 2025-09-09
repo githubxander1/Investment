@@ -64,7 +64,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
             positions_df = self.get_portfolio_holding_data(id)
             # 只保留沪深A股的
             positions_df = positions_df[positions_df['市场'] == '沪深A股']
-            logger.info(f"组合{id}持仓数据:\n{positions_df}")
+            logger.info(f"组合{id}持仓数据:{len(positions_df)}\n{positions_df}")
             if positions_df is not None and not positions_df.empty:
                 all_holdings.append(positions_df)
             else:

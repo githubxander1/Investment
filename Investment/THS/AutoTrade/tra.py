@@ -7,6 +7,9 @@ from datetime import time as dt_time
 import pandas as pd
 import uiautomator2 as u2
 
+# 导入THS模块以启用全局SSL配置
+# from Investment.THS import *
+
 from Investment.THS.AutoTrade.pages.account_info import common_page
 from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_device_connected
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
@@ -131,21 +134,21 @@ async def execute_lhw_trades():
         return False
 
 async def execute_combination_trades():
-    """执行组合策略交易"""
+    """执行组合交易"""
     try:
-        logger.info("🚀 开始执行组合策略交易...")
+        logger.info("🚀 开始执行组合交易...")
         processor = CombinationHoldingProcessor()
         success = processor.execute_combination_trades()
         if success:
-            logger.info("✅ 组合策略交易执行完成")
-            send_notification("组合策略交易执行完成")
+            logger.info("✅ 组合交易执行完成")
+            send_notification("组合交易执行完成")
         else:
-            logger.error("❌ 组合策略交易执行失败")
-            send_notification("组合策略交易执行失败")
+            logger.error("❌ 组合交易执行失败")
+            send_notification("组合交易执行失败")
         return success
     except Exception as e:
-        logger.error(f"❌ 组合策略交易执行异常: {e}")
-        send_notification(f"组合策略交易执行异常: {e}")
+        logger.error(f"❌ 组合交易执行异常: {e}")
+        send_notification(f"组合交易执行异常: {e}")
         return False
 
 async def execute_robot_trades():
@@ -200,19 +203,19 @@ async def process_portfolio_updates():
     # 执行各策略数据更新
     try:
         # Robot策略更新
-        robot_result = await Robot_main()
-        if robot_result:
-            robot_success, robot_data_df = robot_result
+        # robot_result = await Robot_main()
+        # if robot_result:
+        #     robot_success, robot_data_df = robot_result
 
-        # 组合策略更新
+        # 组合更新
         combination_result = await Combination_main()
         if combination_result:
             combination_success, combination_data_df = combination_result
 
         # 量化王策略更新
-        lhw_result = await Lhw_main()
-        if lhw_result:
-            lhw_success, lhw_data_df = lhw_result
+        # lhw_result = await Lhw_main()
+        # if lhw_result:
+        #     lhw_success, lhw_data_df = lhw_result
 
     except Exception as e:
         logger.error(f"❌ 策略数据更新过程中发生异常: {e}")
@@ -314,7 +317,7 @@ async def main():
             await check_morning_signals()
 
             # 2. AI策略持仓差异分析任务（9:30-9:35）
-            if dt_time(9, 30) <= now <= dt_time(19, 35):
+            if dt_time(9, 30) <= now <= dt_time(9, 35):
                 if not strategy_diff_executed:
                     logger.warning("---------------------AI策略持仓差异分析开始---------------------")
                     await execute_strategy_trades()
@@ -330,21 +333,22 @@ async def main():
 
             # 3. 组合和策略更新任务（9:25-15:00）
             if dt_time(9, 25) <= now <= dt_time(15, 0):
-                if not portfolio_updates_executed:
-                    logger.warning("---------------------组合和策略更新任务开始---------------------")
-                    await process_portfolio_updates()
-                    logger.warning("---------------------组合和策略更新任务结束---------------------")
-                    portfolio_updates_executed = True
-                else:
-                    logger.debug("组合和策略更新任务已执行，跳过重复执行")
+                # if not portfolio_updates_executed:
+                logger.warning("---------------------组合和策略更新任务开始---------------------")
+                await process_portfolio_updates()
+                logger.warning("---------------------组合和策略更新任务结束---------------------")
+                # portfolio_updates_executed = True
+                # else:
+                #     logger.debug("组合和策略更新任务已执行，跳过重复执行")
             else:
+                pass
                 # 离开时间窗口后重置标志位
-                if portfolio_updates_executed:
-                    portfolio_updates_executed = False
-                    logger.debug("离开组合和策略更新时间窗口，重置执行标志")
+                # if portfolio_updates_executed:
+                #     portfolio_updates_executed = False
+                #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
 
             # 4. Robot策略任务（9:30-9:35）
-            if dt_time(9, 30) <= now <= dt_time(19, 35):
+            if dt_time(9, 30) <= now <= dt_time(9, 35):
                 if not robot_executed:
                     logger.warning("---------------------Robot策略任务开始---------------------")
                     await execute_robot_trades()

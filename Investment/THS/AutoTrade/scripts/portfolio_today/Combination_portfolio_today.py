@@ -30,66 +30,69 @@ from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, ge
 # 使用setup_logger获取统一的logger实例
 logger = setup_logger("组合_调仓日志.log")
 
-from bs4 import BeautifulSoup
 
 def clean_content(text):
-    if not isinstance(text, str):
-        return '无', '无'
+    """
+    清洗content字段，提取调仓理由和标的名称
+    """
+    if not text:
+        return ('无', '无内容')
 
-    # 使用BeautifulSoup解析HTML
-    soup = BeautifulSoup(text, 'lxml')
-
-    # 移除 HTML 标签，获取纯文本
-    clean_text = soup.get_text().strip()
-
-    # 如果没有结构化 div 标签，返回 clean_text 作为理由，'无' 作为名称
-    if not soup.find('div', class_='change_reason') and not soup.find('div', class_='change_content'):
-        return ('无', clean_text or '无')
-
-    # 提取 change_content 内容（基础理由）
-    content_div = soup.find('div', class_='change_content')
-    base_reasons = content_div.get_text(strip=True) if content_div else '无'
-
-    # 提取 change_quota_content 内容（附加理由）
-    quota_content_div = soup.find('div', class_='change_quota_content')
-    additional_reasons = quota_content_div.get_text(strip=True) if quota_content_div else ''
-
-    # 合并基础理由和附加理由
-    clean_reasons = f"{base_reasons} {additional_reasons}".strip()
+    # 提取调仓理由
+    reason_match = re.search(r'调仓理由[：:](.*?)(?:</div>|\n|$)', text, re.DOTALL)
+    reasons = reason_match.group(1).strip() if reason_match else '无'
+    # 过滤掉非中文、非英文、非数字、非标点符号的字符
+    clean_reasons = ''.join([char for char in reasons if
+                            (char.isalpha() and ord(char) < 128) or  # 英文字母
+                            (char.isalnum() and not char.isalpha()) or  # 数字
+                            (ord(char) >= 0x4e00 and ord(char) <= 0x9fff) or  # 中文字符
+                            (char in '，。！？；：""''（）()') or  # 中文标点
+                            (char in string.punctuation) or  # 英文标点
+                            (char.isspace())  # 空格
+                            ])
+    # 过滤掉特殊字符
+    filtered_reasons = ''.join([char for char in clean_reasons if
+                                not (char.isdigit() and char in '0123456789') or
+                                not (char.isalpha() and char not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz') or
+                                char not in '<>%;/\\'
+                                ])
+    # print(f"过滤后的理由：{filtered_reasons}")
 
     # 提取标的名称：匹配 "调仓理由" 前面的内容
-    reason_div = soup.find('div', class_='change_reason')
-    extracted_name = '无'
-    if reason_div:
-        name_match = re.search(r'^(.+?)\s*调仓理由', reason_div.get_text(strip=True))
-        extracted_name = name_match.group(1).strip() if name_match else '无'
+    name_match = re.search(
+        r'<div class="change_reason">\s*([^<]*?)\s*调仓理由',
+        text,
+        re.DOTALL
+    )
+    if name_match:
+        name = name_match.group(1).strip()
+        # 清理全角字母数字为半角（可选）
+        extracted_name = name.translate(str.maketrans(
+            'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９',
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        ))
     else:
-        # 新增二级提取方案：尝试从纯文本中提取
-        fallback_match = re.search(r'^(.+?)\s*调仓理由', clean_text)
+        # ✅ 新增二级提取方案：尝试从纯文本中提取
+        text_only = re.sub(r'<[^>]+>', '', text)
+        fallback_match = re.search(r'^(.+?)调仓理由', text_only)
         extracted_name = fallback_match.group(1).strip() if fallback_match else '无'
 
     return (extracted_name, clean_reasons)
+
 
 def fetch_and_extract_data(portfolio_id):
     url = "https://t.10jqka.com.cn/portfolio/post/v2/get_relocate_post_list"
     headers = Combination_headers
     params = {"id": portfolio_id, "dynamic_id": 0}
-
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(url, params=params, headers=headers, timeout=10)
-            response.raise_for_status()
-            response_json = response.json()
-            logger.info(f"组合 获取数据成功 id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} ")
-            break
-        except requests.RequestException as e:
-            logger.warning(f"请求出错 (ID: {portfolio_id}), 第{attempt+1}次重试: {e}")
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # 指数退避
-            else:
-                logger.error(f"请求最终失败 (ID: {portfolio_id}): {e}")
-                return []
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        response_json = response.json()
+        logger.info(f"组合 获取数据成功id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} ")
+        # pprint(response_json)
+    except requests.RequestException as e:
+        logger.error(f"请求出错 (ID: {portfolio_id}): {e}")
+        return []
 
     today_trades = []
     data = response_json.get('data', [])
@@ -98,47 +101,36 @@ def fetch_and_extract_data(portfolio_id):
         createAt = item.get('createAt', '') or ''  # 防止空值
         # print(f"时间: {createAt}")
         raw_content = item.get('content', '') or ''  # 防止空值
-        relocateList = item.get('relocateList', [])  # 用于获取标的名称，比例等
+        relocateList = item.get('relocateList', [])
 
         # 使用安全的内容清洗
-        extracted_name, clean_reason= clean_content(raw_content)
+        clean_reason, extracted_name = clean_content(raw_content)
         # print(clean_content(raw_content))
 
         for infos in relocateList:
-            code = str(infos.get('code', '')).zfill(6)
+            code = str(infos.get('code', None)).zfill(6)
             name = (infos.get('name') or '').replace('\n', '').strip() or '无'
 
             # 如果名称被隐藏，使用提取的名称
             if '***' in name:
-                if extracted_name != '无':
-                    name = extracted_name
-                    # logger.info(f"标的名称被隐藏，已从content中提取到名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
-                # else:
-                    # logger.warning(f"标的名称被隐藏，且未能从content中提取到名称 - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
-
-            # 只有在确实提取不到名称时才记录警告
-            elif name == '无':
-                logger.warning(f"标的名称缺失 - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                name = extracted_name
+                # logger.warning(
+                #     f"标的名称被隐藏，使用提取的名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}")
+                    # f"从content提取标的名称: {name} - 组合id:{portfolio_id} 股票代码: {code}, 时间: {createAt}"
+                # continue
 
             # 计算操作类型
             current_ratio = infos.get('currentRatio', 0)
             new_ratio = infos.get('newRatio', 0)
-            operation = infos.get('operation', '')
-            operation = '买入' if operation == 1 else '卖出'
+            operation = '买入' if new_ratio > current_ratio else '卖出'
             market = determine_market(code)
-
-            final_price = infos.get('finalPrice')
-
-            # 如果价格为0或None，尝试重新获取
-            if not final_price or final_price == 0:
-                logger.warning(f"价格数据缺失或为0，组合id:{portfolio_id} 股票代码: {code}")
 
             history_post = {
                 '名称': id_to_name.get(str(portfolio_id), '未知组合'),
                 '操作': operation,
                 '标的名称': name,
                 '代码': str(code).zfill(6),  # 提前统一格式
-                '最新价': final_price,
+                '最新价': infos.get('finalPrice'),
                 # '旧比例%': round(current_ratio * 100, 2),
                 '新比例%': round(new_ratio * 100, 2),
                 '市场': market,
@@ -150,14 +142,8 @@ def fetch_and_extract_data(portfolio_id):
             # today = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             today = datetime.datetime.now().strftime('%Y-%m-%d')
 
-
             if today == createAt.split()[0]:
-            # if today == createAt:
-                # print(f"提取{createAt.split()[0]}")
-                # print(f"今天{today}")
                 today_trades.append(history_post)
-            # print(f"组合id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} 时间: {createAt} 提取{createAt.split()[0]} 今天{today} {today_trades}")
-    # print(f"组合id:{portfolio_id} {id_to_name.get(str(portfolio_id), '未知组合')} 时间: {createAt} {today_trades}")
 
     return today_trades
 
