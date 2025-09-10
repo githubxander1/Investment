@@ -1,29 +1,38 @@
 # scripts/strategy_portfolio_today.py
+import asyncio
 import datetime
-import os
+import json
+import re
+import time
+import string
 from pprint import pprint
 
 import pandas as pd
 import requests
-from fake_useragent import UserAgent
 
-from Investment.THS.AutoTrade.config.settings import STRATEGY_TODAY_ADJUSTMENT_LOG_FILE, \
-    Strategy_portfolio_today_file, Strategy_id_to_name, Strategy_ids, Strategy_holding_file
-from Investment.THS.AutoTrade.scripts.data_process import save_to_operation_history_excel, read_today_portfolio_record, \
-    save_to_excel_append, read_portfolio_or_operation_data
+from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_or_operation_data, save_to_excel_append, \
+    read_today_portfolio_record, save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+
+from Investment.THS.AutoTrade.config.settings import Strategy_portfolio_today_file, Strategy_ids, \
+    Strategy_id_to_name, Strategy_holding_file
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
     determine_market
 
-logger = setup_logger(STRATEGY_TODAY_ADJUSTMENT_LOG_FILE)
+# 使用setup_logger获取统一的logger实例
+logger = setup_logger("策略_调仓日志.log")
 
-ua = UserAgent()
+# 定义请求headers
+Strategy_headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
+
 
 async def get_latest_position_and_trade(strategy_id):
     """单接口：获取并提取保存今日数据"""
     url = f"https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit?strategyId={strategy_id}"
-    headers = {"User-Agent": ua.random}
+    headers = {"User-Agent": Strategy_headers}
 
     try:
         data = requests.get(url, headers=headers, timeout=10)

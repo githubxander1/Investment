@@ -2061,3 +2061,267 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-09-09 14:09:54 - INFO - 买入 瑞尔特 100股 False 委托已提交，合同号为：76275[0m
 [32m2025-09-09 14:10:10 - INFO - 使用固定股数进行买入: 100股[0m
 [32m2025-09-09 14:10:15 - INFO - 买入 名雕股份 100股 False 委托已提交，合同号为：76350[0m
+[32m2025-09-10 09:35:05 - INFO - 全部卖出[0m
+[31m2025-09-10 09:35:11 - ERROR - 卖出 新大正 500 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': ['child'], 'childOrSiblingSelector': [{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], 'resourceId': 'com.hexin.plat.android:id/recyclerView'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 210, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': ['child'], 'childOrSiblingSelector': [{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], 'resourceId': 'com.hexin.plat.android:id/recyclerView'},))
+[32m2025-09-10 09:35:59 - INFO - 全部卖出[0m
+[32m2025-09-10 09:36:20 - INFO - 卖出 重庆燃气 200股 False 委托已提交，合同号为：13385[0m
+[32m2025-09-10 09:37:11 - INFO - 全部卖出[0m
+[32m2025-09-10 09:37:22 - INFO - 卖出 华斯股份 200股 False 委托已提交，合同号为：14558[0m
+[32m2025-09-10 09:38:15 - INFO - 全部卖出[0m
+[32m2025-09-10 09:38:26 - INFO - 卖出 蓝丰生化 200股 False 委托已提交，合同号为：15540[0m
+[32m2025-09-10 09:39:19 - INFO - 全部卖出[0m
+[32m2025-09-10 09:39:42 - INFO - 卖出 钱江生化 100股 False 委托已提交，合同号为：16396[0m
+[32m2025-09-10 09:40:33 - INFO - 全部卖出[0m
+[32m2025-09-10 09:40:46 - INFO - 卖出 浩物股份 100股 False 委托已提交，合同号为：17348[0m
+[32m2025-09-10 09:41:38 - INFO - 全部卖出[0m
+[32m2025-09-10 09:41:48 - INFO - 卖出 楚环科技 100股 False 委托已提交，合同号为：18087[0m
+[32m2025-09-10 09:42:04 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:42:09 - INFO - 买入 居然智家 100股 False 委托已提交，合同号为：18321[0m
+[32m2025-09-10 09:42:25 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:42:30 - INFO - 买入 湖南投资 100股 False 委托已提交，合同号为：18592[0m
+[32m2025-09-10 09:42:46 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:42:51 - INFO - 买入 德美化工 100股 False 委托已提交，合同号为：18827[0m
+[32m2025-09-10 09:43:07 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:43:12 - INFO - 买入 三峰环境 100股 False 委托已提交，合同号为：19073[0m
+[32m2025-09-10 09:43:29 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:43:36 - INFO - 买入 雪祺电气 100股 False 委托已提交，合同号为：19325[0m
+[32m2025-09-10 09:43:50 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:44:01 - INFO - 买入 彩蝶实业 100股 False 委托已提交，合同号为：19577[0m
+[32m2025-09-10 09:44:15 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:44:19 - INFO - 买入 万丰股份 100股 False 委托已提交，合同号为：19886[0m
+[32m2025-09-10 09:44:36 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:44:51 - INFO - 买入 一彬科技 100股 False 委托已提交，合同号为：20120[0m
+[32m2025-09-10 09:45:06 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:45:11 - INFO - 买入 开普检测 100股 False 委托已提交，合同号为：20451[0m
+[32m2025-09-10 09:45:28 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:45:33 - INFO - 买入 利仁科技 100股 False 委托已提交，合同号为：20679[0m
+[32m2025-09-10 09:46:21 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:46:39 - INFO - 买入 菲林格尔 100股 False 委托已提交，合同号为：21217[0m
+[32m2025-09-10 09:46:54 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:47:07 - INFO - 买入 浙江东日 100股 False [260200][可用资金不足] [fund_account=8526331,money_type=0,p_occur_balance=5917.70,v_enable_balance_t=1249.83] 报错：可用资金不足，请检查委托数量是否超限，也可点击转入资金可前往银证转帐。[0m
+[32m2025-09-10 09:48:31 - INFO - 全部卖出[0m
+[32m2025-09-10 09:50:38 - INFO - 全部卖出[0m
+[32m2025-09-10 09:50:51 - INFO - 卖出 盛达资源 100股 False 委托已提交，合同号为：296993[0m
+[32m2025-09-10 09:51:03 - INFO - 全部卖出[0m
+[32m2025-09-10 09:51:24 - INFO - 卖出 中钨高新 100股 False 委托已提交，合同号为：299849[0m
+[32m2025-09-10 09:51:38 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:51:44 - INFO - 买入 宏创控股 100股 False 委托已提交，合同号为：303250[0m
+[32m2025-09-10 09:51:58 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:52:09 - INFO - 买入 兴业银锡 100股 False 委托已提交，合同号为：305404[0m
+[32m2025-09-10 09:52:23 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 09:52:29 - INFO - 买入 厦门钨业 100股 False 您的资金余额不足，请通过银证转账转入资金[0m
+[32m2025-09-10 09:54:51 - INFO - 全部卖出[0m
+[31m2025-09-10 09:55:30 - ERROR - 卖出 博敏电子 900 股失败: [0m
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 300, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\util\retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 300, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 113, in _http_request
+    r = requests.request(method, url, json=data, timeout=timeout, headers=headers)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\adapters.py", line 682, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 126, in _http_request
+    raise HTTPError(f"HTTP request failed: {e}") from e
+uiautomator2.exceptions.HTTPError: HTTP request failed: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 204, in search_stock
+    if clear.exists():
+       ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 101, in __call__
+    return bool(self)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 282, in jsonrpc_call
+    self.stop_uiautomator()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 272, in stop_uiautomator
+    if not self._check_alive():
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 258, in _check_alive
+    response = _http_request(self._dev, "GET", "/ping")
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[32m2025-09-10 09:57:04 - INFO - 全部卖出[0m
+[31m2025-09-10 09:57:09 - ERROR - 卖出 博敏电子 900 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': ['child'], 'childOrSiblingSelector': [{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], 'resourceId': 'com.hexin.plat.android:id/recyclerView'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 210, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': ['child'], 'childOrSiblingSelector': [{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], 'resourceId': 'com.hexin.plat.android:id/recyclerView'},))
+[32m2025-09-10 09:59:13 - INFO - 全部卖出[0m
+[32m2025-09-10 09:59:27 - INFO - 卖出 数据港 100股 False 委托已提交，合同号为：151843[0m
+[33m2025-09-10 11:50:02 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-10 11:50:02 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-10 13:45:11 - INFO - 使用固定股数进行买入: 100股[0m
+[31m2025-09-10 13:45:33 - ERROR - 买入 大龙地产 100 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 207, in operate_stock
+    self.ths_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 239, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-09-10 13:45:46 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 13:45:51 - INFO - 买入 嘉美包装 100股 False 委托已提交，合同号为：68315[0m
+[32m2025-09-10 13:46:06 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 13:46:13 - INFO - 买入 建研院 100股 False 委托已提交，合同号为：68390[0m
+[32m2025-09-10 13:46:27 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-10 13:46:32 - INFO - 买入 乔治白 100股 False [260200][可用资金不足][fund_account=8526331,money_type=0,p_occur_balance=466.24,v_enable_balance_t=443.36] 报错：可用资金不足，请检查委托数量是否超限，也可点击转入资金可前往银证转帐。[0m

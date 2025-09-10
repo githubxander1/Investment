@@ -49,16 +49,19 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
             return pd.DataFrame(holding_data)
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"请求组合{id}持仓数据失败: {e}")
+            logger.error(f"请求组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据失败: {e}")
             return pd.DataFrame()
         except Exception as e:
-            logger.error(f"处理组合{id}持仓数据时出错: {e}")
+            logger.error(f"处理组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据时出错: {e}")
             return pd.DataFrame()
 
     def save_all_combination_holding_data(self):
         """
         获取所有组合的持仓数据，并保存到 Excel 文件中，当天数据保存在第一个sheet
         """
+        logger.info("📂 开始获取并保存所有组合持仓数据")
+        
+        # 获取所有组合的持仓数据
         all_holdings = []
         for id in all_ids:
             positions_df = self.get_portfolio_holding_data(id)
@@ -66,18 +69,21 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
             positions_df = positions_df[positions_df['市场'] == '沪深A股']
             # 按价格从低到高排序
             positions_df = positions_df.sort_values('最新价', ascending=True)
-            logger.info(f"组合{id}持仓数据:{len(positions_df)}\n{positions_df}")
+            
             if positions_df is not None and not positions_df.empty:
+                logger.info(f"📊 组合{id}({id_to_name.get(str(id), '未知组合')})持仓数据:{len(positions_df)}条")
+                logger.debug(f"\n{positions_df}")
                 all_holdings.append(positions_df)
             else:
-                logger.info(f"没有获取到组合数据，组合ID: {id}")
+                logger.info(f"⚠️ 没有获取到组合{id}({id_to_name.get(str(id), '未知组合')})的持仓数据")
 
         today = str(datetime.date.today())
         if not all_holdings:
-            logger.warning("未获取到任何组合持仓数据")
+            logger.warning("❌ 未获取到任何组合持仓数据")
             return
 
         all_holdings_df = pd.concat(all_holdings, ignore_index=True)
+        logger.info(f"📈 总计获取到 {len(all_holdings_df)} 条持仓记录")
 
         file_path = Combination_holding_file
 
@@ -89,7 +95,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
             if os.path.exists(file_path):
                 with pd.ExcelFile(file_path) as xls:
                     existing_sheets = xls.sheet_names
-                    logger.info(f"保存前文件中已存在的工作表: {existing_sheets}")
+                    logger.info(f"💾 保存前文件中已存在的工作表: {existing_sheets}")
 
                 # 读取除今天以外的所有现有工作表
                 with pd.ExcelFile(file_path) as xls:
@@ -99,12 +105,12 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
 
             # 将今天的数据放在第一位
             all_sheets_data = {today: all_holdings_df, **all_sheets_data}
-            logger.info(f"即将保存的所有工作表: {list(all_sheets_data.keys())}")
+            logger.info(f"📦 即将保存的所有工作表: {list(all_sheets_data.keys())}")
 
             # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
             with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
                 for sheet_name, df in all_sheets_data.items():
-                    logger.info(f"正在保存工作表: {sheet_name}")
+                    logger.info(f"💾 正在保存工作表: {sheet_name} ({len(df)} 条记录)")
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
 
             logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")
@@ -122,6 +128,8 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
     def execute_combination_trades(self):
         """执行组合策略的调仓操作"""
         try:
+            logger.info("🔄 开始执行组合策略调仓操作")
+            
             # 保存最新持仓数据
             self.save_all_combination_holding_data()
 
@@ -133,6 +141,11 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
                 account_name="中泰证券"
             )
 
+            if success:
+                logger.info("✅ 组合策略调仓执行完成")
+            else:
+                logger.error("❌ 组合策略调仓执行失败")
+                
             return success
         except Exception as e:
             logger.error(f"执行组合策略调仓操作时出错: {e}")
@@ -142,6 +155,6 @@ if __name__ == '__main__':
     processor = CombinationHoldingProcessor()
     success = processor.execute_combination_trades()
     if success:
-        logger.info("✅ 组合策略调仓执行完成")
+        logger.info("🎉 组合策略调仓任务成功完成")
     else:
-        logger.error("❌ 组合策略调仓执行失败")
+        logger.error("❌ 组合策略调仓任务失败")

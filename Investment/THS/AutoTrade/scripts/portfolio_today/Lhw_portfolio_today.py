@@ -1,21 +1,26 @@
 # Lhw_portfolio_today.py
 import asyncio
 import datetime
-import time
-import pandas as pd
-import requests
+import json
 import re
+import time
+import string
 from pprint import pprint
 
-# 导入必要的工具函数和配置
-from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
+import pandas as pd
+import requests
+
+from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_or_operation_data, save_to_excel_append, \
+    read_today_portfolio_record, save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.utils.notification import send_notification
-from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, determine_market
+
 from Investment.THS.AutoTrade.config.settings import Lhw_portfolio_today_file, Lhw_ids, Lhw_ids_to_name
+from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
+    determine_market
 
 # 使用setup_logger获取统一的logger实例
-logger = setup_logger("量化王_炫娇踏雪.log")
+logger = setup_logger("量化王_调仓日志.log")
 
 # 策略配置
 # STRATEGY_ID = "8001"

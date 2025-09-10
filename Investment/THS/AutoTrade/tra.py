@@ -7,9 +7,6 @@ from datetime import time as dt_time
 import pandas as pd
 import uiautomator2 as u2
 
-# 导入THS模块以启用全局SSL配置
-# from Investment.THS import *
-
 from Investment.THS.AutoTrade.pages.account_info import common_page
 from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_device_connected
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
@@ -141,7 +138,7 @@ async def execute_combination_trades():
         success = processor.execute_combination_trades()
         if success:
             logger.info("✅ 组合交易执行完成")
-            send_notification("组合交易执行完成")
+            # send_notification("组合交易执行完成")
         else:
             logger.error("❌ 组合交易执行失败")
             send_notification("组合交易执行失败")
@@ -189,7 +186,7 @@ async def execute_guozhai_trades(d):
 
 async def process_portfolio_updates():
     """处理所有组合和策略的更新与交易执行"""
-    logger.info("🔄 开始处理组合和策略更新...")
+    logger.info("🔄 开始处理组合更新...")
 
     # 初始化变量
     robot_success = False
@@ -295,10 +292,10 @@ async def main():
                 break
 
             # 检查是否在11:30到13:00之间，如果是则跳过本次循环
-            if dt_time(11, 30) <= now < dt_time(13, 0):
-                logger.info("当前时间在11:30到13:00之间，跳过本次循环")
-                await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
-                continue
+            # if dt_time(11, 30) <= now < dt_time(13, 0):
+            #     logger.info("当前时间在11:30到13:00之间，跳过本次循环")
+            #     await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
+            #     continue
 
             # 检测设备是否断开
             if not is_device_connected(d):
@@ -317,7 +314,7 @@ async def main():
             await check_morning_signals()
 
             # 2. AI策略持仓差异分析任务（9:30-9:35）
-            if dt_time(9, 30) <= now <= dt_time(9, 35):
+            if dt_time(9, 32) <= now <= dt_time(19, 35):
                 if not strategy_diff_executed:
                     logger.warning("---------------------AI策略持仓差异分析开始---------------------")
                     await execute_strategy_trades()
@@ -331,24 +328,27 @@ async def main():
                     strategy_diff_executed = False
                     logger.debug("离开AI策略分析时间窗口，重置执行标志")
 
-            # 3. 组合和策略更新任务（9:25-15:00）
+            # 3. 组合更新任务（9:25-15:00）
             if dt_time(9, 25) <= now <= dt_time(15, 0):
                 # if not portfolio_updates_executed:
-                logger.warning("---------------------组合和策略更新任务开始---------------------")
-                await process_portfolio_updates()
-                logger.warning("---------------------组合和策略更新任务结束---------------------")
+                logger.warning("---------------------组合更新任务开始---------------------")
+                await execute_combination_trades()
+                logger.warning("---------------------组合更新任务结束---------------------")
                 # portfolio_updates_executed = True
                 # else:
                 #     logger.debug("组合和策略更新任务已执行，跳过重复执行")
-            else:
-                pass
+            # else:
+                # pass
+                #停止运行
+
+
                 # 离开时间窗口后重置标志位
                 # if portfolio_updates_executed:
                 #     portfolio_updates_executed = False
                 #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
 
             # 4. Robot策略任务（9:30-9:35）
-            if dt_time(9, 30) <= now <= dt_time(9, 35):
+            if dt_time(9, 32) <= now <= dt_time(19, 35):
                 if not robot_executed:
                     logger.warning("---------------------Robot策略任务开始---------------------")
                     await execute_robot_trades()

@@ -4,6 +4,11 @@ import time
 import xml.etree.ElementTree as ET
 import pandas as pd
 import uiautomator2 as u2
+import re
+import numpy as np
+from PIL import Image
+import cv2
+import pytesseract
 
 from Investment.THS.AutoTrade.config.settings import Account_holding_file, account_xml_file
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -18,17 +23,12 @@ class AccountInfo:
         # 连接设备
         try:
             self.d = u2.connect()
-            # # 保存xml文件
-            # account_xml_file = account_xml_file
-            ui_xml = self.d.dump_hierarchy(pretty=True)
-            with open(account_xml_file, 'w', encoding='utf-8') as f:
-                f.write(ui_xml)
         except Exception as e:
             logger.error(f"连接设备失败: {e}")
             exit(1)
 
     # 返回顶部
-    def return_to_top(self,retry=3):
+    def return_to_top(self,retry=5):
         total_cangwei_node = self.d(resourceId="com.hexin.plat.android:id/total_cangwei_text")
         for i in range(retry):
             if total_cangwei_node.exists:
@@ -36,11 +36,43 @@ class AccountInfo:
                 return True
             self.d.swipe(0.5, 0.2, 0.5, 0.8, duration=0.25)
             time.sleep(1)
-        # logger.warning("未能成功返回顶部，请检查UI状态")
         return False
 
+    def capture_screen_with_ocr(self, region=None):
+        """
+        截图并使用OCR识别指定区域的文字
+        :param region: (left, top, right, bottom) 截图区域
+        :return: OCR识别结果
+        """
+        try:
+            # 截图
+            screenshot = self.d.screenshot()
+            
+            # 如果指定了区域，则裁剪图像
+            if region:
+                left, top, right, bottom = region
+                screenshot = screenshot.crop((left, top, right, bottom))
+            
+            # 转换为OpenCV格式
+            open_cv_image = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+            
+            # 图像预处理以提高OCR准确性
+            gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
+            # 增加对比度
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+            cl1 = clahe.apply(gray)
+            # 二值化
+            _, binary = cv2.threshold(cl1, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            # OCR识别
+            text = pytesseract.image_to_string(binary, lang='chi_sim+eng')
+            return text
+        except Exception as e:
+            logger.error(f"OCR识别失败: {e}")
+            return ""
+
     # 获取xml
-    def parse_stock_from_xml(self,xml_path):
+    def parse_stock_from_xml(self, xml_path):
         """
         解析持仓股票信息：标的名称、市值、持仓/可用、盈亏/盈亏率
         """
@@ -48,102 +80,203 @@ class AccountInfo:
             tree = ET.parse(xml_path)
             root = tree.getroot()
 
-            stocks = []
+            stocks = []  # 存储正常区域的股票
+            hidden_stocks = []  # 存储隐藏区域的股票
 
             # 查找 RecyclerView（模糊匹配）
             parents = root.findall(".//*[@resource-id='com.hexin.plat.android:id/recyclerview_id']")
             if not parents:
                 logger.warning("未找到 recyclerview_id 节点")
-                return []
+                return [], []
 
             parent = parents[0]
 
             # 遍历所有子节点
             items = parent.findall(".//*[@class='android.widget.RelativeLayout']")
 
+            in_hidden_section = False  # 标记是否进入隐藏区域
+
             for item in items:
-                name_nodes = item.findall(".//*[@class='android.widget.TextView']")
-                if len(name_nodes) < 2:
-                    continue
+                # 检查是否是"隐藏"标题 - 使用简单的元素遍历方法
+                title_nodes = item.findall(".//*[@class='android.widget.TextView']")
+                for title_node in title_nodes:
+                    if title_node.get('text') == '隐藏':
+                        in_hidden_section = True
+                        logger.info(f"发现隐藏区域: {title_node.get('text')}") 
+                        break
 
-                # 重点：强化“标的名称”的识别逻辑
-                stock_name = name_nodes[0].get('text', '').replace('', '')
-                if not stock_name or any(c.isdigit() for c in stock_name):  # 如果包含数字，大概率不是股票名
-                    continue
+                # 提取股票数据
+                stock_data = self._extract_stock_data(item)
+                if stock_data:
+                    if in_hidden_section:
+                        # 隐藏区域的股票只记录到日志中
+                        hidden_stocks.append(stock_data)
+                        logger.info(f"隐藏区域股票数据: {stock_data}")
+                    else:
+                        # 正常区域的股票添加到返回列表中
+                        stocks.append(stock_data)
 
-                market_value = name_nodes[1].get('text', '').replace('', '')
-                # print(f'名称 {stock_name}')
-                # print(f'市值 {market_value}')
-
-                # HorizontalScrollView
-                h_scrolls = item.findall(".//*[@class='android.widget.HorizontalScrollView']")
-                if not h_scrolls:
-                    continue
-
-                ll_list = h_scrolls[0].findall(".//*[@class='android.widget.LinearLayout']")
-
-                profit_loss = ll_list[1].findall(".//*[@class='android.widget.TextView']")
-                profit_loss_text = profit_loss[0].get('text', '') if len(profit_loss) >= 1 else ''
-                profit_loss_rate_text = profit_loss[1].get('text', '') if len(profit_loss) >= 2 else ''
-
-                position_available = ll_list[2].findall(".//*[@class='android.widget.TextView']")
-                position = position_available[0].get('text', '') if len(position_available) >= 1 else ''
-                available = position_available[1].get('text', '') if len(position_available) >= 2 else ''
-
-                cost_price = ll_list[3].findall(".//*[@class='android.widget.TextView']")
-                cost = cost_price[0].get('text', '') if len(cost_price) >= 1 else ''
-                current_price = cost_price[1].get('text', '') if len(cost_price) >= 2 else ''
-
-                if any(kw in stock_name for kw in ["清仓", "新标准券", "隐藏", "持仓管理"]):
-                    continue
-
-                if not stock_name or stock_name == "None":
-                    continue
-
-                stocks.append({
-                    "标的名称": stock_name.replace(" ", ""),
-                    "市值": market_value,
-                    "当日盈亏/盈亏率": f"{profit_loss_text}/{profit_loss_rate_text}",
-                    "持仓/可用": f"{position}/{available}",
-                    # "当日盈亏/盈亏率": f"{daily_profit_loss}/{daily_profit_loss_rate}",
-                    "成本/现价": f"{cost}/{current_price}",
-                })
-
-            return stocks
+            return stocks, hidden_stocks
 
         except Exception as e:
-            logger.error(f"解析 XML 失败: {e}", exc_info=True)
-            return []
+            logger.error(f"解析XML文件失败: {e}")
+            return [], []
+
+    def _extract_stock_data(self, item):
+        """
+        从单个股票项中提取数据
+        
+        Args:
+            item: XML中的股票项节点
+            
+        Returns:
+            dict: 股票数据字典，如果提取失败返回None
+        """
+        try:
+            name_nodes = item.findall(".//*[@class='android.widget.TextView']")
+            if len(name_nodes) < 2:
+                return None
+
+            # 重点：强化"标的名称"的识别逻辑
+            stock_name = name_nodes[0].get('text', '').strip()
+            if not stock_name or any(c.isdigit() for c in stock_name):  # 如果包含数字，大概率不是股票名
+                return None
+
+            # 过滤特殊条目
+            if any(kw in stock_name for kw in ["清仓", "新标准券", "隐藏", "持仓管理", "查看已清仓"]):
+                return None
+
+            market_value = name_nodes[1].get('text', '').strip()
+
+            # HorizontalScrollView
+            h_scrolls = item.findall(".//*[@class='android.widget.HorizontalScrollView']")
+            if not h_scrolls:
+                logger.warning(f"股票 {stock_name} 缺少 HorizontalScrollView")
+                return None
+
+            ll_list = h_scrolls[0].findall(".//*[@class='android.widget.LinearLayout']")
+            if len(ll_list) < 4:
+                logger.warning(f"股票 {stock_name} LinearLayout 数量不足")
+                return None
+
+            # 盈亏信息
+            profit_loss = ll_list[1].findall(".//*[@class='android.widget.TextView']")
+            profit_loss_text = profit_loss[0].get('text', '').strip() if len(profit_loss) >= 1 else ''
+            profit_loss_rate_text = profit_loss[1].get('text', '').strip() if len(profit_loss) >= 2 else ''
+
+            # 持仓/可用信息
+            position_available = ll_list[2].findall(".//*[@class='android.widget.TextView']")
+            position = position_available[0].get('text', '').strip() if len(position_available) >= 1 else ''
+            available = position_available[1].get('text', '').strip() if len(position_available) >= 2 else ''
+
+            # 成本价/当前价信息
+            cost_price = ll_list[3].findall(".//*[@class='android.widget.TextView']")
+            cost = cost_price[0].get('text', '').strip() if len(cost_price) >= 1 else ''
+            current_price = cost_price[1].get('text', '').strip() if len(cost_price) >= 2 else ''
+
+            # 清理数据
+            position = self._clean_number(position)
+            available = self._clean_number(available)
+            market_value = self._clean_number(market_value)
+            cost = self._clean_number(cost)
+            current_price = self._clean_number(current_price)
+            
+            # 处理盈亏率中的百分号
+            if '%' in profit_loss_rate_text:
+                profit_loss_rate_text = profit_loss_rate_text.replace('%', '')
+
+            return {
+                '标的名称': stock_name,
+                '市值': market_value,
+                '持仓': position,
+                '可用': available,
+                '盈亏': profit_loss_text,
+                '盈亏率': profit_loss_rate_text,
+                '成本价': cost,
+                '当前价': current_price
+            }
+        except Exception as e:
+            logger.error(f"提取单个股票数据失败: {e}")
+            return None
+
+    def _clean_number(self, text):
+        """
+        清理数字文本，移除非数字字符（保留小数点和负号）
+        
+        Args:
+            text: 原始文本
+            
+        Returns:
+            清理后的文本
+        """
+        if not text:
+            return ''
+        
+        # 移除逗号和空格
+        text = text.replace(',', '').strip()
+        
+        # 如果是纯数字、小数或负数则返回，否则返回原值
+        if re.match(r'^-?\d+\.?\d*$', text):
+            return text
+        return text
 
     # 滚动获取持仓数据
-    def scroll_and_dump(self, retry=3, min_stocks=3):
+    def scroll_and_dump(self, retry=30, min_stocks=0):
         """
         滑动并重新 dump XML，直到获取足够多的持仓数据
         :param retry: 最大重试次数
         :param min_stocks: 最小持仓数
         :return: 成功解析的股票列表
         """
+        all_stocks = {}  # 使用字典避免重复
+        all_hidden_stocks = {}  # 存储隐藏区域的股票信息
+        
+        # 先回到顶部
+        self.return_to_top()
+        
         for i in range(retry):
             # 保存当前页面的 XML
             xml_content = self.d.dump_hierarchy(pretty=True)
-            with open(account_xml_file, 'w', encoding='utf-8') as f:
+            temp_xml_file = f"{account_xml_file}.tmp{i}"
+            with open(temp_xml_file, 'w', encoding='utf-8') as f:
                 f.write(xml_content)
 
             # 解析持仓
-            self.stocks = self.parse_stock_from_xml(account_xml_file)
-            logger.info(f"第 {i + 1} 次尝试，共提取到 {len(self.stocks)} 条持仓信息")
+            stocks, hidden_stocks = self.parse_stock_from_xml(temp_xml_file)
+            
+            # 添加到总列表中，避免重复（仅添加非隐藏区域的股票）
+            for stock in stocks:
+                name = stock.get('标的名称', '')
+                if name and name not in all_stocks:
+                    all_stocks[name] = stock
+                    
+            # 记录隐藏区域的股票（仅记录，不保存）
+            for stock in hidden_stocks:
+                name = stock.get('标的名称', '')
+                if name and name not in all_hidden_stocks:
+                    all_hidden_stocks[name] = stock
+            
+            logger.info(f"第 {i + 1} 次尝试，当前页面提取到 {len(stocks)} 条持仓信息，累计 {len(all_stocks)} 条")
 
-            if len(self.stocks) >= min_stocks:
-                logger.info("✅ 已获取足够持仓信息")
-                return self.stocks
+            # 检查是否到底（是否有"查看已清仓股票"按钮）
+            qingcang = self.d(text="查看已清仓股票")
+            if qingcang.exists:
+                logger.info("检测到'查看已清仓股票'，已加载全部持仓")
+                break
 
             # 向上滑动（模拟加载更多）
-            logger.info("🔄 页面持仓不足，开始滑动加载...")
-            self.d.swipe(0.5, 0.7, 0.5, 0.3, duration=0.5)
+            logger.info("🔄 页面继续滑动加载...")
+            self.d.swipe(0.5, 0.8, 0.5, 0.2, duration=0.5)
             time.sleep(2)  # 等待加载
 
-        logger.warning("⚠️ 达到最大重试次数，持仓数据仍不足")
-        return self.stocks
+        logger.info(f"✅ 滚动加载完成，共获取 {len(all_stocks)} 条持仓信息")
+        if all_hidden_stocks:
+            logger.info(f"🔍 隐藏区域共 {len(all_hidden_stocks)} 条股票信息（仅记录，不保存）")
+            hidden_df = pd.DataFrame(list(all_hidden_stocks.values()))
+            # 从1开始索引
+            hidden_df.index = hidden_df.index + 1
+            logger.info(f"隐藏区域股票详情:共 {len(hidden_df)}条\n{hidden_df.to_string(index=True)}")
+        return list(all_stocks.values())
 
     # 获取账户表头信息
     def extract_header_info(self):
@@ -188,55 +321,30 @@ class AccountInfo:
             return pd.DataFrame()
 
     # 获取持仓股票信息
-    def extract_stock_info(self,max_swipe_attempts=40):
+    def extract_stock_info(self, max_swipe_attempts=40):
         """提取持仓股票信息，支持滑动加载更多，并过滤无效条目"""
         logger.info("-" * 50)
         logger.info('正在获取账户持仓信息...')
 
-        stocks = []
-        seen_stocks = set()
-
-        for attempt in range(max_swipe_attempts):
-            try:
-                # 获取当前页面的 XML 并保存为临时文件
-                xml_content = self.d.dump_hierarchy(pretty=True)
-                temp_xml_path = f"{account_xml_file}.tmp{attempt}"
-                with open(temp_xml_path, 'w', encoding='utf-8') as f:
-                    f.write(xml_content)
-
-                # 解析当前页面的持仓信息
-                parsed_stocks = self.parse_stock_from_xml(temp_xml_path)
-                new_count = 0
-
-                for stock in parsed_stocks:
-                    name = stock["标的名称"].replace(" ", "")
-                    if name in seen_stocks or any(kw in name for kw in ["清仓", "新标准券", "隐藏", "持仓管理"]):
-                        continue
-                    seen_stocks.add(name)
-                    stocks.append(stock)
-                    new_count += 1
-
-                logger.info(f"第 {attempt + 1} 次尝试新增 {new_count} 条有效持仓")
-
-                # 检查是否到底（是否有“查看已清仓股票”按钮）
-                qingcang = self.d(text="查看已清仓股票")
-                if qingcang.exists:
-                    logger.info("检测到‘查看已清仓股票’，已加载全部持仓")
-                    self.return_to_top()
-                    break
-
-                # 向下滑动
-                self.d.swipe(0.5, 0.7, 0.5, 0.5, duration=0.25)
-                time.sleep(1.5)
-
-            except Exception as e:
-                logger.error(f"处理持仓信息失败: {e}", exc_info=True)
-                time.sleep(1)
-                continue
-
-        # 去重并清理空值
-        df = pd.DataFrame(stocks).drop_duplicates(subset=["标的名称"])
-        df.replace("", pd.NA, inplace=True)
+        # 使用滚动加载方法获取所有持仓
+        stocks = self.scroll_and_dump(retry=max_swipe_attempts)
+        
+        # 转换为DataFrame并进行数据清洗
+        df = pd.DataFrame(stocks)
+        
+        if not df.empty:
+            # 处理缺失值
+            numeric_columns = ['市值', '持仓', '可用', '盈亏', '盈亏率', '成本价', '当前价']
+            for col in numeric_columns:
+                if col in df.columns:
+                    # 将无法转换为数字的值替换为NaN
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                    # 用列的均值填充NaN值
+                    df[col] = df[col].fillna(df[col].mean() if not df[col].isna().all() else 0)
+            
+            # 从1开始索引
+            df.index = range(1, len(df) + 1)
+        
         logger.info(f"✅ 成功提取持仓数据，共 {len(df)} 条:\n{df}")
         return df
 
@@ -283,6 +391,7 @@ class AccountInfo:
         except Exception as e:
             logger.error(f"获取持仓失败: {e}")
             return False, 0
+            
     # 更新指定账户的持仓信息
     def update_holding_info_for_account(self, account_name):
         """
@@ -418,4 +527,3 @@ if __name__ == '__main__':
     # header_info = extract_header_info()
     # buy_available = float(header_info["可用"].iloc[0].replace(',', ''))
     # print(f"可用金额: {buy_available}")
-

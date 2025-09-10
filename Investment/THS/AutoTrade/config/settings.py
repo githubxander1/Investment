@@ -166,6 +166,7 @@ zhitou_ids_to_name = {
     "31816": "一只不休息的牛",
 }
 
+# all_ids = Combination_ids + ETF_ids + zhitou_ids
 all_ids = Combination_ids + ETF_ids + zhitou_ids
 # all_ids = Combination_ids + zhitou_ids
 id_to_name = {**Combination_ids_to_name, **ETF_ids_to_name, **zhitou_ids_to_name}
@@ -186,8 +187,8 @@ REPO_TIME_END = dt_time(15, 1)
 # OPERATION_HISTORY_FILE = "path/to/history.json"
 
 # 延迟范围（秒）
-MIN_DELAY = 50
-MAX_DELAY = 70
+MIN_DELAY = 20
+MAX_DELAY = 40
 
 # 最大运行时间（小时）
 MAX_RUN_TIME = 9

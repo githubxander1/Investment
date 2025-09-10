@@ -3,6 +3,7 @@ import asyncio
 import datetime
 import re
 import time
+import string
 from pprint import pprint
 
 import pandas as pd
@@ -21,7 +22,7 @@ others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.
 sys.path.append(others_dir)
 print(f'包路径：{sys.path}')
 
-from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today_file, Combination_headers, all_ids, \
+from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today_file, all_ids, \
     id_to_name
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
@@ -29,6 +30,15 @@ from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, ge
 
 # 使用setup_logger获取统一的logger实例
 logger = setup_logger("组合_调仓日志.log")
+
+# 定义请求headers
+Combination_headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    'Connection': 'keep-alive',
+}
 
 
 def clean_content(text):

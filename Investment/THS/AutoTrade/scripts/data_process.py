@@ -729,13 +729,18 @@ def extract_operations_to_perform_for_portfolio_file(file_paths):
 
     # 过滤掉空的账户列表
     operations_by_account = {k: v for k, v in operations_by_account.items() if v}
-    operations_by_account_df = pandas.DataFrame(operations_by_account)
-
+    
     if not operations_by_account:
         logger.info("✅ 没有需要执行的操作")
     else:
+        logger.info("=" * 50)
+        logger.info("📊 操作汇总")
+        logger.info("=" * 50)
         for account, operations in operations_by_account.items():
-            logger.info(f"📋 账户 {account} 需要执行 {len(operations)} 个操作\n{operations_by_account_df}")
+            logger.info(f"📋 账户: {account} | 操作数量: {len(operations)}")
+            for op in operations:
+                logger.info(f"   🛠️ {op['operation']} {op['stock_name']} (比例:{op['new_ratio']}%)")
+        logger.info("=" * 50)
 
     return operations_by_account
 
@@ -758,7 +763,10 @@ def process_data_to_operate(file_paths):
         if not operations:
             continue
 
-        logger.info(f"📋 开始处理账户 {account} 的 {len(operations)} 个操作")
+        logger.info("=" * 50)
+        logger.info(f"💼 开始处理账户: {account} | 操作数量: {len(operations)}")
+        logger.info("=" * 50)
+        
         # 切换到对应账户
         common_page.change_account(account)
         logger.info(f"✅ 已切换到账户: {account}")
@@ -770,6 +778,7 @@ def process_data_to_operate(file_paths):
             operation = op["operation"]
             new_ratio = op["new_ratio"]
 
+            logger.info("-" * 30)
             logger.info(f"🚀 开始交易: {operation} {stock_name}")
 
             # 初始化状态和信息
@@ -817,24 +826,21 @@ def process_data_to_operate(file_paths):
                 '时间': operate_time
             }])
 
-            # 写入历史
-            write_operation_history(record)
-            logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+            # 写入历史记录
+            write_operation_history(record, OPERATION_HISTORY_FILE)
+            logger.info(f"💾 操作记录已保存: {strategy_name} - {operation} {stock_name}")
 
-            # 更新本地历史记录DataFrame，避免在同一批次处理中重复操作
-            # history_df = pd.concat([history_df, record], ignore_index=True)
+        logger.info("=" * 50)
+        logger.info(f"✅ 账户 {account} 处理完成")
+        logger.info("=" * 50)
 
-        # except Exception as e:
-        #     logger.error(f"处理 {operation} {stock_name} 时发生错误: {e}", exc_info=True)
-
-
-    logger.info("✅ 所有文件处理完成")
-
-    # 发送操作结果通知
+    # 发送最终通知
     if all_operations_result:
-        summary_message = "交易操作结果汇总:\n" + "\n".join(all_operations_result)
-        from Investment.THS.AutoTrade.utils.notification import send_notification
-        send_notification(summary_message)
+        final_message = "📈 交易执行结果汇总:\n" + "\n".join(all_operations_result)
+        send_notification(final_message)
+        logger.info("📤 交易通知已发送")
+    else:
+        logger.info("📭 没有交易结果需要通知")
 
 if __name__ == '__main__':
     # diff_result = get_difference_holding()

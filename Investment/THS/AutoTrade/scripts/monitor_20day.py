@@ -14,6 +14,9 @@ from Investment.THS.AutoTrade.utils.notification import send_notification
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# 添加全局变量来跟踪是否已执行过信号检测
+morning_signal_checked = False
+
 # 获取中国交易日历（用于判断是否为交易日）
 def is_trading_day(date: datetime.date) -> bool:
     """
