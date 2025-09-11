@@ -205,7 +205,8 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
 
         if all_positions:
             # 合并所有持仓数据
-            all_positions_df = pd.concat(all_positions, ignore_index=True)
+            all_positions_df = pd.concat(all_positions, ignore_index=False)
+            all_positions_df.index = all_positions_df.index + 1
 
             # 只保留沪深A股
             all_positions_df = all_positions_df[all_positions_df['市场'] == '沪深A股']

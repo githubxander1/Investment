@@ -58,6 +58,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
     def save_all_combination_holding_data(self):
         """
         获取所有组合的持仓数据，并保存到 Excel 文件中，当天数据保存在第一个sheet
+        保持索引，从1开始
         """
         logger.info("📂 开始获取并保存所有组合持仓数据")
         
@@ -65,6 +66,10 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         all_holdings = []
         for id in all_ids:
             positions_df = self.get_portfolio_holding_data(id)
+            # 索引从1开始
+            # positions_df = positions_df.reset_index(drop=True)
+            positions_df.index = positions_df.index + 1
+
             # 只保留沪深A股的
             positions_df = positions_df[positions_df['市场'] == '沪深A股']
             # 按价格从低到高排序

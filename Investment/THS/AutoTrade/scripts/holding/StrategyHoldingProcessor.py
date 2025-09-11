@@ -80,7 +80,9 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             logger.warning("未获取到任何策略持仓数据")
             return
 
-        all_holdings_df = pd.concat(all_holdings, ignore_index=True)
+        all_holdings_df = pd.concat(all_holdings, ignore_index=False)
+        # 从1开始计数
+        all_holdings_df.index = all_holdings_df.index + 1
 
         file_path = Ai_Strategy_holding_file
 

@@ -18,6 +18,9 @@ logger = setup_logger("account_info.log")  # 创建日志实例
 
 common_page = CommonPage()
 
+# 定义all_stocks.xlsx文件路径
+ALL_STOCKS_FILE = 'all_stocks.xlsx'
+
 class AccountInfo:
     def __init__(self):
         # 连接设备
@@ -26,6 +29,32 @@ class AccountInfo:
         except Exception as e:
             logger.error(f"连接设备失败: {e}")
             exit(1)
+            
+        # 加载股票代码和名称映射
+        self.stock_code_name_map = self._load_stock_code_name_map()
+
+    def _load_stock_code_name_map(self):
+        """加载股票代码和名称映射"""
+        stock_map = {}
+        if os.path.exists(ALL_STOCKS_FILE):
+            try:
+                all_stocks_df = pd.read_excel(ALL_STOCKS_FILE)
+                # 创建代码到名称的映射
+                for _, row in all_stocks_df.iterrows():
+                    code = str(row.get('代码', ''))
+                    name = str(row.get('名称', ''))
+                    if code and name:
+                        stock_map[name] = code
+                        # 同时添加不带市场前缀的代码映射
+                        if code.startswith(('sh', 'sz')):
+                            short_code = code[2:]  # 去掉sh或sz前缀
+                            stock_map[name] = short_code
+                logger.info(f"成功加载 {len(stock_map)} 个股票代码名称映射")
+            except Exception as e:
+                logger.error(f"加载股票代码名称映射失败: {e}")
+        else:
+            logger.warning(f"未找到股票代码名称映射文件: {ALL_STOCKS_FILE}")
+        return stock_map
 
     # 返回顶部
     def return_to_top(self,retry=5):
@@ -333,10 +362,14 @@ class AccountInfo:
         df = pd.DataFrame(stocks)
         
         if not df.empty:
+            # 添加代码列（如果不存在）
+            if '代码' not in df.columns:
+                df['代码'] = df['标的名称'].apply(self._get_stock_code_by_name)
+            
             # 处理缺失值
-            numeric_columns = ['市值', '持仓', '可用', '盈亏', '盈亏率', '成本价', '当前价']
+            numeric_columns = ['市值', '持仓', '可用', '盈亏', '盈亏率', '成本价', '当前价', '代码']
             for col in numeric_columns:
-                if col in df.columns:
+                if col in df.columns and col != '代码':  # 代码列不需要数值处理
                     # 将无法转换为数字的值替换为NaN
                     df[col] = pd.to_numeric(df[col], errors='coerce')
                     # 用列的均值填充NaN值
@@ -347,6 +380,17 @@ class AccountInfo:
         
         logger.info(f"✅ 成功提取持仓数据，共 {len(df)} 条:\n{df}")
         return df
+
+    def _get_stock_code_by_name(self, name):
+        """
+        根据股票名称获取股票代码
+        """
+        # 从加载的映射中查找代码
+        if name in self.stock_code_name_map:
+            return self.stock_code_name_map[name]
+        else:
+            logger.warning(f"未找到股票名称'{name}'对应的代码")
+            return f"未知代码({name})"
 
     #获取可用资金-买入
     def get_buying_power(self):
@@ -372,18 +416,17 @@ class AccountInfo:
                 # 确保 stock_row 为单行数据
                 stock_row = stock_row.iloc[0]
 
-                position_available = stock_row.get("持仓/可用", "")
-                if isinstance(position_available, str):
-                    parts = position_available.strip().split('/')
-                    if len(parts) >= 2:
-                        position = int(parts[0])
-                        available = int(parts[1])
-                        return True, available
-                    else:
-                        logger.warning(f"持仓/可用字段格式错误: {position_available}")
-                        return False, 0
-                else:
-                    logger.warning(f"持仓/可用字段不是字符串: {position_available}")
+                # 直接获取持仓和可用字段，而不是通过"持仓/可用"组合字段
+                position = stock_row.get("持仓", 0)
+                available = stock_row.get("可用", 0)
+                
+                # 确保数据类型正确
+                try:
+                    position = int(float(position))
+                    available = int(float(available))
+                    return True, available
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"持仓/可用字段格式错误: 持仓={position}, 可用={available}")
                     return False, 0
             else:
                 logger.warning(f"{stock_name} 不在持仓中")

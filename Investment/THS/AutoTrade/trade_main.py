@@ -4,10 +4,11 @@ import asyncio
 import random
 import datetime
 import time
-from datetime import time as dt_time
-
+import os
 import pandas as pd
 import uiautomator2 as u2
+
+from datetime import time as dt_time
 
 from Investment.THS.AutoTrade.pages.account_info import common_page
 from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_device_connected
@@ -37,15 +38,124 @@ from Investment.THS.AutoTrade.config.settings import (
 from Investment.THS.AutoTrade.scripts.monitor_20day import daily_check, check_morning_signals
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
+# 定义all_stocks.xlsx文件路径
+ALL_STOCKS_FILE = 'all_stocks.xlsx'
+
 # 设置日志
 logger = setup_logger("trade_main.log")
 trader = TradeLogic()
+
+def load_stock_code_name_map():
+    """加载股票代码和名称映射"""
+    stock_map = {}
+    if os.path.exists(ALL_STOCKS_FILE):
+        try:
+            all_stocks_df = pd.read_excel(ALL_STOCKS_FILE)
+            # 创建名称到代码的映射
+            for _, row in all_stocks_df.iterrows():
+                code = str(row.get('代码', ''))
+                name = str(row.get('名称', ''))
+                if code and name:
+                    stock_map[name] = code
+            logger.info(f"成功加载 {len(stock_map)} 个股票代码名称映射")
+        except Exception as e:
+            logger.error(f"加载股票代码名称映射失败: {e}")
+    else:
+        logger.warning(f"未找到股票代码名称映射文件: {ALL_STOCKS_FILE}")
+    return stock_map
+
+# 加载股票代码和名称映射
+stock_code_name_map = load_stock_code_name_map()
+
+def add_stock_codes_to_dataframe(df, name_column='标的名称'):
+    """为DataFrame添加股票代码列"""
+    if df.empty:
+        return df
+    
+    # 复制DataFrame避免修改原始数据
+    df_with_codes = df.copy()
+    
+    # 添加代码列
+    if '代码' not in df_with_codes.columns:
+        df_with_codes['代码'] = df_with_codes[name_column].apply(
+            lambda name: stock_code_name_map.get(name, f"未知代码({name})") if name else "未知代码"
+        )
+    
+    # 重新排列列顺序，将代码列放在标的名称后面
+    columns = df_with_codes.columns.tolist()
+    if '代码' in columns and name_column in columns:
+        # 移除代码列
+        columns.remove('代码')
+        # 在标的名称后插入代码列
+        name_index = columns.index(name_column)
+        columns.insert(name_index + 1, '代码')
+        df_with_codes = df_with_codes[columns]
+    
+    return df_with_codes
 
 # 定义账户列表
 ACCOUNTS = ["长城证券", "川财证券", "中泰证券"]
 
 # 添加全局变量来跟踪是否已执行过信号检测
 morning_signal_checked = False
+
+# 添加全局变量用于缓存上一次的持仓数据
+previous_account_holdings = {}
+previous_strategy_holdings = {}
+
+
+def has_holdings_changed(current_holdings, previous_holdings_cache, account_name=None):
+    """
+    检查持仓是否发生变化
+    
+    :param current_holdings: 当前持仓数据
+    :param previous_holdings_cache: 之前持仓数据缓存
+    :param account_name: 账户名称（可选）
+    :return: bool, True表示持仓发生变化，False表示未变化
+    """
+    # 为当前持仓添加股票代码
+    current_holdings = add_stock_codes_to_dataframe(current_holdings)
+    # 生成缓存键
+    cache_key = account_name if account_name else "strategy"
+    
+    # 如果之前没有缓存数据，则认为发生了变化
+    if cache_key not in previous_holdings_cache:
+        previous_holdings_cache[cache_key] = current_holdings.copy()
+        logger.info(f"首次获取{cache_key}持仓数据，标记为已变化")
+        return True
+    
+    # 获取之前的持仓数据
+    previous_holdings = previous_holdings_cache[cache_key]
+    
+    # 比较当前和之前的持仓数据
+    # 转换为集合进行比较，忽略索引和顺序
+    try:
+        # 优先使用'代码'列进行比较，如果不存在则回退到'标的名称'
+        if '代码' in current_holdings.columns and '代码' in previous_holdings.columns:
+            current_set = set(current_holdings['代码'].tolist()) if not current_holdings.empty else set()
+            previous_set = set(previous_holdings['代码'].tolist()) if not previous_holdings.empty else set()
+            comparison_field = '代码'
+        else:
+            current_set = set(current_holdings['标的名称'].tolist()) if not current_holdings.empty else set()
+            previous_set = set(previous_holdings['标的名称'].tolist()) if not previous_holdings.empty else set()
+            comparison_field = '标的名称'
+        
+        # 如果集合不相等，则持仓发生了变化
+        if current_set != previous_set:
+            logger.info(f"{cache_key}持仓发生变化")
+            logger.info(f"  当前持仓{comparison_field}: {current_set}")
+            logger.info(f"  之前持仓{comparison_field}: {previous_set}")
+            # 更新缓存
+            previous_holdings_cache[cache_key] = current_holdings.copy()
+            return True
+        else:
+            logger.info(f"{cache_key}持仓未发生变化 (基于{comparison_field}比较)")
+            return False
+    except Exception as e:
+        logger.error(f"比较持仓数据时出错: {e}")
+        # 出错时保守地认为发生了变化
+        previous_holdings_cache[cache_key] = current_holdings.copy()
+        return True
 
 
 # async def check_morning_signals():
@@ -314,16 +424,54 @@ async def main():
             # history_df = read_operation_history(OPERATION_HISTORY_FILE)
 
             logger.warning("---------------开始自动化操作---------------")
-            # 如果有任何一个数据获取成功且有新数据，则执行交易处理
-            if (strategy_success and strategy_data_df is not None) or \
-               (combination_success and combination_data_df is not None) or \
-               (robot_success and robot_data_df is not None):
-                file_paths = [Combination_portfolio_today_file, Robot_portfolio_today_file]
-                process_data_to_operate(file_paths)
-            elif strategy_success or combination_success or robot_success or lhw_success:
-                logger.info("有任务执行成功，但无新增交易数据，跳过交易处理")
+            # 检查持仓是否发生变化，如果没有变化则跳过交易处理
+            # 读取账户持仓数据
+            account_holdings = pd.DataFrame()
+            try:
+                if os.path.exists(Account_holding_file):
+                    with pd.ExcelFile(Account_holding_file, engine='openpyxl') as xls:
+                        # 读取中泰证券账户的持仓数据
+                        if "中泰证券_持仓数据" in xls.sheet_names:
+                            account_holdings = pd.read_excel(xls, sheet_name="中泰证券_持仓数据")
+                            # 为账户持仓数据添加股票代码
+                            account_holdings = add_stock_codes_to_dataframe(account_holdings)
+            except Exception as e:
+                logger.error(f"读取账户持仓数据失败: {e}")
+            
+            # 读取策略/组合今日持仓数据
+            strategy_holdings = pd.DataFrame()
+            try:
+                if os.path.exists(Combination_portfolio_today_file):
+                    with pd.ExcelFile(Combination_portfolio_today_file, engine='openpyxl') as xls:
+                        # 读取今日持仓数据
+                        today_sheet = datetime.datetime.now().strftime('%Y-%m-%d')
+                        if today_sheet in xls.sheet_names:
+                            strategy_holdings = pd.read_excel(xls, sheet_name=today_sheet)
+                            # 为策略持仓数据添加股票代码
+                            strategy_holdings = add_stock_codes_to_dataframe(strategy_holdings)
+            except Exception as e:
+                logger.error(f"读取策略持仓数据失败: {e}")
+            
+            # 检查账户持仓是否发生变化
+            account_changed = has_holdings_changed(account_holdings, previous_account_holdings, "中泰证券")
+            
+            # 检查策略持仓是否发生变化
+            strategy_changed = has_holdings_changed(strategy_holdings, previous_strategy_holdings)
+            
+            # 如果持仓没有变化，跳过交易处理
+            if not account_changed and not strategy_changed:
+                logger.info("账户和策略持仓均未发生变化，跳过交易处理以节省时间")
             else:
-                logger.debug("无任务更新，跳过交易处理")
+                # 如果有任何一个数据获取成功且有新数据，则执行交易处理
+                if (strategy_success and strategy_data_df is not None) or \
+                (combination_success and combination_data_df is not None) or \
+                (robot_success and robot_data_df is not None):
+                    file_paths = [Combination_portfolio_today_file, Robot_portfolio_today_file]
+                    process_data_to_operate(file_paths)
+                elif strategy_success or combination_success or robot_success or lhw_success:
+                    logger.info("有任务执行成功，但无新增交易数据，跳过交易处理")
+                else:
+                    logger.debug("无任务更新，跳过交易处理")
             logger.warning("---------------自动化操作结束---------------")
 
             # 国债逆回购操作（为每个账户执行一次）
