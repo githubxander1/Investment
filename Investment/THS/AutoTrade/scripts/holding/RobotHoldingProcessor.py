@@ -10,7 +10,9 @@ from datetime import datetime
 from Investment.THS.AutoTrade.config.settings import Robot_portfolio_today_file, robots
 from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.utils.format_data import determine_market
+from Investment.THS.AutoTrade.utils.format_data import determine_market, get_new_records, standardize_dataframe, normalize_time
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(__name__)
 
@@ -149,115 +151,121 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
                 code = symbol.replace('sh', '').replace('sz', '') if symbol.startswith(('sh', 'sz')) else symbol
                 stock_name = self.get_stock_name_by_code(code)
 
+            # 确定市场
             market = determine_market(symbol)
 
+            # market_value = log.get('marketValue', 0)
+            # total_value = data.get('nowPrice', 1)  # 使用组合最新价作为总市值参考
+            # position_ratio = (market_value / total_value * 100) if total_value != 0 else 0
+
             position_item = {
-                "名称": data.get('name', ''),
-                "操作": "买入",  # 默认为买入持仓
-                "标的名称": stock_name,
-                "代码": symbol,
+                "股票代码": symbol,
+                "股票名称": stock_name,
                 "市场": market,
-                "最新价": log.get('price', 0),
-                "成本价": log.get('basePrice', 0),
-                "持仓量": log.get('shares', 0),
-                "市值": log.get('marketValue', 0),
-                "新比例%": 0,  # 暂时无法计算准确比例
-                "时间": datetime.now().strftime('%Y-%m-%d')
+                "最新价": log.get('price', ''),
+                "成本价": log.get('basePrice', ''),
+                "持仓量": log.get('shares', ''),
+                "市值": log.get('marketValue', ''),
+                "今日盈亏": log.get('todayGains', ''),
+                "累计盈亏": log.get('totalGains', ''),
+                "今日收益率": (log.get('todayGains', 0) / log.get('todayCost', 1)) * 100 if log.get('todayCost', 0) != 0 else 0,
+                "累计收益率": (log.get('totalGains', 0) / log.get('lockCost', 1)) * 100 if log.get('lockCost', 0) != 0 else 0,
             }
             positions_data.append(position_item)
 
         # 将提取的数据转换为 DataFrame
+        combo_df = pd.DataFrame([data])  # 保留原始data用于组合信息
         stocks_df = pd.DataFrame(positions_data)
-        return stocks_df
+
+        return combo_df, stocks_df
 
     def save_all_robot_holding_data(self):
-        """获取所有机器人的持仓数据，并保存到 Excel 文件中"""
+        """获取所有机器人的持仓数据，并保存到 Excel 文件中，当天数据保存在第一个sheet"""
         # 加载所有股票信息
         self.load_all_stocks()
 
         # 收集所有机器人的持仓数据
         all_positions = []
 
-        # 创建一个Excel写入器
-        with pd.ExcelWriter(Robot_portfolio_today_file, engine='openpyxl') as writer:
-            # 遍历所有机器人
-            for robot_name, robot_id in robots.items():
-                logger.info(f"正在获取 {robot_name} 的数据...")
+        # 遍历所有机器人
+        for robot_name, robot_id in robots.items():
+            logger.info(f"正在获取 {robot_name} 的数据...")
 
-                # 获取机器人数据
-                response_data = self.fetch_robot_data(robot_id)
+            # 获取机器人数据
+            response_data = self.fetch_robot_data(robot_id)
 
-                if response_data and response_data.get("message", {}).get("state") == 0:
-                    # 提取数据
-                    stocks_df = self.extract_robot_data(response_data)
-
-                    # 以机器人的名称作为工作表名保存数据
-                    # 确保工作表名称不超过31个字符
-                    stocks_sheet_name = f"{robot_name}_持仓信息"[:31]
-
-                    # 保存到Excel的不同工作表
-                    if not stocks_df.empty:
-                        all_positions.append(stocks_df)
-                        stocks_df.to_excel(writer, sheet_name=stocks_sheet_name, index=False)
-                        logger.info(f"已保存 {robot_name} 的持仓信息到工作表 {stocks_sheet_name}")
+            if response_data and response_data.get("message", {}).get("state") == 0:
+                # 提取数据
+                combo_df, stocks_df = self.extract_robot_data(response_data)
+                
+                # 添加机器人名称和时间
+                stocks_df['名称'] = robot_name
+                stocks_df['时间'] = datetime.now().strftime('%Y-%m-%d')
+                
+                # 只保留沪深A股的
+                stocks_df = stocks_df[stocks_df['市场'] == '沪深A股']
+                
+                if not stocks_df.empty:
+                    all_positions.append(stocks_df)
+                    logger.info(f"已获取 {robot_name} 的持仓信息，共 {len(stocks_df)} 条记录")
                 else:
-                    logger.error(f"获取 {robot_name} 数据失败")
+                    logger.info(f"{robot_name} 无持仓数据")
+            else:
+                logger.warning(f"获取 {robot_name} 数据失败")
 
-        if all_positions:
-            # 合并所有持仓数据
-            all_positions_df = pd.concat(all_positions, ignore_index=False)
-            all_positions_df.index = all_positions_df.index + 1
-
-            # 只保留沪深A股
-            all_positions_df = all_positions_df[all_positions_df['市场'] == '沪深A股']
-            # 按价格从低到高排序
-            all_positions_df = all_positions_df.sort_values('最新价', ascending=True)
-
-            # 保存合并后的数据到Excel
-            today = datetime.now().strftime('%Y-%m-%d')
-
-            # 创建一个字典来存储所有工作表数据
-            all_sheets_data = {}
-
-            try:
-                # 如果文件存在，读取现有数据
-                if os.path.exists(Robot_portfolio_today_file):
-                    with pd.ExcelFile(Robot_portfolio_today_file) as xls:
-                        existing_sheets = xls.sheet_names
-                        logger.info(f"保存前文件中已存在的工作表: {existing_sheets}")
-
-                    # 读取除今天以外的所有现有工作表
-                    with pd.ExcelFile(Robot_portfolio_today_file) as xls:
-                        for sheet_name in existing_sheets:
-                            if sheet_name != today:
-                                all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
-
-                # 将今天的数据放在第一位
-                all_sheets_data = {today: all_positions_df, **all_sheets_data}
-                logger.info(f"即将保存的所有工作表: {list(all_sheets_data.keys())}")
-
-                # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
-                with pd.ExcelWriter(Robot_portfolio_today_file, engine='openpyxl', mode='w') as writer:
-                    for sheet_name, df in all_sheets_data.items():
-                        logger.info(f"正在保存工作表: {sheet_name}")
-                        df.to_excel(writer, sheet_name=sheet_name, index=False)
-
-                logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_positions_df)} 条")
-                return True
-            except Exception as e:
-                logger.error(f"❌ 保存持仓数据失败: {e}")
-                # 如果出错，至少保存今天的数据
-                try:
-                    with pd.ExcelWriter(Robot_portfolio_today_file, engine='openpyxl') as writer:
-                        all_positions_df.to_excel(writer, sheet_name=today, index=False)
-                    logger.info(f"✅ 文件保存完成，sheet: {today}")
-                    return True
-                except Exception as e2:
-                    logger.error(f"❌ 保存今日数据也失败了: {e2}")
-                    return False
-        else:
+        if not all_positions:
             logger.warning("未获取到任何机器人持仓数据")
             return False
+
+        # 合并所有机器人的持仓数据
+        all_positions_df = pd.concat(all_positions, ignore_index=True)
+        
+        # 按价格从低到高排序
+        all_positions_df = all_positions_df.sort_values('最新价', ascending=True)
+        
+        today = str(datetime.date.today())
+        file_path = Robot_portfolio_today_file
+
+        # 创建一个字典来存储所有工作表数据
+        all_sheets_data = {}
+
+        try:
+            # 如果文件存在，读取现有数据
+            if os.path.exists(file_path):
+                with pd.ExcelFile(file_path) as xls:
+                    existing_sheets = xls.sheet_names
+                    logger.info(f"保存前文件中已存在的工作表: {existing_sheets}")
+
+                # 读取除今天以外的所有现有工作表
+                with pd.ExcelFile(file_path) as xls:
+                    for sheet_name in existing_sheets:
+                        if sheet_name != today:
+                            all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
+
+            # 将今天的数据放在第一位
+            all_sheets_data = {today: all_positions_df, **all_sheets_data}
+            logger.info(f"即将保存的所有工作表: {list(all_sheets_data.keys())}")
+
+            # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
+            with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+                for sheet_name, df in all_sheets_data.items():
+                    logger.info(f"正在保存工作表: {sheet_name} ({len(df)} 条记录)")
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+            logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_positions_df)} 条")
+            return True
+
+        except Exception as e:
+            logger.error(f"❌ 保存持仓数据失败: {e}")
+            # 如果出错，至少保存今天的数据
+            try:
+                with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+                    all_positions_df.to_excel(writer, sheet_name=today, index=False)
+                logger.info(f"✅ 文件保存完成，sheet: {today}")
+                return True
+            except Exception as e2:
+                logger.error(f"❌ 保存今日数据也失败了: {e2}")
+                return False
 
     def execute_robot_trades(self):
         """执行机器人策略的调仓操作"""
@@ -282,14 +290,99 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
             logger.error(f"执行机器人策略调仓操作时出错: {e}")
             return False
 
-def main():
+    def compare_holding_changes(self):
+        """比较机器人持仓变化并通知新增数据"""
+        try:
+            logger.info("🔄 开始比较机器人持仓变化")
+            
+            # 加载所有股票信息
+            self.load_all_stocks()
+
+            # 收集所有机器人的当前持仓数据
+            all_positions = []
+
+            # 遍历所有机器人
+            for robot_name, robot_id in robots.items():
+                logger.info(f"正在获取 {robot_name} 的数据...")
+
+                # 获取机器人数据
+                response_data = self.fetch_robot_data(robot_id)
+
+                if response_data and response_data.get("message", {}).get("state") == 0:
+                    # 提取数据
+                    combo_df, stocks_df = self.extract_robot_data(response_data)
+                    
+                    # 添加机器人名称和时间
+                    stocks_df['名称'] = robot_name
+                    stocks_df['时间'] = datetime.now().strftime('%Y-%m-%d')
+                    
+                    # 只保留沪深A股的
+                    stocks_df = stocks_df[stocks_df['市场'] == '沪深A股']
+                    
+                    if not stocks_df.empty:
+                        all_positions.append(stocks_df)
+                        logger.info(f"已获取 {robot_name} 的持仓信息，共 {len(stocks_df)} 条记录")
+                    else:
+                        logger.info(f"{robot_name} 无持仓数据")
+                else:
+                    logger.warning(f"获取 {robot_name} 数据失败")
+
+            if not all_positions:
+                logger.warning("未获取到任何机器人持仓数据")
+                return
+
+            # 合并所有机器人的持仓数据
+            current_holdings = pd.concat(all_positions, ignore_index=True)
+            
+            # 按价格从低到高排序
+            current_holdings = current_holdings.sort_values('最新价', ascending=True)
+            
+            if current_holdings.empty:
+                logger.info("🔄 未获取到当前机器人持仓数据")
+                return
+            
+            # 读取历史持仓数据
+            history_file = Robot_portfolio_today_file
+            try:
+                history_holdings = read_today_portfolio_record(history_file)
+                if history_holdings.empty:
+                    logger.info("📋 历史持仓数据为空")
+            except Exception as e:
+                logger.warning(f"读取历史持仓数据失败: {e}")
+                history_holdings = pd.DataFrame()
+            
+            # 标准化数据格式
+            current_holdings = standardize_dataframe(current_holdings)
+            history_holdings = standardize_dataframe(history_holdings)
+            
+            # 获取新增数据
+            new_data = get_new_records(current_holdings, history_holdings)
+            
+            if not new_data.empty:
+                logger.info(f"🆕 发现 {len(new_data)} 条新增持仓数据")
+                logger.info(f"\n{new_data}")
+                
+                # 发送通知
+                new_data_print = new_data.to_string(index=False)
+                send_notification(f"📈 机器人新增持仓 {len(new_data)} 条：\n{new_data_print}")
+                
+                # 保存新增数据到文件
+                today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+                save_to_operation_history_excel(new_data, history_file, f'{today}', index=False)
+                logger.info("💾 新增持仓数据已保存到文件")
+            else:
+                logger.info("✅ 机器人持仓无变化")
+                
+        except Exception as e:
+            logger.error(f"比较机器人持仓变化时出错: {e}")
+
+if __name__ == '__main__':
     processor = RobotHoldingProcessor()
     success = processor.execute_robot_trades()
     if success:
         logger.info("✅ 机器人策略调仓执行完成")
     else:
         logger.error("❌ 机器人策略调仓执行失败")
-
-# 运行主函数
-if __name__ == "__main__":
-    main()
+    
+    # 比较持仓变化
+    processor.compare_holding_changes()

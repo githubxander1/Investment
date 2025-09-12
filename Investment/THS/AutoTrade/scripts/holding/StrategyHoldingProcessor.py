@@ -13,7 +13,9 @@ from Investment.THS.AutoTrade.config.settings import (
 )
 from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
 from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time
+from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time, get_new_records, standardize_dataframe
+from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(__name__)
 ua = fake_useragent.UserAgent()
@@ -142,6 +144,69 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             logger.error(f"执行AI策略调仓操作时出错: {e}")
             return False
 
+    def compare_holding_changes(self):
+        """比较策略持仓变化并通知新增数据"""
+        try:
+            logger.info("🔄 开始比较策略持仓变化")
+            
+            # 获取所有策略的当前持仓数据
+            all_holdings = []
+            for id in Strategy_ids:
+                positions_df = self.get_latest_position(id)
+                # 只保留沪深A股的
+                positions_df = positions_df[positions_df['市场'] == '沪深A股']
+                # 按价格从低到高排序
+                positions_df = positions_df.sort_values('最新价', ascending=True)
+                if positions_df is not None and not positions_df.empty:
+                    all_holdings.append(positions_df)
+                else:
+                    logger.info(f"没有获取到策略数据，策略ID: {id}")
+
+            if not all_holdings:
+                logger.warning("未获取到任何策略持仓数据")
+                return
+
+            current_holdings = pd.concat(all_holdings, ignore_index=True)
+            
+            if current_holdings.empty:
+                logger.info("🔄 未获取到当前策略持仓数据")
+                return
+            
+            # 读取历史持仓数据
+            history_file = Ai_Strategy_holding_file
+            try:
+                history_holdings = read_today_portfolio_record(history_file)
+                if history_holdings.empty:
+                    logger.info("📋 历史持仓数据为空")
+            except Exception as e:
+                logger.warning(f"读取历史持仓数据失败: {e}")
+                history_holdings = pd.DataFrame()
+            
+            # 标准化数据格式
+            current_holdings = standardize_dataframe(current_holdings)
+            history_holdings = standardize_dataframe(history_holdings)
+            
+            # 获取新增数据
+            new_data = get_new_records(current_holdings, history_holdings)
+            
+            if not new_data.empty:
+                logger.info(f"🆕 发现 {len(new_data)} 条新增持仓数据")
+                logger.info(f"\n{new_data}")
+                
+                # 发送通知
+                new_data_print = new_data.to_string(index=False)
+                send_notification(f"📈 策略新增持仓 {len(new_data)} 条：\n{new_data_print}")
+                
+                # 保存新增数据到文件
+                today = normalize_time(datetime.datetime.now().strftime('%Y-%m-%d'))
+                save_to_operation_history_excel(new_data, history_file, f'{today}', index=False)
+                logger.info("💾 新增持仓数据已保存到文件")
+            else:
+                logger.info("✅ 策略持仓无变化")
+                
+        except Exception as e:
+            logger.error(f"比较策略持仓变化时出错: {e}")
+
 if __name__ == '__main__':
     processor = StrategyHoldingProcessor()
     success = processor.execute_strategy_trades()
@@ -149,3 +214,6 @@ if __name__ == '__main__':
         logger.info("✅ AI策略调仓执行完成")
     else:
         logger.error("❌ AI策略调仓执行失败")
+    
+    # 比较持仓变化
+    processor.compare_holding_changes()

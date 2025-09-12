@@ -115,6 +115,10 @@ def has_holdings_changed(current_holdings, previous_holdings_cache, account_name
     """
     # 为当前持仓添加股票代码
     current_holdings = add_stock_codes_to_dataframe(current_holdings)
+    
+    # 标准化股票名称
+    current_holdings = standardize_stock_names(current_holdings)
+    
     # 生成缓存键
     cache_key = account_name if account_name else "strategy"
     
@@ -127,8 +131,10 @@ def has_holdings_changed(current_holdings, previous_holdings_cache, account_name
     # 获取之前的持仓数据
     previous_holdings = previous_holdings_cache[cache_key]
     
+    # 标准化之前的持仓名称
+    previous_holdings = standardize_stock_names(previous_holdings)
+    
     # 比较当前和之前的持仓数据
-    # 转换为集合进行比较，忽略索引和顺序
     try:
         # 优先使用'代码'列进行比较，如果不存在则回退到'标的名称'
         if '代码' in current_holdings.columns and '代码' in previous_holdings.columns:
@@ -156,6 +162,31 @@ def has_holdings_changed(current_holdings, previous_holdings_cache, account_name
         # 出错时保守地认为发生了变化
         previous_holdings_cache[cache_key] = current_holdings.copy()
         return True
+
+
+def standardize_stock_names(df):
+    """
+    标准化股票名称，将常见别名映射到标准名称
+    
+    :param df: 包含股票名称的DataFrame
+    :return: 标准化后的DataFrame
+    """
+    # 定义名称映射表
+    name_mapping = {
+        "万丰股份": "万丰奥威",
+        "浙江万丰股份": "万丰奥威",
+        "丰元股份": "丰元股份",  # 示例：保持不变
+        "恒润股份": "恒润股份",  # 示例：保持不变
+        # 可以继续添加其他映射
+    }
+    
+    # 创建新的列用于存储标准化后的名称
+    df_copy = df.copy()
+    
+    if '标的名称' in df_copy.columns:
+        df_copy['标的名称'] = df_copy['标的名称'].map(lambda x: name_mapping.get(x, x))
+    
+    return df_copy
 
 
 # async def check_morning_signals():
@@ -572,3 +603,124 @@ if __name__ == '__main__':
     end_time_minute = 30
 
     asyncio.run(main())
+
+# 在文件顶部添加导入
+import pandas as pd
+
+# 修改 operate_result 函数，添加操作汇总功能
+def operate_result():
+    """
+    执行调仓操作，包含异常处理和重试机制，并返回操作汇总
+    """
+    # 读取操作历史记录
+    try:
+        history_df = pd.read_excel(OPERATION_HISTORY_FILE)
+        logger.info(f"📄 已读取历史操作记录，共 {len(history_df)} 条")
+    except Exception as e:
+        logger.error(f"读取操作历史记录失败: {e}")
+        history_df = pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
+
+    # 准备所有操作的列表
+    all_operations = []
+    operations_by_account = {}
+
+    # 获取持仓差异
+    diff_result_df = Smain()
+
+    if diff_result_df.empty:
+        logger.info("✅ 当前无持仓差异，无需执行交易")
+        return pd.DataFrame()  # 返回空DataFrame
+
+    # 按操作类型分组，优先执行卖出操作
+    sell_operations = diff_result_df[diff_result_df['操作'] == '卖出']
+    buy_operations = diff_result_df[diff_result_df['操作'] == '买入']
+
+    # 合并操作，将卖出操作放在前面
+    ordered_operations = pd.concat([sell_operations, buy_operations], ignore_index=True)
+
+    # 遍历每一行，执行交易
+    for index, row in ordered_operations.iterrows():
+        stock_name = row['标的名称']
+        operation = row['操作']
+        strategy_name = row.get('名称', 'AI市场追踪策略')  # 获取策略名称，默认为AI市场追踪策略
+
+        logger.info(f"🛠️ 要处理: {operation} {stock_name}")
+
+        # 特殊处理：卖出时全仓卖出
+        if operation == "卖出":
+            new_ratio = 0
+        else:
+            new_ratio = None  # 买入时无需新比例
+
+        # 切换到对应账户
+        common_page = CommonPage()
+        common_page.change_account('川财证券')
+        logger.info(f"✅ 已切换到账户: 川财证券")
+
+        # 调用交易逻辑
+        status, info = trader.operate_stock(
+            operation=operation,
+            stock_name=stock_name,
+            volume=100 if operation == "买入" else None,
+            new_ratio=new_ratio
+        )
+
+        # 检查交易是否成功执行
+        if status is None:
+            logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+            # 记录失败的操作
+            all_operations.append({
+                '标的名称': stock_name,
+                '操作': operation,
+                '状态': '失败',
+                '信息': info,
+                '时间': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            })
+            continue
+
+        # 构造记录
+        operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        record = pd.DataFrame([{
+            '名称': strategy_name,  # 策略名称
+            '标的名称': stock_name,
+            '操作': operation,
+            '新比例%': new_ratio if new_ratio is not None else 0,
+            '状态': status,
+            '信息': info,
+            '账户': '川财证券',  # 执行账户
+            '时间': operate_time
+        }])
+
+        # 写入历史
+        write_operation_history(record)
+        logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
+
+        # 添加成功操作到汇总
+        all_operations.append({
+            '标的名称': stock_name,
+            '操作': operation,
+            '状态': '成功',
+            '信息': info,
+            '时间': operate_time
+        })
+
+    # 创建汇总表格
+    summary_df = pd.DataFrame(all_operations)
+    
+    # 按操作类型排序
+    summary_df = summary_df.sort_values(['操作', '标的名称'])
+    
+    # 显示汇总结果
+    logger.info("=" * 50)
+    logger.info("📊 交易执行汇总:")
+    logger.info(f"总操作数: {len(summary_df)}")
+    logger.info(f"成功操作: {len(summary_df[summary_df['状态'] == '成功'])}")
+    logger.info(f"失败操作: {len(summary_df[summary_df['状态'] == '失败'])}")
+    logger.info("=" * 50)
+    
+    # 输出详细操作列表
+    for _, row in summary_df.iterrows():
+        status_icon = "✅" if row['状态'] == '成功' else "❌"
+        logger.info(f"{status_icon} {row['操作']} {row['标的名称']} - {row['信息']}")
+    
+    return summary_df

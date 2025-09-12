@@ -314,7 +314,7 @@ async def main():
             await check_morning_signals()
 
             # 2. AI策略持仓差异分析任务（9:30-9:35）
-            if dt_time(9, 32) <= now <= dt_time(19, 35):
+            if dt_time(9, 32) <= now <= dt_time(9, 40):
                 if not strategy_diff_executed:
                     logger.warning("---------------------AI策略持仓差异分析开始---------------------")
                     await execute_strategy_trades()
@@ -329,7 +329,7 @@ async def main():
                     logger.debug("离开AI策略分析时间窗口，重置执行标志")
 
             # 3. 组合更新任务（9:25-15:00）
-            if dt_time(9, 25) <= now <= dt_time(25, 0):
+            if dt_time(9, 25) <= now <= dt_time(15, 0):
                 # if not portfolio_updates_executed:
                 logger.warning("---------------------组合更新任务开始---------------------")
                 await execute_combination_trades()
@@ -348,7 +348,7 @@ async def main():
                 #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
 
             # 4. Robot策略任务（9:30-9:35）
-            if dt_time(9, 32) <= now <= dt_time(19, 35):
+            if dt_time(9, 32) <= now <= dt_time(9, 40):
                 if not robot_executed:
                     logger.warning("---------------------Robot策略任务开始---------------------")
                     await execute_robot_trades()
@@ -363,7 +363,7 @@ async def main():
                     logger.debug("离开Robot策略时间窗口，重置执行标志")
 
             # 5. 国债逆回购操作（14:56-15:10）
-            if dt_time(14, 56) <= now <= dt_time(23, 10):
+            if dt_time(14, 56) <= now <= dt_time(15, 10):
                 if not guozhai_executed:
                     current_account = ACCOUNTS[current_account_index]
                     logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")
