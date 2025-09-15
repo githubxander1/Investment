@@ -311,7 +311,7 @@ class AccountInfo:
     def extract_header_info(self):
         """提取账户表头信息：总资产、浮动盈亏、总市值、可用、可取"""
         logger.info("-" * 50)
-        logger.info('正在获取账户表头信息...')
+        logger.info('开始：获取账户表头信息')
         header_info = {}
 
         try:
@@ -342,18 +342,20 @@ class AccountInfo:
             header_info["可取"] = available_for_withdrawal_node.get_text() if available_for_withdrawal_node.exists else "None"
 
             header_info_df = pd.DataFrame([header_info])
-            logger.info(f"账户表头信息完成: \n{header_info_df}")
+            logger.info(f"结束：账户表头信息完成: \n{header_info_df}")
+            logger.info("-" * 50)
             return header_info_df
 
         except Exception as e:
-            logger.error(f"获取账户表头信息失败: {e}")
+            logger.error(f"结束：获取账户表头信息失败: {e}")
+            logger.info("-" * 50)
             return pd.DataFrame()
 
     # 获取持仓股票信息
     def extract_stock_info(self, max_swipe_attempts=40):
         """提取持仓股票信息，支持滑动加载更多，并过滤无效条目"""
         logger.info("-" * 50)
-        logger.info('正在获取账户持仓信息...')
+        logger.info('开始：获取账户持仓信息')
 
         # 使用滚动加载方法获取所有持仓
         stocks = self.scroll_and_dump(retry=max_swipe_attempts)
@@ -378,7 +380,8 @@ class AccountInfo:
             # 从1开始索引
             df.index = range(1, len(df) + 1)
         
-        logger.info(f"✅ 成功提取持仓数据，共 {len(df)} 条:\n{df}")
+        logger.info(f"完成：✅ 提取持仓数据，共 {len(df)} 条:\n{df}")
+        logger.info("-" * 50)
         return df
 
     def _get_stock_code_by_name(self, name):
@@ -395,19 +398,26 @@ class AccountInfo:
     #获取可用资金-买入
     def get_buying_power(self):
         """获取可用资金"""
+        logger.info("-" * 50)
+        logger.info('开始：获取可用资金-买入')
         try:
             header_info = self.extract_header_info()
             if header_info.empty:
                 return None
             buy_available = float(header_info["可用"].iloc[0].replace(',', ''))
+            logger.info(f"完成：获取可用资金，可用金额: {buy_available}")
+            logger.info("-" * 50)
             return buy_available
         except Exception as e:
-            logger.error(f"获取可用资金失败: {e}")
+            logger.error(f"完成：获取可用资金失败: {e}")
+            logger.info("-" * 50)
             return None
 
     #获取持仓可用-卖出
     def get_stock_available(self,stock_name):
         """获取指定股票的持仓/可用数量"""
+        logger.info("-" * 50)
+        logger.info(f'开始：获取持仓可用-卖出，股票名称: {stock_name}')
         try:
             stock_holding_df = self.extract_stock_info()
             stock_row = stock_holding_df[stock_holding_df["标的名称"] == stock_name]
@@ -424,15 +434,20 @@ class AccountInfo:
                 try:
                     position = int(float(position))
                     available = int(float(available))
+                    logger.info(f"完成：获取持仓可用-卖出，股票名称: {stock_name}, 持仓: {position}, 可用: {available}")
+                    logger.info("-" * 50)
                     return True, available
                 except (ValueError, TypeError) as e:
-                    logger.warning(f"持仓/可用字段格式错误: 持仓={position}, 可用={available}")
+                    logger.warning(f"完成：持仓/可用字段格式错误: 持仓={position}, 可用={available}")
+                    logger.info("-" * 50)
                     return False, 0
             else:
                 logger.warning(f"{stock_name} 不在持仓中")
+                logger.info("-" * 50)
                 return False, 0
         except Exception as e:
             logger.error(f"获取持仓失败: {e}")
+            logger.info("-" * 50)
             return False, 0
             
     # 更新指定账户的持仓信息
@@ -441,7 +456,7 @@ class AccountInfo:
         获取指定账户的持仓信息，并保存到 Excel 文件
         """
         logger.info("-" * 50)
-        logger.info(f"开始更新 {account_name} 账户持仓信息...")
+        logger.info(f"开始：更新 {account_name} 账户持仓信息...")
 
         try:
             # 切换到指定账户
@@ -489,15 +504,18 @@ class AccountInfo:
                     for sheet_name, df in all_sheets_data.items():
                         df.to_excel(writer, index=False, sheet_name=sheet_name)
 
-                logger.info(f"✅ {account_name} 账户持仓信息已更新并保存至 {Account_holding_file}")
+                logger.info(f"完成：✅ {account_name} 账户持仓信息已更新并保存至 {Account_holding_file}")
+                logger.info("-" * 50)
                 return True
 
             except Exception as e:
                 logger.error(f"❌ 保存 {account_name} 账户数据失败: {e}", exc_info=True)
+                logger.info("-" * 50)
                 return False
 
         except Exception as e:
             logger.error(f"❌ 获取 {account_name} 账户持仓信息失败: {e}", exc_info=True)
+            logger.info("-" * 50)
             return False
 
 
@@ -507,7 +525,7 @@ class AccountInfo:
         获取当前账户持仓信息，并保存到 Excel 文件
         """
         logger.info("-" * 50)
-        logger.info("开始更新账户持仓信息...")
+        logger.info("开始：更新账户持仓信息...")
         # ths = GuozhaiPage(d)
         # ths.ensure_on_holding_page()
         accounts = ["川财证券","长城证券","中泰证券"]
@@ -535,7 +553,8 @@ class AccountInfo:
 
                 # 存储该账户的数据
                 account_data[account] = (header_info_df, stocks_df)
-                logger.info(f"✅ {account} 账户数据获取完成")
+                logger.info(f"完成：✅ {account} 账户数据获取完成")
+                # logger.info("-" * 50)
 
             # 将所有账户数据保存到同一个Excel文件的不同工作表中
             if account_data:
@@ -549,7 +568,8 @@ class AccountInfo:
                         if not stocks_df.empty:
                             stocks_df.to_excel(writer, index=False, sheet_name=f"{account}_持仓数据")
 
-                logger.info(f"✅ 所有账户持仓信息已更新并保存至 {Account_holding_file}")
+                logger.info(f"完成：✅ 所有账户持仓信息已更新并保存至 {Account_holding_file}")
+                logger.info("-" * 50)
                 return True
             else:
                 logger.warning("所有账户数据均为空")

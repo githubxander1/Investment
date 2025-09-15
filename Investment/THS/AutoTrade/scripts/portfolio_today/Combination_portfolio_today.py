@@ -20,7 +20,7 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))))
 # # # 将others目录添加到模块搜索路径中
 sys.path.append(others_dir)
-print(f'包路径：{sys.path}')
+# print(f'包路径：{sys.path}')
 
 from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today_file, all_ids, \
     id_to_name

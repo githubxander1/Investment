@@ -56,9 +56,15 @@ class GuozhaiPage(THSPage):
 
             if target[0].exists():
                 time.sleep(1.5)
-                target.click()
-                logger.info(f"点击 {target_name} 成功")
-                return True
+                # 检查元素是否可见和可点击
+                if target[0].info.get('visible', False) and target[0].info.get('clickable', False):
+                    target.click()
+                    logger.info(f"点击 {target_name} 成功")
+                    # 增加点击后的状态判断
+                    time.sleep(0.5)  # 等待点击效果
+                    return True
+                else:
+                    logger.warning(f"{target_name} 不可见或不可点击")
 
             time.sleep(1)
         logger.warning(f"未找到 {target_name}，已滑动到底部")
@@ -93,28 +99,45 @@ class GuozhaiPage(THSPage):
                 content_texts = []
                 for tv in text_views:
                     content_texts.append(tv.get_text())
-                self.confirm_button.click()
-                # logger.info(f": {content_texts}")
-                prompt_text = self.prompt_content.get_text()
-                if '委托已提交' in prompt_text:
+                # 检查确认按钮是否可见和可点击
+                if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
                     self.confirm_button.click()
-                    self.back_button.click()
-                    self.back_button.click()
-                    logger.info(f"委托成功: {prompt_text}, 内容:{content_texts}")
-                    return True, '委托成功'
+                    # logger.info(f": {content_texts}")
+                    prompt_text = self.prompt_content.get_text()
+                    if '委托已提交' in prompt_text:
+                        # 检查确认按钮是否可见和可点击
+                        if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                            self.confirm_button.click()
+                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            self.back_button.click()
+                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            self.back_button.click()
+                        logger.info(f"委托成功: {prompt_text}, 内容:{content_texts}")
+                        return True, '委托成功'
+                    else:
+                        time.sleep(1)
+                        # 检查确认按钮是否可见和可点击
+                        if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                            self.confirm_button.click()
+                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            self.back_button.click()
+                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            self.back_button.click()
+                        logger.warning(f"委托失败: {prompt_text}, 返回账户页")
+                        # send_notification(f"国债逆回购任务失败: {prompt_text}")
+                        return False, prompt_text
                 else:
-                    time.sleep(1)
-                    self.confirm_button.click()
-                    self.back_button.click()
-                    self.back_button.click()
-                    logger.warning(f"委托失败: {prompt_text}, 返回账户页")
-                    # send_notification(f"国债逆回购任务失败: {prompt_text}")
-                    return False, prompt_text
+                    logger.warning("确认按钮不可点击或不可见")
+                    return False, "确认按钮不可点击"
             else:
                 prompt_text = self.prompt_content.get_text()
-                self.confirm_button.click()
-                self.back_button.click()
-                self.back_button.click()
+                # 检查确认按钮是否可见和可点击
+                if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                    self.confirm_button.click()
+                if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                    self.back_button.click()
+                if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                    self.back_button.click()
                 # send_notification(f"国债逆回购任务失败: {prompt_text}")
                 logger.error(f"委托失败: {prompt_text}")
                 return False, prompt_text
@@ -133,7 +156,9 @@ class GuozhaiPage(THSPage):
                 error_msg = "无法返回账户页"
                 logger.error(error_msg)
                 send_notification(f"国债逆回购任务失败: {error_msg}")
-                self.back_button()
+                # 检查返回按钮是否可见和可点击
+                if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                    self.back_button()
                 return False, error_msg
 
             # 2. 进入国债逆回购入口
@@ -143,8 +168,15 @@ class GuozhaiPage(THSPage):
                 send_notification(f"国债逆回购任务失败: {error_msg}")
                 return False, error_msg
             else:
-                self.guozhai_entry_button.click()
-                logger.info("已进入: 国债逆回购入口")
+                # 检查元素是否可见和可点击
+                if self.guozhai_entry_button.info.get('visible', False) and self.guozhai_entry_button.info.get('clickable', False):
+                    self.guozhai_entry_button.click()
+                    logger.info("已进入: 国债逆回购入口")
+                    # 增加点击后的状态判断
+                    time.sleep(0.5)  # 等待点击效果
+                else:
+                    logger.warning("国债逆回购入口按钮不可点击或不可见")
+                    return False, "国债逆回购入口按钮不可点击"
 
             # 3. 查找并点击产品
             if not self._find_and_click_product("1天期"):
@@ -157,9 +189,12 @@ class GuozhaiPage(THSPage):
             if not self.assert_on_gc001_page():
                 error_msg = "当前页面不是 GC001(1天期)"
                 logger.error(error_msg)
-                self.back_button.click()
-                time.sleep(1)
-                self.back_button.click()
+                # 检查返回按钮是否可见和可点击
+                if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                    self.back_button.click()
+                    time.sleep(1)
+                    if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                        self.back_button.click()
                 send_notification(f"国债逆回购任务失败: {error_msg}")
                 return False, error_msg
 
@@ -172,8 +207,15 @@ class GuozhaiPage(THSPage):
                 send_notification(f"国债逆回购任务失败: {error_msg}")
                 return False, error_msg
             else:
-                self.borrow_btn.click()
-                logger.info("已点击: 借出按钮")
+                # 检查元素是否可见和可点击
+                if self.borrow_btn.info.get('visible', False) and self.borrow_btn.info.get('clickable', False):
+                    self.borrow_btn.click()
+                    logger.info("已点击: 借出按钮")
+                    # 增加点击后的状态判断
+                    time.sleep(0.5)  # 等待点击效果
+                else:
+                    logger.warning("借出按钮不可点击或不可见")
+                    return False, "借出按钮不可点击"
 
             # 6. 处理交易确认
             result = self._handle_transaction_confirm()
@@ -227,14 +269,28 @@ class GuozhaiPage(THSPage):
             return True
         #
         # # account_name = self.d(className="android.widget.TextView", textMatches=f".*{account_name}.*")
-        self.change_button.click()
-        logger.info("已点击: 账户切换按钮")
-        if account.exists():
-            account.click()
-            logger.info(f"已切换账户: {account_name}")
-            return True
+        # 检查切换按钮是否可见和可点击
+        if self.change_button.info.get('visible', False) and self.change_button.info.get('clickable', False):
+            self.change_button.click()
+            logger.info("已点击: 账户切换按钮")
+            # 增加点击后的状态判断
+            time.sleep(0.5)  # 等待点击效果
+            if account.exists():
+                # 检查账户按钮是否可见和可点击
+                if account.info.get('visible', False) and account.info.get('clickable', False):
+                    account.click()
+                    logger.info(f"已切换账户: {account_name}")
+                    # 增加点击后的状态判断
+                    time.sleep(0.5)  # 等待点击效果
+                    return True
+                else:
+                    logger.warning(f"账户 {account_name} 按钮不可点击或不可见")
+                    return False
+            else:
+                logger.warning(f"无法找到账户: {account_name}")
+                return False
         else:
-            logger.warning(f"无法找到账户: {account_name}")
+            logger.warning("账户切换按钮不可点击或不可见")
             return False
 
 if __name__ == '__main__':

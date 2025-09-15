@@ -204,7 +204,7 @@ def read_today_portfolio_record(file_path):
 
                     # 去重处理
                     portfolio_record_history_df.drop_duplicates(
-                        subset=['标的名称', '操作', "新比例%", '时间'],
+                        subset=['标的名称', "新比例%", '时间'],
                         inplace=True
                     )
                     logger.info(f"读取去重后的操作历史文件完成, {len(portfolio_record_history_df)}条 \n{portfolio_record_history_df}")

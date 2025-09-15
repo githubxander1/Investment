@@ -35,12 +35,15 @@ class CommonHoldingProcessor:
         self.trader = TradeLogic()
         self.common_page = CommonPage()
 
+    # 获取账户持仓数据差异
     def get_difference_holding(self, holding_file, account_file, account_name=None):
         """
         对比账户实际持仓与策略/组合今日持仓数据，找出差异：
             - 需要卖出：在账户中存在，但不在策略/组合今日持仓中；
             - 需要买入：在策略/组合今日持仓中存在，但不在账户中；
         """
+        logger.info("-" * 50)
+        logger.info(f"开始：对比账户实际持仓与{holding_file}数据...")
         if account_name is None:
             account_name = self.account_name
 
@@ -64,7 +67,8 @@ class CommonHoldingProcessor:
                 logger.warning(f"更新{account_name}账户持仓数据失败")
                 return {"error": f"更新{account_name}账户持仓数据失败"}
 
-            logger.info(f"✅ {account_name}账户持仓数据更新完成")
+            # logger.info(f"完成：✅ {account_name}账户持仓数据更新完成")
+            # logger.info("-" * 50)
 
             # 读取指定账户持仓数据
             account_df = pd.DataFrame()
@@ -110,9 +114,9 @@ class CommonHoldingProcessor:
                 logger.error(f"读取策略/组合持仓文件失败: {e}")
                 strategy_df = pd.DataFrame(columns=['标的名称'])
 
-            logger.info(f"{account_name}账户持仓数据:\n{account_df[['标的名称']] if not account_df.empty else '无数据'}\n")
-            if not strategy_df.empty:
-                logger.info(f"策略/组合今日持仓数据:{len(strategy_df)} 条记录)\n{strategy_df[['标的名称']]}\n")
+            # logger.info(f"{account_name}账户持仓数据:\n{account_df[['标的名称']] if not account_df.empty else '无数据'}\n")
+            # if not strategy_df.empty:
+            #     logger.info(f"策略/组合今日持仓数据:{len(strategy_df)} 条记录)\n{strategy_df[['标的名称']]}\n")
 
             # 需要排除的标的名称
             excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
@@ -128,8 +132,8 @@ class CommonHoldingProcessor:
                 to_sell = pd.DataFrame(columns=account_df.columns) if not account_df.empty else pd.DataFrame()
 
             if not to_sell.empty:
-                logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
-                logger.info(f"\n{to_sell[['标的名称']] if '标的名称' in to_sell.columns else to_sell}")
+                logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条\n{to_sell}")
+                # logger.info(f"\n{to_sell[['标的名称']] if '标的名称' in to_sell.columns else to_sell}")
                 # 添加操作列
                 to_sell['操作'] = '卖出'
             else:
@@ -146,8 +150,8 @@ class CommonHoldingProcessor:
                 to_buy = pd.DataFrame(columns=['标的名称'])
 
             if not to_buy.empty:
-                logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
-                logger.info(f"\n{to_buy[['标的名称']] if '标的名称' in to_buy.columns else to_buy}")
+                logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy)} 条\n{to_buy}")
+                # logger.info(f"\n{to_buy[['标的名称']] if '标的名称' in to_buy.columns else to_buy}")
                 # 添加操作列
                 to_buy['操作'] = '买入'
             else:
@@ -158,7 +162,8 @@ class CommonHoldingProcessor:
                 "to_sell": to_sell,
                 "to_buy": to_buy
             }
-
+            logger.info("完成：对比持仓差异")
+            logger.info("-" * 50)
             return difference_report
 
         except Exception as e:
@@ -195,8 +200,8 @@ class CommonHoldingProcessor:
                 # 读取操作历史记录
                 try:
                     history_df = read_operation_history(OPERATION_HISTORY_FILE)
-                    logger.info("历史操作记录:")
-                    logger.info(f"\n{history_df.to_string(index=False) if not history_df.empty else '无历史记录'}")
+                    # logger.info("历史操作记录:")
+                    # logger.info(f"\n{history_df.to_string(index=False) if not history_df.empty else '无历史记录'}")
                 except Exception as e:
                     logger.error(f"读取操作历史记录失败: {e}")
                     history_df = pd.DataFrame(columns=['标的名称', '操作', '新比例%'])

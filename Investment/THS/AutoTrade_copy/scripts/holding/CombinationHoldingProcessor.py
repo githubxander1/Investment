@@ -139,7 +139,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
 if __name__ == '__main__':
     processor = CombinationHoldingProcessor()
     success = processor.execute_combination_trades()
-    if success:
-        logger.info("✅ 组合策略调仓执行完成")
-    else:
+    if not success:
+        # logger.info("✅ 组合策略调仓执行完成")
+    # else:
         logger.error("❌ 组合策略调仓执行失败")

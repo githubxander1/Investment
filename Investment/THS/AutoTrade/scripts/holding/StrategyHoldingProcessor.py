@@ -53,18 +53,33 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
 
             position_stocks_df = pd.DataFrame(position_stocks_results)
             return position_stocks_df
+        except requests.exceptions.Timeout:
+            error_msg = f"请求策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})数据超时"
+            logger.error(error_msg)
+            send_notification(error_msg)
+            return pd.DataFrame()
         except requests.RequestException as e:
-            logger.error(f"请求失败 (Strategy ID: {strategy_id}): {e}")
+            error_msg = f"请求失败 (Strategy ID: {strategy_id}): {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return pd.DataFrame()
         except Exception as e:
-            logger.error(f"处理策略{strategy_id}数据时出错: {e}")
+            error_msg = f"处理策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})数据时出错: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return pd.DataFrame()
 
     def save_all_strategy_holding_data(self):
         """
         获取所有策略的持仓数据，并保存到 Excel 文件中，当天数据保存在第一个sheet
         """
+        logger.info("📂 开始获取并保存所有策略持仓数据")
+        
+        # 获取所有策略的持仓数据
         all_holdings = []
+        success_count = 0  # 记录成功获取数据的策略数量
+        total_count = len(Strategy_ids)  # 总策略数量
+        
         for id in Strategy_ids:
             positions_df = self.get_latest_position(id)
             # 只保留沪深A股的
@@ -74,14 +89,21 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             logger.info(f"{id}持仓数据:{len(positions_df)}\n{positions_df} ")
             if positions_df is not None and not positions_df.empty:
                 all_holdings.append(positions_df)
+                success_count += 1
             else:
                 logger.info(f"没有获取到策略数据，策略ID: {id}")
 
-        today = str(datetime.date.today())
-        if not all_holdings:
-            logger.warning("未获取到任何策略持仓数据")
-            return
+        # 检查数据获取情况
+        if success_count == 0:
+            logger.error("❌ 未获取到任何策略持仓数据")
+            send_notification("❌ 未获取到任何策略持仓数据")
+            return False
+            
+        elif success_count < total_count:
+            logger.warning(f"⚠️ 部分策略数据获取失败: {success_count}/{total_count}")
+            send_notification(f"⚠️ 策略数据获取异常: {success_count}/{total_count} 个策略数据获取成功")
 
+        today = str(datetime.date.today())
         all_holdings_df = pd.concat(all_holdings, ignore_index=False)
         # 从1开始计数
         all_holdings_df.index = all_holdings_df.index + 1
@@ -115,6 +137,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
 
             logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")
+            return True
 
         except Exception as e:
             logger.error(f"❌ 保存持仓数据失败: {e}")
@@ -123,14 +146,24 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
                     all_holdings_df.to_excel(writer, sheet_name=today, index=False)
                 logger.info(f"✅ 文件保存完成，sheet: {today}")
+                return True
             except Exception as e2:
                 logger.error(f"❌ 保存今日数据也失败了: {e2}")
+                send_notification(f"❌ 策略持仓数据保存失败: {e2}")
+                return False
 
     def execute_strategy_trades(self):
         """执行AI策略的调仓操作"""
         try:
+            logger.info("🔄 开始执行AI策略调仓操作")
+            
             # 保存最新持仓数据
-            self.save_all_strategy_holding_data()
+            save_result = self.save_all_strategy_holding_data()
+            if not save_result:
+                error_msg = "❌ AI策略持仓数据保存失败，跳过调仓操作"
+                logger.error(error_msg)
+                send_notification(error_msg)
+                return False
 
             # 执行调仓操作
             success = self.operate_result(
@@ -139,9 +172,19 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 account_name="川财证券"
             )
 
+            if success:
+                logger.info("✅ AI策略调仓执行完成")
+                # send_notification("✅ AI策略调仓执行完成")
+            else:
+                error_msg = "❌ AI策略调仓执行失败"
+                logger.error(error_msg)
+                send_notification(error_msg)
+                
             return success
         except Exception as e:
-            logger.error(f"执行AI策略调仓操作时出错: {e}")
+            error_msg = f"执行AI策略调仓操作时出错: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return False
 
     def compare_holding_changes(self):
@@ -151,6 +194,9 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             
             # 获取所有策略的当前持仓数据
             all_holdings = []
+            success_count = 0  # 记录成功获取数据的策略数量
+            total_count = len(Strategy_ids)  # 总策略数量
+            
             for id in Strategy_ids:
                 positions_df = self.get_latest_position(id)
                 # 只保留沪深A股的
@@ -159,12 +205,20 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 positions_df = positions_df.sort_values('最新价', ascending=True)
                 if positions_df is not None and not positions_df.empty:
                     all_holdings.append(positions_df)
+                    success_count += 1
                 else:
                     logger.info(f"没有获取到策略数据，策略ID: {id}")
 
-            if not all_holdings:
-                logger.warning("未获取到任何策略持仓数据")
+            # 检查数据获取情况
+            if success_count == 0:
+                error_msg = "❌ 未获取到任何策略持仓数据"
+                logger.error(error_msg)
+                send_notification(error_msg)
                 return
+                
+            elif success_count < total_count:
+                logger.warning(f"⚠️ 部分策略数据获取失败: {success_count}/{total_count}")
+                send_notification(f"⚠️ 策略数据获取异常: {success_count}/{total_count} 个策略数据获取成功")
 
             current_holdings = pd.concat(all_holdings, ignore_index=True)
             
@@ -205,14 +259,16 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 logger.info("✅ 策略持仓无变化")
                 
         except Exception as e:
-            logger.error(f"比较策略持仓变化时出错: {e}")
+            error_msg = f"比较策略持仓变化时出错: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
 
 if __name__ == '__main__':
     processor = StrategyHoldingProcessor()
     success = processor.execute_strategy_trades()
-    if success:
-        logger.info("✅ AI策略调仓执行完成")
-    else:
+    if not success:
+    #     logger.info("✅ AI策略调仓执行完成")
+    # else:
         logger.error("❌ AI策略调仓执行失败")
     
     # 比较持仓变化

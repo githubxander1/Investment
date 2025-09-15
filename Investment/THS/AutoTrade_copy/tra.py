@@ -137,7 +137,7 @@ async def execute_combination_trades():
         processor = CombinationHoldingProcessor()
         success = processor.execute_combination_trades()
         if success:
-            logger.info("✅ 组合策略交易执行完成")
+            # logger.info("✅ 组合策略交易执行完成")
             send_notification("组合策略交易执行完成")
         else:
             logger.error("❌ 组合策略交易执行失败")

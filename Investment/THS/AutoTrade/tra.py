@@ -102,7 +102,7 @@ async def execute_strategy_trades():
         success = processor.execute_strategy_trades()
         if success:
             logger.info("✅ AI策略交易执行完成")
-            send_notification("AI策略交易执行完成")
+            # send_notification("AI策略交易执行完成")
         else:
             logger.error("❌ AI策略交易执行失败")
             send_notification("AI策略交易执行失败")
@@ -120,7 +120,7 @@ async def execute_lhw_trades():
         success = processor.execute_lhw_trades()
         if success:
             logger.info("✅ 量化王策略交易执行完成")
-            send_notification("量化王策略交易执行完成")
+            # send_notification("量化王策略交易执行完成")
         else:
             logger.error("❌ 量化王策略交易执行失败")
             send_notification("量化王策略交易执行失败")
@@ -156,7 +156,7 @@ async def execute_robot_trades():
         success = processor.execute_robot_trades()
         if success:
             logger.info("✅ 机器人策略交易执行完成")
-            send_notification("机器人策略交易执行完成")
+            # send_notification("机器人策略交易执行完成")
         else:
             logger.error("❌ 机器人策略交易执行失败")
             send_notification("机器人策略交易执行失败")
@@ -313,41 +313,7 @@ async def main():
             global morning_signal_checked
             await check_morning_signals()
 
-            # 2. AI策略持仓差异分析任务（9:30-9:35）
-            if dt_time(9, 32) <= now <= dt_time(9, 40):
-                if not strategy_diff_executed:
-                    logger.warning("---------------------AI策略持仓差异分析开始---------------------")
-                    await execute_strategy_trades()
-                    logger.warning("---------------------AI策略持仓差异分析结束---------------------")
-                    strategy_diff_executed = True
-                else:
-                    logger.debug("AI策略持仓差异分析已执行，跳过重复执行")
-            else:
-                # 离开时间窗口后重置标志位
-                if strategy_diff_executed:
-                    strategy_diff_executed = False
-                    logger.debug("离开AI策略分析时间窗口，重置执行标志")
-
-            # 3. 组合更新任务（9:25-15:00）
-            if dt_time(9, 25) <= now <= dt_time(15, 0):
-                # if not portfolio_updates_executed:
-                logger.warning("---------------------组合更新任务开始---------------------")
-                await execute_combination_trades()
-                logger.warning("---------------------组合更新任务结束---------------------")
-                # portfolio_updates_executed = True
-                # else:
-                #     logger.debug("组合和策略更新任务已执行，跳过重复执行")
-            # else:
-                # pass
-                #停止运行
-
-
-                # 离开时间窗口后重置标志位
-                # if portfolio_updates_executed:
-                #     portfolio_updates_executed = False
-                #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
-
-            # 4. Robot策略任务（9:30-9:35）
+            # 2. Robot策略任务（9:30-9:35）
             if dt_time(9, 32) <= now <= dt_time(9, 40):
                 if not robot_executed:
                     logger.warning("---------------------Robot策略任务开始---------------------")
@@ -357,10 +323,50 @@ async def main():
                 else:
                     logger.debug("Robot策略任务已执行，跳过重复执行")
             else:
+                logger.info("尚未进入Robot策略任务时间窗口，跳过执行")
                 # 离开时间窗口后重置标志位
                 if robot_executed:
                     robot_executed = False
                     logger.debug("离开Robot策略时间窗口，重置执行标志")
+
+            # 3. 组合更新任务（9:25-15:00）
+            if dt_time(9, 25) <= now <= dt_time(19, 0):
+                # if not portfolio_updates_executed:
+                logger.warning("---------------------组合更新任务开始---------------------")
+                await execute_combination_trades()
+                logger.warning("---------------------组合更新任务结束---------------------")
+                # portfolio_updates_executed = True
+                # else:
+                #     logger.debug("组合和策略更新任务已执行，跳过重复执行")
+            else:
+                logger.info("尚未进入组合更新任务时间窗口，跳过执行")
+            # pass
+            # 停止运行
+
+            # 离开时间窗口后重置标志位
+            # if portfolio_updates_executed:
+            #     portfolio_updates_executed = False
+            #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
+
+            # 4. AI策略持仓差异分析任务（9:30-9:35）
+            if dt_time(9, 32) <= now <= dt_time(9, 40):
+                if not strategy_diff_executed:
+                    logger.warning("---------------------AI策略持仓差异分析开始---------------------")
+                    await execute_strategy_trades()
+                    logger.warning("---------------------AI策略持仓差异分析结束---------------------")
+                    strategy_diff_executed = True
+                else:
+                    logger.debug("AI策略持仓差异分析已执行，跳过重复执行")
+            else:
+                logger.info("尚未进入AI策略分析任务时间窗口，跳过执行")
+                # 离开时间窗口后重置标志位
+                if strategy_diff_executed:
+                    strategy_diff_executed = False
+                    logger.debug("离开AI策略分析时间窗口，重置执行标志")
+
+
+
+
 
             # 5. 国债逆回购操作（14:56-15:10）
             if dt_time(14, 56) <= now <= dt_time(15, 10):
@@ -420,6 +426,7 @@ async def main():
                 else:
                     logger.debug("国债逆回购任务已执行，跳过重复执行")
             else:
+                logger.info("尚未进入国债逆回购任务时间窗口，跳过执行")
                 # 离开时间窗口后重置标志位
                 if guozhai_executed:
                     guozhai_executed = False

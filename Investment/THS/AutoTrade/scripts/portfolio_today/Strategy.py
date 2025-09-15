@@ -434,8 +434,11 @@ def operate_result(max_retries=3):
             # 准备保存到今日调仓文件的数据
             today_trades = []
 
+            # 标记是否已更新过账户持仓信息
+            account_updated = False
+
             # 遍历每一项操作，执行交易
-            for op in all_operations:
+            for index, op in enumerate(all_operations):
                 stock_name = op['stock_name']
                 operation = op['operation']
                 new_ratio = op['new_ratio']
@@ -443,9 +446,18 @@ def operate_result(max_retries=3):
 
                 logger.info(f"🛠️ 要处理: {operation} {stock_name}")
 
-                # 切换到对应账户
-                common_page.change_account('川财证券')
-                logger.info(f"✅ 已切换到账户: 川财证券")
+                # 只在第一次操作时更新账户持仓信息
+                if not account_updated:
+                    # 切换到对应账户并更新持仓信息
+                    common_page.change_account('川财证券')
+                    logger.info(f"✅ 已切换到账户: 川财证券")
+                    account_info = AccountInfo()
+                    update_success = account_info.update_holding_info_for_account("川财证券")
+                    if update_success:
+                        logger.info("✅ 账户持仓信息已更新")
+                        account_updated = True
+                    else:
+                        logger.warning("⚠️ 账户持仓信息更新失败")
 
                 # 调用交易逻辑
                 status, info = trader.operate_stock(
