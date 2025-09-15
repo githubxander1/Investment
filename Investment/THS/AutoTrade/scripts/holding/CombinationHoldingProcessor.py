@@ -349,10 +349,13 @@ if __name__ == '__main__':
     
     # 比较持仓变化
     processor.compare_holding_changes()
-#     '''
-#     优化execute_combination_trades，文件总的逻辑是：
-# 1.读取holding_file里的历史记录，
-# 2.获取所有的策略，接口返回的持仓数据，保存到holding_file，
-# 3. 对比holding_file里的历史记录和本次接口返回的持仓，如果有新增，更新实际账户的持仓，然后再找出接口返回和实际账户持仓的不同数据（要买和要卖的数据），附加保存到Combination_portfolio_today_file，没有新增就不执行后面的，包括更新账户数据
-# 5.把新增的不同的数据交给operate_result去执行
-# '''
+    '''
+    读取历史记录 - 从Combination_holding_file中读取历史持仓数据
+获取接口返回的持仓数据 - 调用get_all_combination_current_holdings方法获取最新的持仓数据
+对比历史记录和当前数据 - 在保存数据之前，使用get_new_records函数检查是否有新增持仓
+保存持仓数据 - 将最新持仓数据保存到Combination_holding_file
+处理新增数据 - 如果有新增数据：
+保存新增数据到今日调仓文件Combination_portfolio_today_file
+调用operate_result方法执行交易
+跳过无变化情况 - 如果没有新增数据，则跳过后续操作
+'''
