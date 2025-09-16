@@ -29,45 +29,87 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
         url = f"https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit?strategyId={strategy_id}"
         headers = {"User-Agent": ua.random}
 
-        try:
-            response = requests.get(url, headers=headers, timeout=10)
-            response.raise_for_status()
-            data = response.json()
+        # 实现重试机制和超时处理
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(url, headers=headers, timeout=10)
+                response.raise_for_status()
+                data = response.json()
 
-            result = data.get('result', {})
-            position_stocks = result.get('positionStocks', [])
+                # 检查返回数据格式
+                if not isinstance(data, dict) or 'result' not in data:
+                    logger.warning(f"策略{strategy_id}返回数据格式异常: {data}")
+                    continue
 
-            position_stocks_results = []
-            for position_stock_info in position_stocks:
-                stk_code = str(position_stock_info.get('stkCode', '').split('.')[0]).zfill(6)
-                position_stocks_results.append({
-                    '名称': Strategy_id_to_name.get(strategy_id, f'策略{strategy_id}'),
-                    '标的名称': position_stock_info.get('stkName', ''),
-                    '代码': stk_code,
-                    '市场': determine_market(stk_code),
-                    '最新价': round(float(position_stock_info.get('price', 0)), 2),
-                    '新比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
-                    '时间': datetime.datetime.now().strftime('%Y-%m-%d'),
-                    '行业': position_stock_info.get('industry', ''),
-                })
+                result = data.get('result', {})
+                if not isinstance(result, dict) or 'positionStocks' not in result:
+                    logger.warning(f"策略{strategy_id}返回数据缺少positionStocks字段: {result}")
+                    continue
 
-            position_stocks_df = pd.DataFrame(position_stocks_results)
-            return position_stocks_df
-        except requests.exceptions.Timeout:
-            error_msg = f"请求策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})数据超时"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
-        except requests.RequestException as e:
-            error_msg = f"请求失败 (Strategy ID: {strategy_id}): {e}"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
-        except Exception as e:
-            error_msg = f"处理策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})数据时出错: {e}"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
+                position_stocks = result.get('positionStocks', [])
+                
+                # 检查是否为空数据
+                if not position_stocks:
+                    logger.info(f"策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})当前无持仓数据")
+                    return pd.DataFrame()
+
+                position_stocks_results = []
+                for position_stock_info in position_stocks:
+                    # 数据验证
+                    if not isinstance(position_stock_info, dict):
+                        logger.warning(f"策略{strategy_id}中的持仓数据格式异常: {position_stock_info}")
+                        continue
+                    
+                    stk_code = str(position_stock_info.get('stkCode', '')).split('.')
+                    if stk_code:
+                        stk_code = stk_code[0].zfill(6)
+                    else:
+                        stk_code = ''
+                    
+                    position_stocks_results.append({
+                        '名称': Strategy_id_to_name.get(strategy_id, f'策略{strategy_id}'),
+                        '标的名称': position_stock_info.get('stkName', ''),
+                        '代码': stk_code,
+                        '市场': determine_market(stk_code),
+                        '最新价': round(float(position_stock_info.get('price', 0)), 2),
+                        '新比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
+                        '时间': datetime.datetime.now().strftime('%Y-%m-%d'),
+                        '行业': position_stock_info.get('industry', ''),
+                    })
+
+                position_stocks_df = pd.DataFrame(position_stocks_results)
+                logger.debug(f"成功获取策略{strategy_id}的持仓数据，共{len(position_stocks_df)}条")
+                return position_stocks_df
+                
+            except requests.exceptions.Timeout:
+                error_msg = f"请求策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})数据超时 (尝试 {attempt + 1}/{max_retries})"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+                
+            except requests.RequestException as e:
+                error_msg = f"请求失败 (Strategy ID: {strategy_id}, 尝试 {attempt + 1}/{max_retries}): {e}"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+                
+            except Exception as e:
+                error_msg = f"处理策略{strategy_id}({Strategy_id_to_name.get(strategy_id, '未知策略')})数据时出错 (尝试 {attempt + 1}/{max_retries}): {e}"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+
+        return pd.DataFrame()
 
     def save_all_strategy_holding_data(self):
         """
@@ -83,10 +125,11 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
         for id in Strategy_ids:
             positions_df = self.get_latest_position(id)
             # 只保留沪深A股的
-            positions_df = positions_df[positions_df['市场'] == '沪深A股']
-            # 按价格从低到高排序
-            positions_df = positions_df.sort_values('最新价', ascending=True)
-            logger.info(f"{id}持仓数据:{len(positions_df)}\n{positions_df} ")
+            if not positions_df.empty and '市场' in positions_df.columns:
+                positions_df = positions_df[positions_df['市场'] == '沪深A股']
+                # 按价格从低到高排序
+                positions_df = positions_df.sort_values('最新价', ascending=True)
+                logger.info(f"{id}持仓数据:{len(positions_df)}\n{positions_df} ")
             if positions_df is not None and not positions_df.empty:
                 all_holdings.append(positions_df)
                 success_count += 1
@@ -200,9 +243,10 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             for id in Strategy_ids:
                 positions_df = self.get_latest_position(id)
                 # 只保留沪深A股的
-                positions_df = positions_df[positions_df['市场'] == '沪深A股']
-                # 按价格从低到高排序
-                positions_df = positions_df.sort_values('最新价', ascending=True)
+                if not positions_df.empty and '市场' in positions_df.columns:
+                    positions_df = positions_df[positions_df['市场'] == '沪深A股']
+                    # 按价格从低到高排序
+                    positions_df = positions_df.sort_values('最新价', ascending=True)
                 if positions_df is not None and not positions_df.empty:
                     all_holdings.append(positions_df)
                     success_count += 1

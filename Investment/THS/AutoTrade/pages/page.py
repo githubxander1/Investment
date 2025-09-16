@@ -75,7 +75,10 @@ class THSPage:
         trade_entry = self.d(resourceId='com.hexin.plat.android:id/title', text='交易')
         if trade_entry.exists:
             trade_entry.click()
-            logger.info("点击交易按钮(外)")
+            # 断言selected为 true
+            if not trade_entry.info.get('selected', False):
+                trade_entry.click()
+                logger.info("点击交易按钮(外)")
             return True
         else:
             logger.warning("交易按钮(外)未找到")
@@ -85,7 +88,10 @@ class THSPage:
         operate_entry = self.d(resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓')
         if operate_entry.exists:
             operate_entry.click()
-            logger.info("点击持仓按钮(外)")
+            # 确保状态已切换为选中，如果不是选中状态，则点击
+            if not operate_entry.info.get('selected', False):
+                operate_entry.click()
+                logger.info("点击持仓按钮(外)")
             return True
         else:
             logger.warning("持仓按钮(外)未找到")
@@ -97,6 +103,9 @@ class THSPage:
             buy_entry = self.d(resourceId='com.hexin.plat.android:id/menu_buy_text')
             if buy_entry.exists:
                 buy_entry.click()
+                # 确保状态已切换为选中，如果不是选中状态，则点击
+                if not buy_entry.info.get('selected', False):
+                    buy_entry.click()
                 logger.info("点击买入按钮(外)")
                 return True
             else:
@@ -106,7 +115,10 @@ class THSPage:
             sale_entry = self.d(resourceId='com.hexin.plat.android:id/menu_sale_text')
             if sale_entry.exists:
                 sale_entry.click()
-                logger.info("点击卖出按钮(外)")
+                # 确保状态已切换为选中，如果不是选中状态，则点击
+                if not sale_entry.info.get('selected', False):
+                    sale_entry.click()
+                    logger.info("点击卖出按钮(外)")
                 return True
             else:
                 logger.warning("卖出按钮(外)未找到")
@@ -123,29 +135,14 @@ class THSPage:
             # 获取按钮的selected属性
             selected = holding_button.info.get('selected', False)
             if not selected:
-                # 点击前检查元素是否可见和可点击
-                if holding_button.info.get('visible', False) and holding_button.info.get('clickable', False):
-                    holding_button.click()
-                    logger.info("点击持仓按钮(里)")
-                    # 增加点击后的状态判断，检查selected属性
-                    time.sleep(0.5)  # 等待点击效果
-                    # 再次检查是否选中
-                    new_selected = holding_button.info.get('selected', False)
-                    if not new_selected:
-                        logger.warning("持仓按钮(里)点击后仍未选中")
-                else:
-                    logger.warning("持仓按钮(里)不可点击或不可见")
+                holding_button.click()
+                logger.info("点击持仓按钮(里)")
             else:
                 logger.info("持仓按钮(里)已处于选中状态")
         else:
             # 如果无法确定状态，直接点击
-            if holding_button.info.get('visible', False) and holding_button.info.get('clickable', False):
-                holding_button.click()
-                logger.info("点击持仓按钮(里)")
-                # 增加点击后的状态判断
-                time.sleep(0.5)  # 等待点击效果
-            else:
-                logger.warning("持仓按钮(里)不可点击或不可见")
+            holding_button.click()
+            logger.info("点击持仓按钮(里)")
 
 
     def click_operate_button(self,operation):
@@ -156,18 +153,8 @@ class THSPage:
             if buy_button.exists:
                 selected = buy_button.info.get('selected', False)
                 if not selected:
-                    # 点击前检查元素是否可见和可点击
-                    if buy_button.info.get('visible', False) and buy_button.info.get('clickable', False):
-                        buy_button.click()
-                        logger.info("点击买入按钮(里)")
-                        # 增加点击后的状态判断，检查selected属性
-                        time.sleep(0.5)  # 等待点击效果
-                        # 再次检查是否选中
-                        new_selected = buy_button.info.get('selected', False)
-                        if not new_selected:
-                            logger.warning("买入按钮(里)点击后仍未选中")
-                    else:
-                        logger.warning("买入按钮(里)不可点击或不可见")
+                    buy_button.click()
+                    logger.info("点击买入按钮(里)")
                 else:
                     logger.info("买入按钮(里)已处于选中状态")
                 return True
@@ -180,18 +167,8 @@ class THSPage:
             if sale_button.exists:
                 selected = sale_button.info.get('selected', False)
                 if not selected:
-                    # 点击前检查元素是否可见和可点击
-                    if sale_button.info.get('visible', False) and sale_button.info.get('clickable', False):
-                        sale_button.click()
-                        logger.info("点击卖出按钮(里)")
-                        # 增加点击后的状态判断，检查selected属性
-                        time.sleep(0.5)  # 等待点击效果
-                        # 再次检查是否选中
-                        new_selected = sale_button.info.get('selected', False)
-                        if not new_selected:
-                            logger.warning("卖出按钮(里)点击后仍未选中")
-                    else:
-                        logger.warning("卖出按钮(里)不可点击或不可见")
+                    sale_button.click()
+                    logger.info("点击卖出按钮(里)")
                 else:
                     logger.info("卖出按钮(里)已处于选中状态")
                 return True
@@ -652,7 +629,7 @@ if __name__ == '__main__':
 
     # d.screenshot("screenshot1.png")
     ths = THSPage(d)
-    # ths.click_holding_stock_button()
+    # ths.click_trade_entry()
     # pom.guozhai_operation()
     # if ths.operate_stock('卖出', '东方创业'):
     #     # ths.trade_button_entry.click()

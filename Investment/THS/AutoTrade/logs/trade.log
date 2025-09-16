@@ -2672,3 +2672,88 @@ Traceback (most recent call last):
   File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
     raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
 uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[32m2025-09-16 09:33:45 - INFO - 全部卖出[0m
+[31m2025-09-16 09:34:06 - ERROR - 卖出 大龙地产 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 221, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[32m2025-09-16 09:34:33 - INFO - 全部卖出[0m
+[31m2025-09-16 09:34:54 - ERROR - 卖出 居然智家 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 221, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[32m2025-09-16 09:35:22 - INFO - 全部卖出[0m
+[32m2025-09-16 09:35:41 - INFO - 卖出 烟台亚通精工机械 100股 False 委托已提交，合同号为：14169[0m
+[31m2025-09-16 09:36:05 - ERROR - 庄园牧场 没有持仓[0m
+[32m2025-09-16 09:36:33 - INFO - 全部卖出[0m
+[32m2025-09-16 09:36:46 - INFO - 卖出 醋化股份 100股 False 委托已提交，合同号为：15263[0m
+[32m2025-09-16 09:37:16 - INFO - 全部卖出[0m
+[32m2025-09-16 09:37:33 - INFO - 卖出 雪祺电气 100股 False 委托已提交，合同号为：15985[0m
+[32m2025-09-16 09:38:01 - INFO - 全部卖出[0m
+[32m2025-09-16 09:38:21 - INFO - 卖出 黄山胶囊 100股 False 委托已提交，合同号为：16679[0m
+[32m2025-09-16 09:45:40 - INFO - 全部卖出[0m
+[31m2025-09-16 09:46:01 - ERROR - 卖出 福莱新材 100 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 221, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[33m2025-09-16 10:25:19 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-16 10:25:19 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-16 11:50:34 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-16 11:50:39 - INFO - 买入 超讯通讯 100股 False [260200][可用资金不足][fund_account=8526331,money_type=0,p_occur_balance=3997.54,v_enable_balance_t=3637.07] 报错：可用资金不足，请检查委托数量是否超限，也可点击转入资金可前往银证转帐。[0m
+[31m2025-09-16 11:51:24 - ERROR - 超讯通讯 没有持仓[0m
+[31m2025-09-16 11:52:20 - ERROR - 超讯通信 没有持仓[0m
+[32m2025-09-16 11:53:00 - INFO - 使用固定股数: 100[0m
+[31m2025-09-16 11:53:00 - ERROR - 买出 超讯通信 100 股失败: 未知操作[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 175, in operate_stock
+    self.ths_page.click_operate_button(operation)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 179, in click_operate_button
+    raise ValueError("未知操作")
+ValueError: 未知操作
+[32m2025-09-16 11:54:01 - INFO - 使用固定股数: 100[0m
+[32m2025-09-16 11:54:12 - INFO - 卖出 超讯通信 100股 False [251005][证券可用数量不足][p_stock_code=603322,p_occur_amount=100,p_enable_amount=0,p_entrust_prop=0,p_entrust_type=0,p_exchange_type=1,p_stock_account=A306221253][0m
+[33m2025-09-16 13:47:14 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-16 13:47:14 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-16 13:47:26 - INFO - 全部卖出[0m
+[32m2025-09-16 13:47:38 - INFO - 卖出 美的集团 100股 False 委托已提交，合同号为：468330[0m
+[32m2025-09-16 13:47:54 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-16 13:47:59 - INFO - 买入 大业股份 100股 False 委托已提交，合同号为：468747[0m
+[32m2025-09-16 13:48:19 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-16 13:48:24 - INFO - 买入 领益智造 100股 False 委托已提交，合同号为：469266[0m
+[33m2025-09-16 18:12:40 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-16 18:12:40 - ERROR - 卖出数量计算失败[0m
+[33m2025-09-16 18:12:52 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-16 18:12:52 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-16 18:13:08 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-16 18:13:12 - INFO - 买入 英联股份 100股 False 委托已提交，合同号为：630[0m

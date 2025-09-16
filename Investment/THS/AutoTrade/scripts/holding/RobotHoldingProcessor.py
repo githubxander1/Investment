@@ -54,7 +54,8 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
                     # 使用stock_zh_a_spot获取所有股票信息
                     all_stocks_df = ak.stock_zh_a_spot()
                     #增加一列'市场'
-                    all_stocks_df['市场'] = all_stocks_df['代码'].apply(lambda x: determine_market(x))
+                    if not all_stocks_df.empty and '代码' in all_stocks_df.columns:
+                        all_stocks_df['市场'] = all_stocks_df['代码'].apply(lambda x: determine_market(x))
 
                     # 保存到Excel文件供以后使用
                     all_stocks_df.to_excel(ALL_STOCKS_FILE, index=False)
@@ -77,7 +78,7 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
         """根据股票代码获取股票名称"""
         global all_stocks_df
 
-        if all_stocks_df is None:
+        if all_stocks_df is None or all_stocks_df.empty:
             return f"未知股票({code})"
 
         # 查找匹配的股票代码
@@ -101,65 +102,122 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
         headers = {"Authorization": f"Bearer {token}"}
         params = {"id": robot_id}
 
-        try:
-            response = requests.get(url, headers=headers, params=params, timeout=10)
-            response.raise_for_status()
-            data = response.json()
+        # 实现重试机制和超时处理
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(url, headers=headers, params=params, timeout=10)
+                response.raise_for_status()
+                data = response.json()
 
-            if data.get("code") != 0:
-                error_msg = f"获取机器人{id}数据失败: {data.get('message', '未知错误')}"
-                logger.error(error_msg)
-                send_notification(error_msg)
-                return pd.DataFrame()
+                if not isinstance(data, dict) or data.get("code") != 0:
+                    error_msg = f"获取机器人{robot_id}数据失败: {data.get('message', '未知错误')} (尝试 {attempt + 1}/{max_retries})"
+                    logger.warning(error_msg)
+                    if attempt == max_retries - 1:
+                        logger.error(error_msg)
+                        send_notification(error_msg)
+                        return pd.DataFrame()
+                    time.sleep(2 ** attempt)  # 指数退避
+                    continue
 
-            result = data.get("result", {})
-            positions = result.get("positions", [])
+                result = data.get("result", {})
+                if not isinstance(result, dict) or "positions" not in result:
+                    error_msg = f"机器人{robot_id}返回数据格式异常 (尝试 {attempt + 1}/{max_retries})"
+                    logger.warning(error_msg)
+                    if attempt == max_retries - 1:
+                        logger.error(error_msg)
+                        send_notification(error_msg)
+                        return pd.DataFrame()
+                    time.sleep(2 ** attempt)  # 指数退避
+                    continue
 
-            robot_data = []
-            for position in positions:
-                code = str(position.get("code", "")).zfill(6)
-                robot_data.append({
-                    "名称": result.get("name", f"机器人{robot_id}"),
-                    "标的名称": self.get_stock_name_by_code(code),
-                    "代码": code,
-                    "最新价": position.get("price"),
-                    "新比例%": position.get("ratio", 0) * 100,
-                    "市场": determine_market(code),
-                    "成本价": position.get("costPrice", 0),
-                    "收益率(%)": position.get("incomeRate", 0) * 100,
-                    "盈亏比例(%)": position.get("profitLossRatio", 0) * 100,
-                    "时间": datetime.now().strftime('%Y-%m-%d')
-                })
+                positions = result.get("positions", [])
+                if not isinstance(positions, list):
+                    error_msg = f"机器人{robot_id}的持仓数据格式异常 (尝试 {attempt + 1}/{max_retries})"
+                    logger.warning(error_msg)
+                    if attempt == max_retries - 1:
+                        logger.error(error_msg)
+                        send_notification(error_msg)
+                        return pd.DataFrame()
+                    time.sleep(2 ** attempt)  # 指数退避
+                    continue
 
-            return pd.DataFrame(robot_data)
+                robot_data = []
+                for position in positions:
+                    if not isinstance(position, dict):
+                        logger.warning(f"机器人{robot_id}中的持仓数据格式异常: {position}")
+                        continue
+                        
+                    code = str(position.get("code", "")).zfill(6)
+                    robot_data.append({
+                        "名称": result.get("name", f"机器人{robot_id}"),
+                        "标的名称": self.get_stock_name_by_code(code),
+                        "代码": code,
+                        "最新价": position.get("price", 0),
+                        "新比例%": position.get("ratio", 0) * 100,
+                        "市场": determine_market(code),
+                        "成本价": position.get("costPrice", 0),
+                        "收益率(%)": position.get("incomeRate", 0) * 100,
+                        "盈亏比例(%)": position.get("profitLossRatio", 0) * 100,
+                        "时间": datetime.now().strftime('%Y-%m-%d')
+                    })
 
-        except requests.exceptions.Timeout:
-            error_msg = f"请求机器人{id}数据超时"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
-        except requests.RequestException as e:
-            error_msg = f"请求机器人{id}数据失败: {e}"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
-        except Exception as e:
-            error_msg = f"处理机器人{id}数据时出错: {e}"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
+                result_df = pd.DataFrame(robot_data)
+                logger.debug(f"成功获取机器人{robot_id}的持仓数据，共{len(result_df)}条")
+                return result_df
+
+            except requests.exceptions.Timeout:
+                error_msg = f"请求机器人{robot_id}数据超时 (尝试 {attempt + 1}/{max_retries})"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+                
+            except requests.RequestException as e:
+                error_msg = f"请求机器人{robot_id}数据失败 (尝试 {attempt + 1}/{max_retries}): {e}"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+                
+            except Exception as e:
+                error_msg = f"处理机器人{robot_id}数据时出错 (尝试 {attempt + 1}/{max_retries}): {e}"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+
+        return pd.DataFrame()
 
     def extract_robot_data(self, response_data):
         """提取机器人持仓数据并转换为统一格式"""
-        if not response_data or 'data' not in response_data:
+        if not response_data or not isinstance(response_data, dict) or 'data' not in response_data:
             logger.error("无效的响应数据")
-            return pd.DataFrame()
+            return pd.DataFrame(), pd.DataFrame()
 
         data = response_data['data']
+        if not isinstance(data, dict):
+            logger.error("响应数据中的data字段格式异常")
+            return pd.DataFrame(), pd.DataFrame()
 
         # 提取持仓股票信息
         positions_data = []
-        for log in data.get('logs', []):
+        logs = data.get('logs', [])
+        if not isinstance(logs, list):
+            logger.error("响应数据中的logs字段格式异常")
+            logs = []
+            
+        for log in logs:
+            if not isinstance(log, dict):
+                logger.warning(f"日志数据格式异常: {log}")
+                continue
+                
             symbol = log.get('symbol', '')
             symbol_name = log.get('symbolName', None)
 
@@ -378,9 +436,11 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
         for name, id in robots.items():
             positions_df = self.fetch_robot_data(id)
             # 只保留沪深A股的
-            positions_df = positions_df[positions_df['市场'] == '沪深A股']
-            # 按价格从低到高排序
-            positions_df = positions_df.sort_values('最新价', ascending=True)
+            if not positions_df.empty and '市场' in positions_df.columns:
+                positions_df = positions_df[positions_df['市场'] == '沪深A股']
+                # 按价格从低到高排序
+                if '最新价' in positions_df.columns:
+                    positions_df = positions_df.sort_values('最新价', ascending=True)
             
             if positions_df is not None and not positions_df.empty:
                 logger.info(f"📊 机器人{id}({name})持仓数据:{len(positions_df)}条")

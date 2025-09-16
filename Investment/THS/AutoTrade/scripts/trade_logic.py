@@ -225,5 +225,5 @@ class TradeLogic:
 
 if __name__ == '__main__':
     trader = TradeLogic()
-    trader.operate_stock('买入', '超讯通讯', 100)
+    trader.operate_stock('卖出', '超讯通信', 100)
     # trader.operate_stock('买入', '中国电信', 100)

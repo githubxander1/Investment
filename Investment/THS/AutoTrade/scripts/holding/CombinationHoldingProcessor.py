@@ -27,59 +27,84 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         url = f"https://t.10jqka.com.cn/portfolio/relocate/user/getPortfolioHoldingData?id={portfolio_id}"
         headers = Combination_headers
 
-        try:
-            response = requests.get(url, headers=headers, timeout=10)  # 增加超时设置
-            response.raise_for_status()
+        # 实现重试机制和超时处理
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(url, headers=headers, timeout=10)  # 增加超时设置
+                response.raise_for_status()
 
-            data = response.json()
-            # pprint(data)
-            
-            # 检查返回数据是否有效
-            if "result" not in data or "positions" not in data["result"]:
-                logger.warning(f"组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})返回数据格式异常")
-                return pd.DataFrame()
+                data = response.json()
+                # pprint(data)
+                
+                # 检查返回数据是否有效
+                if not isinstance(data, dict) or "result" not in data or "positions" not in data["result"]:
+                    logger.warning(f"组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})返回数据格式异常: {data}")
+                    if attempt == max_retries - 1:
+                        return pd.DataFrame()
+                    continue
 
-            positions = data["result"]["positions"]
-            
-            # 检查是否有持仓数据
-            if not positions:
-                logger.info(f"组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})当前无持仓")
-                return pd.DataFrame()
+                positions = data["result"]["positions"]
+                
+                # 检查是否有持仓数据
+                if not positions:
+                    logger.info(f"组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})当前无持仓")
+                    return pd.DataFrame()
 
-            holding_data = []
-            for position in positions:
-                code = str(position.get("code", "")).zfill(6)
-                holding_data.append({
-                    "名称": id_to_name.get(portfolio_id, f'组合{portfolio_id}'),
-                    # "操作": '买入',
-                    "标的名称": position.get("name", ""),
-                    "代码": code,
-                    "最新价": position["price"],
-                    "新比例%": position.get("positionRealRatio", 0) * 100,
-                    "市场": determine_market(code),
-                    "成本价": position["costPrice"],
-                    "收益率(%)": position.get("incomeRate", 0) * 100,
-                    "盈亏比例(%)": position.get("profitLossRate", 0) * 100,
-                    "时间": datetime.datetime.now().strftime('%Y-%m-%d')
-                })
+                holding_data = []
+                for position in positions:
+                    # 数据验证
+                    if not isinstance(position, dict):
+                        logger.warning(f"组合{portfolio_id}中的持仓数据格式异常: {position}")
+                        continue
+                        
+                    code = str(position.get("code", "")).zfill(6)
+                    holding_data.append({
+                        "名称": id_to_name.get(portfolio_id, f'组合{portfolio_id}'),
+                        # "操作": '买入',
+                        "标的名称": position.get("name", ""),
+                        "代码": code,
+                        "最新价": position.get("price", 0),
+                        "新比例%": position.get("positionRealRatio", 0) * 100,
+                        "市场": determine_market(code),
+                        "成本价": position.get("costPrice", 0),
+                        "收益率(%)": position.get("incomeRate", 0) * 100,
+                        "盈亏比例(%)": position.get("profitLossRate", 0) * 100,
+                        "时间": datetime.datetime.now().strftime('%Y-%m-%d')
+                    })
 
-            return pd.DataFrame(holding_data)
+                result_df = pd.DataFrame(holding_data)
+                logger.debug(f"成功获取组合{portfolio_id}的持仓数据，共{len(result_df)}条")
+                return result_df
 
-        except requests.exceptions.Timeout:
-            error_msg = f"请求组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据超时"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
-        except requests.exceptions.RequestException as e:
-            error_msg = f"请求组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据失败: {e}"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
-        except Exception as e:
-            error_msg = f"处理组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据时出错: {e}"
-            logger.error(error_msg)
-            send_notification(error_msg)
-            return pd.DataFrame()
+            except requests.exceptions.Timeout:
+                error_msg = f"请求组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据超时 (尝试 {attempt + 1}/{max_retries})"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+                
+            except requests.exceptions.RequestException as e:
+                error_msg = f"请求组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据失败 (尝试 {attempt + 1}/{max_retries}): {e}"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+                
+            except Exception as e:
+                error_msg = f"处理组合{portfolio_id}({id_to_name.get(str(portfolio_id), '未知组合')})持仓数据时出错 (尝试 {attempt + 1}/{max_retries}): {e}"
+                logger.warning(error_msg)
+                if attempt == max_retries - 1:
+                    logger.error(error_msg)
+                    send_notification(error_msg)
+                    return pd.DataFrame()
+                time.sleep(2 ** attempt)  # 指数退避
+
+        return pd.DataFrame()
 
     # 获取所有组合的当前持仓数据
     def get_all_combination_current_holdings(self):
@@ -97,9 +122,11 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         for id in all_ids:
             positions_df = self.get_single_holding_data(id)
             # # 只保留沪深A股的
-            # positions_df = positions_df[positions_df['市场'] == '沪深A股']
+            # if not positions_df.empty and '市场' in positions_df.columns:
+            #     positions_df = positions_df[positions_df['市场'] == '沪深A股']
             # # 按价格从低到高排序
-            # positions_df = positions_df.sort_values('最新价', ascending=True)
+            # if not positions_df.empty and '最新价' in positions_df.columns:
+            #     positions_df = positions_df.sort_values('最新价', ascending=True)
             
             if positions_df is not None and not positions_df.empty:
                 logger.debug(f"📊 组合{id}({id_to_name.get(str(id), '未知组合')})持仓数据:{len(positions_df)}条\n{positions_df}")
@@ -118,9 +145,11 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         
         all_holdings_df = pd.concat(all_holdings, ignore_index=True)
         # 只保留沪深A股的
-        all_holdings_df = all_holdings_df[all_holdings_df['市场'] == '沪深A股']
-        # 按价格从低到高排序
-        all_holdings_df = all_holdings_df.sort_values('最新价', ascending=True)
+        if not all_holdings_df.empty and '市场' in all_holdings_df.columns:
+            all_holdings_df = all_holdings_df[all_holdings_df['市场'] == '沪深A股']
+            # 按价格从低到高排序
+            if '最新价' in all_holdings_df.columns:
+                all_holdings_df = all_holdings_df.sort_values('最新价', ascending=True)
         logger.info(f"📈 结束：获取所有组合当前持仓数据 总计获取到 {len(all_holdings_df)} 条持仓记录（限沪深）")
         logger.info("-" * 50)
         return all_holdings_df
