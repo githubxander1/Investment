@@ -569,6 +569,13 @@ def get_difference_holding():
         # 需要排除的标的名称
         excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
 
+        # 标准化股票名称
+        from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
+        if not account_df.empty:
+            account_df = standardize_dataframe_stock_names(account_df)
+        if not combined_holdings.empty:
+            combined_holdings = standardize_dataframe_stock_names(combined_holdings)
+
         # 1. 找出需要卖出的标的（在账户中存在，但不在策略/组合中，且不在排除列表中）
         if not account_df.empty and not combined_holdings.empty:
             to_sell_candidates = account_df[~account_df['标的名称'].isin(combined_holdings['标的名称'])]
@@ -577,8 +584,9 @@ def get_difference_holding():
             to_sell = pd.DataFrame(columns=account_df.columns) if not account_df.empty else pd.DataFrame()
 
         if not to_sell.empty:
-            logger.warning("⚠️ 发现需卖出的标的:")
-            logger.info(f"\n{to_sell[['标的名称']] if '标的名称' in to_sell.columns else to_sell}")
+            logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
+            # 打印具体需要卖出的股票
+            logger.info(f"具体需卖出的标的:\n{to_sell[['标的名称']].to_string(index=False)}")
         else:
             logger.info("✅ 当前无需卖出的标的")
 
@@ -593,8 +601,9 @@ def get_difference_holding():
             to_buy = pd.DataFrame(columns=['标的名称'])
 
         if not to_buy.empty:
-            logger.warning("⚠️ 发现需买入的标的:")
-            logger.info(f"\n{to_buy[['标的名称']] if '标的名称' in to_buy.columns else to_buy}")
+            logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
+            # 打印具体需要买入的股票
+            logger.info(f"具体需买入的标的:\n{to_buy[['标的名称']].to_string(index=False)}")
         else:
             logger.info("✅ 当前无需买入的标的")
 

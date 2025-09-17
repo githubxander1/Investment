@@ -145,7 +145,12 @@ def extract_robot_data(response_data):
 
     # 提取持仓股票信息
     positions_data = []
-    for log in data.get('logs', []):
+    logs = data.get('logs', [])
+    
+    # 先计算总持仓量，用于计算比例
+    total_shares = sum([log.get('shares', 0) for log in logs])
+    
+    for log in logs:
         symbol = log.get('symbol', '')
         symbol_name = log.get('symbolName', None)
 
@@ -158,6 +163,10 @@ def extract_robot_data(response_data):
             stock_name = get_stock_name_by_code(code)
 
         market = determine_market(symbol)
+        
+        # 计算新比例%
+        shares = log.get('shares', 0)
+        new_ratio = (shares / total_shares * 100) if total_shares > 0 else 0
 
         # 计算持仓比例（市值/总市值）
         # market_value = log.get('marketValue', 0)
@@ -170,7 +179,8 @@ def extract_robot_data(response_data):
             "市场": market,
             "最新价": log.get('price', ''),
             "成本价": log.get('basePrice', ''),
-            "持仓量": log.get('shares', ''),
+            "持仓量": shares,
+            "新比例%": round(new_ratio, 2),  # 添加新比例%字段
             "市值": log.get('marketValue', ''),
             "今日盈亏": log.get('todayGains', ''),
             "累计盈亏": log.get('totalGains', ''),
@@ -196,46 +206,53 @@ def main():
     #     "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
     # }
 
-    # 收集所有机器人的持仓数据
-    all_positons = []
+    # 收集所有机器人的组合信息和持仓数据
+    all_combos = []
+    all_positions = []
+
+    # 遍历所有机器人
+    for robot_name, robot_id in robots.items():
+        print(f"正在获取 {robot_name} 的数据...")
+
+        # 获取机器人数据
+        response_data = fetch_robot_data(robot_id)
+
+        if response_data and response_data.get("message", {}).get("state") == 0:
+            # 提取数据
+            combo_df, stocks_df = extract_robot_data(response_data)
+            
+            # 为组合信息添加机器人名称列
+            if not combo_df.empty:
+                combo_df['机器人名称'] = robot_name
+                all_combos.append(combo_df)
+                print(f"已获取 {robot_name} 的组合信息")
+            
+            # 为持仓信息添加机器人名称列
+            if not stocks_df.empty:
+                stocks_df['机器人名称'] = robot_name
+                all_positions.append(stocks_df)
+                print(f"已获取 {robot_name} 的持仓信息")
+        else:
+            print(f"获取 {robot_name} 数据失败")
 
     # 创建一个Excel写入器
     with pd.ExcelWriter(Robot_holding_file, engine='openpyxl') as writer:
-        # 遍历所有机器人
-        for robot_name, robot_id in robots.items():
-            print(f"正在获取 {robot_name} 的数据...")
+        # 合并所有组合信息并保存
+        if all_combos:
+            all_combos_df = pd.concat(all_combos, ignore_index=True)
+            all_combos_df.to_excel(writer, sheet_name="所有机器人组合信息", index=False)
+            print("已保存所有机器人的组合信息到工作表 '所有机器人组合信息'")
+        else:
+            print("没有获取到任何机器人的组合信息")
 
-            # 获取机器人数据
-            response_data = fetch_robot_data(robot_id)
+        # 合并所有持仓信息并保存
+        if all_positions:
+            all_positions_df = pd.concat(all_positions, ignore_index=True)
+            all_positions_df.to_excel(writer, sheet_name="所有机器人持仓信息", index=False)
+            print("已保存所有机器人的持仓信息到工作表 '所有机器人持仓信息'")
+        else:
+            print("没有获取到任何机器人的持仓信息")
 
-            if response_data and response_data.get("message", {}).get("state") == 0:
-                # 提取数据
-                combo_df, stocks_df = extract_robot_data(response_data)
-
-                # 以机器人的名称作为工作表名保存数据
-                # 确保工作表名称不超过31个字符
-                combo_sheet_name = f"{robot_name}_组合信息"[:31]
-                stocks_sheet_name = f"{robot_name}_持仓信息"[:31]
-
-                # 保存到Excel的不同工作表
-                if not combo_df.empty:
-                    combo_df.to_excel(writer, sheet_name=combo_sheet_name, index=False)
-                    print(f"已保存 {robot_name} 的组合信息到工作表 {combo_sheet_name}")
-
-                if not stocks_df.empty:
-                    all_positons.append(stocks_df)
-                    stocks_df.to_excel(writer, sheet_name=stocks_sheet_name, index=False)
-                    print(f"已保存 {robot_name} 的持仓信息到工作表 {stocks_sheet_name}")
-            else:
-                print(f"获取 {robot_name} 数据失败")
-
-    if all_positons:
-        # 合并所有持仓数据
-        all_positions_df = pd.concat(all_positons, ignore_index=True)
-        print(all_positions_df)
-        # 保存合并后的数据到Excel
-        all_positions_df.to_excel(writer, sheet_name="所有机器人持仓信息", index=False)
-        print("已保存所有机器人的持仓信息到工作表 '所有机器人持仓信息'")
     print(f"所有机器人的数据已保存到 '{Robot_holding_file}' 文件中")
 
 # 运行主函数

@@ -1,6 +1,7 @@
 import os
 import datetime
 import traceback
+import time  # 添加time模块导入
 from pprint import pprint
 
 import fake_useragent
@@ -8,7 +9,7 @@ import pandas as pd
 import requests
 
 from Investment.THS.AutoTrade.config.settings import (
-    Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file,
+    Strategy_id_to_name, Strategy_ids, Strategy_holding_file,
     Strategy_portfolio_today_file, OPERATION_HISTORY_FILE, Account_holding_file
 )
 from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
@@ -111,9 +112,11 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
 
         return pd.DataFrame()
 
-    def save_all_strategy_holding_data(self):
+    def save_all_strategy_holding_data(self, account_name):
         """
-        获取所有策略的持仓数据，并保存到 Excel 文件中，当天数据保存在第一个sheet
+        1.获取所有策略的持仓数据，
+        2.并保存到 Excel 文件中，当天数据保存在第一个sheet
+        3.返回当天的数据
         """
         logger.info("📂 开始获取并保存所有策略持仓数据")
         
@@ -124,15 +127,15 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
         
         for id in Strategy_ids:
             positions_df = self.get_latest_position(id)
-            # 只保留沪深A股的
-            if not positions_df.empty and '市场' in positions_df.columns:
-                positions_df = positions_df[positions_df['市场'] == '沪深A股']
-                # 按价格从低到高排序
-                positions_df = positions_df.sort_values('最新价', ascending=True)
-                logger.info(f"{id}持仓数据:{len(positions_df)}\n{positions_df} ")
+            has_data = not positions_df.empty  # 记录是否获取到原始数据
+
             if positions_df is not None and not positions_df.empty:
                 all_holdings.append(positions_df)
                 success_count += 1
+            elif has_data:
+                # 获取到了数据但经过过滤后为空，也算成功获取
+                success_count += 1
+                logger.info(f"获取到策略数据但经过过滤后为空，策略ID: {id}")
             else:
                 logger.info(f"没有获取到策略数据，策略ID: {id}")
 
@@ -146,12 +149,23 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             logger.warning(f"⚠️ 部分策略数据获取失败: {success_count}/{total_count}")
             send_notification(f"⚠️ 策略数据获取异常: {success_count}/{total_count} 个策略数据获取成功")
 
-        today = str(datetime.date.today())
-        all_holdings_df = pd.concat(all_holdings, ignore_index=False)
-        # 从1开始计数
-        all_holdings_df.index = all_holdings_df.index + 1
 
-        file_path = Ai_Strategy_holding_file
+        # 汇总所有数据
+        all_holdings_df = pd.concat(all_holdings, ignore_index=False)
+        # 从1开始计数，只保留沪深A股的, 按价格从低到高排序
+        all_holdings_df = all_holdings_df[all_holdings_df['市场'] == '沪深A股']
+        all_holdings_df.sort_values('最新价', ascending=True)
+        all_holdings_df.index = all_holdings_df.index + 1
+        # 添加一列账户名
+        all_holdings_df['账户名'] = account_name
+
+        today = str(datetime.date.today())
+        # 提取出今天的数据df，时间列=今天
+        today_holdings_df = all_holdings_df[all_holdings_df['时间'] == today]
+
+
+        file_path = Strategy_holding_file
+
 
         # 创建一个字典来存储所有工作表数据
         all_sheets_data = {}
@@ -176,11 +190,11 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
             with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
                 for sheet_name, df in all_sheets_data.items():
-                    logger.info(f"正在保存工作表: {sheet_name}")
+                    # logger.info(f"正在保存工作表: {sheet_name}")
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
 
             logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")
-            return True
+            return True, today_holdings_df
 
         except Exception as e:
             logger.error(f"❌ 保存持仓数据失败: {e}")
@@ -189,7 +203,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
                     all_holdings_df.to_excel(writer, sheet_name=today, index=False)
                 logger.info(f"✅ 文件保存完成，sheet: {today}")
-                return True
+                return True, today_holdings_df
             except Exception as e2:
                 logger.error(f"❌ 保存今日数据也失败了: {e2}")
                 send_notification(f"❌ 策略持仓数据保存失败: {e2}")
@@ -201,19 +215,45 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             logger.info("🔄 开始执行AI策略调仓操作")
             
             # 保存最新持仓数据
-            save_result = self.save_all_strategy_holding_data()
+            save_result, today_holdings_df = self.save_all_strategy_holding_data()
             if not save_result:
                 error_msg = "❌ AI策略持仓数据保存失败，跳过调仓操作"
                 logger.error(error_msg)
                 send_notification(error_msg)
                 return False
 
-            # 执行调仓操作
-            success = self.operate_result(
-                holding_file=Ai_Strategy_holding_file,
-                portfolio_today_file=Strategy_portfolio_today_file,
-                account_name="川财证券"
-            )
+            # 按策略分组执行
+            success = True
+            
+            # 处理GPT定期精选策略（使用长城证券账户）
+            gpt_data = today_holdings_df[today_holdings_df['名称'] == 'GPT定期精选']
+            if not gpt_data.empty:
+                logger.info("🔄 执行GPT定期精选策略（长城证券账户）")
+                # # 特殊处理：清空GPT定期精选的买入信号，只保留卖出操作
+                # gpt_data = pd.DataFrame(columns=gpt_data.columns)
+                gpt_success = self.operate_result(
+                    holding_file=Strategy_holding_file,
+                    portfolio_today_file=Strategy_portfolio_today_file,
+                    account_name="长城证券",
+                    strategy_filter=lambda row: row['名称'] == 'GPT定期精选'
+                )
+                success = success and gpt_success
+            else:
+                logger.info("📋 无GPT定期精选策略数据")
+
+            # 处理AI市场追踪策略（使用川财证券账户）
+            ai_data = today_holdings_df[today_holdings_df['名称'] == 'AI市场追踪策略']
+            if not ai_data.empty:
+                logger.info("🔄 执行AI市场追踪策略（川财证券账户）")
+                ai_success = self.operate_result(
+                    holding_file=Strategy_holding_file,
+                    portfolio_today_file=Strategy_portfolio_today_file,
+                    account_name="川财证券",
+                    strategy_filter=lambda row: row['名称'] == 'AI市场追踪策略'
+                )
+                success = success and ai_success
+            else:
+                logger.info("📋 无AI市场追踪策略数据")
 
             if success:
                 logger.info("✅ AI策略调仓执行完成")
@@ -242,6 +282,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             
             for id in Strategy_ids:
                 positions_df = self.get_latest_position(id)
+                has_data = not positions_df.empty  # 记录是否获取到原始数据
                 # 只保留沪深A股的
                 if not positions_df.empty and '市场' in positions_df.columns:
                     positions_df = positions_df[positions_df['市场'] == '沪深A股']
@@ -250,6 +291,10 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 if positions_df is not None and not positions_df.empty:
                     all_holdings.append(positions_df)
                     success_count += 1
+                elif has_data:
+                    # 获取到了数据但经过过滤后为空，也算成功获取
+                    success_count += 1
+                    logger.info(f"获取到策略数据但经过过滤后为空，策略ID: {id}")
                 else:
                     logger.info(f"没有获取到策略数据，策略ID: {id}")
 
@@ -271,7 +316,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                 return
             
             # 读取历史持仓数据
-            history_file = Ai_Strategy_holding_file
+            history_file = Strategy_holding_file
             try:
                 history_holdings = read_today_portfolio_record(history_file)
                 if history_holdings.empty:
@@ -316,4 +361,4 @@ if __name__ == '__main__':
         logger.error("❌ AI策略调仓执行失败")
     
     # 比较持仓变化
-    processor.compare_holding_changes()
+    # processor.compare_holding_changes()

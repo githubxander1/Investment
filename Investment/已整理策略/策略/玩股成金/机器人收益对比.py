@@ -62,22 +62,29 @@ def extract_robot_base_info(data):
         return None
 
     robot_data = data['data']
+    startFunds = robot_data.get("startFunds")
+    todayTotalRate  = robot_data.get("todayTotalRate")
+    winRate = round(((todayTotalRate - startFunds)/startFunds) * 100, 2)
+    gain = todayTotalRate - startFunds
     return {
         "机器人ID": robot_data.get("robotId"),
         "名称": robot_data.get("name"),
-        "当前可用资金": robot_data.get("funds"),
-        "初始资金": robot_data.get("startFunds"),
-        "止损比例": robot_data.get("stopLost"),
-        "止盈比例": robot_data.get("stopWin"),
-        "创建时间": convert_timestamp(robot_data.get("created")),
-        "收益更新时间": convert_timestamp(robot_data.get("gainDate")),
-        "今日收益率": robot_data.get("todayRate"),
+        "总收益": gain,
+        "总收益率": winRate,
+        "今日收益率": round(robot_data.get("todayRate"),2),
         "总资产": robot_data.get("todayTotalRate"),
-        "卖出收益": robot_data.get("sellGains"),
+        "当前可用资金": robot_data.get("funds"),
         "本月资产": robot_data.get("amountOfMonth"),
         "本年资产": robot_data.get("amountOfYear"),
-        "风险等级": robot_data.get("risk"),
-        "总市值": robot_data.get("marketValue")
+        # "风险等级": robot_data.get("risk"),
+        "初始资金": robot_data.get("startFunds"),
+        "总市值": robot_data.get("marketValue"),
+        "卖出收益": robot_data.get("sellGains"),
+        "止损比例": robot_data.get("stopLost"),
+        "止盈比例": robot_data.get("stopWin"),
+        "收益更新时间": convert_timestamp(robot_data.get("gainDate")),
+        "创建时间": convert_timestamp(robot_data.get("created"))
+
     }
 
 # 保存所有机器人基础信息到 Excel
@@ -94,6 +101,8 @@ def save_all_robots_details_to_excel(robot_ids):
         if base_info:
             df = pd.DataFrame([base_info])
             all_robots_df = pd.concat([all_robots_df, df], ignore_index=True)
+            # 按总收益率降序排序
+            all_robots_df = all_robots_df.sort_values(by='总收益率', ascending=False)
             # sheet_name = f"Robot_{robot_id[-6:]}"  # 避免sheet名过长
 
             # df.to_excel(writer, sheet_name=sheet_name, index=False)

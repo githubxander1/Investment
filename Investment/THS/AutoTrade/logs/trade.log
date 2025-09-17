@@ -2757,3 +2757,83 @@ ValueError: 未知操作
 [31m2025-09-16 18:12:52 - ERROR - 卖出数量计算失败[0m
 [32m2025-09-16 18:13:08 - INFO - 使用固定股数进行买入: 100股[0m
 [32m2025-09-16 18:13:12 - INFO - 买入 英联股份 100股 False 委托已提交，合同号为：630[0m
+[32m2025-09-17 09:33:03 - INFO - 全部卖出[0m
+[32m2025-09-17 09:33:16 - INFO - 卖出 药明康德 100股 False 委托已提交，合同号为：62276[0m
+[32m2025-09-17 09:33:28 - INFO - 全部卖出[0m
+[31m2025-09-17 09:33:28 - ERROR - 卖出 上海电影 100 股失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 177, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\Inverstment\Investment\THS\AutoTrade\pages\page.py", line 198, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/content_stock'},))
+[32m2025-09-17 09:36:36 - INFO - 全部卖出[0m
+[32m2025-09-17 09:37:04 - INFO - 卖出 烟台亚通精工机械 100股 False 委托已提交，合同号为：15260[0m
+[32m2025-09-17 09:37:35 - INFO - 全部卖出[0m
+[32m2025-09-17 09:37:46 - INFO - 卖出 万里股份 100股 False 委托已提交，合同号为：15922[0m
+[32m2025-09-17 09:38:16 - INFO - 全部卖出[0m
+[32m2025-09-17 09:38:27 - INFO - 卖出 农心科技 200股 False 委托已提交，合同号为：16512[0m
+[32m2025-09-17 09:38:57 - INFO - 全部卖出[0m
+[32m2025-09-17 09:39:08 - INFO - 卖出 双箭股份 100股 False 委托已提交，合同号为：17084[0m
+[32m2025-09-17 09:39:37 - INFO - 全部卖出[0m
+[32m2025-09-17 09:39:48 - INFO - 卖出 宁波富邦 100股 False 委托已提交，合同号为：17637[0m
+[32m2025-09-17 09:40:17 - INFO - 全部卖出[0m
+[32m2025-09-17 09:40:28 - INFO - 卖出 彩蝶实业 100股 False 委托已提交，合同号为：18192[0m
+[32m2025-09-17 09:40:58 - INFO - 全部卖出[0m
+[32m2025-09-17 09:41:08 - INFO - 卖出 永东股份 100股 False 委托已提交，合同号为：18708[0m
+[32m2025-09-17 09:41:38 - INFO - 全部卖出[0m
+[32m2025-09-17 09:41:48 - INFO - 卖出 名雕股份 200股 False 委托已提交，合同号为：19200[0m
+[32m2025-09-17 09:42:11 - INFO - 买入 居然智家 1500股 False 委托已提交，合同号为：19475[0m
+[32m2025-09-17 09:42:34 - INFO - 买入 建研院 1000股 False 最新:[0m
+[33m2025-09-17 09:56:17 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-17 09:56:17 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-17 10:04:23 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 10:04:29 - INFO - 买入 美芝股份 100股 False [260200][可用资金不足][fund_account=8526331,money_type=0,p_occur_balance=1075.29,v_enable_balance_t=263.10] 报错：可用资金不足，请检查委托数量是否超限，也可点击转入资金可前往银证转帐。[0m
+[32m2025-09-17 10:06:39 - INFO - 全部卖出[0m
+[32m2025-09-17 10:06:49 - INFO - 卖出 大业股份 100股 False 委托已提交，合同号为：195876[0m
+[32m2025-09-17 10:07:07 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 10:07:11 - INFO - 买入 东信和平 100股 False 委托已提交，合同号为：196867[0m
+[33m2025-09-17 11:35:47 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-17 11:35:47 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-17 13:06:15 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 13:06:21 - INFO - 买入 中兴通讯 100股 False 委托已提交，合同号为：363787[0m
+[33m2025-09-17 14:05:33 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-17 14:05:33 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-17 14:05:45 - INFO - 全部卖出[0m
+[32m2025-09-17 15:32:46 - INFO - 全部卖出[0m
+[32m2025-09-17 15:32:57 - INFO - 卖出 兴业银锡 100股 False 委托已提交，合同号为：1244032[0m
+[32m2025-09-17 15:33:13 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 15:41:41 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 15:41:46 - INFO - 买入 嘉美包装 100股 False 当前时间不允许委托[0m
+[32m2025-09-17 15:42:02 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 15:42:07 - INFO - 买入 乔治白 100股 False 当前时间不允许委托[0m
+[32m2025-09-17 15:42:22 - INFO - 使用固定股数进行买入: 100股[0m
+[32m2025-09-17 15:42:27 - INFO - 买入 苏能股份 100股 False 当前时间不允许委托[0m
+[33m2025-09-17 15:50:34 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-17 15:50:34 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-17 15:50:46 - INFO - 全部卖出[0m
+[33m2025-09-17 16:05:33 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-17 16:05:33 - ERROR - 卖出数量计算失败[0m
+[32m2025-09-17 16:06:10 - INFO - 全部卖出[0m
+[32m2025-09-17 16:06:20 - INFO - 卖出 超讯通信 100股 False 当前时间不允许委托[0m

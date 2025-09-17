@@ -27,7 +27,7 @@ Robot_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Robot_portfolio
 Lhw_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio','Lhw_portfolio_today.xlsx')
 
 # 持仓
-Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'position', 'Strategy_position.xlsx')
+# Ai_Strategy_holding_file = os.path.join(DATA_DIR, 'position', 'Strategy_position.xlsx')
 ai_strategy_diff_file_path = os.path.join(DATA_DIR, 'position', "ai_strategy_diff.xlsx")
 
 Strategy_holding_file = os.path.join(DATA_DIR, 'position','Strategy_position.xlsx')
@@ -98,12 +98,12 @@ Strategy_id_to_name = {
 Combination_ids = ['9800','20811']
 # Combination_ids = ['19347']
 Combination_ids_to_name = {
-    '20811': '组-一枝梨花压海棠',#胜率低，收益高
-    '9800': '组-逻辑为王',#胜率低，收益高
+    '20811': '一枝梨花',#胜率低，收益高
+    '9800': '逻辑为王',#胜率低，收益高
     # '20811': '组-一枝梨花压海棠',
-    '7152': '组-中线龙头',#胜率低，收益高
-    '12404': '组-精选个股',#
-    '11094': '组-低位题材埋伏',#胜率高，回撤小，收益高
+    '7152': '中线龙头',#胜率低，收益高
+    '12404': '精选个股',#
+    '11094': '低位题材埋伏',#胜率高，回撤小，收益高
     # '9564': '梦想二号',# 长期
 
     '19347': '超短稳定复利',# 变收费
@@ -116,8 +116,8 @@ Combination_ids_to_name = {
 }
 
 robots = {
-            "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae",
-            "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
+            "有色金属": "8afec86a-e573-411a-853f-5a9a044d89ae"
+            # "钢铁": "89c1be35-08a6-47f6-a8c9-1c64b405dab6",
             # "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
         }
 
@@ -140,8 +140,8 @@ ETF_ids = ['29684', "29634"]
 ETF_ids_to_name = {
     # '29762': '全球领先ETF',
     # '29778': '波段轮动优选ETF',#列表没了？
-    '29684': 'E-主题成长优选',
-    '29634': 'E-主题轮动精选',
+    '29684': '主题成长优选',
+    '29634': '主题轮动精选',
 
     # '30463': '科技ETF高频',
     # '29669': '波段优选ETF',
@@ -157,10 +157,10 @@ ETF_ids_to_name = {
 
 zhitou_ids = ['31672']
 zhitou_ids_to_name = {
-    '31670': '赛-情绪拐点龙头战法',#没了
+    '31670': '情绪拐点龙头战法',#没了
 
-    "31672": "赛-短线趋势题材",
-    "31519": "赛-KD跟踪策略",
+    "31672": "短线趋势题材",
+    "31519": "KD跟踪策略",
     "31903": "太极擒龙免费组合",
     # "29774": "智投短线精选",
     "31816": "一只不休息的牛",

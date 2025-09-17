@@ -162,6 +162,13 @@ def get_difference_holding():
         # 需要排除的标的名称
         excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
 
+        # 标准化股票名称
+        from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
+        if not account_df.empty:
+            account_df = standardize_dataframe_stock_names(account_df)
+        if not strategy_df.empty:
+            strategy_df = standardize_dataframe_stock_names(strategy_df)
+
         # 1. 找出需要卖出的标的（在账户中存在，但不在策略今日持仓中，且不在排除列表中）
         if not account_df.empty and not strategy_df.empty:
             to_sell_candidates = account_df[~account_df['标的名称'].isin(strategy_df['标的名称'])]
@@ -174,7 +181,8 @@ def get_difference_holding():
 
         if not to_sell.empty:
             logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
-            logger.info(f"\n{to_sell[['标的名称']] if '标的名称' in to_sell.columns else to_sell}")
+            # 打印具体需要卖出的股票
+            logger.info(f"具体需卖出的标的:\n{to_sell[['标的名称']].to_string(index=False)}")
             # 添加操作列
             to_sell['操作'] = '卖出'
         else:
@@ -192,7 +200,8 @@ def get_difference_holding():
 
         if not to_buy.empty:
             logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
-            logger.info(f"\n{to_buy[['标的名称']] if '标的名称' in to_buy.columns else to_buy}")
+            # 打印具体需要买入的股票
+            logger.info(f"具体需买入的标的:\n{to_buy[['标的名称']].to_string(index=False)}")
             # 添加操作列
             to_buy['操作'] = '买入'
         else:
@@ -261,7 +270,7 @@ def sava_all_strategy_holding_data():
         # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
         with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
             for sheet_name, df in all_sheets_data.items():
-                logger.info(f"正在保存工作表: {sheet_name}")
+                # logger.info(f"正在保存工作表: {sheet_name}")
                 df.to_excel(writer, sheet_name=sheet_name, index=False)
 
         logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")

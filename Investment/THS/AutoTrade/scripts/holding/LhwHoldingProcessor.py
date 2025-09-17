@@ -116,7 +116,7 @@ class LhwHoldingProcessor(CommonHoldingProcessor):
             # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
             with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
                 for sheet_name, df in all_sheets_data.items():
-                    logger.info(f"正在保存工作表: {sheet_name}")
+                    # logger.info(f"正在保存工作表: {sheet_name}")
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
 
             logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")

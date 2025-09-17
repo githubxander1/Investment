@@ -21,11 +21,12 @@ class TradeLogic:
         self._current_stock_name = None
         self.VOLUME_MAX_BUY = 5000
 
-    def calculate_buy_volume(self, real_price, buying_power):
+    def calculate_buy_volume(self, real_price, buying_power, new_ratio=None):
         """
         根据可用资金和价格计算买入数量
         :param real_price: 实时价格
         :param buying_power: 可用资金
+        :param new_ratio: 新仓位比例（可选）
         :return: 计算出的股数，或 None 表示失败
         """
         try:
@@ -33,7 +34,21 @@ class TradeLogic:
                 logger.warning(f"计算买入数量失败：buying_power={buying_power}, real_price={real_price}")
                 return None
 
-            volume = int((buying_power if buying_power < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / real_price)
+            # 如果提供了新比例，则按比例计算买入金额
+            if new_ratio is not None:
+                try:
+                    # 按比例计算应该使用的资金
+                    target_amount = buying_power * (float(new_ratio) / 100)
+                    volume = int(target_amount / real_price)
+                    logger.info(f"按比例计算买入: 资金{buying_power} * 比例{new_ratio}% = 目标金额{target_amount}, 实时价格{real_price}, 计算股数{volume}")
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"新比例转换失败: {new_ratio}, 使用默认计算方式: {e}")
+                    volume = int((buying_power if buying_power < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / real_price)
+            else:
+                # 原有逻辑：使用最大可用资金或VOLUME_MAX_BUY中的较小值
+                volume = int((buying_power if buying_power < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / real_price)
+                logger.info(f"使用默认计算方式: 可用资金{buying_power}, 最大买入金额{self.VOLUME_MAX_BUY}, 实时价格{real_price}, 计算股数{volume}")
+
             volume = (volume // 100) * 100  # 对齐100股整数倍
             if volume < 100:
                 logger.warning("买入数量不足100股")
@@ -67,9 +82,16 @@ class TradeLogic:
             if new_ratio is None or new_ratio <= 0:
                 volume = available_shares  # 全部卖出
                 logger.info("全部卖出")
+            elif new_ratio >= 100:
+                # 如果新比例大于等于100%，则全部卖出
+                volume = available_shares
+                logger.info("新比例大于等于100%，全部卖出")
             else:
-                volume = int(available_shares * 0.5)  # 半仓卖出
-                logger.info("半仓卖出")
+                # 按比例计算应该保留的数量，然后计算卖出数量
+                # 例如：当前持有1000股，新比例要求30%，则保留300股，卖出700股
+                keep_volume = int(available_shares * (new_ratio / 100))
+                volume = available_shares - keep_volume
+                logger.info(f"按比例计算卖出: 当前持有{available_shares}股, 新比例{new_ratio}%, 保留{keep_volume}股, 卖出{volume}股")
 
             volume = (volume // 100) * 100
             if volume < 100:
@@ -82,7 +104,7 @@ class TradeLogic:
             logger.error(f"卖出数量计算失败: {e}")
             return None
 
-    def buy_volume(self, operation, stock_name):
+    def buy_volume(self, operation, stock_name, new_ratio=None):
         # 1. 可用资金
         available_funds = self.account.get_buying_power()
 
@@ -95,8 +117,8 @@ class TradeLogic:
         # 4. 实时价格
         real_time_price = self.ths_page._get_real_price()
 
-        # 5. 计算数量-买（可用资金 实时价格）
-        volume = self.calculate_buy_volume(available_funds, real_time_price)
+        # 5. 计算数量-买（可用资金 实时价格 新比例）
+        volume = self.calculate_buy_volume(real_time_price, available_funds, new_ratio)
         return volume
 
     def sell_volume(self, operation, stock_name, ratio=0):
@@ -187,7 +209,7 @@ class TradeLogic:
                     if not real_price:
                         return False, "无法获取实时价格"
 
-                    volume = self.calculate_buy_volume(real_price, buy_available)
+                    volume = self.calculate_buy_volume(real_price, buy_available, new_ratio)
                     if volume is None:
                         return False, "买入数量计算失败"
 

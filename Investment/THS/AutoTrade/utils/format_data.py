@@ -81,6 +81,51 @@ def normalize_time(time_str):
         print(f"时间标准化失败: {e}")
         return ''
 
+
+def standardize_stock_name(stock_name):
+    """
+    标准化股票名称，处理同花顺中名称不一致的问题
+    
+    :param stock_name: 原始股票名称
+    :return: 标准化后的股票名称
+    """
+    # 去除空格
+    stock_name = stock_name.strip()
+    
+    # 定义名称映射表，将不同的名称映射到统一的标准名称
+    name_mapping = {
+        # 万丰相关
+        "浙江万丰股份": "万丰奥威",
+        "万丰股份": "万丰奥威",
+        
+        # 可以继续添加其他映射
+        # "浙江某某股份": "某某股份",
+        # "某某股份有限公司": "某某股份",
+    }
+    
+    # 应用映射
+    return name_mapping.get(stock_name, stock_name)
+
+
+def standardize_dataframe_stock_names(df):
+    """
+    标准化DataFrame中的股票名称列
+    
+    :param df: 包含股票名称的DataFrame
+    :return: 标准化后的DataFrame
+    """
+    if df.empty:
+        return df
+        
+    df_copy = df.copy()
+    
+    # 标准化标的名称列
+    if '标的名称' in df_copy.columns:
+        df_copy['标的名称'] = df_copy['标的名称'].apply(standardize_stock_name)
+    
+    return df_copy
+
+
 def get_new_records(current_df, history_df):
     """通过 _id 字段获取新增记录"""
     if current_df.empty:
