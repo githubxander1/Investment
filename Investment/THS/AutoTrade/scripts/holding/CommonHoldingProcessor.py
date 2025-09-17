@@ -1,3 +1,20 @@
+"""
+通用持仓处理器模块
+
+该模块提供了一个通用的持仓处理框架，用于:
+1. 获取和保存策略持仓数据
+2. 对比账户实际持仓与策略持仓数据，找出差异
+3. 执行调仓操作（买入/卖出）
+4. 管理操作历史记录
+5. 缓存账户持仓数据以提高性能
+
+主要功能:
+- save_all_strategy_holding_data: 获取并保存所有策略持仓数据
+- get_difference_holding: 对比账户与策略持仓差异
+- operate_result: 执行调仓操作
+- _update_account_holding_cache: 更新账户持仓缓存
+"""
+
 import time
 import sys
 import os
@@ -275,6 +292,12 @@ class CommonHoldingProcessor:
             else:
                 to_sell_df = pd.DataFrame(columns=self._account_holding_cache.columns) if self._account_holding_cache is not None and not self._account_holding_cache.empty else pd.DataFrame()
 
+            # 确保卖出DataFrame包含必要的列，使其与买入DataFrame结构一致
+            required_columns = ['名称', '标的名称', '代码', '市场', '最新价', '新比例%', '时间', '行业', '账户名']
+            for col in required_columns:
+                if col not in to_sell_df.columns:
+                    to_sell_df[col] = None
+
             if not to_sell_df.empty:
                 # logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell_df)} 条\n{to_sell_df[['标的名称']].to_string(index=False)}")
                 to_sell_df['操作'] = '卖出'
@@ -295,6 +318,11 @@ class CommonHoldingProcessor:
             else:
                 to_buy_df = pd.DataFrame(columns=['标的名称'])
 
+            # 确保买入DataFrame包含必要的列，使其与卖出DataFrame结构一致
+            for col in required_columns:
+                if col not in to_buy_df.columns:
+                    to_buy_df[col] = None
+
             if not to_buy_df.empty:
                 # logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy_df)} 条\n{to_buy_df[['标的名称']].to_string(index=False)}")
                 to_buy_df['操作'] = '买入'
@@ -305,11 +333,32 @@ class CommonHoldingProcessor:
             else:
                 logger.info("✅ 当前无需买入的标的")
 
-            # 构建完整差异报告
-            difference_report = {
-                "to_sell": to_sell_df,
-                "to_buy": to_buy_df
-            }
+            # 合并两个df，确保列顺序一致
+            # 先确保两个DataFrame都有相同的列
+            common_columns = list(set(to_sell_df.columns) | set(to_buy_df.columns))
+            for col in common_columns:
+                if col not in to_sell_df.columns:
+                    to_sell_df[col] = None
+                if col not in to_buy_df.columns:
+                    to_buy_df[col] = None
+            
+            # 按照统一的列顺序重新排列
+            column_order = ['名称', '标的名称', '代码', '市场', '最新价', '新比例%', '时间', '行业', '账户名', '操作']
+            # 添加其他可能存在的列
+            for col in common_columns:
+                if col not in column_order:
+                    column_order.append(col)
+            
+            to_sell_df = to_sell_df[column_order]
+            to_buy_df = to_buy_df[column_order]
+
+            # 合并两个df
+            difference_report = pd.concat([to_sell_df, to_buy_df], ignore_index=True)
+            # # 构建完整差异报告
+            # difference_report = {
+            #     "to_sell": to_sell_df,
+            #     "to_buy": to_buy_df
+            # }
             logger.info(f"完成：对比持仓差异")
             # logger.info(f"完成：对比持仓差异 {len(difference_report)}条 \n{difference_report}")
             logger.info("-" * 50)
@@ -361,11 +410,10 @@ class CommonHoldingProcessor:
                     logger.info("✅ 当前无持仓差异，无需执行交易")
                     return True
 
-                # 提取difference_report里的’标的名称'列
+                # 提取difference_report里的'标的名称'列
                 def extract_stock_to_operate():
                     '''
-                    1.对比历史数据，提取要操作的
-
+                    对比历史数据，提取要操作的股票
                     '''
                     # 读取操作历史记录
                     try:
@@ -376,22 +424,37 @@ class CommonHoldingProcessor:
 
                     # 准备所有要操作的列表
                     all_operations = []
-                    # 对比history_df和diff_result_df,找出差异
-                    if not history_df.empty:
-                        exists = history_df[
-                            (history_df['标的名称'] == diff_result_df['标的名称']) &
-                            (history_df['操作'] == diff_result_df['操作']) &
-                            (abs(history_df['新比例%'] - new_ratio) < 0.01)
-                        ]
 
-                        if not exists.empty:
-                            logger.info(f"✅ 卖出 {stock_name} 已在历史记录中存在，跳过")
-                            all_operations.append([~exists])
+                    # 合并后的diff_result_df包含了买入和卖出操作
+                    if not diff_result_df.empty:
+                        for idx, row in diff_result_df.iterrows():
+                            stock_name = row['标的名称']
+                            operation = row['操作']
+                            # 使用get方法安全获取新比例值
+                            new_ratio = row.get('新比例%', 0)
+
+                            # 根据操作类型检查是否在历史记录中存在相同操作
+                            if operation == '卖出':
+                                exists = history_df[
+                                    (history_df['标的名称'] == stock_name) &
+                                    (history_df['操作'] == operation)
+                                ]
+                            else:  # 买入操作需要同时匹配标的名称、操作类型和比例
+                                exists = history_df[
+                                    (history_df['标的名称'] == stock_name) &
+                                    (history_df['操作'] == operation) &
+                                    (abs(history_df['新比例%'] - new_ratio) < 0.01)
+                                ]
+
+                            if not exists.empty:
+                                logger.info(f"✅ {operation} {stock_name} 已在历史记录中存在，跳过")
+                            else:
+                                all_operations.append(row)
 
                     # 检查是否有需要执行的操作
                     if not all_operations:
                         logger.info("✅ 所有操作均已执行过，无需重复操作")
-                        return True
+                        return []
 
                     return all_operations
 
@@ -407,11 +470,11 @@ class CommonHoldingProcessor:
                 for op in all_operations:
                     stock_name = op['标的名称']
                     operation = op['操作']
-                    new_ratio = op['新比例%']
-                    strategy_name = op['名称']
-                    account_name = op['账户名']
-
-                    code = op['代码']
+                    # 安全获取可能不存在的字段
+                    new_ratio = op.get('新比例%', None)
+                    strategy_name = op.get('名称', None)
+                    account_name = op.get('账户名', self.account_name)  # 使用默认账户名
+                    code = op.get('代码', None)
 
                     logger.info(f"🛠️ 要处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
 
@@ -448,7 +511,7 @@ class CommonHoldingProcessor:
                     # 构造记录
                     operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     record = pd.DataFrame([{
-                        '名称': strategy_name,
+                        '名称': strategy_name if strategy_name is not None else '',
                         '标的名称': stock_name,
                         '操作': operation,
                         '新比例%': new_ratio if new_ratio is not None else 0,
@@ -543,3 +606,8 @@ class CommonHoldingProcessor:
         self._last_account_update_time = 0
         self._account_updated_in_this_run = False
         logger.info("✅ 缓存已重置")
+
+if __name__ == '__main__':
+    com = CommonHoldingProcessor()
+    diff = com.get_difference_holding(r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx", r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\account_info.xlsx')
+    print(diff)

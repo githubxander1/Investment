@@ -1,3 +1,19 @@
+"""
+策略持仓处理器模块
+
+该模块继承自CommonHoldingProcessor，专门用于处理策略相关的持仓操作，包括:
+1. 获取策略的最新持仓数据
+2. 保存所有策略持仓数据到文件
+3. 执行策略调仓操作
+4. 比较策略持仓变化并通知新增数据
+
+主要功能:
+- get_latest_position: 获取单个策略的最新持仓数据
+- save_all_strategy_holding_data: 获取并保存所有策略持仓数据
+- execute_strategy_trades: 执行策略调仓操作
+- compare_holding_changes: 比较策略持仓变化并通知
+"""
+
 import os
 import datetime
 import traceback
@@ -228,35 +244,35 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             # 按策略分组执行
             success = True
             
-            # 处理GPT定期精选策略（使用长城证券账户）
-            gpt_data = today_holdings_df[today_holdings_df['名称'] == 'GPT定期精选']
-            if not gpt_data.empty:
-                logger.info("🔄 执行GPT定期精选策略（长城证券账户）")
-                # # 特殊处理：清空GPT定期精选的买入信号，只保留卖出操作
-                # gpt_data = pd.DataFrame(columns=gpt_data.columns)
-                gpt_success = self.operate_result(
-                    holding_file=Strategy_holding_file,
-                    portfolio_today_file=Strategy_portfolio_today_file,
-                    account_name="长城证券",
-                    strategy_filter=lambda row: row['名称'] == 'GPT定期精选'
-                )
-                success = success and gpt_success
-            else:
-                logger.info("📋 无GPT定期精选策略数据")
-
-            # 处理AI市场追踪策略（使用川财证券账户）
-            ai_data = today_holdings_df[today_holdings_df['名称'] == 'AI市场追踪策略']
-            if not ai_data.empty:
-                logger.info("🔄 执行AI市场追踪策略（川财证券账户）")
-                ai_success = self.operate_result(
-                    holding_file=Strategy_holding_file,
-                    portfolio_today_file=Strategy_portfolio_today_file,
-                    account_name="川财证券",
-                    strategy_filter=lambda row: row['名称'] == 'AI市场追踪策略'
-                )
-                success = success and ai_success
-            else:
-                logger.info("📋 无AI市场追踪策略数据")
+            # # 处理GPT定期精选策略（使用长城证券账户）
+            # gpt_data = today_holdings_df[today_holdings_df['名称'] == 'GPT定期精选']
+            # if not gpt_data.empty:
+            #     logger.info("🔄 执行GPT定期精选策略（长城证券账户）")
+            #     # # 特殊处理：清空GPT定期精选的买入信号，只保留卖出操作
+            #     # gpt_data = pd.DataFrame(columns=gpt_data.columns)
+            #     gpt_success = self.operate_result(
+            #         holding_file=Strategy_holding_file,
+            #         portfolio_today_file=Strategy_portfolio_today_file,
+            #         account_name="长城证券",
+            #         strategy_filter=lambda row: row['名称'] == 'GPT定期精选'
+            #     )
+            #     success = success and gpt_success
+            # else:
+            #     logger.info("📋 无GPT定期精选策略数据")
+            #
+            # # 处理AI市场追踪策略（使用川财证券账户）
+            # ai_data = today_holdings_df[today_holdings_df['名称'] == 'AI市场追踪策略']
+            # if not ai_data.empty:
+            #     logger.info("🔄 执行AI市场追踪策略（川财证券账户）")
+            #     ai_success = self.operate_result(
+            #         holding_file=Strategy_holding_file,
+            #         portfolio_today_file=Strategy_portfolio_today_file,
+            #         account_name="川财证券",
+            #         strategy_filter=lambda row: row['名称'] == 'AI市场追踪策略'
+            #     )
+            #     success = success and ai_success
+            # else:
+            #     logger.info("📋 无AI市场追踪策略数据")
 
             if success:
                 logger.info("✅ AI策略调仓执行完成")
