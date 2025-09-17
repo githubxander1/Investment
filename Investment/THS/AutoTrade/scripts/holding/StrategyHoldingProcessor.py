@@ -67,6 +67,8 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                         stk_code = stk_code[0].zfill(6)
                     else:
                         stk_code = ''
+
+                    account_name = '长城证券' if strategy_id == '155680' else '川财证券'
                     
                     position_stocks_results.append({
                         '名称': Strategy_id_to_name.get(strategy_id, f'策略{strategy_id}'),
@@ -77,6 +79,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                         '新比例%': round(float(position_stock_info.get('positionRatio', 0)) * 100, 2),
                         '时间': datetime.datetime.now().strftime('%Y-%m-%d'),
                         '行业': position_stock_info.get('industry', ''),
+                        '账户名': account_name,
                     })
 
                 position_stocks_df = pd.DataFrame(position_stocks_results)
@@ -112,19 +115,19 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
 
         return pd.DataFrame()
 
-    def save_all_strategy_holding_data(self, account_name):
+    def save_all_strategy_holding_data(self):
         """
         1.获取所有策略的持仓数据，
         2.并保存到 Excel 文件中，当天数据保存在第一个sheet
         3.返回当天的数据
         """
         logger.info("📂 开始获取并保存所有策略持仓数据")
-        
+
         # 获取所有策略的持仓数据
         all_holdings = []
         success_count = 0  # 记录成功获取数据的策略数量
         total_count = len(Strategy_ids)  # 总策略数量
-        
+
         for id in Strategy_ids:
             positions_df = self.get_latest_position(id)
             has_data = not positions_df.empty  # 记录是否获取到原始数据
@@ -144,7 +147,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
             logger.error("❌ 未获取到任何策略持仓数据")
             send_notification("❌ 未获取到任何策略持仓数据")
             return False
-            
+
         elif success_count < total_count:
             logger.warning(f"⚠️ 部分策略数据获取失败: {success_count}/{total_count}")
             send_notification(f"⚠️ 策略数据获取异常: {success_count}/{total_count} 个策略数据获取成功")
@@ -157,7 +160,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
         all_holdings_df.sort_values('最新价', ascending=True)
         all_holdings_df.index = all_holdings_df.index + 1
         # 添加一列账户名
-        all_holdings_df['账户名'] = account_name
+        # all_holdings_df['账户名'] = account_name
 
         today = str(datetime.date.today())
         # 提取出今天的数据df，时间列=今天

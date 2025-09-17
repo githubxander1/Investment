@@ -1,5 +1,6 @@
 import datetime
 import os
+import time
 from pprint import pprint
 
 import pandas as pd
@@ -318,7 +319,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
             new_data = get_new_records(current_holdings_standard, history_holdings_standard)
             
             # 4. 保存最新持仓数据到文件
-            save_result = self.save_all_combination_holding_data(current_holdings)
+            save_result = self.save_all_combination_holding_data(current_holdings, )
             if not save_result:
                 error_msg = "❌ 组合持仓数据保存失败"
                 logger.error(error_msg)

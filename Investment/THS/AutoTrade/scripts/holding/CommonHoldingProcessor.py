@@ -11,7 +11,7 @@ import pandas as pd
 import requests
 
 from Investment.THS.AutoTrade.config.settings import (
-    Strategy_id_to_name, Strategy_ids, Ai_Strategy_holding_file,
+    Strategy_id_to_name, Strategy_ids, Strategy_holding_file,
     Strategy_portfolio_today_file, OPERATION_HISTORY_FILE, Account_holding_file,
     Strategy_holding_file, Lhw_ids, Lhw_ids_to_name, Lhw_holding_file,
     Combination_holding_file, all_ids, id_to_name
@@ -99,6 +99,100 @@ class CommonHoldingProcessor:
         except Exception as e:
             logger.error(f"更新{account_name}账户持仓缓存时出错: {e}")
             return False
+
+    def save_all_strategy_holding_data(self, get_all_strategy_data):
+        """
+        1.获取所有策略的持仓数据，
+        2.并保存到 Excel 文件中，当天数据保存在第一个sheet
+        3.返回当天的数据
+        """
+        logger.info("📂 开始获取并保存所有策略持仓数据")
+
+        # 获取所有策略的持仓数据
+        all_holdings = []
+        success_count = 0  # 记录成功获取数据的策略数量
+        total_count = len(Strategy_ids)  # 总策略数量
+
+        for id in Strategy_ids:
+            positions_df = self.get_latest_position(id)
+            has_data = not positions_df.empty  # 记录是否获取到原始数据
+
+            if positions_df is not None and not positions_df.empty:
+                all_holdings.append(positions_df)
+                success_count += 1
+            elif has_data:
+                # 获取到了数据但经过过滤后为空，也算成功获取
+                success_count += 1
+                logger.info(f"获取到策略数据但经过过滤后为空，策略ID: {id}")
+            else:
+                logger.info(f"没有获取到策略数据，策略ID: {id}")
+
+        # 检查数据获取情况
+        if success_count == 0:
+            logger.error("❌ 未获取到任何策略持仓数据")
+            send_notification("❌ 未获取到任何策略持仓数据")
+            return False
+
+        elif success_count < total_count:
+            logger.warning(f"⚠️ 部分策略数据获取失败: {success_count}/{total_count}")
+            send_notification(f"⚠️ 策略数据获取异常: {success_count}/{total_count} 个策略数据获取成功")
+
+        # 汇总所有数据
+        all_holdings_df = pd.concat(all_holdings, ignore_index=False)
+        # 从1开始计数，只保留沪深A股的, 按价格从低到高排序
+        all_holdings_df = all_holdings_df[all_holdings_df['市场'] == '沪深A股']
+        all_holdings_df.sort_values('最新价', ascending=True)
+        all_holdings_df.index = all_holdings_df.index + 1
+        # 添加一列账户名
+        # all_holdings_df['账户名'] = account_name
+
+        today = str(datetime.date.today())
+        # 提取出今天的数据df，时间列=今天
+        today_holdings_df = all_holdings_df[all_holdings_df['时间'] == today]
+
+        file_path = Strategy_holding_file
+
+        # 创建一个字典来存储所有工作表数据
+        all_sheets_data = {}
+
+        try:
+            # 如果文件存在，读取现有数据
+            if os.path.exists(file_path):
+                with pd.ExcelFile(file_path) as xls:
+                    existing_sheets = xls.sheet_names
+                    logger.info(f"保存前文件中已存在的工作表: {file_path}\n{existing_sheets}")
+
+                # 读取除今天以外的所有现有工作表
+                with pd.ExcelFile(file_path) as xls:
+                    for sheet_name in existing_sheets:
+                        if sheet_name != today:
+                            all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
+
+            # 将今天的数据放在第一位
+            all_sheets_data = {today: all_holdings_df, **all_sheets_data}
+            logger.info(f"即将保存的所有工作表: {list(all_sheets_data.keys())}")
+
+            # 写入所有数据到Excel文件（覆盖模式），注意不保存索引
+            with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+                for sheet_name, df in all_sheets_data.items():
+                    # logger.info(f"正在保存工作表: {sheet_name}")
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+            logger.info(f"✅ 所有持仓数据已保存，{today} 数据位于第一个 sheet，共 {len(all_holdings_df)} 条")
+            return True, today_holdings_df
+
+        except Exception as e:
+            logger.error(f"❌ 保存持仓数据失败: {e}")
+            # 如果出错，至少保存今天的数据
+            try:
+                with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+                    all_holdings_df.to_excel(writer, sheet_name=today, index=False)
+                logger.info(f"✅ 文件保存完成，sheet: {today}")
+                return True, today_holdings_df
+            except Exception as e2:
+                logger.error(f"❌ 保存今日数据也失败了: {e2}")
+                send_notification(f"❌ 策略持仓数据保存失败: {e2}")
+                return False
 
     # 获取账户持仓数据差异
     def get_difference_holding(self, holding_file, account_file, account_name=None, strategy_filter=None):
@@ -242,14 +336,14 @@ class CommonHoldingProcessor:
         while retry_count < max_retries:
             try:
                 # 1.获取持仓差异（首次获取，使用缓存）
-                diff_result = self.get_difference_holding(holding_file, Account_holding_file, account_name, strategy_filter)
+                diff_result_df = self.get_difference_holding(holding_file, Account_holding_file, account_name, strategy_filter)
 
-                if 'error' in diff_result:
-                    logger.error(f"获取持仓差异失败: {diff_result['error']}")
+                if 'error' in diff_result_df:
+                    logger.error(f"获取持仓差异失败: {diff_result_df['error']}")
                     return False
 
-                to_sell = diff_result.get('to_sell', pd.DataFrame())
-                to_buy = diff_result.get('to_buy', pd.DataFrame())
+                to_sell = diff_result_df.get('to_sell', pd.DataFrame())
+                to_buy = diff_result_df.get('to_buy', pd.DataFrame())
                 
                 # 应用策略过滤器（如果提供）
                 if strategy_filter:
@@ -267,8 +361,12 @@ class CommonHoldingProcessor:
                     logger.info("✅ 当前无持仓差异，无需执行交易")
                     return True
 
-
+                # 提取difference_report里的’标的名称'列
                 def extract_stock_to_operate():
+                    '''
+                    1.对比历史数据，提取要操作的
+
+                    '''
                     # 读取操作历史记录
                     try:
                         history_df = read_operation_history(OPERATION_HISTORY_FILE)
@@ -278,71 +376,17 @@ class CommonHoldingProcessor:
 
                     # 准备所有要操作的列表
                     all_operations = []
-                    
-                    # 合并处理卖出和买入操作
-                    operations_to_check = []
-                    
-                    # 添加卖出操作
-                    if not to_sell.empty:
-                        for _, row in to_sell.iterrows():
-                            operations_to_check.append({
-                                'row': row,
-                                'operation': '卖出',
-                                'new_ratio': 0
-                            })
-                    
-                    # 添加买入操作
-                    if not to_buy.empty:
-                        # 按最新价从低到高排序买入操作
-                        to_buy_sorted = to_buy.sort_values('最新价', ascending=True) if '最新价' in to_buy.columns else to_buy
-                        for _, row in to_buy_sorted.iterrows():
-                            operations_to_check.append({
-                                'row': row,
-                                'operation': '买入',
-                                'new_ratio': row.get('新比例%', None)
-                            })
+                    # 对比history_df和diff_result_df,找出差异
+                    if not history_df.empty:
+                        exists = history_df[
+                            (history_df['标的名称'] == diff_result_df['标的名称']) &
+                            (history_df['操作'] == diff_result_df['操作']) &
+                            (abs(history_df['新比例%'] - new_ratio) < 0.01)
+                        ]
 
-                    # 检查每个操作是否已在历史记录中
-                    for op in operations_to_check:
-                        row = op['row']
-                        operation = op['operation']
-                        new_ratio = op['new_ratio']
-                        
-                        stock_name = row['标的名称']
-                        
-                        # 检查是否已在历史记录中
-                        if not history_df.empty:
-                            # 对于卖出操作，检查精确的新比例
-                            # 对于买入操作，如果新比例为None，则只检查股票名称和操作类型
-                            if operation == '卖出':
-                                exists = history_df[
-                                    (history_df['标的名称'] == stock_name) &
-                                    (history_df['操作'] == operation) &
-                                    (abs(history_df['新比例%'] - new_ratio) < 0.01)
-                                ]
-                            else:  # 买入操作
-                                condition = (history_df['标的名称'] == stock_name) & (history_df['操作'] == operation)
-                                if new_ratio is not None:
-                                    condition = condition & (abs(history_df['新比例%'] - new_ratio) < 0.01)
-                                exists = history_df[condition]
-
-                            if not exists.empty:
-                                logger.info(f"✅ {operation} {stock_name} 已在历史记录中存在，跳过")
-                                continue
-                        
-                        # 添加整行数据到操作列表，并补充必要字段
-                        operation_entry = row.to_dict()
-                        operation_entry.update({
-                            'strategy_name': row.get('名称'),
-                            'stock_name': stock_name,
-                            'operation': operation,
-                            'new_ratio': new_ratio,
-                            'account_name': row.get('账户名'),
-                            'code': row.get('代码'),
-                            'price': row.get('最新价')
-                        })
-                        
-                        all_operations.append(operation_entry)
+                        if not exists.empty:
+                            logger.info(f"✅ 卖出 {stock_name} 已在历史记录中存在，跳过")
+                            all_operations.append([~exists])
 
                     # 检查是否有需要执行的操作
                     if not all_operations:
@@ -353,21 +397,21 @@ class CommonHoldingProcessor:
 
                 all_operations = extract_stock_to_operate()
 
-                # 准备保存到今日调仓文件的数据
-                today_trades = []
+                # # 准备保存到今日调仓文件的数据
+                # today_trades = []
 
                 # 标记是否执行了任何交易操作
                 any_trade_executed = False
 
                 # 遍历每一项操作，执行交易
                 for op in all_operations:
-                    stock_name = op['stock_name']
-                    operation = op['operation']
-                    new_ratio = op['new_ratio']
-                    strategy_name = op['strategy_name']
-                    account_name = op['account_name']
+                    stock_name = op['标的名称']
+                    operation = op['操作']
+                    new_ratio = op['新比例%']
+                    strategy_name = op['名称']
+                    account_name = op['账户名']
 
-                    code = op['code']
+                    code = op['代码']
 
                     logger.info(f"🛠️ 要处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
 
@@ -418,53 +462,53 @@ class CommonHoldingProcessor:
                     write_operation_history(record)
                     logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
-                    # 添加到今日调仓数据中
-                    code =
-                    today_trades.append({
-                        '名称': strategy_name,  # 策略名称
-                        '操作': operation,
-                        '标的名称': stock_name,
-                        '代码': '',  # 代码信息在当前数据中不可用
-                        '最新价': 0,  # 价格信息在当前数据中不可用
-                        '新比例%': new_ratio if new_ratio is not None else 0,
-                        '市场': '沪深A股',  # 默认市场
-                        '时间': datetime.datetime.now().strftime('%Y-%m-%d')
-                    })
+                    # # 添加到今日调仓数据中
+                    # # code =
+                    # today_trades.append({
+                    #     '名称': strategy_name,  # 策略名称
+                    #     '操作': operation,
+                    #     '标的名称': stock_name,
+                    #     '代码': '',  # 代码信息在当前数据中不可用
+                    #     '最新价': 0,  # 价格信息在当前数据中不可用
+                    #     '新比例%': new_ratio if new_ratio is not None else 0,
+                    #     '市场': '沪深A股',  # 默认市场
+                    #     '时间': datetime.datetime.now().strftime('%Y-%m-%d')
+                    # })
 
                 # 只有在执行了交易操作后，才标记需要更新账户数据
                 if any_trade_executed:
                     self._account_updated_in_this_run = False  # 下次需要更新账户数据
                     logger.info("✅ 标记下次需要更新账户数据")
 
-                # 将今日调仓数据保存到对应文件
-                if today_trades:
-                    today_trades_df = pd.DataFrame(today_trades)
-                    today = datetime.datetime.now().strftime('%Y-%m-%d')
-
-                    try:
-                        # 如果文件存在，读取现有数据
-                        if os.path.exists(portfolio_today_file):
-                            with pd.ExcelFile(portfolio_today_file) as xls:
-                                # 读取除今天以外的所有现有工作表
-                                all_sheets_data = {}
-                                for sheet_name in xls.sheet_names:
-                                    if sheet_name != today:
-                                        all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
-
-                            # 将今天的数据放在第一位
-                            all_sheets_data = {today: today_trades_df, **all_sheets_data}
-                        else:
-                            # 文件不存在，创建新文件
-                            all_sheets_data = {today: today_trades_df}
-
-                        # 写入所有数据到Excel文件
-                        with pd.ExcelWriter(portfolio_today_file, engine='openpyxl') as writer:
-                            for sheet_name, df in all_sheets_data.items():
-                                df.to_excel(writer, sheet_name=sheet_name, index=False)
-
-                        logger.info(f"✅ 今日调仓数据已保存到 {portfolio_today_file}，sheet: {today}")
-                    except Exception as e:
-                        logger.error(f"❌ 保存今日调仓数据失败: {e}")
+                # # 将今日调仓数据保存到对应文件
+                # if today_trades:
+                #     today_trades_df = pd.DataFrame(today_trades)
+                #     today = datetime.datetime.now().strftime('%Y-%m-%d')
+                #
+                #     try:
+                #         # 如果文件存在，读取现有数据
+                #         if os.path.exists(portfolio_today_file):
+                #             with pd.ExcelFile(portfolio_today_file) as xls:
+                #                 # 读取除今天以外的所有现有工作表
+                #                 all_sheets_data = {}
+                #                 for sheet_name in xls.sheet_names:
+                #                     if sheet_name != today:
+                #                         all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
+                #
+                #             # 将今天的数据放在第一位
+                #             all_sheets_data = {today: today_trades_df, **all_sheets_data}
+                #         else:
+                #             # 文件不存在，创建新文件
+                #             all_sheets_data = {today: today_trades_df}
+                #
+                #         # 写入所有数据到Excel文件
+                #         with pd.ExcelWriter(portfolio_today_file, engine='openpyxl') as writer:
+                #             for sheet_name, df in all_sheets_data.items():
+                #                 df.to_excel(writer, sheet_name=sheet_name, index=False)
+                #
+                #         logger.info(f"✅ 今日调仓数据已保存到 {portfolio_today_file}，sheet: {today}")
+                #     except Exception as e:
+                #         logger.error(f"❌ 保存今日调仓数据失败: {e}")
 
                 return True  # 成功执行
 

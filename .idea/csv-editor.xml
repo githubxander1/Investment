@@ -94,6 +94,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\THS\财务\stock_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\THS\财务\stock_final_score_history.csv">
           <value>
             <Attribute>
