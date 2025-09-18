@@ -36,6 +36,7 @@ from Investment.THS.AutoTrade.config.settings import (
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.data_process import write_operation_history, save_to_excel_append, read_operation_history, read_portfolio_or_operation_data
+from Investment.THS.AutoTrade.scripts.holding.trade_history import read_today_trade_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time
@@ -57,7 +58,7 @@ class CommonHoldingProcessor:
         self._account_cache_valid_duration = 60  # 账户数据缓存1分钟
         self._account_updated_in_this_run = False  # 标记本轮是否已更新账户数据
 
-    def filter_executed_operations(self, diff_result):
+    def filter_executed_operations(self, diff_result, account_name):
         """
         过滤已执行的操作，只返回未执行的操作记录
         
@@ -69,7 +70,7 @@ class CommonHoldingProcessor:
         # 读取操作历史记录
         try:
             # 使用read_portfolio_or_operation_data读取Trade_history文件
-            trade_history_df = read_portfolio_or_operation_data(Trade_history)
+            trade_history_df = read_today_trade_history(Trade_history,account_name)
             if isinstance(trade_history_df, list):
                 trade_history_df = trade_history_df[0] if trade_history_df else pd.DataFrame()
             
@@ -194,8 +195,8 @@ class CommonHoldingProcessor:
             logicofking_holdings = pd.DataFrame()
             try:
                 today = str(datetime.today().strftime('%Y-%m-%d'))
-                if os.path.exists(combination_file):
-                    with pd.ExcelFile(combination_file, engine='openpyxl') as xls:
+                if os.path.exists(strategy_file):
+                    with pd.ExcelFile(strategy_file, engine='openpyxl') as xls:
                         if today in xls.sheet_names:
                             df = pd.read_excel(xls, sheet_name=today)
                             # 筛选出""策略的持仓
@@ -809,16 +810,217 @@ class CommonHoldingProcessor:
         self._account_updated_in_this_run = False
         logger.info("✅ 缓存已重置")
 
+    def get_real_time_price(self, stock_name):
+        """
+        获取股票实时价格（简化实现，实际应调用真实接口）
+        :param stock_name: 股票名称
+        :return: 实时价格
+        """
+        # 这里应该调用实际的接口获取实时价格
+        # 作为示例，我们返回一个固定价格
+        # 在实际应用中，应根据股票名称获取对应代码，然后调用行情接口获取实时价格
+        
+        # 示例实现：返回随机价格作为演示
+        import random
+        price = round(random.uniform(5, 50), 2)  # 5到50之间的随机价格
+        logger.info(f"获取股票 {stock_name} 实时价格: {price}")
+        return price
+
+    def calculate_trade_volume(self, account_file, account_name, strategy_name, stock_name, new_ratio, operation_type):
+        """
+        根据账户信息和策略要求计算买入或卖出的股数
+        
+        :param account_file: 账户持仓文件路径
+        :param account_name: 账户名称
+        :param strategy_name: 策略名称
+        :param stock_name: 股票名称
+        :param new_ratio: 新持仓比例(%)
+        :param operation_type: 操作类型('买入' 或 '卖出')
+        :return: 计算出的交易股数
+        """
+        logger.info(f"开始计算交易股数: 账户={account_name}, 股票={stock_name}, 操作={operation_type}, 新比例={new_ratio}%")
+        
+        try:
+            # 读取账户信息
+            if not os.path.exists(account_file):
+                logger.error(f"账户持仓文件不存在: {account_file}")
+                return None
+                
+            with pd.ExcelFile(account_file, engine='openpyxl') as xls:
+                # 读取账户表头数据（包含可用余额）
+                header_sheet_name = f"{account_name}_表头数据"
+                if header_sheet_name in xls.sheet_names:
+                    header_df = pd.read_excel(xls, sheet_name=header_sheet_name)
+                    if not header_df.empty:
+                        # 获取可用余额
+                        available_balance = float(str(header_df.iloc[0]['可用']).replace(',', ''))
+                        logger.info(f"账户 {account_name} 可用余额: {available_balance}")
+                    else:
+                        logger.error(f"账户 {account_name} 表头数据为空")
+                        return None
+                else:
+                    logger.error(f"账户文件中不存在表头数据表: {header_sheet_name}")
+                    return None
+                    
+                # 读取账户持仓数据
+                holding_sheet_name = f"{account_name}_持仓数据"
+                if holding_sheet_name in xls.sheet_names:
+                    holding_df = pd.read_excel(xls, sheet_name=holding_sheet_name)
+                    if not holding_df.empty and '标的名称' in holding_df.columns:
+                        logger.info(f"成功读取账户 {account_name} 的持仓数据，共 {len(holding_df)} 条记录")
+                    else:
+                        logger.warning(f"账户 {account_name} 持仓数据为空或不包含标的名称列")
+                        holding_df = pd.DataFrame()
+                else:
+                    logger.warning(f"账户文件中没有 {account_name} 的持仓数据表: {holding_sheet_name}")
+                    holding_df = pd.DataFrame()
+            
+            # 计算买入股数
+            if operation_type == '买入':
+                # 获取实时价格
+                real_price = self.get_real_time_price(stock_name)
+                
+                # 计算目标金额 = 可用余额 * 新比例%
+                target_amount = available_balance * (float(new_ratio) / 100)
+                logger.info(f"目标投资金额: {available_balance} * {new_ratio}% = {target_amount}")
+                
+                # 计算股数 = 目标金额 / 实时价格
+                volume = int(target_amount / real_price)
+                logger.info(f"计算股数: {target_amount} / {real_price} = {volume}")
+                
+                # 转换为100的倍数
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    logger.warning("计算出的买入股数不足100股")
+                    return None
+                    
+                logger.info(f"买入 {stock_name}，股数: {volume}")
+                return volume
+                
+            # 计算卖出股数
+            elif operation_type == '卖出':
+                if holding_df.empty:
+                    logger.error("账户持仓数据为空，无法计算卖出数量")
+                    return None
+                    
+                # 查找要卖出的股票
+                stock_row = holding_df[holding_df['标的名称'] == stock_name]
+                if stock_row.empty:
+                    logger.error(f"在账户持仓中未找到股票: {stock_name}")
+                    return None
+                    
+                stock_row = stock_row.iloc[0]
+                # 获取持有数量
+                holding_shares = int(stock_row.get('持仓', 0))
+                logger.info(f"股票 {stock_name} 当前持有数量: {holding_shares}")
+                
+                # 如果新比例为0或未提供，则全仓卖出
+                if new_ratio is None or float(new_ratio) <= 0:
+                    volume = holding_shares
+                    logger.info(f"新比例为0或未提供，全仓卖出 {stock_name}: {volume} 股")
+                else:
+                    # 计算需要保留的股数
+                    keep_shares = int(holding_shares * (float(new_ratio) / 100))
+                    # 计算需要卖出的股数
+                    volume = holding_shares - keep_shares
+                    logger.info(f"按比例计算卖出: 持有{holding_shares}股, 新比例{new_ratio}%, 保留{keep_shares}股, 卖出{volume}股")
+                
+                # 转换为100的倍数
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    logger.warning(f"计算出的卖出股数不足100股: {volume}")
+                    
+                logger.info(f"卖出 {stock_name}，股数: {volume}")
+                return volume
+                
+            else:
+                logger.error(f"不支持的操作类型: {operation_type}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"计算交易股数时发生错误: {e}")
+            return None
+
+    def demo_calculate_trade(self):
+        """
+        演示如何使用calculate_trade_volume函数
+        """
+        # 示例参数
+        account_file = Account_holding_file  # 账户持仓文件
+        account_name = "川财证券"  # 账户名称
+        strategy_name = "逻辑为王"  # 策略名称
+        stock_name = "先进数通"  # 股票名称
+        new_ratio = 32.87  # 新比例
+        operation_type = "买入"  # 操作类型
+        
+        # 计算买入股数
+        volume = self.calculate_trade_volume(
+            account_file=account_file,
+            account_name=account_name,
+            strategy_name=strategy_name,
+            stock_name=stock_name,
+            new_ratio=new_ratio,
+            operation_type=operation_type
+        )
+        
+        if volume:
+            logger.info(f"计算结果: {operation_type} {stock_name} {volume} 股")
+        else:
+            logger.error("计算失败")
+
+    def operate_strategy(self, strategy_name: str, account_name: str = None) -> bool:
+        """执行策略"""
+        diff = com.extract_different_holding(account_file, account_name, strategy_file, strategy_name)
+        to_operate = com.filter_executed_operations(diff, account_name)
+
+        # 标记是否执行了任何交易操作
+        any_trade_executed = False
+
+        # 遍历每一项卖出操作，执行交易
+        for idx, op in to_operate.iterrows():
+            stock_name = op['股票名称'] if '股票名称' in op else op['股票名称']
+            operation = op['操作']
+            # 安全获取可能不存在的字段
+            new_ratio = op.get('新比例%', None)
+            if 'operation' == '卖出':
+                new_ratio = 0
+
+            logger.info(f"🛠️ 开始处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
+
+            # 切换到对应账户
+            self.common_page.change_account(account_name)
+            logger.info(f"✅ 已切换到账户: {account_name}")
+
+            # 调用交易逻辑
+            status, info = self.trader.operate_stock(operation, stock_name, new_ratio)
+
+            # 检查交易是否成功执行
+            if status is None:
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                continue
+
+            # 标记已执行交易
+            any_trade_executed = True
+
+        print(diff)
+        print('-' * 50)
+        print(to_operate)
+
 if __name__ == '__main__':
     # 定义文件路径
-    account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-    combination_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
-
-
+    # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+    # combination_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
     com = CommonHoldingProcessor()
-    # diff = com.get_difference_holding(r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx", r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\account_info.xlsx')
+
+    strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
+    account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx'
+    trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx.xlsx'
+    account_name = '长城证券'
+    strategy_name = '一枝梨花'
+    # diff = com.get_difference_holding(account_file, '长城证券',strategy_file, 'AI市场追踪策略' )
     # diff = com.get_difference_holding(r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx", r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\account_info.xlsx',account_name="中泰证券")
-    diff = com.extract_different_holding(account_file, '中泰证券', combination_file,'一枝梨花')
-    to_operate = com.filter_executed_operations(diff)
+    diff = com.extract_different_holding(account_file, account_name, strategy_file,strategy_name)
+    to_operate = com.filter_executed_operations(diff,account_name)
     print(diff)
+    print('-'*50)
     print(to_operate)

@@ -84,6 +84,9 @@ def extract_position_details(resp_json: dict, account_name: str) -> dict:
         code = item.get("code", "")
         # 0开头的补足6位
         code = code if len(code) > 5 else "0" + code
+        持仓占比 = item.get("position_rate", 0.0)
+        #转为%形式，保留2位小数
+
         # 字段映射（与界面展示一一对应）
         detail = {
             "账户": account_name,
@@ -94,7 +97,7 @@ def extract_position_details(resp_json: dict, account_name: str) -> dict:
             "成本价": item.get("cost", 0.0),
             "当前价": item.get("price", 0.0),
             "持仓天数": item.get("hold_days", 0),
-            "持仓占比": item.get("position_rate", 0.0),
+            "持仓占比": round(item.get("position_rate", 0.0) * 100,2),
             "回本涨幅": item.get("back", 0.0),
             "持有数量": item.get("count", 0),
             "持有盈亏": item.get("hold_profit", 0.0),

@@ -155,8 +155,8 @@ class TradeLogic:
         common_page.goto_account_page()
         try:
             # 更新账户数据
-            self._current_stock_name = stock_name
-            account_info = AccountInfo()
+            # self._current_stock_name = stock_name
+            # account_info = AccountInfo()
 
             # 初始化资金: 可用资金,可卖数量,卖出比例
             buy_available = None

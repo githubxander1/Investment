@@ -7,6 +7,9 @@ from datetime import datetime, timedelta
 import os
 
 from Investment.THS.AutoTrade.config.settings import Trade_history
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 # 确保在正确的目录下工作
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -161,6 +164,66 @@ def save_all_trade_history_to_excel(all_accounts_data: dict, filename: str = Tra
     print(f"所有账户交易历史数据已保存到 {filename}")
 
 
+def read_today_trade_history(history_file_path: str = Trade_history, account_name: str = None) -> pd.DataFrame:
+    """
+    读取Trade_history文件中指定账户当天的交易记录
+    
+    参数:
+        history_file_path (str): Trade_history文件路径
+        account_name (str): 账户名称，如果为None则读取所有账户
+    
+    返回:
+        pd.DataFrame: 当天的交易记录
+    """
+    from Investment.THS.AutoTrade.utils.format_data import normalize_time
+    today = normalize_time(datetime.now().strftime('%Y-%m-%d'))
+    
+    if not os.path.exists(history_file_path):
+        logger.warning(f"交易历史文件不存在: {history_file_path}")
+        return pd.DataFrame()
+    
+    try:
+        with pd.ExcelFile(history_file_path, engine='openpyxl') as xls:
+            # 如果指定了账户名称，只读取该账户的工作表
+            if account_name:
+                if account_name in xls.sheet_names:
+                    df = pd.read_excel(xls, sheet_name=account_name)
+                    # 筛选当天的交易记录
+                    if not df.empty and '成交日期' in df.columns:
+                        # 将成交日期转换为标准格式进行比较
+                        df['成交日期'] = pd.to_datetime(df['成交日期'], format='%Y%m%d', errors='coerce')
+                        today_date = pd.to_datetime(today).date()
+                        df = df[df['成交日期'].dt.date == today_date]
+                        return df
+                    else:
+                        return pd.DataFrame()
+                else:
+                    logger.warning(f"账户 {account_name} 在交易历史文件中不存在")
+                    return pd.DataFrame()
+            else:
+                # 读取所有账户的数据
+                all_data = []
+                for sheet_name in xls.sheet_names:
+                    df = pd.read_excel(xls, sheet_name=sheet_name)
+                    if not df.empty and '成交日期' in df.columns:
+                        # 筛选当天的交易记录
+                        df['成交日期'] = pd.to_datetime(df['成交日期'], format='%Y%m%d', errors='coerce')
+                        today_date = pd.to_datetime(today).date()
+                        df_filtered = df[df['成交日期'].dt.date == today_date]
+                        if not df_filtered.empty:
+                            df_filtered['账户'] = sheet_name
+                            all_data.append(df_filtered)
+                
+                if all_data:
+                    return pd.concat(all_data, ignore_index=True)
+                else:
+                    return pd.DataFrame()
+                    
+    except Exception as e:
+        logger.error(f"读取交易历史文件失败: {e}")
+        return pd.DataFrame()
+
+
 def main():
     """主函数：获取所有账户交易历史数据并保存到Excel"""
     all_accounts_data = {}
@@ -181,17 +244,13 @@ def main():
             }
     
     # 保存到Excel文件
-    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    # # filename = f"trade_history_{timestamp}.xlsx"
-    # save_all_trade_history_to_excel(all_accounts_data, filename)
-    
-    # 同时保存一个不带时间戳的版本，方便查找
     save_all_trade_history_to_excel(all_accounts_data, Trade_history)
     
     # 打印汇总信息
-    print("\n账户交易记录统计：")
+    logger.info("账户交易记录统计：")
     for account_name, data in all_accounts_data.items():
-        print(f"{account_name}: {len(data['trades'])} 条记录")
+        logger.info(f"{account_name}: {len(data['trades'])} 条记录")
+    logger.info("交易历史数据获取和保存完成")
 
 
 if __name__ == "__main__":
