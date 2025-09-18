@@ -30,9 +30,9 @@ def get_portfolio_holding_data(id):
             # 构造每一行的数据
             df = pd.DataFrame({
                 "名称": id_to_name.get(id, '未知组合'),
-                "操作": '买入',
-                "标的名称": position.get("name", ""),
-                "代码": str(code).zfill(6),
+                # "操作": '买入',
+                "股票名称": position.get("name", ""),
+                "股票代码": str(code).zfill(6),
                 "最新价": position["price"],#当前价格
                 "新比例%": position.get("positionRealRatio", 0) * 100,#实际持仓比例(%)
                 "市场": market,
@@ -90,7 +90,8 @@ if __name__ == '__main__':
 
     # 保存为Excel文件
     file_path = Combination_holding_file
-    final_df.to_excel(file_path, sheet_name='Combination_holding',index=False)
+    today = pd.Timestamp.now().strftime('%Y-%m-%d')
+    final_df.to_excel(file_path, sheet_name=today,index=False)
     print("数据已保存到Excel文件：", file_path)
 
     # 打印最终的DataFrame

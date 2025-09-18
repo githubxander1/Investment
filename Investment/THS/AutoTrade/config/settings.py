@@ -19,6 +19,7 @@ trade_operations_log_file = os.path.join(LOGS_DIR, 'data_process.log')
 
 # 操作历史
 OPERATION_HISTORY_FILE = os.path.join(DATA_DIR,'portfolio',  'trade_operation_history.xlsx')
+Trade_history = os.path.join(DATA_DIR, 'portfolio', 'trade_operations.xlsx')
 
 # 调仓
 Strategy_portfolio_today_file = os.path.join(DATA_DIR, 'portfolio', 'Strategy_portfolio_today.xlsx')
@@ -34,7 +35,7 @@ Strategy_holding_file = os.path.join(DATA_DIR, 'position','Strategy_position.xls
 Combination_holding_file = os.path.join(DATA_DIR, 'position','Combination_position.xlsx')
 Robot_holding_file = os.path.join(DATA_DIR, 'position','Robots_position.xlsx')
 Lhw_holding_file = os.path.join(DATA_DIR, 'position','Lhw_position.xlsx')
-Account_holding_file = os.path.join(DATA_DIR, 'position','account_info.xlsx')
+Account_holding_file = os.path.join(DATA_DIR, 'position','Account_position.xlsx')
 
 # 对比
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
@@ -50,6 +51,14 @@ account_xml_file: str = os.path.join(DATA_DIR, 'xml','account_info_xml.xml')
 
 
 fake_useragent = UserAgent()
+
+# 定义账户信息
+ACCOUNTS = {
+    "中泰证券": "133508019",
+    "川财证券": "108048932",
+    "长城证券": "103353867",
+    "中山证券": "139269044"
+}
 
 # API配置
 # API_URL = "https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit"

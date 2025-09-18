@@ -31,11 +31,11 @@ from Investment.THS.AutoTrade.config.settings import (
     Strategy_id_to_name, Strategy_ids, Strategy_holding_file,
     Strategy_portfolio_today_file, OPERATION_HISTORY_FILE, Account_holding_file,
     Strategy_holding_file, Lhw_ids, Lhw_ids_to_name, Lhw_holding_file,
-    Combination_holding_file, all_ids, id_to_name
+    Combination_holding_file, all_ids, id_to_name, Trade_history
 )
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
-from Investment.THS.AutoTrade.scripts.data_process import write_operation_history, save_to_excel_append, read_operation_history
+from Investment.THS.AutoTrade.scripts.data_process import write_operation_history, save_to_excel_append, read_operation_history, read_portfolio_or_operation_data
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time
@@ -56,6 +56,235 @@ class CommonHoldingProcessor:
         self._last_account_update_time = 0
         self._account_cache_valid_duration = 60  # 账户数据缓存1分钟
         self._account_updated_in_this_run = False  # 标记本轮是否已更新账户数据
+
+    def filter_executed_operations(self, diff_result):
+        """
+        过滤已执行的操作，只返回未执行的操作记录
+        
+        :param diff_result: extract_different_holding函数返回的结果，包含to_sell和to_buy两个DataFrame
+        :return: 未执行的操作记录
+        """
+        logger.info("开始过滤已执行的操作记录...")
+        
+        # 读取操作历史记录
+        try:
+            # 使用read_portfolio_or_operation_data读取Trade_history文件
+            trade_history_df = read_portfolio_or_operation_data(Trade_history)
+            if isinstance(trade_history_df, list):
+                trade_history_df = trade_history_df[0] if trade_history_df else pd.DataFrame()
+            
+            logger.info(f"成功读取操作历史记录，共 {len(trade_history_df)} 条记录")
+        except Exception as e:
+            logger.error(f"读取操作历史记录失败: {e}")
+            trade_history_df = pd.DataFrame()
+        
+        # 获取需要卖出和买入的记录
+        to_sell = diff_result.get('to_sell', pd.DataFrame())
+        to_buy = diff_result.get('to_buy', pd.DataFrame())
+        
+        logger.info(f"待处理 - 需要卖出: {len(to_sell)} 条，需要买入: {len(to_buy)} 条")
+        
+        # 过滤已执行的卖出操作
+        if not to_sell.empty and not trade_history_df.empty:
+            # 创建一个布尔索引，标记哪些操作已经执行过
+            sell_executed_mask = pd.Series([False] * len(to_sell), index=to_sell.index)
+            
+            for idx, sell_row in to_sell.iterrows():
+                stock_name = sell_row.get('股票名称') or sell_row.get('标的名称')
+                operation = '卖出'
+                
+                if pd.isna(stock_name):
+                    continue
+                    
+                # 检查是否已执行过该操作
+                executed = trade_history_df[
+                    (trade_history_df['标的名称'] == stock_name) & 
+                    (trade_history_df['操作'] == operation)
+                ]
+                
+                if not executed.empty:
+                    sell_executed_mask.loc[idx] = True
+                    logger.info(f"已执行过卖出操作: {stock_name}")
+            
+            # 只保留未执行的操作
+            to_sell_filtered = to_sell[~sell_executed_mask]
+        else:
+            to_sell_filtered = to_sell
+            
+        # 过滤已执行的买入操作
+        if not to_buy.empty and not trade_history_df.empty:
+            # 创建一个布尔索引，标记哪些操作已经执行过
+            buy_executed_mask = pd.Series([False] * len(to_buy), index=to_buy.index)
+            
+            for idx, buy_row in to_buy.iterrows():
+                stock_name = buy_row.get('股票名称') or buy_row.get('标的名称')
+                operation = '买入'
+                new_ratio = buy_row.get('新比例%', 0)
+                
+                if pd.isna(stock_name):
+                    continue
+                    
+                # 检查是否已执行过该操作（需要匹配股票名称、操作类型和比例）
+                executed = trade_history_df[
+                    (trade_history_df['标的名称'] == stock_name) & 
+                    (trade_history_df['操作'] == operation) &
+                    (abs(trade_history_df['新比例%'] - new_ratio) < 0.01)
+                ]
+                
+                if not executed.empty:
+                    buy_executed_mask.loc[idx] = True
+                    logger.info(f"已执行过买入操作: {stock_name} ({new_ratio}%)")
+            
+            # 只保留未执行的操作
+            to_buy_filtered = to_buy[~buy_executed_mask]
+        else:
+            to_buy_filtered = to_buy
+            
+        logger.info(f"过滤后 - 需要卖出: {len(to_sell_filtered)} 条，需要买入: {len(to_buy_filtered)} 条")
+        
+        # 返回过滤后的结果
+        return {
+            "to_sell": to_sell_filtered,
+            "to_buy": to_buy_filtered
+        }
+        
+    def extract_different_holding(self, account_file, account_name, strategy_file, strategy_name):
+        import pandas as pd
+        from datetime import datetime
+        import os
+        
+
+        # 检查文件是否存在
+        if not os.path.exists(account_file):
+            logger.error(f"账户持仓文件不存在: {account_file}")
+            return {"error": "账户持仓文件不存在"}
+            
+        if not os.path.exists(strategy_file):
+            logger.error(f"组合持仓文件不存在: {strategy_file}")
+            return {"error": "组合持仓文件不存在"}
+        
+        try:
+            # 读取证券账户持仓数据
+            greatwall_holdings = pd.DataFrame()
+            try:
+                with pd.ExcelFile(account_file, engine='openpyxl') as xls:
+                    # 读取证券的持仓数据
+                    sheet_name = account_name
+                    if sheet_name in xls.sheet_names:
+                        df = pd.read_excel(xls, sheet_name=sheet_name)
+                        if not df.empty and '股票名称' in df.columns:
+                            # 只保留股票名称列
+                            greatwall_holdings = df.copy()
+                            greatwall_holdings['账户'] = account_name
+                            logger.info(f"✅ 成功读取证券账户的持仓数据，共 {len(greatwall_holdings)} 条记录")
+                        else:
+                            logger.warning(f"证券账户持仓数据为空或不包含股票名称列")
+                    else:
+                        logger.warning(f"账户文件中没有证券的持仓数据表: {sheet_name}")
+                        return {"error": "账户文件中没有证券的持仓数据表"}
+            except Exception as e:
+                logger.error(f"读取证券账户持仓文件失败: {e}")
+                return {"error": f"读取证券账户持仓文件失败: {e}"}
+
+            if greatwall_holdings.empty:
+                logger.info("证券账户无持仓数据")
+                return {"to_sell": pd.DataFrame(), "to_buy": pd.DataFrame()}
+
+            # 读取""策略持仓数据
+            logicofking_holdings = pd.DataFrame()
+            try:
+                today = str(datetime.today().strftime('%Y-%m-%d'))
+                if os.path.exists(combination_file):
+                    with pd.ExcelFile(combination_file, engine='openpyxl') as xls:
+                        if today in xls.sheet_names:
+                            df = pd.read_excel(xls, sheet_name=today)
+                            # 筛选出""策略的持仓
+                            df = df[df['名称'] == strategy_name] if '名称' in df.columns else df
+                            if not df.empty and '股票名称' in df.columns:
+                                logicofking_holdings = df.copy()
+                                logicofking_holdings['策略'] = strategy_name
+                                logger.info(f"✅ 成功读取策略的持仓数据，共 {len(logicofking_holdings)} 条记录")
+                            else:
+                                logger.warning("策略持仓数据为空或不包含股票名称列")
+                        else:
+                            logger.warning(f"组合持仓文件中没有今天的sheet: {today}")
+                else:
+                    logger.warning("组合持仓文件不存在")
+            except Exception as e:
+                logger.error(f"读取策略持仓文件失败: {e}")
+                return {"error": f"读取策略持仓文件失败: {e}"}
+
+            # 需要排除的股票名称
+            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+
+            # 标准化股票名称
+            from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
+            greatwall_holdings = standardize_dataframe_stock_names(greatwall_holdings)
+            if not logicofking_holdings.empty:
+                logicofking_holdings = standardize_dataframe_stock_names(logicofking_holdings)
+
+            # 1. 找出需要卖出的标的（在证券账户中存在，但在策略中不存在，且不在排除列表中）
+            if not greatwall_holdings.empty and not logicofking_holdings.empty:
+                to_sell_candidates = greatwall_holdings[~greatwall_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
+                to_sell = to_sell_candidates[~to_sell_candidates['股票名称'].isin(excluded_holdings)].copy()
+                # 索引从1开始
+                to_sell.index = range(1, len(to_sell) + 1)
+                # 去掉‘持有金额’为0的
+                to_sell = to_sell[to_sell['持有金额'] != 0]
+            elif not greatwall_holdings.empty:
+                # 如果策略持仓为空，则所有证券账户持仓都是需要卖出的（除去排除项）
+                to_sell = greatwall_holdings[~greatwall_holdings['股票名称'].isin(excluded_holdings)].copy()
+            else:
+                to_sell = pd.DataFrame(columns=greatwall_holdings.columns) if not greatwall_holdings.empty else pd.DataFrame()
+
+            # 确保to_sell包含标的名称列
+            if not to_sell.empty and '标的名称' not in to_sell.columns:
+                to_sell['标的名称'] = to_sell['股票名称']
+
+            if not to_sell.empty:
+                to_sell['操作'] = '卖出'
+                logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条\n{to_sell}")
+            else:
+                logger.info("✅ 当前无需卖出的标的")
+
+            # 2. 找出需要买入的标的（在策略中存在，但在证券账户中不存在，且不在排除列表中）
+            if not logicofking_holdings.empty and not greatwall_holdings.empty:
+                to_buy_candidates = logicofking_holdings[~logicofking_holdings['股票名称'].isin(greatwall_holdings['股票名称'])]
+                to_buy = to_buy_candidates[~to_buy_candidates['股票名称'].isin(excluded_holdings)]
+                to_buy.index = range(1, len(to_buy) + 1)
+            elif not logicofking_holdings.empty:
+                # 如果证券账户持仓为空，则所有策略持仓都是需要买入的（除去排除项）
+                to_buy = logicofking_holdings[~logicofking_holdings['股票名称'].isin(excluded_holdings)]
+            else:
+                to_buy = pd.DataFrame(columns=['股票名称'])
+
+            # 确保to_buy包含标的名称列
+            if not to_buy.empty and '标的名称' not in to_buy.columns:
+                to_buy['标的名称'] = to_buy['股票名称']
+
+            if not to_buy.empty:
+                to_buy['操作'] = '买入'
+                logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy)} 条\n{to_buy}")
+            else:
+                logger.info("✅ 当前无需买入的标的")
+
+            # 合并to_buy和to_sell
+            # difference_holding_df = pd.concat([to_sell, to_buy], ignore_index=True)
+            # # 索引从1开始
+            # difference_holding_df = difference_holding_df.reset_index(drop=True)
+            # difference_holding_df.index = difference_holding_df.index + 1
+            # 构建完整差异报告
+            difference_report = {
+                "to_sell": to_sell,
+                "to_buy": to_buy
+            }
+
+            return difference_report
+
+        except Exception as e:
+            error_msg = f"处理证券与策略持仓差异时发生错误: {e}"
+            logger.error(error_msg, exc_info=True)
+            return {"error": error_msg}
 
     def _should_update_account_data(self):
         """判断是否需要更新账户数据"""
@@ -78,11 +307,39 @@ class CommonHoldingProcessor:
         """更新账户持仓缓存"""
         logger.info(f"正在更新{account_name}账户持仓数据...")
         try:
-            account_info = AccountInfo()
-            update_success = account_info.update_holding_info_for_account(account_name)
-            if not update_success:
-                logger.warning(f"更新{account_name}账户持仓数据失败")
-                return False
+            # 调用外部脚本同步账户数据
+            import subprocess
+            import sys
+            import os
+            
+            # 获取脚本目录
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            refresh_script = os.path.join(script_dir, "reflash_account_holding.py")
+            account_holding_script = os.path.join(script_dir, "account_holding.py")
+            
+            # 先运行账户同步脚本
+            if os.path.exists(refresh_script):
+                logger.info("执行账户数据同步...")
+                result = subprocess.run([sys.executable, refresh_script], 
+                                      capture_output=True, text=True, timeout=120)
+                if result.returncode == 0:
+                    logger.info("账户数据同步完成")
+                else:
+                    logger.warning(f"账户数据同步脚本执行失败: {result.stderr}")
+            else:
+                logger.warning(f"账户同步脚本不存在: {refresh_script}")
+            
+            # 再运行账户持仓获取脚本
+            if os.path.exists(account_holding_script):
+                logger.info("执行账户持仓数据获取...")
+                result = subprocess.run([sys.executable, account_holding_script], 
+                                      capture_output=True, text=True, timeout=120)
+                if result.returncode == 0:
+                    logger.info("账户持仓数据获取完成")
+                else:
+                    logger.warning(f"账户持仓数据获取脚本执行失败: {result.stderr}")
+            else:
+                logger.warning(f"账户持仓数据获取脚本不存在: {account_holding_script}")
 
             # 读取指定账户持仓数据
             account_df = pd.DataFrame()
@@ -92,13 +349,13 @@ class CommonHoldingProcessor:
                     sheet_name = f"{account_name}_持仓数据"
                     if sheet_name in xls.sheet_names:
                         df = pd.read_excel(xls, sheet_name=sheet_name)
-                        if not df.empty and '标的名称' in df.columns:
-                            # 只保留标的名称列
-                            account_df = df[['标的名称']].copy()
+                        if not df.empty and '股票名称' in df.columns:
+                            # 只保留股票名称列
+                            account_df = df[['股票名称']].copy()
                             account_df['账户'] = account_name
                             logger.info(f"✅ 成功缓存{account_name}账户的持仓数据，共 {len(account_df)} 条记录")
                         else:
-                            logger.warning(f"{account_name}账户持仓数据为空或不包含标的名称列")
+                            logger.warning(f"{account_name}账户持仓数据为空或不包含股票名称列")
                     else:
                         logger.warning(f"账户文件中没有{account_name}的持仓数据表: {sheet_name}")
             except Exception as e:
@@ -113,6 +370,9 @@ class CommonHoldingProcessor:
             self._last_account_update_time = time.time()
             self._account_updated_in_this_run = True  # 标记本轮已更新账户数据
             return True
+        except subprocess.TimeoutExpired:
+            logger.error("执行外部脚本超时")
+            return False
         except Exception as e:
             logger.error(f"更新{account_name}账户持仓缓存时出错: {e}")
             return False
@@ -256,23 +516,23 @@ class CommonHoldingProcessor:
                             today_strategy_df = pd.read_excel(xls, sheet_name=today)
                             if today_strategy_df.empty:
                                 logger.warning("接口持仓文件为空")
-                                today_strategy_df = pd.DataFrame(columns=['标的名称'])
+                                today_strategy_df = pd.DataFrame(columns=['股票名称'])
                         else:
                             logger.warning(f"接口持仓文件中没有今天的sheet: {today}")
-                            today_strategy_df = pd.DataFrame(columns=['标的名称'])
+                            today_strategy_df = pd.DataFrame(columns=['股票名称'])
                 else:
                     logger.warning("接口持仓文件不存在")
-                    today_strategy_df = pd.DataFrame(columns=['标的名称'])
+                    today_strategy_df = pd.DataFrame(columns=['股票名称'])
             except Exception as e:
                 logger.error(f"读取接口持仓文件失败: {e}")
-                today_strategy_df = pd.DataFrame(columns=['标的名称'])
+                today_strategy_df = pd.DataFrame(columns=['股票名称'])
 
             # 应用策略过滤器（如果提供）
             if strategy_filter and not today_strategy_df.empty and '名称' in today_strategy_df.columns:
                 today_strategy_df = today_strategy_df[today_strategy_df.apply(strategy_filter, axis=1)]
                 logger.info(f"应用策略过滤器后，策略数据条数: {len(today_strategy_df)}")
 
-            # 需要排除的标的名称
+            # 需要排除的股票名称
             excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
 
             # 标准化股票名称
@@ -284,22 +544,22 @@ class CommonHoldingProcessor:
 
             # 1. 找出需要卖出的标的（在账户中存在，但不在策略/组合今日持仓中，且不在排除列表中）
             if not self._account_holding_cache.empty and not today_strategy_df.empty:
-                to_sell_candidates = self._account_holding_cache[~self._account_holding_cache['标的名称'].isin(today_strategy_df['标的名称'])]
-                to_sell_df = to_sell_candidates[~to_sell_candidates['标的名称'].isin(excluded_holdings)].copy()
+                to_sell_candidates = self._account_holding_cache[~self._account_holding_cache['股票名称'].isin(today_strategy_df['股票名称'])]
+                to_sell_df = to_sell_candidates[~to_sell_candidates['股票名称'].isin(excluded_holdings)].copy()
             elif not self._account_holding_cache.empty:
                 # 如果策略/组合持仓为空，则所有账户持仓都是需要卖出的（除去排除项）
-                to_sell_df = self._account_holding_cache[~self._account_holding_cache['标的名称'].isin(excluded_holdings)].copy()
+                to_sell_df = self._account_holding_cache[~self._account_holding_cache['股票名称'].isin(excluded_holdings)].copy()
             else:
                 to_sell_df = pd.DataFrame(columns=self._account_holding_cache.columns) if self._account_holding_cache is not None and not self._account_holding_cache.empty else pd.DataFrame()
 
             # 确保卖出DataFrame包含必要的列，使其与买入DataFrame结构一致
-            required_columns = ['名称', '标的名称', '代码', '市场', '最新价', '新比例%', '时间', '行业', '账户名']
+            required_columns = ['名称', '股票名称', '代码', '市场', '最新价', '新比例%', '时间', '行业', '账户名']
             for col in required_columns:
                 if col not in to_sell_df.columns:
                     to_sell_df[col] = None
 
             if not to_sell_df.empty:
-                # logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell_df)} 条\n{to_sell_df[['标的名称']].to_string(index=False)}")
+                # logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell_df)} 条\n{to_sell_df[['股票名称']].to_string(index=False)}")
                 to_sell_df['操作'] = '卖出'
                 logger.warning(f"⚠️ 发现需卖出的标的: {len(to_sell_df)} 条\n{to_sell_df}")
                 # 添加操作列
@@ -310,13 +570,13 @@ class CommonHoldingProcessor:
 
             # 2. 找出需要买入的标的（在策略/组合今日持仓中存在，但不在账户中，且不在排除列表中）
             if not today_strategy_df.empty and not self._account_holding_cache.empty:
-                to_buy_candidates = today_strategy_df[~today_strategy_df['标的名称'].isin(self._account_holding_cache['标的名称'])]
-                to_buy_df = to_buy_candidates[~to_buy_candidates['标的名称'].isin(excluded_holdings)]
+                to_buy_candidates = today_strategy_df[~today_strategy_df['股票名称'].isin(self._account_holding_cache['股票名称'])]
+                to_buy_df = to_buy_candidates[~to_buy_candidates['股票名称'].isin(excluded_holdings)]
             elif not today_strategy_df.empty:
                 # 如果账户持仓为空，则所有策略/组合持仓都是需要买入的（除去排除项）
-                to_buy_df = today_strategy_df[~today_strategy_df['标的名称'].isin(excluded_holdings)]
+                to_buy_df = today_strategy_df[~today_strategy_df['股票名称'].isin(excluded_holdings)]
             else:
-                to_buy_df = pd.DataFrame(columns=['标的名称'])
+                to_buy_df = pd.DataFrame(columns=['股票名称'])
 
             # 确保买入DataFrame包含必要的列，使其与卖出DataFrame结构一致
             for col in required_columns:
@@ -324,7 +584,7 @@ class CommonHoldingProcessor:
                     to_buy_df[col] = None
 
             if not to_buy_df.empty:
-                # logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy_df)} 条\n{to_buy_df[['标的名称']].to_string(index=False)}")
+                # logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy_df)} 条\n{to_buy_df[['股票名称']].to_string(index=False)}")
                 to_buy_df['操作'] = '买入'
                 logger.warning(f"⚠️ 发现需买入的标的: {len(to_buy_df)} 条\n{to_buy_df}")
                 # 添加操作列
@@ -343,7 +603,7 @@ class CommonHoldingProcessor:
                     to_buy_df[col] = None
             
             # 按照统一的列顺序重新排列
-            column_order = ['名称', '标的名称', '代码', '市场', '最新价', '新比例%', '时间', '行业', '账户名', '操作']
+            column_order = ['名称', '股票名称', '代码', '市场', '最新价', '新比例%', '时间', '行业', '账户名', '操作']
             # 添加其他可能存在的列
             for col in common_columns:
                 if col not in column_order:
@@ -391,8 +651,11 @@ class CommonHoldingProcessor:
                     logger.error(f"获取持仓差异失败: {diff_result_df['error']}")
                     return False
 
-                to_sell = diff_result_df.get('to_sell', pd.DataFrame())
-                to_buy = diff_result_df.get('to_buy', pd.DataFrame())
+                # 2.过滤已执行的操作
+                filtered_diff_result = self.filter_executed_operations(diff_result_df)
+                
+                to_sell = filtered_diff_result.get('to_sell', pd.DataFrame())
+                to_buy = filtered_diff_result.get('to_buy', pd.DataFrame())
                 
                 # 应用策略过滤器（如果提供）
                 if strategy_filter:
@@ -405,100 +668,32 @@ class CommonHoldingProcessor:
                         
                     logger.info(f"应用策略过滤器后，需卖出: {len(to_sell)} 条，需买入: {len(to_buy)} 条")
 
-                # 2.检查是否需要执行任何操作
+                # 3.检查是否需要执行任何操作
                 if to_sell.empty and to_buy.empty:
                     logger.info("✅ 当前无持仓差异，无需执行交易")
                     return True
 
-                # 提取difference_report里的'标的名称'列
-                def extract_stock_to_operate():
-                    '''
-                    对比历史数据，提取要操作的股票
-                    '''
-                    # 读取操作历史记录
-                    try:
-                        history_df = read_operation_history(OPERATION_HISTORY_FILE)
-                    except Exception as e:
-                        logger.error(f"读取操作历史记录失败: {e}")
-                        history_df = pd.DataFrame(columns=['标的名称', '操作', '新比例%'])
-
-                    # 准备所有要操作的列表
-                    all_operations = []
-
-                    # 合并后的diff_result_df包含了买入和卖出操作
-                    if not diff_result_df.empty:
-                        for idx, row in diff_result_df.iterrows():
-                            stock_name = row['标的名称']
-                            operation = row['操作']
-                            # 使用get方法安全获取新比例值
-                            new_ratio = row.get('新比例%', 0)
-
-                            # 根据操作类型检查是否在历史记录中存在相同操作
-                            if operation == '卖出':
-                                exists = history_df[
-                                    (history_df['标的名称'] == stock_name) &
-                                    (history_df['操作'] == operation)
-                                ]
-                            else:  # 买入操作需要同时匹配标的名称、操作类型和比例
-                                exists = history_df[
-                                    (history_df['标的名称'] == stock_name) &
-                                    (history_df['操作'] == operation) &
-                                    (abs(history_df['新比例%'] - new_ratio) < 0.01)
-                                ]
-
-                            if not exists.empty:
-                                logger.info(f"✅ {operation} {stock_name} 已在历史记录中存在，跳过")
-                            else:
-                                all_operations.append(row)
-
-                    # 检查是否有需要执行的操作
-                    if not all_operations:
-                        logger.info("✅ 所有操作均已执行过，无需重复操作")
-                        return []
-
-                    return all_operations
-
-                all_operations = extract_stock_to_operate()
-
-                # # 准备保存到今日调仓文件的数据
-                # today_trades = []
-
                 # 标记是否执行了任何交易操作
                 any_trade_executed = False
 
-                # 遍历每一项操作，执行交易
-                for op in all_operations:
-                    stock_name = op['标的名称']
+                # 遍历每一项卖出操作，执行交易
+                for idx, op in to_sell.iterrows():
+                    stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
                     operation = op['操作']
                     # 安全获取可能不存在的字段
                     new_ratio = op.get('新比例%', None)
                     strategy_name = op.get('名称', None)
-                    account_name = op.get('账户名', self.account_name)  # 使用默认账户名
+                    account_name_op = op.get('账户名', self.account_name)  # 使用默认账户名
                     code = op.get('代码', None)
 
-                    logger.info(f"🛠️ 要处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
+                    logger.info(f"🛠️ 要处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name_op}")
 
                     # 切换到对应账户
-                    self.common_page.change_account(account_name)
-                    logger.info(f"✅ 已切换到账户: {account_name}")
+                    self.common_page.change_account(account_name_op)
+                    logger.info(f"✅ 已切换到账户: {account_name_op}")
 
                     # 调用交易逻辑
-                    # 特殊处理：AI市场追踪策略买入时使用固定股数100股
-                    if strategy_name == "AI市场追踪策略" and operation == "买入":
-                        fixed_volume = 100  # 固定买入100股
-                        logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
-                        status, info = self.trader.operate_stock(operation, stock_name, volume=fixed_volume)
-                    else:
-                        # 默认处理：使用固定数量或新比例%
-                        # if operation == "买入":
-                        status, info = self.trader.operate_stock(operation, stock_name, new_ratio)
-                        # else:
-                        #     status, info = self.trader.operate_stock(
-                        #         operation=operation,
-                        #         stock_name=stock_name,
-                        #         volume=None,
-                        #         new_ratio=new_ratio
-                        #     )
+                    status, info = self.trader.operate_stock(operation, stock_name, new_ratio)
 
                     # 检查交易是否成功执行
                     if status is None:
@@ -512,12 +707,12 @@ class CommonHoldingProcessor:
                     operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     record = pd.DataFrame([{
                         '名称': strategy_name if strategy_name is not None else '',
-                        '标的名称': stock_name,
+                        '股票名称': stock_name,
                         '操作': operation,
                         '新比例%': new_ratio if new_ratio is not None else 0,
                         '状态': status,
                         '信息': info,
-                        '账户': account_name,  # 执行账户
+                        '账户': account_name_op,  # 执行账户
                         '时间': operate_time
                     }])
 
@@ -525,53 +720,60 @@ class CommonHoldingProcessor:
                     write_operation_history(record)
                     logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
-                    # # 添加到今日调仓数据中
-                    # # code =
-                    # today_trades.append({
-                    #     '名称': strategy_name,  # 策略名称
-                    #     '操作': operation,
-                    #     '标的名称': stock_name,
-                    #     '代码': '',  # 代码信息在当前数据中不可用
-                    #     '最新价': 0,  # 价格信息在当前数据中不可用
-                    #     '新比例%': new_ratio if new_ratio is not None else 0,
-                    #     '市场': '沪深A股',  # 默认市场
-                    #     '时间': datetime.datetime.now().strftime('%Y-%m-%d')
-                    # })
+                # 遍历每一项买入操作，执行交易
+                for idx, op in to_buy.iterrows():
+                    stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
+                    operation = op['操作']
+                    # 安全获取可能不存在的字段
+                    new_ratio = op.get('新比例%', None)
+                    strategy_name = op.get('名称', None)
+                    account_name_op = op.get('账户名', self.account_name)  # 使用默认账户名
+                    code = op.get('代码', None)
+
+                    logger.info(f"🛠️ 要处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name_op}")
+
+                    # 切换到对应账户
+                    self.common_page.change_account(account_name_op)
+                    logger.info(f"✅ 已切换到账户: {account_name_op}")
+
+                    # 特殊处理：AI市场追踪策略买入时使用固定股数100股
+                    if strategy_name == "AI市场追踪策略" and operation == "买入":
+                        fixed_volume = 100  # 固定买入100股
+                        logger.info(f"🎯 AI市场追踪策略特殊处理: 买入 {stock_name} 固定数量 {fixed_volume} 股")
+                        status, info = self.trader.operate_stock(operation, stock_name, volume=fixed_volume)
+                    else:
+                        # 默认处理：使用固定数量或新比例%
+                        status, info = self.trader.operate_stock(operation, stock_name, new_ratio)
+
+                    # 检查交易是否成功执行
+                    if status is None:
+                        logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                        continue
+
+                    # 标记已执行交易
+                    any_trade_executed = True
+
+                    # 构造记录
+                    operate_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    record = pd.DataFrame([{
+                        '名称': strategy_name if strategy_name is not None else '',
+                        '股票名称': stock_name,
+                        '操作': operation,
+                        '新比例%': new_ratio if new_ratio is not None else 0,
+                        '状态': status,
+                        '信息': info,
+                        '账户': account_name_op,  # 执行账户
+                        '时间': operate_time
+                    }])
+
+                    # 写入历史
+                    write_operation_history(record)
+                    logger.info(f"{operation} {stock_name} 流程结束，操作已记录")
 
                 # 只有在执行了交易操作后，才标记需要更新账户数据
                 if any_trade_executed:
                     self._account_updated_in_this_run = False  # 下次需要更新账户数据
                     logger.info("✅ 标记下次需要更新账户数据")
-
-                # # 将今日调仓数据保存到对应文件
-                # if today_trades:
-                #     today_trades_df = pd.DataFrame(today_trades)
-                #     today = datetime.datetime.now().strftime('%Y-%m-%d')
-                #
-                #     try:
-                #         # 如果文件存在，读取现有数据
-                #         if os.path.exists(portfolio_today_file):
-                #             with pd.ExcelFile(portfolio_today_file) as xls:
-                #                 # 读取除今天以外的所有现有工作表
-                #                 all_sheets_data = {}
-                #                 for sheet_name in xls.sheet_names:
-                #                     if sheet_name != today:
-                #                         all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
-                #
-                #             # 将今天的数据放在第一位
-                #             all_sheets_data = {today: today_trades_df, **all_sheets_data}
-                #         else:
-                #             # 文件不存在，创建新文件
-                #             all_sheets_data = {today: today_trades_df}
-                #
-                #         # 写入所有数据到Excel文件
-                #         with pd.ExcelWriter(portfolio_today_file, engine='openpyxl') as writer:
-                #             for sheet_name, df in all_sheets_data.items():
-                #                 df.to_excel(writer, sheet_name=sheet_name, index=False)
-                #
-                #         logger.info(f"✅ 今日调仓数据已保存到 {portfolio_today_file}，sheet: {today}")
-                #     except Exception as e:
-                #         logger.error(f"❌ 保存今日调仓数据失败: {e}")
 
                 return True  # 成功执行
 
@@ -608,6 +810,15 @@ class CommonHoldingProcessor:
         logger.info("✅ 缓存已重置")
 
 if __name__ == '__main__':
+    # 定义文件路径
+    account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+    combination_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
+
+
     com = CommonHoldingProcessor()
-    diff = com.get_difference_holding(r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx", r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\account_info.xlsx')
+    # diff = com.get_difference_holding(r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx", r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\account_info.xlsx')
+    # diff = com.get_difference_holding(r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx", r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\account_info.xlsx',account_name="中泰证券")
+    diff = com.extract_different_holding(account_file, '中泰证券', combination_file,'一枝梨花')
+    to_operate = com.filter_executed_operations(diff)
     print(diff)
+    print(to_operate)
