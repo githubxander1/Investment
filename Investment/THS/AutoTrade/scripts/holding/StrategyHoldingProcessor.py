@@ -88,7 +88,7 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
                     
                     position_stocks_results.append({
                         '名称': Strategy_id_to_name.get(strategy_id, f'策略{strategy_id}'),
-                        '标的名称': position_stock_info.get('stkName', ''),
+                        '股票名称': position_stock_info.get('stkName', ''),
                         '代码': stk_code,
                         '市场': determine_market(stk_code),
                         '最新价': round(float(position_stock_info.get('price', 0)), 2),

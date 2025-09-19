@@ -2057,3 +2057,7 @@ sh603878 武进不锈 沪深A股  5.68  6.88     0 1...[0m
 GPT定期精选 居然智家 000785 沪深A股  3.26 31.25 2025-09-17   零售
 GPT定期精选 超讯通信 603322 沪深A股 39.71 30.77 2025-09-17 IT服务[0m
 [33m2025-09-17 18:29:58 - WARNING - 交易通知: 执行AI策略调仓操作时出错: StrategyHoldingProcessor.save_all_strategy_holding_data() missing 1 required positional argument: 'account_name'[0m
+[33m2025-09-19 09:59:30 - WARNING - 交易通知: ❌ 策略持仓数据保存失败: [Errno 13] Permission denied: 'D:\\Xander\\Inverstment\\Investment\\THS\\AutoTrade\\data\\position\\Strategy_position.xlsx'[0m
+[33m2025-09-19 09:59:30 - WARNING - 交易通知: 执行AI策略调仓操作时出错: cannot unpack non-iterable bool object[0m
+[33m2025-09-19 10:11:32 - WARNING - 交易通知: ❌ 未获取到任何机器人持仓数据[0m
+[33m2025-09-19 10:11:32 - WARNING - 交易通知: ❌ 未获取到机器人持仓数据，跳过调仓操作[0m

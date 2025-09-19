@@ -16,7 +16,7 @@ def fetch_stock_position(fund_key: str, account_name: str = ""):
     """调用股票持仓接口，获取原始position数据"""
     url = "https://tzzb.10jqka.com.cn/caishen_httpserver/tzzb/caishen_fund/pc/asset/v1/stock_position"
     headers = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+        'User-Agent': "Mozilla/5.0 (Windows NT 10; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0 Safari/537.36",
         'Accept': "application/json, text/plain, */*",
         'Accept-Encoding': "gzip, deflate, br, zstd",
         'sec-ch-ua-platform': "\"Windows\"",
@@ -29,11 +29,11 @@ def fetch_stock_position(fund_key: str, account_name: str = ""):
         'referer': "https://tzzb.10jqka.com.cn/pc/index.html",
         'accept-language': "zh-CN,zh;q=0.9",
         'priority': "u=1, i",
-        'Cookie': "shoudNotCookieRefresh=1; u_ukey=A10702B8689642C6BE607730E11E6E4A; u_uver=1.0.0; u_dpass=fou%2F0LouwneNgg4aLANzv2enaqgkV1cyTWuTdDYhEScfYqYIyaTF3YeykygdN%2FRBHi80LrSsTFH9a%2B6rtRvqGg%3D%3D; u_did=CC37D8EBB29D40329773B6DEFBD27A2F; u_ttype=WEB; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzU4MTExNTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE1OTg3M2ZhNzYyZjc0NmVmNzZhMjgyNzNjMTY5YTAzOmRlZmF1bHRfNTox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c70e5cfdec172dd60b4e33da5350c9df; user_status=0; utk=2c7de60a214d547dd20f9089d3ef8b0d; sess_tk=eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6InNlc3NfdGtfMSIsImJ0eSI6InNlc3NfdGsifQ.eyJqdGkiOiIwMzlhMTYzYzI3Mjg2YWY3NmU3NDJmNzZmYTczOTgxNTEiLCJpYXQiOjE3NTgxMTE1OTUsImV4cCI6MTc2MDc4OTk5NSwic3ViIjoiNjQxOTI2NDg4IiwiaXNzIjoidXBhc3MuMTBqcWthLmNvbS5jbiIsImF1ZCI6IjIwMjAxMTE4NTI4ODkwNzIiLCJhY3QiOiJvZmMiLCJjdWhzIjoiMzJiZGRiOWJlMTM1ZTY5NWUzNjlkYzBhZDcxOWIxZjIwNDlmYWNiYmEzMGVlYjcwMDkzNzQzNWFkMzkwM2Q5NSJ9.VBxfCBikgTJjC4ioQtoDOu1a0NooRz25PHy-muzrZS6LSKZCgmUoTHYogqWKAs7H2EcAT-ufy_CzN8u8N55rQQ; cuc=sufmt4wli5k8; v=AzhS_mYPpFE3sMjViWIsY1gVCe3PoZwr_gVwr3KphHMmjdbTGrFsu04VQDHB"
+        'Cookie': "shoudNotCookieRefresh=1; u_ukey=A10702B8689642C6BE607730E11E6E4A; u_uver=1.0; u_dpass=fou%2F0LouwneNgg4aLANzv2enaqgkV1cyTWuTdDYhEScfYqYIyaTF3YeykygdN%2FRBHi80LrSsTFH9a%2B6rtRvqGg%3D%3D; u_did=CC37D8EBB29D40329773B6DEFBD27A2F; u_ttype=WEB; user=MDptb182NDE5MjY0ODg6Ok5vbmU6NTAwOjY1MTkyNjQ4ODo3LDExMTExMTExMTExLDQwOzQ0LDExLDQwOzYsMSw0MDs1LDEsNDA7MSwxMDEsNDA7MiwxLDQwOzMsMSw0MDs1LDEsNDA7OCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSw0MDsxMDIsMSw0MDoyNzo6OjY0MTkyNjQ4ODoxNzU4MTExNTk1Ojo6MTY1ODE0Mjc4MDoyNjc4NDAwOjA6MTE1OTg3M2ZhNzYyZjc0NmVmNzZhMjgyNzNjMTY5YTAzOmRlZmF1bHRfNTox; userid=641926488; u_name=mo_641926488; escapename=mo_641926488; ticket=c70e5cfdec172dd60b4e33da5350c9df; user_status=0; utk=2c7de60a214d547dd20f9089d3ef8b0d; sess_tk=eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6InNlc3NfdGtfMSIsImJ0eSI6InNlc3NfdGsifQ.eyJqdGkiOiIwMzlhMTYzYzI3Mjg2YWY3NmU3NDJmNzZmYTczOTgxNTEiLCJpYXQiOjE3NTgxMTE1OTUsImV4cCI6MTc2MDc4OTk5NSwic3ViIjoiNjQxOTI2NDg4IiwiaXNzIjoidXBhc3MuMTBqcWthLmNvbS5jbiIsImF1ZCI6IjIwMjAxMTE4NTI4ODkwNzIiLCJhY3QiOiJvZmMiLCJjdWhzIjoiMzJiZGRiOWJlMTM1ZTY5NWUzNjlkYzBhZDcxOWIxZjIwNDlmYWNiYmEzMGVlYjcwMDkzNzQzNWFkMzkwM2Q5NSJ9.VBxfCBikgTJjC4ioQtoDOu1a0NooRz25PHy-muzrZS6LSKZCgmUoTHYogqWKAs7H2EcAT-ufy_CzN8u8N55rQQ; cuc=sufmt4wli5k8; v=AzhS_mYPpFE3sMjViWIsY1gVCe3PoZwr_gVwr3KphHMmjdbTGrFsu04VQDHB"
     }
     payload = {
         'terminal': "1",
-        'version': "0.0.0",
+        'version': "0.0",
         'userid': "641926488",
         'user_id': "641926488",
         'manual_id': "",
@@ -60,11 +60,11 @@ def fetch_stock_position(fund_key: str, account_name: str = ""):
 def extract_position_details(resp_json: dict, account_name: str) -> dict:
     """提取持仓关键信息（适配界面列：代码、名称、持有金额、当日盈亏等）"""
     # 提取position原始数据
-    money_remain = resp_json.get("ex_data", {}).get("money_remain", 0.0)  # 账户余额
-    position_rate = resp_json.get("ex_data", {}).get("position_rate", 0.0)  # 仓位
-    total_asset = resp_json.get("ex_data", {}).get("total_asset", 0.0)  # 总资产
-    total_liability = resp_json.get("ex_data", {}).get("total_liability", 0.0)  # 总负债
-    total_value = resp_json.get("ex_data", {}).get("total_value", 0.0)  # 总市值
+    money_remain = resp_json.get("ex_data", {}).get("money_remain", 0)  # 账户余额
+    position_rate = resp_json.get("ex_data", {}).get("position_rate", 0)  # 仓位
+    total_asset = resp_json.get("ex_data", {}).get("total_asset", 0)  # 总资产
+    total_liability = resp_json.get("ex_data", {}).get("total_liability", 0)  # 总负债
+    total_value = resp_json.get("ex_data", {}).get("total_value", 0)  # 总市值
     position_list = resp_json.get("ex_data", {}).get("position", [])
     
     # 账户汇总信息
@@ -84,27 +84,33 @@ def extract_position_details(resp_json: dict, account_name: str) -> dict:
         code = item.get("code", "")
         # 0开头的补足6位
         code = code if len(code) > 5 else "0" + code
-        持仓占比 = item.get("position_rate", 0.0)
+        # 持仓占比 = item.get("position_rate", 0)
         #转为%形式，保留2位小数
+
+        # 安全地将字符串转换为浮点数
+        try:
+            position_rate_value = float(item.get("position_rate", 0))
+        except (ValueError, TypeError):
+            position_rate_value = 0
 
         # 字段映射（与界面展示一一对应）
         detail = {
             "账户": account_name,
             "股票代码": code,
             "股票名称": item.get("name", ""),
-            "持有金额": item.get("value", 0.0),  # 对应界面"持有金额"
-            "当日盈亏": item.get("d_profit", 0.0),  # 对应界面"当日盈亏"
-            "成本价": item.get("cost", 0.0),
-            "当前价": item.get("price", 0.0),
+            "持有金额": item.get("value", 0),  # 对应界面"持有金额"
+            "当日盈亏": item.get("d_profit", 0),  # 对应界面"当日盈亏"
+            "成本价": item.get("cost", 0),
+            "当前价": item.get("price", 0),
             "持仓天数": item.get("hold_days", 0),
-            "持仓占比": round(item.get("position_rate", 0.0) * 100,2),
-            "回本涨幅": item.get("back", 0.0),
+            "持仓占比": round(position_rate_value * 100, 2),
+            "回本涨幅": item.get("back", 0),
             "持有数量": item.get("count", 0),
-            "持有盈亏": item.get("hold_profit", 0.0),
-            "持有盈亏率": item.get("hold_rate", 0.0),
-            "累积盈亏": item.get("position_rate", 0.0),
-            "本周盈亏": item.get("w_profit", 0.0),
-            "今年盈亏": item.get("y_profit", 0.0),
+            "持有盈亏": item.get("hold_profit", 0),
+            "持有盈亏率": item.get("hold_rate", 0),
+            "累积盈亏": item.get("position_rate", 0),
+            "本周盈亏": item.get("w_profit", 0),
+            "今年盈亏": item.get("y_profit", 0),
         }
         extracted.append(detail)
     return {
@@ -157,7 +163,7 @@ def save_all_accounts_to_excel(all_accounts_data: dict, filename: str = Account_
     print(f"所有账户数据已保存到 {filename}")
 
 
-def main():
+def account_holding_main():
     """主函数：获取所有账户数据并保存到Excel"""
     refresh_account_holding()
     # app_restart()
@@ -178,11 +184,11 @@ def main():
             all_accounts_data[account_name] = {
                 "account_summary": {
                     "账户名称": account_name,
-                    "账户余额": 0.0,
-                    "仓位": 0.0,
-                    "总资产": 0.0,
-                    "总市值": 0.0,
-                    "总盈亏": 0.0,
+                    "账户余额": 0,
+                    "仓位": 0,
+                    "总资产": 0,
+                    "总市值": 0,
+                    "总盈亏": 0,
                     "更新时间": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 },
                 "positions": []
@@ -283,7 +289,10 @@ def refresh_account_holding():
             print("所有方式都失败，无法点击股票标签")
             return False
 
-        time.sleep(3)
+        # time.sleep(3)
+        # 点击首页
+        d(text="首页").click()
+        print("点击首页")
 
         # 点击我的持仓
         print("尝试点击我的持仓...")
@@ -497,6 +506,6 @@ if __name__ == "__main__":
     # 2. 根据需要修改ACCOUNTS中的账户信息
     # 3. 运行脚本将自动获取所有账户数据并保存到Excel文件
     
-    main()
+    account_holding_main()
     # refresh_account_holding()
     # app_restart()

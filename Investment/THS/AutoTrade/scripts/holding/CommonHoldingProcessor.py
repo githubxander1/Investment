@@ -36,6 +36,7 @@ from Investment.THS.AutoTrade.config.settings import (
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.data_process import write_operation_history, save_to_excel_append, read_operation_history, read_portfolio_or_operation_data
+from Investment.THS.AutoTrade.scripts.holding.account_holding import account_holding_main
 from Investment.THS.AutoTrade.scripts.holding.trade_history import read_today_trade_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -177,7 +178,7 @@ class CommonHoldingProcessor:
                             # 只保留股票名称列
                             greatwall_holdings = df.copy()
                             greatwall_holdings['账户'] = account_name
-                            logger.info(f"✅ 成功读取证券账户的持仓数据，共 {len(greatwall_holdings)} 条记录")
+                            logger.info(f"✅ 成功读取证券账户的持仓数据，共 {len(greatwall_holdings)} 条记录\n{greatwall_holdings}")
                         else:
                             logger.warning(f"证券账户持仓数据为空或不包含股票名称列")
                     else:
@@ -204,7 +205,7 @@ class CommonHoldingProcessor:
                             if not df.empty and '股票名称' in df.columns:
                                 logicofking_holdings = df.copy()
                                 logicofking_holdings['策略'] = strategy_name
-                                logger.info(f"✅ 成功读取策略的持仓数据，共 {len(logicofking_holdings)} 条记录")
+                                logger.info(f"✅ 成功读取策略的持仓数据，共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
                             else:
                                 logger.warning("策略持仓数据为空或不包含股票名称列")
                         else:
@@ -352,7 +353,10 @@ class CommonHoldingProcessor:
                         df = pd.read_excel(xls, sheet_name=sheet_name)
                         if not df.empty and '股票名称' in df.columns:
                             # 只保留股票名称列
-                            account_df = df[['股票名称']].copy()
+                            # account_df = df[['股票名称']].copy()
+                            account_df = df.copy()
+                            # 保留沪深A股的
+
                             account_df['账户'] = account_name
                             logger.info(f"✅ 成功缓存{account_name}账户的持仓数据，共 {len(account_df)} 条记录")
                         else:
@@ -982,8 +986,8 @@ class CommonHoldingProcessor:
             operation = op['操作']
             # 安全获取可能不存在的字段
             new_ratio = op.get('新比例%', None)
-            if 'operation' == '卖出':
-                new_ratio = 0
+            # if 'operation' == '卖出':
+            #     new_ratio = 0
 
             logger.info(f"🛠️ 开始处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
 
@@ -1008,18 +1012,20 @@ class CommonHoldingProcessor:
 
 if __name__ == '__main__':
     # 定义文件路径
-    # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-    # combination_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
+    account_holding_main()
+    account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+    strategy_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx"
+    trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
     com = CommonHoldingProcessor()
 
-    strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
-    account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx'
-    trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx.xlsx'
-    account_name = '长城证券'
-    strategy_name = '一枝梨花'
+    # strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
+    # account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx'
+    # trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx.xlsx'
+    account_name = '川财证券'
+    strategy_name = 'AI市场追踪策略'
     # diff = com.get_difference_holding(account_file, '长城证券',strategy_file, 'AI市场追踪策略' )
     # diff = com.get_difference_holding(r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx", r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\account_info.xlsx',account_name="中泰证券")
-    diff = com.extract_different_holding(account_file, account_name, strategy_file,strategy_name)
+    diff = com.extract_different_holding(account_file, account_name, strategy_file, strategy_name)
     to_operate = com.filter_executed_operations(diff,account_name)
     print(diff)
     print('-'*50)
