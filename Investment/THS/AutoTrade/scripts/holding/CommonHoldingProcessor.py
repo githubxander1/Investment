@@ -36,7 +36,6 @@ from Investment.THS.AutoTrade.config.settings import (
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.data_process import write_operation_history, save_to_excel_append, read_operation_history, read_portfolio_or_operation_data
-from Investment.THS.AutoTrade.scripts.holding.account_holding import account_holding_main
 from Investment.THS.AutoTrade.scripts.holding.trade_history import read_today_trade_history
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -477,7 +476,7 @@ class CommonHoldingProcessor:
                 return False
 
     # 获取账户持仓数据差异
-    def get_difference_holding(self, holding_file, account_file, account_name=None, strategy_filter=None):
+    def get_difference_holding(self, holding_file, account_file, account_name=None):
         """
         对比账户实际持仓与策略/组合今日持仓数据，找出差异：
             - 需要卖出：在账户中存在，但不在策略/组合今日持仓中；
@@ -485,7 +484,7 @@ class CommonHoldingProcessor:
         :param holding_file: 持仓文件路径
         :param account_file: 账户文件路径
         :param account_name: 账户名称
-        :param strategy_filter: 策略过滤函数，用于筛选特定策略的数据
+        # :param strategy_filter: 策略过滤函数，用于筛选特定策略的数据
         """
         logger.info("-" * 50)
         logger.info(f"开始：对比账户实际持仓与{holding_file}数据...")
@@ -504,13 +503,13 @@ class CommonHoldingProcessor:
                     logger.error(f"{file_desc}不存在: {file_path}")
                     return {"error": f"{file_desc}不存在"}
 
-            # 判断是否需要更新账户数据
-            if self._should_update_account_data():
-                update_result = self._update_account_holding_cache(account_file, account_name)
-                if not update_result:
-                    return {"error": f"更新{account_name}账户持仓数据失败"}
-            else:
-                logger.info(f"✅ 使用缓存的{account_name}账户持仓数据")
+            # # 判断是否需要更新账户数据
+            # if self._should_update_account_data():
+            #     update_result = self._update_account_holding_cache(account_file, account_name)
+            #     if not update_result:
+            #         return {"error": f"更新{account_name}账户持仓数据失败"}
+            # else:
+            #     logger.info(f"✅ 使用缓存的{account_name}账户持仓数据")
 
             # 读取策略/组合今日持仓数据（这部分始终实时读取，不缓存）
             today = str(datetime.date.today())
@@ -533,9 +532,9 @@ class CommonHoldingProcessor:
                 today_strategy_df = pd.DataFrame(columns=['股票名称'])
 
             # 应用策略过滤器（如果提供）
-            if strategy_filter and not today_strategy_df.empty and '名称' in today_strategy_df.columns:
-                today_strategy_df = today_strategy_df[today_strategy_df.apply(strategy_filter, axis=1)]
-                logger.info(f"应用策略过滤器后，策略数据条数: {len(today_strategy_df)}")
+            # if strategy_filter and not today_strategy_df.empty and '名称' in today_strategy_df.columns:
+            #     today_strategy_df = today_strategy_df[today_strategy_df.apply(strategy_filter, axis=1)]
+            #     logger.info(f"应用策略过滤器后，策略数据条数: {len(today_strategy_df)}")
 
             # 需要排除的股票名称
             excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
@@ -634,11 +633,11 @@ class CommonHoldingProcessor:
             logger.error(error_msg, exc_info=True)
             return {"error": error_msg}
 
-    def operate_result(self, holding_file, portfolio_today_file, account_name=None, strategy_filter=None):
+    def operate_result(self, holding_file, Account_holding_file, account_name=None, strategy_filter=None):
         """
         执行调仓操作，包含异常处理和重试机制
         :param holding_file: 持仓文件路径
-        :param portfolio_today_file: 今日调仓文件路径
+        :param Account_holding_file: 今日调仓文件路径
         :param account_name: 账户名称
         :param strategy_filter: 策略过滤函数，用于筛选特定策略的数据
         """
@@ -650,14 +649,14 @@ class CommonHoldingProcessor:
         while retry_count < max_retries:
             try:
                 # 1.获取持仓差异（首次获取，使用缓存）
-                diff_result_df = self.get_difference_holding(holding_file, Account_holding_file, account_name, strategy_filter)
+                diff_result_df = self.get_difference_holding(holding_file, Account_holding_file, account_name)
 
                 if 'error' in diff_result_df:
                     logger.error(f"获取持仓差异失败: {diff_result_df['error']}")
                     return False
 
                 # 2.过滤已执行的操作
-                filtered_diff_result = self.filter_executed_operations(diff_result_df)
+                filtered_diff_result = self.filter_executed_operations(diff_result_df, account_name)
                 
                 to_sell = filtered_diff_result.get('to_sell', pd.DataFrame())
                 to_buy = filtered_diff_result.get('to_buy', pd.DataFrame())
@@ -975,19 +974,45 @@ class CommonHoldingProcessor:
     def operate_strategy(self, strategy_name: str, account_name: str = None) -> bool:
         """执行策略"""
         diff = com.extract_different_holding(account_file, account_name, strategy_file, strategy_name)
-        to_operate = com.filter_executed_operations(diff, account_name)
+        filtered_result = com.filter_executed_operations(diff, account_name)
+        to_sell = filtered_result.get('to_sell', pd.DataFrame())
+        to_buy = filtered_result.get('to_buy', pd.DataFrame())
 
         # 标记是否执行了任何交易操作
         any_trade_executed = False
 
         # 遍历每一项卖出操作，执行交易
-        for idx, op in to_operate.iterrows():
-            stock_name = op['股票名称'] if '股票名称' in op else op['股票名称']
+        for idx, op in to_sell.iterrows():
+            stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
             operation = op['操作']
             # 安全获取可能不存在的字段
             new_ratio = op.get('新比例%', None)
-            # if 'operation' == '卖出':
-            #     new_ratio = 0
+            if operation == '卖出':
+                new_ratio = 0
+
+            logger.info(f"🛠️ 开始处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
+
+            # 切换到对应账户
+            self.common_page.change_account(account_name)
+            logger.info(f"✅ 已切换到账户: {account_name}")
+
+            # 调用交易逻辑
+            status, info = self.trader.operate_stock(operation, stock_name, new_ratio)
+
+            # 检查交易是否成功执行
+            if status is None:
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                continue
+
+            # 标记已执行交易
+            any_trade_executed = True
+
+        # 遍历每一项买入操作，执行交易
+        for idx, op in to_buy.iterrows():
+            stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
+            operation = op['操作']
+            # 安全获取可能不存在的字段
+            new_ratio = op.get('新比例%', None)
 
             logger.info(f"🛠️ 开始处理: {operation} {stock_name} {new_ratio} {strategy_name} {account_name}")
 
@@ -1008,25 +1033,30 @@ class CommonHoldingProcessor:
 
         print(diff)
         print('-' * 50)
-        print(to_operate)
+        print("需要卖出的股票:")
+        print(to_sell)
+        print("需要买入的股票:")
+        print(to_buy)
 
 if __name__ == '__main__':
     # 定义文件路径
-    account_holding_main()
-    account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-    strategy_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx"
-    trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
+    # account_holding_main()
+    # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+    # strategy_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx"
+    # trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
     com = CommonHoldingProcessor()
 
-    # strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
-    # account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx'
-    # trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx.xlsx'
+    strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx"
+    account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx'
+    trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx'
     account_name = '川财证券'
     strategy_name = 'AI市场追踪策略'
     # diff = com.get_difference_holding(account_file, '长城证券',strategy_file, 'AI市场追踪策略' )
     # diff = com.get_difference_holding(r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx", r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\account_info.xlsx',account_name="中泰证券")
     diff = com.extract_different_holding(account_file, account_name, strategy_file, strategy_name)
     to_operate = com.filter_executed_operations(diff,account_name)
+
+    com.operate_strategy(strategy_name,account_name)
     print(diff)
     print('-'*50)
     print(to_operate)

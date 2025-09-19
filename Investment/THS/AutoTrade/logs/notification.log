@@ -2061,3 +2061,4 @@ GPT定期精选 超讯通信 603322 沪深A股 39.71 30.77 2025-09-17 IT服务[
 [33m2025-09-19 09:59:30 - WARNING - 交易通知: 执行AI策略调仓操作时出错: cannot unpack non-iterable bool object[0m
 [33m2025-09-19 10:11:32 - WARNING - 交易通知: ❌ 未获取到任何机器人持仓数据[0m
 [33m2025-09-19 10:11:32 - WARNING - 交易通知: ❌ 未获取到机器人持仓数据，跳过调仓操作[0m
+[33m2025-09-19 21:54:45 - WARNING - 交易通知: 策略调仓执行异常: CommonHoldingProcessor.get_difference_holding() takes from 3 to 4 positional arguments but 5 were given[0m

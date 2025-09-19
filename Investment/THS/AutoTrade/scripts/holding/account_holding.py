@@ -163,11 +163,11 @@ def save_all_accounts_to_excel(all_accounts_data: dict, filename: str = Account_
     print(f"所有账户数据已保存到 {filename}")
 
 
-def account_holding_main():
+def update_account_holding_main():
     """主函数：获取所有账户数据并保存到Excel"""
-    refresh_account_holding()
+    update_account_to_computer()
     # app_restart()
-    time.sleep(2)
+    time.sleep(5)
     all_accounts_data = {}
     
     # 获取所有账户的数据
@@ -228,11 +228,12 @@ def app_restart():
         d.app_start("com.hexin.zhanghu")
     time.sleep(5)
 
-def refresh_account_holding():
+def update_account_to_computer():
     """
     刷新账户持仓数据
     """
     try:
+        print("开始同步数据到电脑上")
         d = u2.connect()
         print("设备连接成功:", d.info)
 
@@ -474,6 +475,7 @@ def refresh_account_holding():
         if d(resourceId="com.hexin.zhanghu:id/title")[3].exists():
             print("通过mainTitleTv确认进入'我的持仓'页面")
             in_holding_page = True
+            print("结束上传数据到电脑上")
         elif d(text="盈亏日历").exists():
             print("通过文本确认进入'我的持仓'页面")
             in_holding_page = True
@@ -506,6 +508,6 @@ if __name__ == "__main__":
     # 2. 根据需要修改ACCOUNTS中的账户信息
     # 3. 运行脚本将自动获取所有账户数据并保存到Excel文件
     
-    account_holding_main()
-    # refresh_account_holding()
+    update_account_holding_main()
+    # update_account_to_computer()
     # app_restart()
