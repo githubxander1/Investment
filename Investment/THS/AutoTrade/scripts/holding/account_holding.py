@@ -88,26 +88,32 @@ def extract_position_details(resp_json: dict, account_name: str) -> dict:
         #转为%形式，保留2位小数
 
         # 安全地将字符串转换为浮点数
-        try:
-            position_rate_value = float(item.get("position_rate", 0))
-        except (ValueError, TypeError):
-            position_rate_value = 0
+        # try:
+        #     position_rate_value = float(item.get("position_rate", 0))#接口计算有误
+        # except (ValueError, TypeError):
+        #     position_rate_value = 0
+        value = item.get("value", 0)
+        # 持仓占比=持仓金额/总资产
+        position_rate_value = float(value) / float(total_asset)
+        # 转换为百分比形式，保留2位小数
+        position_rate_value = round(position_rate_value * 100, 2)
 
         # 字段映射（与界面展示一一对应）
         detail = {
             "账户": account_name,
             "股票代码": code,
             "股票名称": item.get("name", ""),
-            "持有金额": item.get("value", 0),  # 对应界面"持有金额"
-            "当日盈亏": item.get("d_profit", 0),  # 对应界面"当日盈亏"
+            "持有金额": value,
+            "当日盈亏": item.get("pre_profit", 0),
+            "当日涨幅/当日盈亏率": item.get("pre_rate", 0),
+            "持有盈亏": item.get("hold_profit", 0),
+            "持有盈亏率": item.get("hold_rate", 0),
             "成本价": item.get("cost", 0),
             "当前价": item.get("price", 0),
             "持仓天数": item.get("hold_days", 0),
-            "持仓占比": round(position_rate_value * 100, 2),
+            "持仓占比": position_rate_value,
             "回本涨幅": item.get("back", 0),
             "持有数量": item.get("count", 0),
-            "持有盈亏": item.get("hold_profit", 0),
-            "持有盈亏率": item.get("hold_rate", 0),
             "累积盈亏": item.get("position_rate", 0),
             "本周盈亏": item.get("w_profit", 0),
             "今年盈亏": item.get("y_profit", 0),
@@ -165,7 +171,7 @@ def save_all_accounts_to_excel(all_accounts_data: dict, filename: str = Account_
 
 def update_account_holding_main():
     """主函数：获取所有账户数据并保存到Excel"""
-    update_account_to_computer()
+    # update_account_to_computer()
     # app_restart()
     time.sleep(5)
     all_accounts_data = {}

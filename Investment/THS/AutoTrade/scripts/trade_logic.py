@@ -1,6 +1,8 @@
 # trade_logic.py
 import time
 
+import pandas as pd
+
 from Investment.THS.AutoTrade.pages.page import THSPage
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
 
@@ -9,6 +11,9 @@ import uiautomator2 as u2
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
+# from Investment.回测.策略回测.其他.N日后涨跌幅大于0的概率 import file_path
+
+# from Investment.回测.策略回测.main import file_path
 
 logger = setup_logger('trade.log')
 common_page = CommonPage()
@@ -16,12 +21,13 @@ common_page = CommonPage()
 class TradeLogic:
     def __init__(self):
         self.d = u2.connect()
-        self.account = AccountInfo()
+        self.account_name = None
+        # self.account = AccountInfo()
         self.ths_page = THSPage(self.d)
         self._current_stock_name = None
         self.VOLUME_MAX_BUY = 5000
 
-    def calculate_buy_volume(self, real_price, buying_power, new_ratio=None):
+    def calculate_buy_volume(self, account_asset,  stock_price, new_ratio=None,):
         """
         根据可用资金和价格计算买入数量
         :param real_price: 实时价格
@@ -30,24 +36,32 @@ class TradeLogic:
         :return: 计算出的股数，或 None 表示失败
         """
         try:
-            if buying_power is None or real_price is None:
-                logger.warning(f"计算买入数量失败：buying_power={buying_power}, real_price={real_price}")
-                return None
+            # if buying_power is None or real_price is None:
+            #     logger.warning(f"计算买入数量失败：buying_power={buying_power}, real_price={real_price}")
+            #     return None
 
             # 如果提供了新比例，则按比例计算买入金额
             if new_ratio is not None:
-                try:
-                    # 按比例计算应该使用的资金
-                    target_amount = buying_power * (float(new_ratio) / 100)
-                    volume = int(target_amount / real_price)
-                    logger.info(f"按比例计算买入: 资金{buying_power} * 比例{new_ratio}% = 目标金额{target_amount}, 实时价格{real_price}, 计算股数{volume}")
-                except (ValueError, TypeError) as e:
-                    logger.warning(f"新比例转换失败: {new_ratio}, 使用默认计算方式: {e}")
-                    volume = int((buying_power if buying_power < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / real_price)
+                # 计算目标金额 = 账户总资产 * 新比例% / 股票价格
+                target_amount = account_asset * float(new_ratio)
+                logger.info(f"目标投资金额: {account_asset} * {new_ratio}% = {target_amount}")
+
+                # 计算股数 = 目标金额 / 价格
+                volume = int(target_amount / stock_price)
+                logger.info(f"计算股数: {target_amount} / {stock_price} = {volume}")
+
+                # 转换为100的倍数
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    logger.warning("计算出的买入股数不足100股")
+                    return None
+
+                logger.info(f"计算买入股数: {volume}")
+                return volume
             else:
                 # 原有逻辑：使用最大可用资金或VOLUME_MAX_BUY中的较小值
-                volume = int((buying_power if buying_power < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / real_price)
-                logger.info(f"使用默认计算方式: 可用资金{buying_power}, 最大买入金额{self.VOLUME_MAX_BUY}, 实时价格{real_price}, 计算股数{volume}")
+                volume = int((account_asset if account_asset < self.VOLUME_MAX_BUY else self.VOLUME_MAX_BUY) / stock_price)
+                logger.info(f"使用默认计算方式: 可用资金{account_asset}, 最大买入金额{self.VOLUME_MAX_BUY}, 实时价格{stock_price}, 计算股数{volume}")
 
             volume = (volume // 100) * 100  # 对齐100股整数倍
             if volume < 100:
@@ -58,7 +72,7 @@ class TradeLogic:
             logger.error(f"买入数量计算失败: {e}")
             return None
 
-    def calculate_sell_volume(self, available_shares, new_ratio=None):
+    def calculate_sell_volume(self, account_asset, available_shares, stock_price, new_ratio=None):
         """
         根据可用数量和策略比例计算卖出数量
         :param available_shares: 可卖数量
@@ -82,15 +96,32 @@ class TradeLogic:
             if new_ratio is None or new_ratio <= 0:
                 volume = available_shares  # 全部卖出
                 logger.info("全部卖出")
-            elif new_ratio >= 100:
-                # 如果新比例大于等于100%，则全部卖出
-                volume = available_shares
-                logger.info("新比例大于等于100%，全部卖出")
             else:
                 # 按比例计算应该保留的数量，然后计算卖出数量
-                # 例如：当前持有1000股，新比例要求30%，则保留300股，卖出700股
-                keep_volume = int(available_shares * (new_ratio / 100))
-                volume = available_shares - keep_volume
+                # 例如：当前持有1000股，新比例要求30%，则用总资产*新比例%计算目标持仓金额，然后根据金额/价格计算目标持仓股数，然后根据当前股数-目标持仓股数计算卖出数量
+
+                # 计算目标金额 = 账户总资产 * 新比例% / 股票价格
+                target_amount = account_asset * float(new_ratio)
+                logger.info(f"目标投资金额: {account_asset} * {new_ratio}% = {target_amount}")
+
+                # 计算股数 = 目标金额 / 价格
+                volume = int(target_amount / stock_price)
+                logger.info(f"计算股数: {target_amount} / {stock_price} = {volume}")
+
+                # 转换为100的倍数
+                volume = (volume // 100) * 100
+                if volume < 100:
+                    logger.warning("计算出的买入股数不足100股")
+                    return None
+
+                logger.info(f"计算卖出时，需要持仓股数: {volume}")
+                keep_volume = int(available_shares - volume)
+                if keep_volume < 100:
+                    logger.warning("保留数量不足100股")
+                    keep_volume = 0
+                    volume = available_shares
+                else:
+                    volume = available_shares - keep_volume
                 logger.info(f"按比例计算卖出: 当前持有{available_shares}股, 新比例{new_ratio}%, 保留{keep_volume}股, 卖出{volume}股")
 
             volume = (volume // 100) * 100
@@ -104,22 +135,95 @@ class TradeLogic:
             logger.error(f"卖出数量计算失败: {e}")
             return None
 
-    def buy_volume(self, operation, stock_name, new_ratio=None):
-        # 1. 可用资金
-        available_funds = self.account.get_buying_power()
+    def calculate_batch_buy_volumes(self, stocks_info, total_buying_power):
+        """
+        根据总资金和各股票的目标比例，批量计算买入数量
+        :param stocks_info: 股票信息列表，每个元素包含 {'stock_name', 'real_price', 'target_ratio'}
+        :param total_buying_power: 总可用资金
+        :return: 每只股票的买入数量字典
+        """
+        try:
+            if not stocks_info or total_buying_power <= 0:
+                logger.warning("无效的输入参数")
+                return {}
 
-        # 2. 买入
-        self.ths_page.click_operate_button(operation)
+            # 首先计算各股票的目标资金
+            target_amounts = {}
+            total_target_ratio = sum([stock['新比例%'] for stock in stocks_info])
+            
+            # 如果总比例超过100%，则按比例缩放
+            scale_factor = 1.0
+            if total_target_ratio > 100:
+                scale_factor = 100.0 / total_target_ratio
+                logger.info(f"目标比例总和超过100% ({total_target_ratio}%)，按比例缩放: {scale_factor}")
 
-        # 3. 搜索股票
-        self.ths_page.search_stock(stock_name)
+            # 计算每只股票的目标资金和数量
+            buy_volumes = {}
+            for stock in stocks_info:
+                stock_name = stock['stock_name']
+                real_price = stock['real_price']
+                target_ratio = stock['target_ratio'] * scale_factor
+                
+                # 计算目标资金
+                target_amount = total_buying_power * (target_ratio / 100)
+                
+                # 计算股数
+                volume = int(target_amount / real_price)
+                volume = (volume // 100) * 100  # 对齐100股整数倍
+                
+                buy_volumes[stock_name] = volume
+                logger.info(f"{stock_name}: 比例{target_ratio:.2f}%，目标资金{target_amount:.2f}，价格{real_price}，计算股数{volume}")
 
-        # 4. 实时价格
-        real_time_price = self.ths_page._get_real_price()
+            return buy_volumes
+        except Exception as e:
+            logger.error(f"批量买入数量计算失败: {e}")
+            return {}
 
-        # 5. 计算数量-买（可用资金 实时价格 新比例）
-        volume = self.calculate_buy_volume(real_time_price, available_funds, new_ratio)
-        return volume
+    # def buy_volume(self, operation, stock_name, new_ratio=None):
+    #     # 1. 可用资金
+    #     available_funds = self.account.get_buying_power()
+    #
+    #     # 2. 买入
+    #     self.ths_page.click_operate_button(operation)
+    #
+    #     # 3. 搜索股票
+    #     self.ths_page.search_stock(stock_name)
+    #
+    #     # 4. 实时价格
+    #     real_time_price = self.ths_page._get_real_price()
+    #
+    #     # 5. 计算数量-买（可用资金 实时价格 新比例）
+    #     volume = self.calculate_buy_volume(real_time_price, available_funds, new_ratio)
+    #     return volume
+    # 获取相应账户里某股票的'持有数量'的值
+    def get_account_info(self, account_name, stock_name):
+        file_path = r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+        account_balance_data = pd.read_excel(file_path, sheet_name='账户汇总')
+        account_holding_data = pd.read_excel(file_path, sheet_name=account_name)
+        pd.set_option('display.max_columns',None)
+        pd.set_option('display.max_colwidth',None)
+        pd.set_option('display.width',None)
+
+        print(account_holding_data)
+        print(account_balance_data)
+
+        account_balance = account_balance_data[account_balance_data['账户名称'] == account_name]['账户余额'].values[0]
+        account_asset = account_balance_data[account_balance_data['账户名称'] == account_name]['总资产'].values[0]
+        stock_data = account_holding_data[account_holding_data['股票名称'] == stock_name]
+
+
+        if not stock_data.empty:
+            stock_available = stock_data['持有数量'].values[0]
+            stock_ratio = stock_data['持仓占比'].values[0]
+            stock_price = stock_data['当前价'].values[0]
+            # return True,stock_available
+        else:
+            logger.warning(f"未找到{account_name}的账户 {stock_name}")
+            stock_available = 0
+            stock_ratio = 0
+            stock_price = 0
+        logger.info(f"获取到 {account_name} 账户余额: {account_balance}, {stock_name} 当前价 {stock_price} 持有数量 {stock_available} 持仓比例 {stock_ratio}")
+        return account_asset, account_balance, stock_available, stock_ratio, stock_price
 
     def sell_volume(self, operation, stock_name, ratio=0):
         # 1. 持仓可用
@@ -138,7 +242,7 @@ class TradeLogic:
         return volume
 
 
-    def operate_stock(self, operation, stock_name, volume=None, new_ratio=None):
+    def operate_stock(self, operation, stock_name, volume=None):
         """
         确保在账户页
         更新账户数据：买入时的可用自己，卖出时的可用数量
@@ -149,81 +253,13 @@ class TradeLogic:
         提交
         发送通知
         """
-        # self.goto_account_page()
-        # self.ths_page.ensure_on_account_page()
         # 进入到 账户 页面
         common_page.goto_account_page()
         try:
-            # 更新账户数据
-            # self._current_stock_name = stock_name
-            # account_info = AccountInfo()
-
-            # 初始化资金: 可用资金,可卖数量,卖出比例
-            buy_available = None
-            sale_available = None
-            # new_ratio = None  # 这行代码是多余的，因为new_ratio是参数传入的
-
-            # 点击持仓
-            self.ths_page.click_holding_stock_button()
-            time.sleep(1)
-            # 如果是买入，则获取可用资金，如果是卖出，则获取可卖数量
-            if operation == "买入":
-                buy_available = account_info.get_buying_power()
-            else:
-                stock_exist, sale_available = account_info.get_stock_available(self._current_stock_name)
-                if not stock_exist:
-                    error_info = f"{self._current_stock_name} 没有持仓"
-                    logger.error(error_info)
-                    return False, error_info
-
-                # 如果传入了固定股数，则直接使用
-                if volume is not None:
-                    logger.info(f"使用固定股数: {volume}")
-                else:
-                    # 计算卖出数量
-                    volume = self.calculate_sell_volume(sale_available, new_ratio)
-                    if volume is None:
-                        error_msg = "卖出数量计算失败"
-                        logger.error(error_msg)
-                        return False, error_msg
-
-                    # 检查计算出的数量是否足够
-                    if volume < 100:
-                        error_msg = f"计算出的卖出数量不足100股: {volume}"
-                        logger.error(error_msg)
-                        return False, error_msg
-
             # # 点击按钮 买/卖 操作按钮（tab)
             self.ths_page.click_operate_button(operation)
             # 搜索股票
             self.ths_page.search_stock(stock_name)
-
-            # 如果是买入操作且没有指定固定股数，则计算股数
-            if operation == "买入":
-                # 如果传入了固定股数，则直接使用
-                if volume is not None:
-                    logger.info(f"使用固定股数进行买入: {volume}股")
-                else:
-                    # 获取实时价格
-                    real_price = self.ths_page._get_real_price()
-                    if not real_price:
-                        return False, "无法获取实时价格"
-
-                    volume = self.calculate_buy_volume(real_price, buy_available, new_ratio)
-                    if volume is None:
-                        return False, "买入数量计算失败"
-
-                    # 检查计算出的数量是否足够
-                    if volume < 100:
-                        error_msg = f"计算出的买入数量不足100股: {volume}"
-                        logger.error(error_msg)
-                        return False, error_msg
-
-            # 确保volume不为None且是有效数值
-            if volume is None:
-                error_msg = "交易数量计算结果为None"
-                logger.error(error_msg)
-                return False, error_msg
 
             # 输入交易数量
             self.ths_page.input_volume(int(volume))
@@ -231,10 +267,9 @@ class TradeLogic:
             self.ths_page.click_submit_button(operation)
             # 处理弹窗
             success, info = self.ths_page.dialog_handle()
-            # 点击返回
-            # self.click_back()
             # 发送交易结果通知
             send_notification(f"{operation} {stock_name} {volume}股 {success} {info}")
+            # 如果成功，则更新持仓数据
             # if success:
             #     time.sleep(1)
             #     self.update_holding_info_all()
@@ -247,5 +282,16 @@ class TradeLogic:
 
 if __name__ == '__main__':
     trader = TradeLogic()
-    trader.operate_stock('卖出', '超讯通信', 100)
+    # 获取账户余额
+    # trader.get_account_balance('长城证券')
+    # 获取某账户里某股票的'持有数量'的值
+    trader.get_account_info('中泰证券', '东信和平')
+    '''
+    买入：
+    1.成功
+    2.资金不足
+    3.警示：st华通，*st东通
+    4.无权限：双创'''
+    # trader.calculate_batch_buy_volumes()
+    # trader.operate_stock('卖出', '*st东通', 100)
     # trader.operate_stock('买入', '中国电信', 100)

@@ -383,7 +383,7 @@ def operate_result(max_retries=3):
                 for _, row in to_sell.iterrows():
                     stock_name = row['标的名称']
                     operation = '卖出'
-                    new_ratio = 0
+                    new_ratio = 0  # 设置为0表示全仓卖出
 
                     # 检查是否已在历史记录中
                     if not history_df.empty:

@@ -75,10 +75,10 @@ def extract_data(data):
             # "market_code": "33" # 33:深圳,17:上海
         })
     all_data_df = pd.DataFrame(all_data)
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now()
     # 昨天
-    today = (today- datetime.timedelta(days=1))
-    all_data_df.to_excel("ai_strategy_xuangu.xlsx", sheet_name= f'{today}', index=False)
+    yesterday = (today - timedelta(days=1)).strftime("%Y-%m-%d")
+    all_data_df.to_excel("ai_strategy_xuangu.xlsx", sheet_name= f'{yesterday}', index=False)
     print(all_data_df)
 
 
