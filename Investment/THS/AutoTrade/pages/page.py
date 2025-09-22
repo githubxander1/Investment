@@ -360,8 +360,8 @@ class THSPage:
             # 处理成功提交的情况
             if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
                 logger.info("检测到'委托确认'提示")
-                confirm_buttons.click()
-                logger.info("点击确认按钮")
+                # confirm_buttons.click()
+                # logger.info("点击确认按钮")
                 time.sleep(1)
 
                 # 尝试多种方式定位弹窗元素
@@ -438,6 +438,7 @@ class THSPage:
                     self.d.click(0.5, 0.5)
                     logger.info("尝试点击屏幕中央位置")
 
+                time.sleep(1)
                 # 检查是否委托已提交
                 if '委托已提交' in new_prompt_text:
                     confirm_buttons.click()
@@ -483,6 +484,48 @@ class THSPage:
                         self.d.click(0.5, 0.5)
                         logger.info("尝试点击屏幕中央位置")
 
+                    # 尝试多种方式定位弹窗元素
+                    # 方式1: 标准ID定位
+                    dialog_title_new = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+                    prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+                    # prompt_content_second = self.d(className='android.widget.TextView')[2]
+                    prompt_content_second = self.d(className='android.widget.TextView', index=2)
+                    # 获取文本
+                    prompt_content_third = self.d(className='android.widget.TextView', index=3)
+
+                    # prompt_content = prompt_content if prompt_content.exists else prompt_content_second if prompt_content_second.exists else prompt_content_third if prompt_content_third.exists else "未找到弹窗内容"
+                    # prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+
+                    # 方式2: 通过文本特征定位
+                    fund_error_elements = self.d(textContains='可用资金不足')
+                    lack_error_elements = self.d(textContains='不足')
+                    # # 获取新弹窗的标题和内容
+                    new_title_text = ""
+                    new_prompt_text = ""
+                    #
+                    # # 尝试获取标题
+                    # if dialog_title_new.exists:
+                    #     new_title_text = dialog_title_new.get_text()
+                    #     logger.debug(f"弹窗标题(ID方式): {new_title_text}")
+                    #
+                    # # 尝试获取内容
+                    if prompt_content.exists:
+                        new_prompt_text = prompt_content.get_text()
+                        logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+                    elif prompt_content_second.exists:
+                        new_prompt_text = prompt_content_second.get_text()
+                        logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+                    elif prompt_content_third.exists:
+                        new_prompt_text = prompt_content_third.get_text()
+                        logger.debug(f"新弹窗内容(ID方式): {new_prompt_text}")
+                    elif fund_error_elements.exists or lack_error_elements.exists:
+                        # 如果通过ID找不到，尝试通过文本特征
+                        if fund_error_elements.exists:
+                            new_prompt_text = fund_error_elements.get_text()
+                            logger.debug(f"新弹窗内容(文本特征'资金'): {new_prompt_text}")
+                        elif lack_error_elements.exists:
+                            new_prompt_text = lack_error_elements.get_text()
+                            logger.debug(f"新弹窗内容(文本特征'不足'): {new_prompt_text}")
                     logger.warning(f"委托失败，{new_prompt_text}")
                     return False, new_prompt_text
 

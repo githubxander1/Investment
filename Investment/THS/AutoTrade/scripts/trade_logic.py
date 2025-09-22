@@ -196,10 +196,11 @@ class TradeLogic:
     #     volume = self.calculate_buy_volume(real_time_price, available_funds, new_ratio)
     #     return volume
     # 获取相应账户里某股票的'持有数量'的值
-    def get_account_info(self, account_name, stock_name):
-        file_path = r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-        account_balance_data = pd.read_excel(file_path, sheet_name='账户汇总')
-        account_holding_data = pd.read_excel(file_path, sheet_name=account_name)
+    def get_account_info(self,account_file, account_name, stock_name):
+        # file_path = r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+        # account_file = r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+        account_balance_data = pd.read_excel(account_file, sheet_name='账户汇总')
+        account_holding_data = pd.read_excel(account_file, sheet_name=account_name)
         pd.set_option('display.max_columns',None)
         pd.set_option('display.max_colwidth',None)
         pd.set_option('display.width',None)

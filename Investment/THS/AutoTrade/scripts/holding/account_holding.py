@@ -171,7 +171,9 @@ def save_all_accounts_to_excel(all_accounts_data: dict, filename: str = Account_
 
 def update_account_holding_main():
     """主函数：获取所有账户数据并保存到Excel"""
-    # update_account_to_computer()
+    update_account_to_computer()
+    # 浏览器无头模式打开网址：s.hexin.cn
+
     # app_restart()
     time.sleep(5)
     all_accounts_data = {}
@@ -246,7 +248,7 @@ def update_account_to_computer():
         # 打开应用
         d.app_start("com.hexin.zhanghu")
         print("打开账本")
-        time.sleep(3)
+        time.sleep(10)
         # 获取应用状态
         # app_status = d.app_current()
         # print("当前应用状态:", app_status)

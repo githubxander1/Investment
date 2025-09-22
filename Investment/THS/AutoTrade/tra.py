@@ -7,31 +7,25 @@ from datetime import time as dt_time
 import pandas as pd
 import uiautomator2 as u2
 
-from Investment.THS.AutoTrade.pages.account_info import common_page
+from Investment.THS.AutoTrade.pages.account_info import common_page, AccountInfo
 from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_device_connected
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
-from Investment.THS.AutoTrade.scripts.holding.RobotHoldingProcessor import RobotHoldingProcessor
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
-from Investment.THS.AutoTrade.scripts.portfolio_today.Lhw_portfolio_today import Lhw_main
-from Investment.THS.AutoTrade.scripts.portfolio_today.Robots_portfolio_today import Robot_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
 from Investment.THS.AutoTrade.pages.page import THSPage
 from Investment.THS.AutoTrade.scripts.data_process import read_operation_history, process_data_to_operate
 # 导入新的策略处理模块
-from Investment.THS.AutoTrade.scripts.holding.StrategyHoldingProcessor import StrategyHoldingProcessor
-from Investment.THS.AutoTrade.scripts.holding.LhwHoldingProcessor import LhwHoldingProcessor
 from Investment.THS.AutoTrade.scripts.holding.CombinationHoldingProcessor import CombinationHoldingProcessor
 from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.config.settings import (
-    Strategy_portfolio_today_file,
     Combination_portfolio_today_file,
     OPERATION_HISTORY_FILE,
     MIN_DELAY,
     MAX_DELAY,
     MAX_RUN_TIME,
-    Robot_portfolio_today_file, Account_holding_file, Lhw_portfolio_today_file,
+    Account_holding_file,
 )
 
 # 导入你的20日监控模块
@@ -42,8 +36,8 @@ from Investment.THS.AutoTrade.utils.notification import send_notification
 logger = setup_logger("trade_main.log")
 trader = TradeLogic()
 
-# 定义账户列表
-ACCOUNTS = ["长城证券", "川财证券", "中泰证券"]
+# 定义账户列表 - 只保留中山证券和中泰证券
+ACCOUNTS = ["中山证券", "中泰证券"]
 
 # 添加全局变量来跟踪是否已执行过信号检测
 morning_signal_checked = False
@@ -94,42 +88,6 @@ def switch_to_next_account(d, current_account_index):
 
     return next_account_index
 
-async def execute_strategy_trades():
-    """执行AI策略交易"""
-    try:
-        logger.info("🚀 开始执行AI策略交易...")
-        processor = StrategyHoldingProcessor()
-        success = processor.execute_strategy_trades()
-        if success:
-            logger.info("✅ AI策略交易执行完成")
-            # send_notification("AI策略交易执行完成")
-        else:
-            logger.error("❌ AI策略交易执行失败")
-            send_notification("AI策略交易执行失败")
-        return success
-    except Exception as e:
-        logger.error(f"❌ AI策略交易执行异常: {e}")
-        send_notification(f"AI策略交易执行异常: {e}")
-        return False
-
-async def execute_lhw_trades():
-    """执行量化王策略交易"""
-    try:
-        logger.info("🚀 开始执行量化王策略交易...")
-        processor = LhwHoldingProcessor()
-        success = processor.execute_lhw_trades()
-        if success:
-            logger.info("✅ 量化王策略交易执行完成")
-            # send_notification("量化王策略交易执行完成")
-        else:
-            logger.error("❌ 量化王策略交易执行失败")
-            send_notification("量化王策略交易执行失败")
-        return success
-    except Exception as e:
-        logger.error(f"❌ 量化王策略交易执行异常: {e}")
-        send_notification(f"量化王策略交易执行异常: {e}")
-        return False
-
 async def execute_combination_trades():
     """执行组合交易"""
     try:
@@ -146,24 +104,6 @@ async def execute_combination_trades():
     except Exception as e:
         logger.error(f"❌ 组合交易执行异常: {e}")
         send_notification(f"组合交易执行异常: {e}")
-        return False
-
-async def execute_robot_trades():
-    """执行机器人策略交易"""
-    try:
-        logger.info("🚀 开始执行机器人策略交易...")
-        processor = RobotHoldingProcessor()
-        success = processor.execute_robot_trades()
-        if success:
-            logger.info("✅ 机器人策略交易执行完成")
-            # send_notification("机器人策略交易执行完成")
-        else:
-            logger.error("❌ 机器人策略交易执行失败")
-            send_notification("机器人策略交易执行失败")
-        return success
-    except Exception as e:
-        logger.error(f"❌ 机器人策略交易执行异常: {e}")
-        send_notification(f"机器人策略交易执行异常: {e}")
         return False
 
 async def execute_guozhai_trades(d):
@@ -189,47 +129,28 @@ async def process_portfolio_updates():
     logger.info("🔄 开始处理组合更新...")
 
     # 初始化变量
-    robot_success = False
     combination_success = False
-    lhw_success = False
-
-    robot_data_df = None
     combination_data_df = None
-    lhw_data_df = None
 
-    # 执行各策略数据更新
+    # 执行组合数据更新
     try:
-        # Robot策略更新
-        # robot_result = await Robot_main()
-        # if robot_result:
-        #     robot_success, robot_data_df = robot_result
-
         # 组合更新
         combination_result = await Combination_main()
         if combination_result:
             combination_success, combination_data_df = combination_result
 
-        # 量化王策略更新
-        # lhw_result = await Lhw_main()
-        # if lhw_result:
-        #     lhw_success, lhw_data_df = lhw_result
-
     except Exception as e:
         logger.error(f"❌ 策略数据更新过程中发生异常: {e}")
         return False
 
-    # 如果有任何策略有新数据，则执行相应的交易
-    if robot_success or combination_success or lhw_success or lhw_success:
+    # 如果组合有新数据，则执行相应的交易
+    if combination_success:
         logger.warning("---------------开始自动化操作---------------")
         file_paths = []
 
         # 添加有新数据的策略文件路径
         if combination_success and combination_data_df is not None:
             file_paths.append(Combination_portfolio_today_file)
-        if lhw_success and lhw_data_df is not None:
-            file_paths.append(Lhw_portfolio_today_file)
-        if robot_success and robot_data_df is not None:
-            file_paths.append(Robot_portfolio_today_file)
 
         # 处理交易
         if file_paths:
@@ -264,14 +185,15 @@ async def main():
     current_account_index = 0
 
     # 初始化任务执行标志
-    strategy_diff_executed = False  # AI策略持仓差异分析是否已执行
     portfolio_updates_executed = False  # 组合和策略更新是否已执行
-    robot_executed = False  # Robot策略是否已执行
     guozhai_executed = False  # 国债逆回购是否已执行
 
     # 国债逆回购状态跟踪 - 为每个账户分别跟踪
     guozhai_status = {account: False for account in ACCOUNTS}
     guozhai_retry_status = {account: False for account in ACCOUNTS}  # 重试状态
+
+    # 初始化账户信息处理器
+    account_info = AccountInfo()
 
     while True:
         try:
@@ -313,23 +235,7 @@ async def main():
             global morning_signal_checked
             await check_morning_signals()
 
-            # 2. Robot策略任务（9:30-9:35）
-            if dt_time(9, 32) <= now <= dt_time(9, 40):
-                if not robot_executed:
-                    logger.warning("---------------------Robot策略任务开始---------------------")
-                    await execute_robot_trades()
-                    logger.warning("---------------------Robot策略任务结束---------------------")
-                    robot_executed = True
-                else:
-                    logger.debug("Robot策略任务已执行，跳过重复执行")
-            else:
-                logger.info("尚未进入Robot策略任务时间窗口，跳过执行")
-                # 离开时间窗口后重置标志位
-                if robot_executed:
-                    robot_executed = False
-                    logger.debug("离开Robot策略时间窗口，重置执行标志")
-
-            # 3. 组合更新任务（9:25-15:00）
+            # 2. 组合更新任务（9:25-15:00）
             if dt_time(9, 25) <= now <= dt_time(19, 0):
                 # if not portfolio_updates_executed:
                 logger.warning("---------------------组合更新任务开始---------------------")
@@ -348,27 +254,7 @@ async def main():
             #     portfolio_updates_executed = False
             #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
 
-            # 4. AI策略持仓差异分析任务（9:30-9:35）
-            if dt_time(9, 32) <= now <= dt_time(9, 40):
-                if not strategy_diff_executed:
-                    logger.warning("---------------------AI策略持仓差异分析开始---------------------")
-                    await execute_strategy_trades()
-                    logger.warning("---------------------AI策略持仓差异分析结束---------------------")
-                    strategy_diff_executed = True
-                else:
-                    logger.debug("AI策略持仓差异分析已执行，跳过重复执行")
-            else:
-                logger.info("尚未进入AI策略分析任务时间窗口，跳过执行")
-                # 离开时间窗口后重置标志位
-                if strategy_diff_executed:
-                    strategy_diff_executed = False
-                    logger.debug("离开AI策略分析时间窗口，重置执行标志")
-
-
-
-
-
-            # 5. 国债逆回购操作（14:56-15:10）
+            # 3. 国债逆回购操作（14:56-15:10）
             if dt_time(14, 56) <= now <= dt_time(15, 10):
                 if not guozhai_executed:
                     current_account = ACCOUNTS[current_account_index]

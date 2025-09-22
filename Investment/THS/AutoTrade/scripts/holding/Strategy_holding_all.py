@@ -25,9 +25,7 @@ logger = setup_logger("strategy_fetch.log")
 # )
 
 # 导入配置
-from Investment.THS.AutoTrade.config.settings import Strategy_ids, Strategy_id_to_name, Strategy_holding_file, \
-    Ai_Strategy_holding_file
-
+from Investment.THS.AutoTrade.config.settings import Strategy_ids, Strategy_id_to_name, Strategy_holding_file
 
 def parse_position_date(date_value):
     """统一解析日期时间值"""
@@ -163,9 +161,9 @@ def Ai_strategy_main():
         # today = datetime.today().strftime('%Y-%m-%d')
         # print(today)
         # all_positions_info.to_excel(Strategy_holding_file,sheet_name=today,index=False)
-        save_to_excel_by_date(all_positions_info, Ai_Strategy_holding_file)  # 按日期保存
+        save_to_excel_by_date(all_positions_info, Strategy_holding_file)  # 按日期保存
         time.sleep(2)
-        datas = compare_today_yesterday(Ai_Strategy_holding_file)  # 对比数据
+        datas = compare_today_yesterday(Strategy_holding_file)  # 对比数据
         # print(type(datas))
         return True, datas
     else:
@@ -205,10 +203,10 @@ def save_to_excel_by_date(df, file_path):
             #         # print(f"要保存的df : {combined_df}")
             #     df.to_excel(writer,sheet_name=today, index=False)
             #     logger.info(f"✅ 更新今日数据到Excel文件: {file_path}, 表名称: {today}")
-        # else:
-        #     # 新增 today sheet 并置顶
-        #     with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
-        #         df.to_excel(writer, sheet_name=today, index=False)
+        else:
+            # 新增 today sheet 并置顶
+            with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+                df.to_excel(writer, sheet_name=today, index=False)
 
         # 使用 openpyxl 移动 sheet 到最前面
     except Exception as e:
@@ -292,7 +290,7 @@ def sava_all_strategy_holding_data():
         if positions_df is not None:
             # positions_df.to_excel(Strategy_holding_file,index=False)
             all_holdings.append(positions_df)
-            # save_to_excel_by_date(positions_df, Strategy_holding_file)  # 按日期保存
+            save_to_excel_by_date(positions_df, Strategy_holding_file)  # 按日期保存
             # compare_today_yesterday(Strategy_holding_file)  # 对比数据
         else:
             logger.info(f"没有获取到策略数据，策略ID: {id}")
@@ -307,7 +305,7 @@ def sava_all_strategy_holding_data():
 if __name__ == '__main__':
     # import os
     #
-    # file_path = Ai_Strategy_holding_file
+    # file_path = Strategy_holding_file
     #
     # if os.path.exists(file_path):
     #     print(f"文件 {file_path} 存在")

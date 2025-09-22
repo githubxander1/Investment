@@ -2124,3 +2124,118 @@ GPT定期精选 超讯通信 603322 沪深A股 39.71 30.77 2025-09-17 IT服务[
 [33m2025-09-21 17:04:49 - WARNING - 交易通知: 买入 万丰股份 2.03股 False [0m
 [33m2025-09-21 17:05:12 - WARNING - 交易通知: 买入 亚通精工 1.97股 False [0m
 [33m2025-09-21 17:05:35 - WARNING - 交易通知: 买入 梅轮电梯 1.03股 False [0m
+[33m2025-09-22 09:49:31 - WARNING - 交易通知: 卖出 楚环科技 200股 False 处理弹窗时发生异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/ok_btn']", 'method': 'wait'}[0m
+[33m2025-09-22 09:50:06 - WARNING - 交易通知: 卖出 优彩资源 100股 False 处理弹窗时发生异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/ok_btn']", 'method': 'wait'}[0m
+[33m2025-09-22 09:51:08 - WARNING - 交易通知: 卖出 播恩集团 100股 False 处理弹窗时发生异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/ok_btn']", 'method': 'wait'}[0m
+[33m2025-09-22 09:51:43 - WARNING - 交易通知: 卖出 光华股份 100股 False 处理弹窗时发生异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/ok_btn']", 'method': 'wait'}[0m
+[33m2025-09-22 09:52:30 - WARNING - 交易通知: 卖出 楚环科技 200股 False [0m
+[33m2025-09-22 09:52:46 - WARNING - 交易通知: 卖出 优彩资源 100股 False [0m
+[33m2025-09-22 09:53:03 - WARNING - 交易通知: 卖出 广济药业 100股 False [0m
+[33m2025-09-22 09:53:21 - WARNING - 交易通知: 卖出 播恩集团 100股 False [0m
+[33m2025-09-22 09:53:37 - WARNING - 交易通知: 卖出 光华股份 100股 False [0m
+[33m2025-09-22 09:53:54 - WARNING - 交易通知: 卖出 箭牌家居 200股 False [0m
+[33m2025-09-22 09:54:11 - WARNING - 交易通知: 卖出 一彬科技 100股 False [0m
+[33m2025-09-22 09:54:29 - WARNING - 交易通知: 卖出 苏能股份 100股 False [0m
+[33m2025-09-22 09:54:47 - WARNING - 交易通知: 卖出 乔治白 200股 False [0m
+[33m2025-09-22 09:55:06 - WARNING - 交易通知: 卖出 黄山胶囊 100股 False [0m
+[33m2025-09-22 09:55:24 - WARNING - 交易通知: 卖出 重庆燃气 100股 False [0m
+[33m2025-09-22 09:55:42 - WARNING - 交易通知: 卖出 建研院 1000股 False [0m
+[33m2025-09-22 09:56:00 - WARNING - 交易通知: 卖出 金花股份 100股 False [0m
+[33m2025-09-22 09:56:19 - WARNING - 交易通知: 卖出 瑞尔特 100股 False [0m
+[33m2025-09-22 09:56:37 - WARNING - 交易通知: 卖出 超讯通信 100股 False [0m
+[33m2025-09-22 09:56:55 - WARNING - 交易通知: 卖出 凤竹纺织 100股 False [0m
+[33m2025-09-22 09:57:38 - WARNING - 交易通知: 卖出 华斯股份 100股 False [0m
+[33m2025-09-22 09:57:58 - WARNING - 交易通知: 卖出 百达精工 100股 False [0m
+[33m2025-09-22 09:58:16 - WARNING - 交易通知: 卖出 合富中国 100股 False [0m
+[33m2025-09-22 09:58:34 - WARNING - 交易通知: 卖出 恒尚节能 100股 False [0m
+[33m2025-09-22 09:58:51 - WARNING - 交易通知: 卖出 同德化工 100股 False [0m
+[33m2025-09-22 09:59:09 - WARNING - 交易通知: 卖出 坤泰股份 100股 False [0m
+[33m2025-09-22 10:47:34 - WARNING - 交易通知: 卖出 楚环科技 200股 False [0m
+[33m2025-09-22 11:01:50 - WARNING - 交易通知: 卖出 楚环科技 200股 False [0m
+[33m2025-09-22 11:02:07 - WARNING - 交易通知: 卖出 优彩资源 100股 False [0m
+[33m2025-09-22 14:36:53 - WARNING - 交易通知: 卖出 楚环科技 200股 False [0m
+[33m2025-09-22 14:39:27 - WARNING - 交易通知: 卖出 楚环科技 200股 False 最新:[0m
+[33m2025-09-22 14:39:44 - WARNING - 交易通知: 卖出 优彩资源 100股 False 最新:[0m
+[33m2025-09-22 14:41:11 - WARNING - 交易通知: 卖出 楚环科技 200股 False 最新:[0m
+[33m2025-09-22 14:41:28 - WARNING - 交易通知: 卖出 优彩资源 100股 False 最新:[0m
+[33m2025-09-22 14:41:46 - WARNING - 交易通知: 卖出 广济药业 100股 False 最新:[0m
+[33m2025-09-22 14:42:04 - WARNING - 交易通知: 卖出 播恩集团 100股 False 最新:[0m
+[33m2025-09-22 17:06:17 - WARNING - 交易通知: 卖出 钧达股份 100股 False 最新:[0m
+[33m2025-09-22 17:06:34 - WARNING - 交易通知: 买入 东信和平 20200股 False 最新:[0m
+[33m2025-09-22 17:06:52 - WARNING - 交易通知: 买入 江海股份 32600股 False 最新:[0m
+[33m2025-09-22 17:07:10 - WARNING - 交易通知: 买入 御银股份 5400股 False 最新:[0m
+[33m2025-09-22 17:07:28 - WARNING - 交易通知: 买入 飞龙股份 23000股 False 最新:[0m
+[33m2025-09-22 17:46:44 - WARNING - 交易通知: 卖出 钧达股份 100股 False 最新:[0m
+[33m2025-09-22 17:47:01 - WARNING - 交易通知: 买入 东信和平 20200股 False 最新:[0m
+[33m2025-09-22 17:47:19 - WARNING - 交易通知: 买入 江海股份 32600股 False 最新:[0m
+[33m2025-09-22 17:47:37 - WARNING - 交易通知: 买入 御银股份 5400股 False 最新:[0m
+[33m2025-09-22 17:47:55 - WARNING - 交易通知: 买入 飞龙股份 23000股 False 最新:[0m
+[33m2025-09-22 17:48:16 - WARNING - 交易通知: 卖出 钧达股份 100股 False 最新:[0m
+[33m2025-09-22 17:48:35 - WARNING - 交易通知: 买入 东信和平 20200股 False 最新:[0m
+[33m2025-09-22 17:48:54 - WARNING - 交易通知: 买入 江海股份 32600股 False 最新:[0m
+[33m2025-09-22 17:49:13 - WARNING - 交易通知: 买入 御银股份 5400股 False 最新:[0m
+[33m2025-09-22 17:49:31 - WARNING - 交易通知: 买入 飞龙股份 23000股 False 最新:[0m
+[33m2025-09-22 17:49:32 - WARNING - 交易通知: 组合交易执行失败[0m
+[33m2025-09-22 17:50:36 - WARNING - 交易通知: 卖出 钧达股份 100股 False 最新:[0m
+[33m2025-09-22 17:50:54 - WARNING - 交易通知: 买入 东信和平 20200股 False 最新:[0m
+[33m2025-09-22 17:51:11 - WARNING - 交易通知: 买入 江海股份 32600股 False 最新:[0m
+[33m2025-09-22 17:51:29 - WARNING - 交易通知: 买入 御银股份 5400股 False 最新:[0m
+[33m2025-09-22 17:51:48 - WARNING - 交易通知: 买入 飞龙股份 23000股 False 最新:[0m
+[33m2025-09-22 17:51:48 - WARNING - 交易通知: 组合交易执行失败[0m
+[33m2025-09-22 17:52:59 - WARNING - 交易通知: 卖出 钧达股份 100股 False 最新:[0m
+[33m2025-09-22 17:53:17 - WARNING - 交易通知: 买入 东信和平 20200股 False 最新:[0m
+[33m2025-09-22 17:53:35 - WARNING - 交易通知: 买入 江海股份 32600股 False 最新:[0m
+[33m2025-09-22 17:53:53 - WARNING - 交易通知: 买入 御银股份 5400股 False 最新:[0m
+[33m2025-09-22 17:54:11 - WARNING - 交易通知: 买入 飞龙股份 23000股 False 最新:[0m
+[33m2025-09-22 17:54:11 - WARNING - 交易通知: 组合交易执行失败[0m
+[33m2025-09-22 17:55:15 - WARNING - 交易通知: 卖出 钧达股份 100股 False 最新:[0m
+[33m2025-09-22 17:55:47 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 17:56:43 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 17:57:39 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 17:58:51 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:23:59 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:24:30 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:25:10 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:25:35 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:26:13 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:26:39 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:27:10 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:27:35 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:28:22 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:28:47 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:29:18 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:29:44 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:30:29 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:30:54 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:31:33 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:31:58 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:32:45 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:33:10 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:33:45 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:34:11 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:34:55 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:35:21 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:36:08 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:36:33 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:37:17 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:37:43 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:38:25 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:38:50 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:39:36 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:40:01 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:40:32 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:40:57 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:41:32 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:41:57 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:42:44 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:43:09 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:43:52 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:44:17 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:44:51 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:45:23 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:45:50 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/menu_holdings_text', text='持仓']", 'method': 'wait'}[0m
+[33m2025-09-22 18:46:39 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:47:04 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-22 18:47:54 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:48:06 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-22 18:48:41 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
