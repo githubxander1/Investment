@@ -217,7 +217,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
                 # 设置当前账户
                 self.account_name = account_name
                 
-                # 执行交易操作
+                # 执行交易操作 - 使用CommonHoldingProcessor中的方法
                 success = self.operate_strategy(
                     Account_holding_file,
                     account_name,

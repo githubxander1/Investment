@@ -284,7 +284,7 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
                 send_notification(error_msg)
                 return False
 
-            # 执行调仓操作
+            # 使用CommonHoldingProcessor中的方法执行交易操作
             from Investment.THS.AutoTrade.config.settings import Robot_holding_file
             success = self.operate_result(
                 holding_file=Robot_holding_file,
