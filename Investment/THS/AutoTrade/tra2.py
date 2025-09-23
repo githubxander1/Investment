@@ -99,6 +99,15 @@ async def execute_combination_trades():
     """执行组合交易"""
     try:
         logger.info("🚀 开始执行组合交易...")
+        account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+        strategy_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
+        trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
+
+        # 设置pandas显示选项，确保所有列都能完整显示
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.width', None)
+        pd.set_option('display.max_colwidth', None)
+
         # 为每个账户执行对应的策略
         for account_name, strategy_name in ACCOUNT_STRATEGY_MAP.items():
             logger.info(f"🔄 处理账户 {account_name} 对应的策略 {strategy_name}")

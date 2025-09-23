@@ -103,7 +103,7 @@ class AccountInfo:
     # 获取xml
     def parse_stock_from_xml(self, xml_path):
         """
-        解析持仓股票信息：标的名称、市值、持仓/可用、盈亏/盈亏率
+        解析持仓股票信息：股票名称、市值、持仓/可用、盈亏/盈亏率
         """
         try:
             tree = ET.parse(xml_path)
@@ -166,7 +166,7 @@ class AccountInfo:
             if len(name_nodes) < 2:
                 return None
 
-            # 重点：强化"标的名称"的识别逻辑
+            # 重点：强化"股票名称"的识别逻辑
             stock_name = name_nodes[0].get('text', '').strip()
             if not stock_name or any(c.isdigit() for c in stock_name):  # 如果包含数字，大概率不是股票名
                 return None
@@ -215,7 +215,7 @@ class AccountInfo:
                 profit_loss_rate_text = profit_loss_rate_text.replace('%', '')
 
             return {
-                '标的名称': stock_name,
+                '股票名称': stock_name,
                 '市值': market_value,
                 '持仓': position,
                 '可用': available,
@@ -275,13 +275,13 @@ class AccountInfo:
             
             # 添加到总列表中，避免重复（仅添加非隐藏区域的股票）
             for stock in stocks:
-                name = stock.get('标的名称', '')
+                name = stock.get('股票名称', '')
                 if name and name not in all_stocks:
                     all_stocks[name] = stock
                     
             # 记录隐藏区域的股票（仅记录，不保存）
             for stock in hidden_stocks:
-                name = stock.get('标的名称', '')
+                name = stock.get('股票名称', '')
                 if name and name not in all_hidden_stocks:
                     all_hidden_stocks[name] = stock
             
@@ -366,7 +366,7 @@ class AccountInfo:
         if not df.empty:
             # 添加代码列（如果不存在）
             if '代码' not in df.columns:
-                df['代码'] = df['标的名称'].apply(self._get_stock_code_by_name)
+                df['代码'] = df['股票名称'].apply(self._get_stock_code_by_name)
             
             # 处理缺失值
             numeric_columns = ['市值', '持仓', '可用', '盈亏', '盈亏率', '成本价', '当前价', '代码']
@@ -420,7 +420,7 @@ class AccountInfo:
         logger.info(f'开始：获取持仓可用-卖出，股票名称: {stock_name}')
         try:
             stock_holding_df = self.extract_stock_info()
-            stock_row = stock_holding_df[stock_holding_df["标的名称"] == stock_name]
+            stock_row = stock_holding_df[stock_holding_df["股票名称"] == stock_name]
 
             if not stock_row.empty:
                 # 确保 stock_row 为单行数据
@@ -449,6 +449,134 @@ class AccountInfo:
             logger.error(f"获取持仓失败: {e}")
             logger.info("-" * 50)
             return False, 0
+            
+    def get_account_summary_info(self):
+        """
+        获取账户汇总信息：总资产、可用资金、各股票的当前价和可用数量
+        返回字典格式的数据
+        """
+        logger.info("-" * 50)
+        logger.info('开始：获取账户汇总信息')
+        
+        try:
+            # 获取账户表头信息（包含总资产和可用资金）
+            header_info_df = self.extract_header_info()
+            
+            # 获取持仓股票信息（包含各股票的当前价和可用数量）
+            stock_info_df = self.extract_stock_info()
+            
+            # 整合信息
+            summary_info = {
+                "总资产": None,
+                "可用资金": None,
+                "持仓股票": []
+            }
+            
+            # 提取总资产和可用资金
+            if not header_info_df.empty:
+                summary_info["总资产"] = header_info_df.iloc[0]["总资产"]
+                summary_info["可用资金"] = header_info_df.iloc[0]["可用"]
+            
+            # 提取各股票的当前价和可用数量
+            if not stock_info_df.empty:
+                for _, row in stock_info_df.iterrows():
+                    stock_info = {
+                        "股票名称": row.get("股票名称", ""),
+                        "当前价": row.get("当前价", 0),
+                        "可用": row.get("可用", 0)
+                    }
+                    summary_info["持仓股票"].append(stock_info)
+            
+            logger.info(f"完成：获取账户汇总信息: {summary_info}")
+            logger.info("-" * 50)
+            return summary_info
+            
+        except Exception as e:
+            logger.error(f"获取账户汇总信息失败: {e}")
+            logger.info("-" * 50)
+            return None
+            
+    def get_account_summary_info_from_file(self, account_file, account_name, stock_name):
+        """
+        从Excel文件中读取账户信息：总资产、账户余额、股票可用数量、持仓比例、当前价格
+        参考trade_logic中的get_account_info方法实现
+        
+        Args:
+            account_file (str): 账户持仓文件路径
+            account_name (str): 账户名称，如"川财证券"
+            stock_name (str): 股票名称
+        
+        Returns:
+            tuple: (account_asset, account_balance, stock_available, stock_ratio, stock_price)
+        """
+        logger.info("-" * 50)
+        logger.info(f'开始：从文件读取账户信息，账户: {account_name}，股票: {stock_name}')
+        
+        try:
+            # 检查文件是否存在
+            if not os.path.exists(account_file):
+                logger.error(f"账户持仓文件不存在: {account_file}")
+                logger.info("-" * 50)
+                return None, None, None, None, None
+            
+            # 读取Excel文件中的账户汇总和持仓数据
+            account_balance_data = pd.read_excel(account_file, sheet_name='账户汇总')
+            account_holding_data = pd.read_excel(account_file, sheet_name=account_name)
+            
+            pd.set_option('display.max_columns', None)
+            pd.set_option('display.max_colwidth', None)
+            pd.set_option('display.width', None)
+            
+            logger.debug(f"账户持仓数据:\n{account_holding_data}")
+            logger.debug(f"账户汇总数据:\n{account_balance_data}")
+            
+            # 提取账户信息
+            account_row = account_balance_data[account_balance_data['账户名'] == account_name]
+            if not account_row.empty:
+                account_balance = float(str(account_row['可用'].values[0]).replace(',', ''))
+                account_asset = float(str(account_row['总资产'].values[0]).replace(',', ''))
+            else:
+                logger.warning(f"未找到{account_name}的账户信息")
+                account_balance = 0.0
+                # 尝试从其他列获取总资产
+                asset_columns = ['总资产', '总市值']
+                for col in asset_columns:
+                    if col in account_row.columns and len(account_row[col].values) > 0:
+                        account_asset = float(str(account_row[col].values[0]).replace(',', ''))
+                        break
+                else:
+                    account_asset = 0.0
+            
+            # 提取股票信息
+            # 首先检查账户持仓数据是否为空
+            if account_holding_data.empty:
+                logger.info(f"{account_name} 账户持仓数据为空")
+                stock_available = 0
+                stock_ratio = 0
+                stock_price = 0
+            else:
+                stock_data = account_holding_data[account_holding_data['股票名称'] == stock_name]
+                
+                if not stock_data.empty:
+                    stock_available = stock_data['可用'].values[0]
+                    stock_ratio = 0  # 持仓占比需要计算或从文件中获取
+                    stock_price = stock_data['当前价'].values[0]
+                    logger.info(f"获取到 {account_name} 账户总资产: {account_asset}, {stock_name} 当前价 {stock_price} 可用数量 {stock_available}")
+                else:
+                    logger.warning(f"未找到{account_name}账户中的股票 {stock_name}")
+                    stock_available = 0
+                    stock_ratio = 0
+                    # 当账户中没有该股票时，仍然需要返回有效的默认值
+                    stock_price = 0
+            
+            logger.info(f"完成：从文件读取账户信息: 账户总资产={account_asset}, 账户余额={account_balance}, 股票可用={stock_available}, 持仓比例={stock_ratio}, 股票价格={stock_price}")
+            logger.info("-" * 50)
+            return account_asset, account_balance, stock_available, stock_ratio, stock_price
+            
+        except Exception as e:
+            logger.error(f"从文件读取账户信息失败: {e}")
+            logger.info("-" * 50)
+            return None, None, None, None, None
             
     # 更新指定账户的持仓信息
     def update_holding_info_for_account(self, account_name):
@@ -495,9 +623,9 @@ class AccountInfo:
 
                 # 添加当前账户的数据
                 if not header_info_df.empty:
-                    all_sheets_data[f"{account_name}_表头数据"] = header_info_df
+                    all_sheets_data[f"{account_name}"] = header_info_df
                 if not stocks_df.empty:
-                    all_sheets_data[f"{account_name}_持仓数据"] = stocks_df
+                    all_sheets_data[f"{account_name}"] = stocks_df
 
                 # 写入所有数据到Excel文件
                 with pd.ExcelWriter(Account_holding_file, engine='openpyxl', mode='w') as writer:
@@ -528,10 +656,11 @@ class AccountInfo:
         logger.info("开始：更新账户持仓信息...")
         # ths = GuozhaiPage(d)
         # ths.ensure_on_holding_page()
-        accounts = ["川财证券","长城证券","中泰证券"]
+        accounts = ["川财证券","长城证券","中泰证券","中山证券"]
 
         try:
             account_data = {}
+            summary_data = []  # 用于存储汇总数据
 
             # 依次获取每个账户的数据
             for account in accounts:
@@ -555,18 +684,30 @@ class AccountInfo:
                 account_data[account] = (header_info_df, stocks_df)
                 logger.info(f"完成：✅ {account} 账户数据获取完成")
                 # logger.info("-" * 50)
+                
+                # 添加账户数据到汇总表
+                if not header_info_df.empty:
+                    header_info_copy = header_info_df.copy()
+                    header_info_copy['账户名'] = account  # 添加账户名列
+                    summary_data.append(header_info_copy)
 
             # 将所有账户数据保存到同一个Excel文件的不同工作表中
             if account_data:
                 with pd.ExcelWriter(Account_holding_file, engine='openpyxl') as writer:
+                    # 保存汇总表头数据到"账户汇总"工作表
+                    if summary_data:
+                        summary_df = pd.concat(summary_data, ignore_index=True)
+                        summary_df.to_excel(writer, index=False, sheet_name="账户汇总")
+                    
+                    # 保存各账户详细数据
                     for account, (header_df, stocks_df) in account_data.items():
                         # 保存表头数据到"{account}_表头"工作表
-                        if not header_df.empty:
-                            header_df.to_excel(writer, index=False, sheet_name=f"{account}_表头数据")
+                        # if not header_df.empty:
+                        #     header_df.to_excel(writer, index=False, sheet_name=f"{account}")
 
                         # 保存持仓数据到"{account}_持仓"工作表
-                        if not stocks_df.empty:
-                            stocks_df.to_excel(writer, index=False, sheet_name=f"{account}_持仓数据")
+                        # 即使持仓为空也创建空的工作表
+                        stocks_df.to_excel(writer, index=False, sheet_name=f"{account}")
 
                 logger.info(f"完成：✅ 所有账户持仓信息已更新并保存至 {Account_holding_file}")
                 logger.info("-" * 50)
@@ -584,8 +725,19 @@ class AccountInfo:
 
 if __name__ == '__main__':
     account = AccountInfo()
-    # account.update_holding_info_all()
-    account.update_holding_info_for_account('川财证券')
+    account.update_holding_info_all()
+    # account_asset, account_balance, stock_available, stock_ratio, stock_price = account.get_account_summary_info_from_file(
+    #     Account_holding_file, "中泰证券", "飞龙股份"
+    # )
+    #
+    # if account_asset is not None:
+    #     print(f"账户总资产: {account_asset}")
+    #     print(f"账户余额: {account_balance}")
+    #     print(f"股票可用数量: {stock_available}")
+    #     print(f"持仓比例: {stock_ratio}")
+    #     print(f"股票当前价: {stock_price}")
+
+    # account.update_holding_info_for_account('中泰证券')
     # get_stock_holding('中国电信')
     # header_info = extract_header_info()
     # buy_available = float(header_info["可用"].iloc[0].replace(',', ''))

@@ -30,20 +30,21 @@ class TradeLogic:
     def calculate_buy_volume(self, account_asset,  stock_price, new_ratio=None,):
         """
         根据可用资金和价格计算买入数量
-        :param real_price: 实时价格
-        :param buying_power: 可用资金
+        :param account_asset: 账户总资产
+        :param stock_price: 股票价格
         :param new_ratio: 新仓位比例（可选）
         :return: 计算出的股数，或 None 表示失败
         """
         try:
-            # if buying_power is None or real_price is None:
-            #     logger.warning(f"计算买入数量失败：buying_power={buying_power}, real_price={real_price}")
-            #     return None
+            # 检查必要参数
+            if account_asset is None or stock_price is None or stock_price <= 0:
+                logger.warning(f"计算买入数量失败：account_asset={account_asset}, stock_price={stock_price}")
+                return None
 
             # 如果提供了新比例，则按比例计算买入金额
             if new_ratio is not None:
-                # 计算目标金额 = 账户总资产 * 新比例% / 股票价格
-                target_amount = account_asset * float(new_ratio)
+                # 计算目标金额 = 账户总资产 * 新比例% / 100 （因为new_ratio是百分比）
+                target_amount = account_asset * float(new_ratio) / 100
                 logger.info(f"目标投资金额: {account_asset} * {new_ratio}% = {target_amount}")
 
                 # 计算股数 = 目标金额 / 价格
@@ -75,7 +76,9 @@ class TradeLogic:
     def calculate_sell_volume(self, account_asset, available_shares, stock_price, new_ratio=None):
         """
         根据可用数量和策略比例计算卖出数量
+        :param account_asset: 账户总资产
         :param available_shares: 可卖数量
+        :param stock_price: 股票当前价格
         :param new_ratio: 新仓位比例（可选）
         :return: 卖出数量，或 None 表示失败
         """
@@ -100,32 +103,31 @@ class TradeLogic:
                 # 按比例计算应该保留的数量，然后计算卖出数量
                 # 例如：当前持有1000股，新比例要求30%，则用总资产*新比例%计算目标持仓金额，然后根据金额/价格计算目标持仓股数，然后根据当前股数-目标持仓股数计算卖出数量
 
-                # 计算目标金额 = 账户总资产 * 新比例% / 股票价格
-                target_amount = account_asset * float(new_ratio)
+                # 计算目标金额 = 账户总资产 * 新比例% / 100 （因为new_ratio是百分比）
+                target_amount = account_asset * float(new_ratio) / 100
                 logger.info(f"目标投资金额: {account_asset} * {new_ratio}% = {target_amount}")
 
                 # 计算股数 = 目标金额 / 价格
-                volume = int(target_amount / stock_price)
-                logger.info(f"计算股数: {target_amount} / {stock_price} = {volume}")
+                target_volume = int(target_amount / stock_price)
+                logger.info(f"计算目标股数: {target_amount} / {stock_price} = {target_volume}")
 
                 # 转换为100的倍数
-                volume = (volume // 100) * 100
-                if volume < 100:
-                    logger.warning("计算出的买入股数不足100股")
-                    return None
+                target_volume = (target_volume // 100) * 100
+                if target_volume < 100:
+                    logger.warning("计算出的目标股数不足100股")
+                    target_volume = 0
 
-                logger.info(f"计算卖出时，需要持仓股数: {volume}")
-                keep_volume = int(available_shares - volume)
-                if keep_volume < 100:
-                    logger.warning("保留数量不足100股")
-                    keep_volume = 0
-                    volume = available_shares
-                else:
-                    volume = available_shares - keep_volume
-                logger.info(f"按比例计算卖出: 当前持有{available_shares}股, 新比例{new_ratio}%, 保留{keep_volume}股, 卖出{volume}股")
+                logger.info(f"计算卖出时，需要持仓股数: {target_volume}")
+                
+                # 计算需要卖出的数量
+                volume = available_shares - target_volume
+                if volume < 0:
+                    volume = 0  # 不应该出现负数，如果出现则设为0
+                    
+                logger.info(f"按比例计算卖出: 当前持有{available_shares}股, 新比例{new_ratio}%, 目标持仓{target_volume}股, 卖出{volume}股")
 
             volume = (volume // 100) * 100
-            if volume < 100:
+            if volume < 100 and volume > 0:
                 logger.warning(f"卖出数量不足100股: 计算结果={volume}")
                 # 在这种情况下，我们仍然返回计算出的数量，让调用者决定是否继续
                 return volume

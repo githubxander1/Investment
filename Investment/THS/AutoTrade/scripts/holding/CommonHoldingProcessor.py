@@ -35,6 +35,7 @@ common_page = CommonPage()
 
 class CommonHoldingProcessor:
     def __init__(self, account_name="川财证券"):
+        self.account_info = AccountInfo()
         self.account_name = account_name
         self.trader = TradeLogic()
         self.common_page = CommonPage()
@@ -66,9 +67,10 @@ class CommonHoldingProcessor:
                     sheet_name = account_name
                     if sheet_name in xls.sheet_names:
                         df = pd.read_excel(xls, sheet_name=sheet_name)
-                        if not df.empty and '股票名称' in df.columns:
+                        if not df.empty and ('股票名称' in df.columns or '标的名称' in df.columns):
                             # 检查是否真的有持仓（排除"无持仓"的情况）
-                            if len(df) == 1 and df.iloc[0]['股票名称'] == '无持仓':
+                            if len(df) == 1 and ('股票名称' in df.columns and df.iloc[0]['股票名称'] == '无持仓' or 
+                                                '标的名称' in df.columns and df.iloc[0]['标的名称'] == '无持仓'):
                                 print(f"证券账户 {account_name} 无持仓数据")
                                 account_holdings = pd.DataFrame()
                             else:
@@ -76,22 +78,36 @@ class CommonHoldingProcessor:
                                 account_holdings = df.copy()
                                 account_holdings['账户'] = account_name
                                 # 去掉持有金额为0或0.0的
-                                account_holdings = account_holdings[account_holdings['持有金额'] > 0]
+                                if '持有金额' in account_holdings.columns:
+                                    account_holdings = account_holdings[account_holdings['持有金额'] > 0]
                                 print(
                                     f"✅ 成功读取证券账户的持仓数据，共 {len(account_holdings)} 条记录\n{account_holdings}")
                         else:
                             print(f"证券账户持仓数据为空或不包含股票名称列")
                     else:
                         print(f"账户文件中没有证券的持仓数据表: {sheet_name}")
-                        return {"error": "账户文件中没有证券的持仓数据表"}
+                        # 尝试其他可能的工作表名称
+                        possible_sheet_names = [f"{account_name}_持仓数据", f"{account_name}持仓", account_name]
+                        found_sheet = False
+                        for possible_name in possible_sheet_names:
+                            if possible_name in xls.sheet_names:
+                                df = pd.read_excel(xls, sheet_name=possible_name)
+                                if not df.empty and ('股票名称' in df.columns or '标的名称' in df.columns):
+                                    account_holdings = df.copy()
+                                    account_holdings['账户'] = account_name
+                                    if '持有金额' in account_holdings.columns:
+                                        account_holdings = account_holdings[account_holdings['持有金额'] > 0]
+                                    print(f"✅ 成功读取证券账户的持仓数据（从工作表 {possible_name}），共 {len(account_holdings)} 条记录\n{account_holdings}")
+                                    found_sheet = True
+                                    break
+                        
+                        # 如果还是没有找到工作表，创建一个空的DataFrame
+                        if not found_sheet:
+                            print(f"未找到账户 {account_name} 的持仓数据，将使用空的持仓数据")
+                            account_holdings = pd.DataFrame()
             except Exception as e:
                 print(f"读取证券账户持仓文件失败: {e}")
-                return {"error": f"读取证券账户持仓文件失败: {e}"}
-
-            if account_holdings.empty:
-                print("证券账户无持仓数据")
-                return {"to_sell": pd.DataFrame(), "to_buy": pd.DataFrame()}
-
+                
             # 读取策略持仓数据
             logicofking_holdings = pd.DataFrame()
             try:
@@ -105,14 +121,24 @@ class CommonHoldingProcessor:
                             df = pd.read_excel(xls, sheet_name=today_str)
                             # 筛选出策略的持仓
                             df = df[df['名称'] == strategy_name] if '名称' in df.columns else df
-                            if not df.empty and '股票名称' in df.columns:
+                            if not df.empty and ('股票名称' in df.columns or '标的名称' in df.columns):
                                 logicofking_holdings = df.copy()
                                 print(
                                     f"✅ 成功读取策略的持仓数据，共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
                             else:
                                 print("策略持仓数据为空或不包含股票名称列")
                         else:
+                            # 尝试查找其他可能的工作表
                             print(f"组合持仓文件中没有今天的sheet: {today_str}")
+                            # 查找最近的工作表
+                            sheet_names = [name for name in xls.sheet_names if name != 'Sheet1']  # 排除默认Sheet1
+                            if sheet_names:
+                                latest_sheet = sheet_names[-1]  # 取最后一个工作表
+                                df = pd.read_excel(xls, sheet_name=latest_sheet)
+                                df = df[df['名称'] == strategy_name] if '名称' in df.columns else df
+                                if not df.empty and ('股票名称' in df.columns or '标的名称' in df.columns):
+                                    logicofking_holdings = df.copy()
+                                    print(f"✅ 成功读取策略的持仓数据（从工作表 {latest_sheet}），共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
                 else:
                     print("组合持仓文件不存在")
             except Exception as e:
@@ -124,8 +150,15 @@ class CommonHoldingProcessor:
 
             # 标准化股票名称
             from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
-            account_holdings = standardize_dataframe_stock_names(account_holdings)
+            # 确保列名统一
+            if not account_holdings.empty:
+                if '股票名称' not in account_holdings.columns and '标的名称' in account_holdings.columns:
+                    account_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
+                account_holdings = standardize_dataframe_stock_names(account_holdings)
+            
             if not logicofking_holdings.empty:
+                if '股票名称' not in logicofking_holdings.columns and '标的名称' in logicofking_holdings.columns:
+                    logicofking_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
                 logicofking_holdings = standardize_dataframe_stock_names(logicofking_holdings)
 
             # 确保账户持仓数据中的'持仓占比'以百分比形式存在，并创建'当前比例%'列
@@ -157,7 +190,7 @@ class CommonHoldingProcessor:
                                        how='left')
 
                 # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
-                to_sell_candidates2 = merged_data[merged_data['新比例%'] < merged_data['持仓占比']]
+                to_sell_candidates2 = merged_data[merged_data['新比例%'] < merged_data['持仓占比']] if '持仓占比' in merged_data.columns else pd.DataFrame()
 
                 # 合并两种需要卖出的情况
                 to_sell = pd.concat([to_sell_candidates, to_sell_candidates2]).drop_duplicates(subset=['股票名称'])
@@ -166,7 +199,8 @@ class CommonHoldingProcessor:
                 # 索引从1开始
                 to_sell.index = range(1, len(to_sell) + 1)
                 # 去掉'持有金额'为0的
-                to_sell = to_sell[to_sell['持有金额'] != 0]
+                if '持有金额' in to_sell.columns:
+                    to_sell = to_sell[to_sell['持有金额'] != 0]
             elif not account_holdings.empty:
                 # 如果策略持仓为空，则所有证券账户持仓都是需要卖出的（除去排除项）
                 to_sell = account_holdings[~account_holdings['股票名称'].isin(excluded_holdings)].copy()
@@ -175,8 +209,8 @@ class CommonHoldingProcessor:
                     columns=account_holdings.columns) if not account_holdings.empty else pd.DataFrame()
 
             # 确保to_sell包含股票名称列
-            if not to_sell.empty and '股票名称' not in to_sell.columns:
-                to_sell['股票名称'] = to_sell['股票名称']
+            if not to_sell.empty and '股票名称' not in to_sell.columns and '标的名称' in to_sell.columns:
+                to_sell.rename(columns={'标的名称': '股票名称'}, inplace=True)
 
             if not to_sell.empty:
                 to_sell['操作'] = '卖出'
@@ -202,10 +236,10 @@ class CommonHoldingProcessor:
 
                 # 合并账户数据以便比较
                 merged_data_buy = pd.merge(common_stocks_buy, account_holdings[['股票名称', '持仓占比']],
-                                           on='股票名称', how='left')
+                                           on='股票名称', how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
 
                 # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
-                to_buy_candidates2 = merged_data_buy[merged_data_buy['新比例%'] > merged_data_buy['持仓占比']]
+                to_buy_candidates2 = merged_data_buy[merged_data_buy['新比例%'] > merged_data_buy['持仓占比']] if not merged_data_buy.empty else pd.DataFrame()
 
                 # 合并两种需要买入的情况
                 to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
@@ -225,8 +259,8 @@ class CommonHoldingProcessor:
                 to_buy = pd.DataFrame(columns=['股票名称'])
 
             # 确保to_buy包含股票名称列
-            if not to_buy.empty and '股票名称' not in to_buy.columns:
-                to_buy['股票名称'] = to_buy['股票名称']
+            if not to_buy.empty and '股票名称' not in to_buy.columns and '标的名称' in to_buy.columns:
+                to_buy.rename(columns={'标的名称': '股票名称'}, inplace=True)
 
             if not to_buy.empty:
                 to_buy['操作'] = '买入'
@@ -259,41 +293,63 @@ class CommonHoldingProcessor:
             print(f"📊 最终差异报告 - 需要卖出: {len(to_sell)} 条, 需要买入: {len(to_buy)} 条")
             if not to_sell.empty:
                 # 为卖出报告添加目标比例和变化比例列
-                to_sell_report = to_sell[['股票名称', '持有金额', '持有盈亏', '持有数量', '持仓占比']].copy()
-                to_sell_report['目标比例'] = 0.0  # 卖出的目标比例为0
-                # 修正：对于需要调整到目标比例的股票，目标比例应为策略中的新比例%
-                for idx, row in to_sell_report.iterrows():
-                    stock_name = row['股票名称']
-                    # 查找该股票在策略中的目标比例
-                    strategy_row = logicofking_holdings[logicofking_holdings['股票名称'] == stock_name]
-                    if not strategy_row.empty:
-                        target_ratio = float(strategy_row['新比例%'].iloc[0])
-                        to_sell_report.at[idx, '目标比例'] = target_ratio
+                try:
+                    to_sell_report = to_sell[['股票名称', '持有金额', '持有盈亏', '持有数量', '持仓占比']].copy() if all(col in to_sell.columns for col in ['股票名称', '持有金额', '持有盈亏', '持有数量', '持仓占比']) else to_sell.copy()
+                    to_sell_report['目标比例'] = 0.0  # 卖出的目标比例为0
+                    # 修正：对于需要调整到目标比例的股票，目标比例应为策略中的新比例%
+                    for idx, row in to_sell_report.iterrows():
+                        stock_name = row['股票名称']
+                        # 查找该股票在策略中的目标比例
+                        strategy_row = logicofking_holdings[logicofking_holdings['股票名称'] == stock_name]
+                        if not strategy_row.empty:
+                            target_ratio = float(strategy_row['新比例%'].iloc[0])
+                            to_sell_report.at[idx, '目标比例'] = target_ratio
 
-                to_sell_report['变化比例'] = to_sell_report['目标比例'] - to_sell_report['持仓占比']
-                print(f"📈 需要卖出的股票及其当前/目标比例:\n{to_sell_report}")
+                    to_sell_report['变化比例'] = to_sell_report['目标比例'] - to_sell_report['持仓占比'] if '持仓占比' in to_sell_report.columns else -to_sell_report['目标比例']
+                    print(f"📈 需要卖出的股票及其当前/目标比例:\n{to_sell_report}")
+                except Exception as e:
+                    print(f"处理卖出报告时出错: {e}")
+                    print(f"卖出数据: {to_sell}")
             if not to_buy.empty:
                 # 为买入报告添加原始比例和变化比例列
-                to_buy_report = to_buy[['股票名称', '新比例%']].copy()
-                to_buy_report['原始比例'] = 0.0  # 买入的原始比例为0（账户中没有该股票）
-                # 修正：对于已持有的股票，原始比例应该是账户中的持仓比例
-                for idx, row in to_buy_report.iterrows():
-                    stock_name = row['股票名称']
-                    # 查找该股票在账户中的原始比例
-                    account_row = account_holdings[account_holdings['股票名称'] == stock_name]
-                    if not account_row.empty:
-                        original_ratio = float(account_row['持仓占比'].iloc[0])
-                        to_buy_report.at[idx, '原始比例'] = original_ratio
+                try:
+                    # 确保必要的列存在
+                    required_columns = []
+                    if '股票名称' in to_buy.columns:
+                        required_columns.append('股票名称')
+                    if '新比例%' in to_buy.columns:
+                        required_columns.append('新比例%')
+                    
+                    if required_columns:
+                        to_buy_report = to_buy[required_columns].copy()
+                    else:
+                        to_buy_report = to_buy.copy()
+                        
+                    to_buy_report['原始比例'] = 0.0  # 买入的原始比例为0（账户中没有该股票）
+                    # 修正：对于已持有的股票，原始比例应该是账户中的持仓比例
+                    if '股票名称' in to_buy_report.columns:
+                        for idx, row in to_buy_report.iterrows():
+                            stock_name = row['股票名称']
+                            # 查找该股票在账户中的原始比例
+                            if not account_holdings.empty and '股票名称' in account_holdings.columns and '持仓占比' in account_holdings.columns:
+                                account_row = account_holdings[account_holdings['股票名称'] == stock_name]
+                                if not account_row.empty:
+                                    original_ratio = float(account_row['持仓占比'].iloc[0])
+                                    to_buy_report.at[idx, '原始比例'] = original_ratio
 
-                to_buy_report['变化比例'] = to_buy_report['新比例%'] - to_buy_report['原始比例']
-                print(f"📈 需要买入的股票及其当前/目标比例:\n{to_buy_report}")
+                        to_buy_report['变化比例'] = to_buy_report['新比例%'] - to_buy_report['原始比例']
+                        print(f"📈 需要买入的股票及其当前/目标比例:\n{to_buy_report}")
+                except Exception as e:
+                    print(f"处理买入报告时出错: {e}")
+                    print(f"买入数据: {to_buy}")
 
             return difference_report
 
         except Exception as e:
             error_msg = f"处理证券与策略持仓差异时发生错误: {e}"
             print(error_msg)
-            return {"error": error_msg}
+            # 确保即使出错也返回一个有效的字典
+            return {"to_sell": pd.DataFrame(), "to_buy": pd.DataFrame()}
     def filter_executed_operations(self, diff_result, account_name):
         """
         过滤已执行的操作，只返回未执行的操作记录
@@ -492,7 +548,60 @@ class CommonHoldingProcessor:
         :return: 计算出的交易股数
         """
         logger.info(f"开始计算交易股数: 账户={account_name}, 股票={stock_name}, 操作={operation_type}, 新比例={new_ratio}%")
-        account_asset, account_balance, stock_available, stock_ratio, stock_price = self.trader.get_account_info(account_file, account_name, stock_name)
+        # account_asset, account_balance, stock_available, stock_ratio, stock_price = self.trader.get_account_info(account_file, account_name, stock_name)
+        account_asset, account_balance, stock_available, stock_ratio, stock_price = self.account_info.get_account_summary_info_from_file(Account_holding_file, account_name, stock_name)
+        
+        # 确保必要参数有效
+        if account_asset is None or account_asset == 0:
+            # 从账户汇总数据中查找总资产
+            try:
+                account_balance_data = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
+                account_row = account_balance_data[account_balance_data['账户名'] == account_name]
+                if not account_row.empty:
+                    account_asset = float(str(account_row['总资产'].values[0]).replace(',', ''))
+                    logger.info(f"从账户汇总中获取到总资产: {account_asset}")
+                else:
+                    logger.warning(f"无法从账户汇总中获取 {account_name} 的总资产，使用默认值0")
+                    account_asset = 0
+            except Exception as e:
+                logger.warning(f"读取账户汇总数据失败: {e}，使用默认值0")
+                account_asset = 0
+            
+        if stock_price is None or stock_price <= 0:
+            # 尝试从策略持仓数据中获取股票价格
+            try:
+                today_str = datetime.date.today().strftime('%Y-%m-%d')
+                strategy_file_path = 'D:/Xander/Inverstment/Investment/THS/AutoTrade/data/position/Combination_position.xlsx'
+                if os.path.exists(strategy_file_path):
+                    strategy_data = pd.read_excel(strategy_file_path, sheet_name=today_str)
+                    strategy_row = strategy_data[(strategy_data['名称'] == strategy_name) & (strategy_data['股票名称'] == stock_name)]
+                    if not strategy_row.empty:
+                        stock_price = float(strategy_row['最新价'].values[0])
+                        logger.info(f"从策略数据中获取到股票价格: {stock_price}")
+                    else:
+                        logger.warning(f"无法从策略数据中获取 {stock_name} 的价格，使用默认值0.01")
+                        stock_price = 0.01
+                else:
+                    logger.warning(f"策略文件不存在: {strategy_file_path}，使用默认值0.01")
+                    stock_price = 0.01
+            except Exception as e:
+                logger.warning(f"读取策略数据获取股票价格失败: {e}，使用默认值0.01")
+                stock_price = 0.01
+            
+        if stock_available is None:
+            logger.warning(f"无法获取股票 {stock_name} 的可用数量，使用默认值0")
+            stock_available = 0
+        
+        # 确保所有数值都是正确的数据类型
+        try:
+            account_asset = float(account_asset) if account_asset is not None else 0.0
+            stock_price = float(stock_price) if stock_price is not None else 0.01
+            new_ratio = float(new_ratio) if new_ratio is not None else 0.0
+            stock_available = int(stock_available) if stock_available is not None else 0
+        except (ValueError, TypeError) as e:
+            logger.error(f"数据类型转换错误: {e}")
+            return None
+        
         try:
             # 读取账户信息
             if not os.path.exists(account_file):
@@ -501,13 +610,15 @@ class CommonHoldingProcessor:
 
             # 计算买入股数
             if operation_type == '买入':
-                volume = self.trader.calculate_buy_volume(account_asset, new_ratio, stock_price)
+                volume = self.trader.calculate_buy_volume(account_asset, stock_price, new_ratio)
+                logger.info(f"买入 {stock_name}，股数: {volume}")
                 return  volume
 
             # 计算卖出股数
             elif operation_type == '卖出':
                 # logger.info(f"卖出 {stock_name}，股数: {volume}")
                 volume = self.trader.calculate_sell_volume(account_asset, stock_available, stock_price, new_ratio)
+                logger.info(f"卖出 {stock_name}，股数: {volume}")
                 return volume
                 
             else:
@@ -545,22 +656,23 @@ class CommonHoldingProcessor:
             # 安全获取可能不存在的字段
             new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
 
+            # 计算交易数量：对于卖出操作，使用策略中的目标比例
+            volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
+            print(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+
             print(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
 
             # 切换到对应账户
             self.common_page.change_account(account_name)
             print(f"✅ 已切换到账户: {account_name}")
 
-            # 计算交易数量：对于卖出操作，使用策略中的目标比例
-            volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
-
             # 调用交易逻辑
-            status, info = self.trader.operate_stock(operation, stock_name, volume)
+            # status, info = self.trader.operate_stock(operation, stock_name, volume)
 
             # 检查交易是否成功执行
-            if status is None:
-                print(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                continue
+            # if status is None:
+            #     print(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+            #     continue
 
             # 标记已执行交易
             any_trade_executed = True
@@ -572,14 +684,16 @@ class CommonHoldingProcessor:
             # 安全获取可能不存在的字段
             new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
 
+            # 计算交易数量：对于买入操作，使用策略中的目标比例
+            volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
+            print(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+
             print(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
 
             # 切换到对应账户
             self.common_page.change_account(account_name)
             print(f"✅ 已切换到账户: {account_name}")
 
-            # 计算交易数量：对于买入操作，使用策略中的目标比例
-            volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
 
             # 调用交易逻辑
             status, info = self.trader.operate_stock(operation, stock_name, volume)
@@ -621,8 +735,8 @@ if __name__ == '__main__':
     # strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx"
     # account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\account_info.xlsx'
     # trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx'
-    account_name = '中泰证券'
-    strategy_name = '一枝梨花'
+    account_name = '中山证券'
+    strategy_name = '逻辑为王'
     # diff = com.get_difference_holding(account_file, '长城证券',strategy_file, 'AI市场追踪策略' )
     # diff = com.get_difference_holding(r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx", r'D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\account_info.xlsx',account_name="中泰证券")
     # diff = com.extract_different_holding(account_file, account_name, strategy_file, strategy_name)
