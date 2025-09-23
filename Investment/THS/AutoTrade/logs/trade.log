@@ -3688,3 +3688,155 @@ TypeError: int() argument must be a string, a bytes-like object or a real number
 [32m2025-09-23 11:59:00 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
 [32m2025-09-23 11:59:00 - INFO - 计算股数: 17987.74153 / 105.67 = 170[0m
 [32m2025-09-23 11:59:00 - INFO - 计算买入股数: 100[0m
+[32m2025-09-23 15:16:23 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:16:23 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:16:23 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:17:28 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:17:28 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:17:28 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:18:33 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:18:33 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:18:33 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:19:46 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:19:46 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:19:46 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:20:53 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:20:53 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:20:53 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:21:53 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:21:53 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:21:53 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:22:53 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:22:53 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:22:53 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:24:02 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:24:02 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:24:02 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:25:02 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:25:02 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:25:02 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:26:00 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:26:00 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:26:00 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:27:14 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:27:14 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:27:14 - INFO - 计算买入股数: 1798700[0m
+[32m2025-09-23 15:28:18 - INFO - 目标投资金额: 54343.63 * 33.1% = 17987.74153[0m
+[32m2025-09-23 15:28:18 - INFO - 计算股数: 17987.74153 / 0.01 = 1798774[0m
+[32m2025-09-23 15:28:18 - INFO - 计算买入股数: 1798700[0m
+[31m2025-09-23 16:19:14 - ERROR - 卖出 飞龙股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[31m2025-09-23 16:21:20 - ERROR - 卖出 飞龙股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[31m2025-09-23 16:21:35 - ERROR - 买入 钧达股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[31m2025-09-23 16:30:07 - ERROR - 卖出 飞龙股份 未知 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 265, in operate_stock
+    self.ths_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\pages\page.py", line 222, in search_stock
+    first_item.click()
+    ~~~~~~~~~~~~~~~~^^
+  File "E:\Python\Python313\Lib\uiautomator2\_selector.py", line 149, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\Python\Python313\Lib\uiautomator2\_selector.py", line 338, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/recyclerView']", 'method': 'wait'}
+[31m2025-09-23 16:30:22 - ERROR - 买入 钧达股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[31m2025-09-23 16:31:47 - ERROR - 卖出 飞龙股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[31m2025-09-23 16:32:04 - ERROR - 买入 钧达股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-09-23 16:34:28 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 16:34:42 - ERROR - 卖出 飞龙股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[32m2025-09-23 16:34:42 - INFO - 目标投资金额: 52131.97 * 15.33% = 7991.8310010000005[0m
+[32m2025-09-23 16:34:42 - INFO - 计算股数: 7991.8310010000005 / 0.01 = 799183[0m
+[32m2025-09-23 16:34:42 - INFO - 计算买入股数: 799100[0m
+[32m2025-09-23 16:35:08 - INFO - 买入 钧达股份 799100股 False 最新:[0m
+[33m2025-09-23 17:13:46 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 17:14:04 - ERROR - 卖出 精达股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-09-23 17:14:04 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 17:14:19 - ERROR - 卖出 药明康德 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-09-23 17:14:20 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 17:14:37 - ERROR - 卖出 飞龙股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-09-23 17:14:37 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 17:14:51 - ERROR - 卖出 江海股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[33m2025-09-23 17:14:51 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 17:15:04 - ERROR - 卖出 东信和平 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[32m2025-09-23 17:15:04 - INFO - 目标投资金额: 52131.97 * 15.33% = 7991.8310010000005[0m
+[32m2025-09-23 17:15:04 - INFO - 计算股数: 7991.8310010000005 / 0.01 = 799183[0m
+[32m2025-09-23 17:15:04 - INFO - 计算买入股数: 799100[0m
+[32m2025-09-23 17:15:30 - INFO - 买入 钧达股份 799100股 False 最新:[0m
+[32m2025-09-23 17:15:30 - INFO - 目标投资金额: 52131.97 * 24.73% = 12892.236181[0m
+[32m2025-09-23 17:15:30 - INFO - 计算股数: 12892.236181 / 7.41 = 1739[0m
+[32m2025-09-23 17:15:30 - INFO - 计算买入股数: 1700[0m
+[32m2025-09-23 17:15:54 - INFO - 买入 御银股份 1700股 False 最新:[0m
+[33m2025-09-23 18:02:00 - WARNING - 无可用数量: available_shares=0[0m
+[31m2025-09-23 18:02:17 - ERROR - 卖出 精达股份 未知 股失败: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'[0m
+Traceback (most recent call last):
+  File "E:\git_documents\Investment\Investment\THS\AutoTrade\scripts\trade_logic.py", line 268, in operate_stock
+    self.ths_page.input_volume(int(volume))
+                               ~~~^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[32m2025-09-23 18:02:17 - INFO - 目标投资金额: 55937.98 * 33.1% = 18515.471380000003[0m
+[32m2025-09-23 18:02:17 - INFO - 计算股数: 18515.471380000003 / 104.78 = 176[0m
+[32m2025-09-23 18:02:17 - INFO - 计算买入股数: 100[0m
+[32m2025-09-23 18:02:41 - INFO - 买入 药明康德 100股 False 最新:[0m
+[33m2025-09-23 18:02:41 - WARNING - 无可用数量: available_shares=0[0m

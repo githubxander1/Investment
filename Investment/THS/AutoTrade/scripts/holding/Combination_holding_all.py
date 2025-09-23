@@ -3,7 +3,7 @@ import requests
 
 from Investment.THS.AutoTrade.config.settings import Combination_holding_file, \
     all_ids, id_to_name, Combination_headers
-from Investment.THS.AutoTrade.utils.format_data import determine_market
+from Investment.THS.AutoTrade.utils.format_data import determine_market, logger
 
 
 def get_portfolio_holding_data(id):
@@ -24,6 +24,7 @@ def get_portfolio_holding_data(id):
 
         # code = [position.get("code", "") for position in positions]
 
+        strategy_df = []
         for position in positions:
             code = position.get("code", "")
             market = determine_market(code)  # 每个 code 都是字符串
@@ -34,13 +35,15 @@ def get_portfolio_holding_data(id):
                 "股票名称": position.get("name", ""),
                 "股票代码": str(code).zfill(6),
                 "最新价": position["price"],#当前价格
-                "新比例%": position.get("positionRealRatio", 0) * 100,#实际持仓比例(%)
+                "新比例%": round(position.get("positionRealRatio", 0) * 100),#实际持仓比例(%)
                 "市场": market,
                 "成本价": position["costPrice"],
                 "收益率(%)": position.get("incomeRate", 0) * 100,
                 "盈亏比例(%)": position.get("profitLossRate", 0) * 100,
             }, index=[0])  # 添加 index=[0] 以避免空索引警告
-            all_dfs.append(df)
+            strategy_df.append(df)
+        return strategy_df
+            # holding_data.append(df)
         # market = determine_market(code)
         # df = pd.DataFrame({
         #     # "id": [id] * len(positions),
@@ -65,6 +68,26 @@ def get_portfolio_holding_data(id):
     else:
         print(f"请求失败，状态码: {response.status_code}，id: {id}")
 
+def get_portfolio_holding_data_all():
+    # 存储所有结果的列表
+    all_dfs = []
+    for id in all_ids:
+        df = get_portfolio_holding_data(id)
+        # print(df)
+        all_dfs.extend(df)
+    # 合并所有DataFrame
+    final_df = pd.concat(all_dfs, ignore_index=True)
+
+    # 保存为Excel文件
+    file_path = Combination_holding_file
+    today = pd.Timestamp.now().strftime('%Y-%m-%d')
+    final_df.to_excel(file_path, sheet_name=today, index=False)
+    logger.info("策略持仓数据已保存到Excel文件：", file_path)
+
+    # 打印最终的DataFrame
+    # print(final_df)
+    return final_df
+
 if __name__ == '__main__':
     # 多个id
     # combination_ids = [6994, 7152, 18710, 16281, 19347, 13081, 14980]
@@ -81,18 +104,19 @@ if __name__ == '__main__':
     #     19347:'超短稳定复利',
     #     18710:'用收益率征服您'}
     # 存储所有结果的列表
-    all_dfs = []
-
-    for id in all_ids:
-        get_portfolio_holding_data(id)
-    # 合并所有DataFrame
-    final_df = pd.concat(all_dfs, ignore_index=True)
-
-    # 保存为Excel文件
-    file_path = Combination_holding_file
-    today = pd.Timestamp.now().strftime('%Y-%m-%d')
-    final_df.to_excel(file_path, sheet_name=today,index=False)
-    print("数据已保存到Excel文件：", file_path)
-
-    # 打印最终的DataFrame
-    print(final_df)
+    # all_dfs = []
+    #
+    # for id in all_ids:
+    #     get_portfolio_holding_data(id)
+    # # 合并所有DataFrame
+    # final_df = pd.concat(all_dfs, ignore_index=True)
+    #
+    # # 保存为Excel文件
+    # file_path = Combination_holding_file
+    # today = pd.Timestamp.now().strftime('%Y-%m-%d')
+    # final_df.to_excel(file_path, sheet_name=today,index=False)
+    # print("数据已保存到Excel文件：", file_path)
+    #
+    # # 打印最终的DataFrame
+    # print(final_df)
+    get_portfolio_holding_data_all()

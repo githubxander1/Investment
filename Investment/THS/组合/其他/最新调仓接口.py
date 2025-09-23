@@ -53,7 +53,9 @@ class PortfolioAPI:
                 concurrentRatio = relocate.get("currentRatio")
                 finalPrice = relocate.get("finalPrice")
                 name = relocate.get("name")
-                newRatio = relocate.get("newRatio")
+                newRatio = round(relocate.get("newRatio"))
+                # # 四舍五入，取整数
+                # newRatio = round(newRatio)
 
                 extract_data.append({
                     "说明": content,

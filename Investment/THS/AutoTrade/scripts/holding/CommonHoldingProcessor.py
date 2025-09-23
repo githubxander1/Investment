@@ -1,7 +1,3 @@
-"""
-通用持仓处理器模块
-
-"""
 import sys
 import os
 import time
@@ -49,13 +45,15 @@ class CommonHoldingProcessor:
         import pandas as pd
         import os
 
+        logger.info(f"开始比较账户 {account_name} 与策略 {strategy_name} 的持仓差异")
+        
         # 检查文件是否存在
         if not os.path.exists(account_file):
-            print(f"账户持仓文件不存在: {account_file}")
+            logger.error(f"账户持仓文件不存在: {account_file}")
             return {"error": "账户持仓文件不存在"}
 
         if not os.path.exists(strategy_file):
-            print(f"组合持仓文件不存在: {strategy_file}")
+            logger.error(f"组合持仓文件不存在: {strategy_file}")
             return {"error": "组合持仓文件不存在"}
 
         try:
@@ -71,7 +69,7 @@ class CommonHoldingProcessor:
                             # 检查是否真的有持仓（排除"无持仓"的情况）
                             if len(df) == 1 and ('股票名称' in df.columns and df.iloc[0]['股票名称'] == '无持仓' or 
                                                 '标的名称' in df.columns and df.iloc[0]['标的名称'] == '无持仓'):
-                                print(f"证券账户 {account_name} 无持仓数据")
+                                logger.info(f"证券账户 {account_name} 无持仓数据")
                                 account_holdings = pd.DataFrame()
                             else:
                                 # 只保留股票名称列
@@ -80,12 +78,12 @@ class CommonHoldingProcessor:
                                 # 去掉持有金额为0或0.0的
                                 if '持有金额' in account_holdings.columns:
                                     account_holdings = account_holdings[account_holdings['持有金额'] > 0]
-                                print(
+                                logger.info(
                                     f"✅ 成功读取证券账户的持仓数据，共 {len(account_holdings)} 条记录\n{account_holdings}")
                         else:
-                            print(f"证券账户持仓数据为空或不包含股票名称列")
+                            logger.warning(f"证券账户持仓数据为空或不包含股票名称列")
                     else:
-                        print(f"账户文件中没有证券的持仓数据表: {sheet_name}")
+                        logger.warning(f"账户文件中没有证券的持仓数据表: {sheet_name}")
                         # 尝试其他可能的工作表名称
                         possible_sheet_names = [f"{account_name}_持仓数据", f"{account_name}持仓", account_name]
                         found_sheet = False
@@ -97,18 +95,19 @@ class CommonHoldingProcessor:
                                     account_holdings['账户'] = account_name
                                     if '持有金额' in account_holdings.columns:
                                         account_holdings = account_holdings[account_holdings['持有金额'] > 0]
-                                    print(f"✅ 成功读取证券账户的持仓数据（从工作表 {possible_name}），共 {len(account_holdings)} 条记录\n{account_holdings}")
+                                    logger.info(f"✅ 成功读取证券账户的持仓数据（从工作表 {possible_name}），共 {len(account_holdings)} 条记录\n{account_holdings}")
                                     found_sheet = True
                                     break
                         
                         # 如果还是没有找到工作表，创建一个空的DataFrame
                         if not found_sheet:
-                            print(f"未找到账户 {account_name} 的持仓数据，将使用空的持仓数据")
+                            logger.warning(f"未找到账户 {account_name} 的持仓数据，将使用空的持仓数据")
                             account_holdings = pd.DataFrame()
             except Exception as e:
-                print(f"读取证券账户持仓文件失败: {e}")
+                logger.error(f"读取证券账户持仓文件失败: {e}")
                 
             # 读取策略持仓数据
+            logger.info(f"🔍 正在读取策略 {strategy_name} 的持仓数据...")
             logicofking_holdings = pd.DataFrame()
             try:
                 # 昨天的日期
@@ -123,13 +122,13 @@ class CommonHoldingProcessor:
                             df = df[df['名称'] == strategy_name] if '名称' in df.columns else df
                             if not df.empty and ('股票名称' in df.columns or '标的名称' in df.columns):
                                 logicofking_holdings = df.copy()
-                                print(
-                                    f"✅ 成功读取策略的持仓数据，共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
+                                logger.info(
+                                    f"✅ 成功读取策略 {strategy_name} 的持仓数据，共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
                             else:
-                                print("策略持仓数据为空或不包含股票名称列")
+                                logger.warning(f"策略 {strategy_name} 持仓数据为空或不包含股票名称列")
                         else:
                             # 尝试查找其他可能的工作表
-                            print(f"组合持仓文件中没有今天的sheet: {today_str}")
+                            logger.warning(f"组合持仓文件中没有今天的sheet: {today_str}")
                             # 查找最近的工作表
                             sheet_names = [name for name in xls.sheet_names if name != 'Sheet1']  # 排除默认Sheet1
                             if sheet_names:
@@ -138,11 +137,11 @@ class CommonHoldingProcessor:
                                 df = df[df['名称'] == strategy_name] if '名称' in df.columns else df
                                 if not df.empty and ('股票名称' in df.columns or '标的名称' in df.columns):
                                     logicofking_holdings = df.copy()
-                                    print(f"✅ 成功读取策略的持仓数据（从工作表 {latest_sheet}），共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
+                                    logger.info(f"✅ 成功读取策略 {strategy_name} 的持仓数据（从工作表 {latest_sheet}），共 {len(logicofking_holdings)} 条记录\n{logicofking_holdings}")
                 else:
-                    print("组合持仓文件不存在")
+                    logger.error("组合持仓文件不存在")
             except Exception as e:
-                print(f"读取策略持仓文件失败: {e}")
+                logger.error(f"读取策略 {strategy_name} 持仓文件失败: {e}")
                 return {"error": f"读取策略持仓文件失败: {e}"}
 
             # 需要排除的股票名称
@@ -161,20 +160,15 @@ class CommonHoldingProcessor:
                     logicofking_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
                 logicofking_holdings = standardize_dataframe_stock_names(logicofking_holdings)
 
-            # 确保账户持仓数据中的'持仓占比'以百分比形式存在，并创建'当前比例%'列
-            # if '持仓占比' in account_holdings.columns:
-            #     # 将原始的小数形式的持仓占比乘以100，转换为百分比，并四舍五入到两位小数
-            #     # account_holdings['当前比例%'] = (account_holdings['持仓占比'] * 100).round(2)
-            #     print(f"✅ 账户持仓占比已转换为百分比形式: {account_holdings[['股票名称', '持仓占比', '当前比例%']].head()}")
-            # else:
-            #     # 如果没有'持仓占比'列，则用0填充'当前比例%'
-            #     account_holdings['当前比例%'] = 0.0
-
-            # 确保策略持仓数据中的'新比例%'列存在，如果不存在则创建并填充0
-            # if '新比例%' not in logicofking_holdings.columns:
-            #     logicofking_holdings['新比例%'] = 0.0
+            # 对持仓占比和新比例%进行四舍五入取整处理
+            if '持仓占比' in account_holdings.columns:
+                account_holdings['持仓占比'] = account_holdings['持仓占比'].round(0).astype(int)
+            
+            if '新比例%' in logicofking_holdings.columns:
+                logicofking_holdings['新比例%'] = logicofking_holdings['新比例%'].round(0).astype(int)
 
             # 1. 找出需要卖出的标的（在证券账户中存在，但在策略中不存在，且不在排除列表中；如果证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'小的）
+            # 优化：允许比例差异在10%以内的股票不计入操作范围
             if not account_holdings.empty and not logicofking_holdings.empty:
                 # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
                 to_sell_candidates = account_holdings[
@@ -190,7 +184,14 @@ class CommonHoldingProcessor:
                                        how='left')
 
                 # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
-                to_sell_candidates2 = merged_data[merged_data['新比例%'] < merged_data['持仓占比']] if '持仓占比' in merged_data.columns else pd.DataFrame()
+                # 优化：只有当差异大于等于10%时才考虑卖出，避免小幅度调整触发交易
+                if '持仓占比' in merged_data.columns:
+                    to_sell_candidates2 = merged_data[
+                        (merged_data['新比例%'] < merged_data['持仓占比']) & 
+                        ((merged_data['持仓占比'] - merged_data['新比例%']) >= 10)
+                    ]
+                else:
+                    to_sell_candidates2 = pd.DataFrame()
 
                 # 合并两种需要卖出的情况
                 to_sell = pd.concat([to_sell_candidates, to_sell_candidates2]).drop_duplicates(subset=['股票名称'])
@@ -214,16 +215,17 @@ class CommonHoldingProcessor:
 
             if not to_sell.empty:
                 to_sell['操作'] = '卖出'
-                print(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
+                logger.info(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
                 # 设置pandas显示选项，确保所有列都能完整显示
                 pd.set_option('display.max_columns', None)
                 pd.set_option('display.width', None)
                 pd.set_option('display.max_colwidth', None)
-                # print(to_sell.to_string())
+                # logger.info(to_sell.to_string())
             else:
-                print("✅ 当前无需卖出的标的")
+                logger.info("✅ 当前无需卖出的标的")
 
             # 2. 找出需要买入的标的（在策略中存在，但在证券账户中不存在，且不在排除列表中；如果证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'大的）
+            # 优化：允许比例差异在10%以内的股票不计入操作范围
             if not logicofking_holdings.empty and not account_holdings.empty:
                 # 在策略中存在，但在证券账户中不存在的股票（需要买入到目标比例）
                 to_buy_candidates = logicofking_holdings[
@@ -239,7 +241,14 @@ class CommonHoldingProcessor:
                                            on='股票名称', how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
 
                 # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
-                to_buy_candidates2 = merged_data_buy[merged_data_buy['新比例%'] > merged_data_buy['持仓占比']] if not merged_data_buy.empty else pd.DataFrame()
+                # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
+                if not merged_data_buy.empty:
+                    to_buy_candidates2 = merged_data_buy[
+                        (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) & 
+                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
+                    ]
+                else:
+                    to_buy_candidates2 = pd.DataFrame()
 
                 # 合并两种需要买入的情况
                 to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
@@ -264,14 +273,14 @@ class CommonHoldingProcessor:
 
             if not to_buy.empty:
                 to_buy['操作'] = '买入'
-                print(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
+                logger.info(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
                 # 设置pandas显示选项，确保所有列都能完整显示
                 pd.set_option('display.max_columns', None)
                 pd.set_option('display.width', None)
                 pd.set_option('display.max_colwidth', None)
-                # print(to_buy.to_string())
+                # logger.info(to_buy.to_string())
             else:
-                print("✅ 当前无需买入的标的")
+                logger.info("✅ 当前无需买入的标的")
 
             # 合并to_buy和to_sell
             # difference_holding_df = pd.concat([to_sell, to_buy], ignore_index=True)
@@ -290,7 +299,7 @@ class CommonHoldingProcessor:
             # if '当前比例%' not in to_buy.columns:
             #     to_buy['当前比例%'] = 0.0
 
-            print(f"📊 最终差异报告 - 需要卖出: {len(to_sell)} 条, 需要买入: {len(to_buy)} 条")
+            logger.info(f"📊 最终差异报告 - 需要卖出: {len(to_sell)} 条, 需要买入: {len(to_buy)} 条")
             if not to_sell.empty:
                 # 为卖出报告添加目标比例和变化比例列
                 try:
@@ -306,10 +315,10 @@ class CommonHoldingProcessor:
                             to_sell_report.at[idx, '目标比例'] = target_ratio
 
                     to_sell_report['变化比例'] = to_sell_report['目标比例'] - to_sell_report['持仓占比'] if '持仓占比' in to_sell_report.columns else -to_sell_report['目标比例']
-                    print(f"📈 需要卖出的股票及其当前/目标比例:\n{to_sell_report}")
+                    logger.info(f"📈 需要卖出的股票及其当前/目标比例:\n{to_sell_report}")
                 except Exception as e:
-                    print(f"处理卖出报告时出错: {e}")
-                    print(f"卖出数据: {to_sell}")
+                    logger.error(f"处理卖出报告时出错: {e}")
+                    logger.debug(f"卖出数据: {to_sell}")
             if not to_buy.empty:
                 # 为买入报告添加原始比例和变化比例列
                 try:
@@ -338,18 +347,20 @@ class CommonHoldingProcessor:
                                     to_buy_report.at[idx, '原始比例'] = original_ratio
 
                         to_buy_report['变化比例'] = to_buy_report['新比例%'] - to_buy_report['原始比例']
-                        print(f"📈 需要买入的股票及其当前/目标比例:\n{to_buy_report}")
+                        logger.info(f"📈 需要买入的股票及其当前/目标比例:\n{to_buy_report}")
                 except Exception as e:
-                    print(f"处理买入报告时出错: {e}")
-                    print(f"买入数据: {to_buy}")
+                    logger.error(f"处理买入报告时出错: {e}")
+                    logger.debug(f"买入数据: {to_buy}")
 
+            logger.info(f"完成比较账户 {account_name} 与策略 {strategy_name} 的持仓差异")
             return difference_report
 
         except Exception as e:
-            error_msg = f"处理证券与策略持仓差异时发生错误: {e}"
-            print(error_msg)
+            error_msg = f"处理证券与策略 {strategy_name} 持仓差异时发生错误: {e}"
+            logger.error(error_msg)
             # 确保即使出错也返回一个有效的字典
             return {"to_sell": pd.DataFrame(), "to_buy": pd.DataFrame()}
+
     def filter_executed_operations(self, diff_result, account_name):
         """
         过滤已执行的操作，只返回未执行的操作记录
@@ -357,7 +368,7 @@ class CommonHoldingProcessor:
         :param diff_result: extract_different_holding函数返回的结果，包含to_sell和to_buy两个DataFrame
         :return: 未执行的操作记录
         """
-        print("开始过滤已执行的操作记录...")
+        logger.info("开始过滤已执行的操作记录...")
         
         # 读取操作历史记录
         try:
@@ -366,16 +377,16 @@ class CommonHoldingProcessor:
             if isinstance(trade_history_df, list):
                 trade_history_df = trade_history_df[0] if trade_history_df else pd.DataFrame()
             
-            print(f"成功读取操作历史记录，共 {len(trade_history_df)} 条记录")
+            logger.info(f"成功读取操作历史记录，共 {len(trade_history_df)} 条记录")
         except Exception as e:
-            print(f"读取操作历史记录失败: {e}")
+            logger.error(f"读取操作历史记录失败: {e}")
             trade_history_df = pd.DataFrame()
         
         # 获取需要卖出和买入的记录
         to_sell = diff_result.get('to_sell', pd.DataFrame())
         to_buy = diff_result.get('to_buy', pd.DataFrame())
         
-        print(f"待处理 - 需要卖出: {len(to_sell)} 条，需要买入: {len(to_buy)} 条")
+        logger.info(f"待处理 - 需要卖出: {len(to_sell)} 条，需要买入: {len(to_buy)} 条")
         
         # 过滤已执行的卖出操作
         if not to_sell.empty and not trade_history_df.empty:
@@ -397,7 +408,7 @@ class CommonHoldingProcessor:
                 
                 if not executed.empty:
                     sell_executed_mask.loc[idx] = True
-                    print(f"已执行过卖出操作: {stock_name}")
+                    logger.info(f"已执行过卖出操作: {stock_name}")
             
             # 只保留未执行的操作
             to_sell_filtered = to_sell[~sell_executed_mask]
@@ -426,14 +437,14 @@ class CommonHoldingProcessor:
                 
                 if not executed.empty:
                     buy_executed_mask.loc[idx] = True
-                    print(f"已执行过买入操作: {stock_name} ({new_ratio}%)")
+                    logger.info(f"已执行过买入操作: {stock_name} ({new_ratio}%)")
             
             # 只保留未执行的操作
             to_buy_filtered = to_buy[~buy_executed_mask]
         else:
             to_buy_filtered = to_buy
             
-        print(f"过滤后 - 需要卖出: {len(to_sell_filtered)} 条，需要买入: {len(to_buy_filtered)} 条")
+        logger.info(f"过滤后 - 需要卖出: {len(to_sell_filtered)} 条，需要买入: {len(to_buy_filtered)} 条")
         
         # 返回过滤后的结果
         return {
@@ -548,14 +559,13 @@ class CommonHoldingProcessor:
         :return: 计算出的交易股数
         """
         logger.info(f"开始计算交易股数: 账户={account_name}, 股票={stock_name}, 操作={operation_type}, 新比例={new_ratio}%")
-        # account_asset, account_balance, stock_available, stock_ratio, stock_price = self.trader.get_account_info(account_file, account_name, stock_name)
-        account_asset, account_balance, stock_available, stock_ratio, stock_price = self.account_info.get_account_summary_info_from_file(Account_holding_file, account_name, stock_name)
+        account_asset, account_balance, stock_available, stock_ratio, stock_price = self.trader.get_account_info(account_file, account_name, stock_name)
         
         # 确保必要参数有效
         if account_asset is None or account_asset == 0:
             # 从账户汇总数据中查找总资产
             try:
-                account_balance_data = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
+                account_balance_data = pd.read_excel(account_file, sheet_name='账户汇总')
                 account_row = account_balance_data[account_balance_data['账户名'] == account_name]
                 if not account_row.empty:
                     account_asset = float(str(account_row['总资产'].values[0]).replace(',', ''))
@@ -631,6 +641,8 @@ class CommonHoldingProcessor:
 
     def operate_strategy(self, account_file, account_name, strategy_file, strategy_name: str):
         """执行策略"""
+        logger.info(f"开始执行策略: 账户={account_name}, 策略={strategy_name}")
+        
         # 确保account_name有默认值
         if account_name is None:
             account_name = self.account_name
@@ -658,20 +670,20 @@ class CommonHoldingProcessor:
 
             # 计算交易数量：对于卖出操作，使用策略中的目标比例
             volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
-            print(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+            logger.info(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
 
-            print(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
+            logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
 
             # 切换到对应账户
             self.common_page.change_account(account_name)
-            print(f"✅ 已切换到账户: {account_name}")
+            logger.info(f"✅ 已切换到账户: {account_name}")
 
             # 调用交易逻辑
             # status, info = self.trader.operate_stock(operation, stock_name, volume)
 
             # 检查交易是否成功执行
             # if status is None:
-            #     print(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+            #     logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
             #     continue
 
             # 标记已执行交易
@@ -686,13 +698,13 @@ class CommonHoldingProcessor:
 
             # 计算交易数量：对于买入操作，使用策略中的目标比例
             volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
-            print(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+            logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
 
-            print(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
+            logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
 
             # 切换到对应账户
             self.common_page.change_account(account_name)
-            print(f"✅ 已切换到账户: {account_name}")
+            logger.info(f"✅ 已切换到账户: {account_name}")
 
 
             # 调用交易逻辑
@@ -700,22 +712,25 @@ class CommonHoldingProcessor:
 
             # 检查交易是否成功执行
             if status is None:
-                print(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
                 continue
 
             # 标记已执行交易
             any_trade_executed = True
 
-        print(diff)
-        print('-' * 50)
-        print("需要卖出的股票:")
+        logger.debug(f"策略执行结果: {diff}")
+        logger.info('-' * 50)
+        logger.info("需要卖出的股票:")
         # 设置pandas显示选项，确保所有列都能完整显示
         pd.set_option('display.max_columns', None)
         pd.set_option('display.width', None)
         pd.set_option('display.max_colwidth', None)
-        print(to_sell.to_string())
-        print("需要买入的股票:")
-        print(to_buy.to_string())
+        logger.info(to_sell.to_string())
+        logger.info("需要买入的股票:")
+        logger.info(to_buy.to_string())
+        
+        logger.info(f"策略执行完成: 账户={account_name}, 策略={strategy_name}")
+        return True
 
 
 if __name__ == '__main__':

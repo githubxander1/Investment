@@ -2261,3 +2261,52 @@ GPT定期精选 超讯通信 603322 沪深A股 39.71 30.77 2025-09-17 IT服务[
 [33m2025-09-23 10:50:15 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
 [33m2025-09-23 10:50:16 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败[0m
 [33m2025-09-23 10:51:08 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败[0m
+[33m2025-09-23 15:16:49 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:17:53 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:18:58 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:20:12 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:21:19 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:22:19 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:23:19 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:24:27 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:25:27 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:26:27 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:27:39 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:28:43 - WARNING - 交易通知: 组合交易执行异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:29:40 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 15:30:05 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 16:18:58 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 16:19:15 - WARNING - 交易通知: ✅ 账户 中泰证券 对应的策略 一枝梨花 执行完成[0m
+[33m2025-09-23 16:21:04 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 16:21:35 - WARNING - 交易通知: ✅ 账户 中泰证券 对应的策略 一枝梨花 执行完成[0m
+[33m2025-09-23 16:23:00 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 16:23:26 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-23 16:29:33 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 16:30:22 - WARNING - 交易通知: ✅ 账户 中泰证券 对应的策略 一枝梨花 执行完成[0m
+[33m2025-09-23 16:31:33 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 16:32:04 - WARNING - 交易通知: ✅ 账户 中泰证券 对应的策略 一枝梨花 执行完成[0m
+[33m2025-09-23 16:34:28 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 16:35:08 - WARNING - 交易通知: 买入 钧达股份 799100股 False 最新:[0m
+[33m2025-09-23 16:35:09 - WARNING - 交易通知: ✅ 账户 中泰证券 对应的策略 一枝梨花 执行完成[0m
+[33m2025-09-23 17:08:05 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 17:08:06 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 17:14:20 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 17:15:30 - WARNING - 交易通知: 买入 钧达股份 799100股 False 最新:[0m
+[33m2025-09-23 17:15:54 - WARNING - 交易通知: 买入 御银股份 1700股 False 最新:[0m
+[33m2025-09-23 17:15:54 - WARNING - 交易通知: ✅ 账户 中泰证券 对应的策略 一枝梨花 执行完成[0m
+[33m2025-09-23 17:25:10 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 17:25:10 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 17:26:25 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 17:26:25 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 18:02:41 - WARNING - 交易通知: 买入 药明康德 100股 False 最新:[0m
+[33m2025-09-23 18:02:41 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-23 18:13:57 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 18:13:57 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 18:35:06 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 18:35:06 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 18:59:42 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 18:59:42 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 21:11:29 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 21:11:30 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 21:12:58 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-23 21:12:59 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m

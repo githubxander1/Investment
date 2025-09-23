@@ -377,6 +377,27 @@ class AccountInfo:
                     # 用列的均值填充NaN值
                     df[col] = df[col].fillna(df[col].mean() if not df[col].isna().all() else 0)
             
+            # 计算并添加持仓占比列
+            try:
+                # 获取账户总资产
+                header_info = self.extract_header_info()
+                if not header_info.empty:
+                    total_asset_text = header_info.iloc[0]["总资产"]
+                    if total_asset_text and total_asset_text != "None":
+                        total_asset = float(str(total_asset_text).replace(',', ''))
+                        logger.info(f"账户总资产: {total_asset}")
+                        
+                        # 计算每只股票的持仓占比，并四舍五入取整
+                        if '市值' in df.columns:
+                            df['持仓占比'] = (df['市值'] / total_asset * 100).round(0).astype(int)
+                            logger.info("已计算持仓占比并取整")
+                    else:
+                        logger.warning("无法获取账户总资产信息，无法计算持仓占比")
+                else:
+                    logger.warning("无法获取账户汇总信息，无法计算持仓占比")
+            except Exception as e:
+                logger.error(f"计算持仓占比时出错: {e}")
+            
             # 从1开始索引
             df.index = range(1, len(df) + 1)
         
@@ -559,9 +580,9 @@ class AccountInfo:
                 
                 if not stock_data.empty:
                     stock_available = stock_data['可用'].values[0]
-                    stock_ratio = 0  # 持仓占比需要计算或从文件中获取
+                    stock_ratio = stock_data['持仓占比'].values[0] if '持仓占比' in stock_data.columns else 0
                     stock_price = stock_data['当前价'].values[0]
-                    logger.info(f"获取到 {account_name} 账户总资产: {account_asset}, {stock_name} 当前价 {stock_price} 可用数量 {stock_available}")
+                    logger.info(f"获取到 {account_name} 账户总资产: {account_asset}, {stock_name} 当前价 {stock_price} 可用数量 {stock_available}, 持仓占比 {stock_ratio}%")
                 else:
                     logger.warning(f"未找到{account_name}账户中的股票 {stock_name}")
                     stock_available = 0
@@ -569,7 +590,7 @@ class AccountInfo:
                     # 当账户中没有该股票时，仍然需要返回有效的默认值
                     stock_price = 0
             
-            logger.info(f"完成：从文件读取账户信息: 账户总资产={account_asset}, 账户余额={account_balance}, 股票可用={stock_available}, 持仓比例={stock_ratio}, 股票价格={stock_price}")
+            logger.info(f"完成：从文件读取账户信息: 账户总资产={account_asset}, 账户余额={account_balance}, 股票可用={stock_available}, 持仓比例={stock_ratio}%, 股票价格={stock_price}")
             logger.info("-" * 50)
             return account_asset, account_balance, stock_available, stock_ratio, stock_price
             
@@ -602,6 +623,24 @@ class AccountInfo:
             # 提取该账户的数据
             header_info_df = self.extract_header_info()
             stocks_df = self.extract_stock_info()
+            
+            # 如果有持仓数据且账户汇总信息不为空，计算持仓占比
+            if not stocks_df.empty and not header_info_df.empty:
+                try:
+                    # 从账户汇总信息中获取总资产
+                    total_asset_text = header_info_df.iloc[0]["总资产"]
+                    if total_asset_text and total_asset_text != "None":
+                        total_asset = float(str(total_asset_text).replace(',', ''))
+                        logger.info(f"账户 {account_name} 总资产: {total_asset}")
+                        
+                        # 计算每只股票的持仓占比，并四舍五入为整数
+                        if '市值' in stocks_df.columns:
+                            stocks_df['持仓占比'] = (stocks_df['市值'] / total_asset * 100).round(0).astype(int)
+                            logger.info(f"已为账户 {account_name} 的持仓股票计算持仓占比")
+                    else:
+                        logger.warning(f"账户 {account_name} 无总资产信息，无法计算持仓占比")
+                except Exception as e:
+                    logger.error(f"计算持仓占比时出错: {e}")
 
             # 如果数据为空，记录警告
             if header_info_df.empty and stocks_df.empty:
@@ -673,6 +712,24 @@ class AccountInfo:
                 # 提取该账户的数据
                 header_info_df = self.extract_header_info()
                 stocks_df = self.extract_stock_info()
+                
+                # 如果有持仓数据且账户汇总信息不为空，计算持仓占比
+                if not stocks_df.empty and not header_info_df.empty:
+                    try:
+                        # 从账户汇总信息中获取总资产
+                        total_asset_text = header_info_df.iloc[0]["总资产"]
+                        if total_asset_text and total_asset_text != "None":
+                            total_asset = float(str(total_asset_text).replace(',', ''))
+                            logger.info(f"账户 {account} 总资产: {total_asset}")
+                            
+                            # 计算每只股票的持仓占比，并四舍五入为整数
+                            if '市值' in stocks_df.columns:
+                                stocks_df['持仓占比'] = (stocks_df['市值'] / total_asset * 100).round(0).astype(int)
+                                logger.info(f"已为账户 {account} 的持仓股票计算持仓占比")
+                        else:
+                            logger.warning(f"账户 {account} 无总资产信息，无法计算持仓占比")
+                    except Exception as e:
+                        logger.error(f"计算持仓占比时出错: {e}")
 
                 # 如果数据为空，记录警告但继续处理其他账户
                 if header_info_df.empty and stocks_df.empty:

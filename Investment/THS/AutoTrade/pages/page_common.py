@@ -182,34 +182,46 @@ class CommonPage:
             password_changcheng = '660493'
             password_chuangcai = '170212'
             password_zhongtai = '170212'
+            password_zhongshan = '660493'
 
             # 开始切换账户
             if self.current_account_trade.get_text() != to_account:
     
                 self.current_account_trade.click()
                 account_dialog.click()
+                logger.info(f"点击账户切换弹窗")
 
                 # 登录账户
                 if loggin_button.exists():
                     loggin_button.click()
+                    logger.info("点击登录按钮")
     
                     if to_account == '长城证券':
                         time.sleep(1)
                         password_input.set_text(password_changcheng)
+                        logger.info(f"输入密码: {password_changcheng}")
                     elif to_account == '中泰证券':
                         password_input.set_text(password_zhongtai)
+                        logger.info(f"输入密码: {password_zhongtai}")
                     elif to_account == '川财证券':
                         password_input.set_text(password_chuangcai)
+                        logger.info(f"输入密码: {password_chuangcai}")
+                    elif to_account == '中山证券':
+                        password_input.set_text(password_zhongshan)
+                        logger.info(f"输入密码: {password_zhongshan}")
     
                     keeplogin_checkbox.click()
                     if keeplogin_24h.exists():
                         keeplogin_24h.click()
+                        logger.info("勾选24小时登录")
     
                     loggin_button.click()
+                    logger.info("点击登录按钮")
                     time.sleep(1)
                 else:
-                    logger.info(f"已切换至 {to_account} 账户已登录")
+                    logger.warning(f"已切换至 {to_account} 账户已登录")
                     self.holding_entry.click()
+                    logger.info("点击持仓按钮(入口)")
                     return True
             else:
                 _current_account = self.current_account
