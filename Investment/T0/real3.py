@@ -332,8 +332,9 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 if __name__ == "__main__":
     # stock_code = '516780'  # 长江电力
     stock_code = '601728'  # 中国电信
+    # stock_code = '601766'  # 中国中车
     # stock_code = '601398'  # 工商银行
-    trade_date = '20250613'  # 交易日期
+    trade_date = '20250924'  # 交易日期
 
     # 绘制并获取结果
     result_df = plot_tdx_intraday(stock_code, trade_date)

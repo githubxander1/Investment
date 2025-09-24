@@ -120,7 +120,7 @@ if __name__ == "__main__":
     today = datetime.date.today().strftime('%Y%m%d')
     symbol = '600900'
     # data = ak.stock_zh_a_hist_min_em(symbol=symbol, period="1", start_date=today, end_date=today)
-    data = ak.stock_zh_a_hist_min_em(symbol=symbol, period="1", start_date='20250604', end_date='20250604')
+    data = ak.stock_zh_a_hist_min_em(symbol=symbol, period="1", start_date='20250924', end_date='20250924')
     print(data)
 
     # 重命名列以匹配函数需求

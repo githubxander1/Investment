@@ -3,7 +3,10 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from T0.monitor import logger
+from Investment.THS.AutoTrade.utils.format_data import logger
+
+
+# from T0.monitor import logger
 
 
 def indicator2(close, volume, high, low, date, window=480):
