@@ -2310,3 +2310,23 @@ GPT定期精选 超讯通信 603322 沪深A股 39.71 30.77 2025-09-17 IT服务[
 [33m2025-09-23 21:11:30 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
 [33m2025-09-23 21:12:58 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
 [33m2025-09-23 21:12:59 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-24 09:25:40 - WARNING - 交易通知: 组合交易执行异常: HTTPSConnectionPool(host='t.10jqka.com.cn', port=443): Max retries exceeded with url: /portfolio/relocate/user/getPortfolioHoldingData?id=9800 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of...[0m
+[33m2025-09-24 09:27:22 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-24 09:27:24 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-24 09:29:11 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-24 09:29:15 - WARNING - 交易通知: ❌ 账户 中泰证券 对应的策略 一枝梨花 执行失败: CommonHoldingProcessor.calculate_trade_volume() takes 7 positional arguments but 8 were given[0m
+[33m2025-09-24 11:52:50 - WARNING - 交易通知: 组合交易执行异常: name 'account_update_needed' is not defined[0m
+[33m2025-09-24 12:01:20 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 12:11:52 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 12:14:31 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 12:16:13 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 12:19:30 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 12:20:16 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 12:26:56 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: '账户名称'[0m
+[33m2025-09-24 12:34:17 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: '持有数量'[0m
+[33m2025-09-24 13:51:42 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: '持有数量'[0m
+[33m2025-09-24 15:51:01 - WARNING - 交易通知: ❌ 账户 中山证券 对应的策略 逻辑为王 执行失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-09-24 16:05:36 - WARNING - 交易通知: 买入 冠石科技 300股 False 最新:[0m
+[33m2025-09-24 16:05:37 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m
+[33m2025-09-24 16:12:07 - WARNING - 交易通知: 买入 冠石科技 300股 False 最新:[0m
+[33m2025-09-24 16:12:08 - WARNING - 交易通知: ✅ 账户 中山证券 对应的策略 逻辑为王 执行完成[0m

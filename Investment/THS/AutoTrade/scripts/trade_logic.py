@@ -199,8 +199,6 @@ class TradeLogic:
     #     return volume
     # 获取相应账户里某股票的'持有数量'的值
     def get_account_info(self,account_file, account_name, stock_name):
-        # file_path = r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-        # account_file = r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
         account_balance_data = pd.read_excel(account_file, sheet_name='账户汇总')
         account_holding_data = pd.read_excel(account_file, sheet_name=account_name)
         pd.set_option('display.max_columns',None)
@@ -210,13 +208,16 @@ class TradeLogic:
         print(account_holding_data)
         print(account_balance_data)
 
-        account_balance = account_balance_data[account_balance_data['账户名称'] == account_name]['账户余额'].values[0]
-        account_asset = account_balance_data[account_balance_data['账户名称'] == account_name]['总资产'].values[0]
+        # 修复列名不匹配问题：使用'账户名'而不是'账户名称'
+        # 修复数据类型转换问题：处理包含逗号的数值
+        account_row = account_balance_data[account_balance_data['账户名'] == account_name]
+        account_balance = float(str(account_row['可用'].values[0]).replace(',', ''))
+        account_asset = float(str(account_row['总资产'].values[0]).replace(',', ''))
         stock_data = account_holding_data[account_holding_data['股票名称'] == stock_name]
 
 
         if not stock_data.empty:
-            stock_available = stock_data['持有数量'].values[0]
+            stock_available = stock_data['可用'].values[0]
             stock_ratio = stock_data['持仓占比'].values[0]
             stock_price = stock_data['当前价'].values[0]
             # return True,stock_available
@@ -225,24 +226,24 @@ class TradeLogic:
             stock_available = 0
             stock_ratio = 0
             stock_price = 0
-        logger.info(f"获取到 {account_name} 账户余额: {account_balance}, {stock_name} 当前价 {stock_price} 持有数量 {stock_available} 持仓比例 {stock_ratio}")
+        logger.info(f"获取到 {account_name} 总资产: {account_asset} 余额: {account_balance}, {stock_name} 当前价 {stock_price} 可用 {stock_available} 持仓占比 {stock_ratio}")
         return account_asset, account_balance, stock_available, stock_ratio, stock_price
 
-    def sell_volume(self, operation, stock_name, ratio=0):
-        # 1. 持仓可用
-        stock_exist, available_positions = self.account.get_stock_available(stock_name)
-
-        # 2. 卖出
-        self.ths_page.click_operate_button(operation)
-
-        # 3. 是否持仓
-        if not stock_exist:
-            error_info = f"{stock_name} 未持仓"
-            return False, error_info
-
-        # 4. 计算数量-卖（持仓可用 比例）
-        volume = self.calculate_sell_volume(available_positions, ratio)
-        return volume
+    # def sell_volume(self, operation, stock_name, ratio=0):
+    #     # 1. 持仓可用
+    #     stock_exist, available_positions = self.account.get_stock_available(stock_name)
+    #
+    #     # 2. 卖出
+    #     self.ths_page.click_operate_button(operation)
+    #
+    #     # 3. 是否持仓
+    #     if not stock_exist:
+    #         error_info = f"{stock_name} 未持仓"
+    #         return False, error_info
+    #
+    #     # 4. 计算数量-卖（持仓可用 比例）
+    #     volume = self.calculate_sell_volume(available_positions, ratio)
+    #     return volume
 
 
     def operate_stock(self, operation, stock_name, volume=None):

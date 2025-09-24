@@ -657,14 +657,18 @@ class AccountInfo:
 
                         # 读取除当前账户以外的其他工作表
                         for sheet_name in existing_sheets:
-                            if not sheet_name.startswith(f"{account_name}_"):
+                            if sheet_name != account_name and sheet_name != '账户汇总':
                                 all_sheets_data[sheet_name] = pd.read_excel(xls, sheet_name=sheet_name)
-
+                
                 # 添加当前账户的数据
+                # 修复：同时保存表头信息和持仓信息
                 if not header_info_df.empty:
-                    all_sheets_data[f"{account_name}"] = header_info_df
+                    all_sheets_data[f"{account_name}_表头"] = header_info_df
                 if not stocks_df.empty:
                     all_sheets_data[f"{account_name}"] = stocks_df
+                
+                # 更新账户汇总信息
+                self._update_account_summary(all_sheets_data, account_name, header_info_df)
 
                 # 写入所有数据到Excel文件
                 with pd.ExcelWriter(Account_holding_file, engine='openpyxl', mode='w') as writer:
@@ -685,6 +689,52 @@ class AccountInfo:
             logger.info("-" * 50)
             return False
 
+    def _update_account_summary(self, all_sheets_data, account_name, header_info_df):
+        """
+        更新账户汇总信息
+        
+        :param all_sheets_data: 所有工作表数据的字典
+        :param account_name: 账户名称
+        :param header_info_df: 表头信息DataFrame
+        """
+        try:
+            # 初始化或读取现有的账户汇总数据
+            if '账户汇总' in all_sheets_data:
+                summary_df = all_sheets_data['账户汇总']
+            else:
+                summary_df = pd.DataFrame(columns=['账户名', '仓位', '总资产', '总市值', '浮动盈亏', '可用', '可取'])
+            
+            # 从表头信息中提取账户数据
+            if not header_info_df.empty:
+                # 创建新行数据
+                new_row_data = {
+                    '账户名': account_name,
+                    '仓位': header_info_df.iloc[0].get('仓位', 'None'),
+                    '总资产': header_info_df.iloc[0].get('总资产', 'None'),
+                    '总市值': header_info_df.iloc[0].get('总市值', 'None'),
+                    '浮动盈亏': header_info_df.iloc[0].get('浮动盈亏', 'None'),
+                    '可用': header_info_df.iloc[0].get('可用', 'None'),
+                    '可取': header_info_df.iloc[0].get('可取', 'None')
+                }
+                
+                # 检查账户是否已存在于汇总数据中
+                existing_idx = summary_df[summary_df['账户名'] == account_name].index
+                
+                if len(existing_idx) > 0:
+                    # 更新现有记录
+                    for col, value in new_row_data.items():
+                        summary_df.at[existing_idx[0], col] = value
+                else:
+                    # 添加新记录
+                    new_row = pd.DataFrame([new_row_data])
+                    summary_df = pd.concat([summary_df, new_row], ignore_index=True)
+                
+                # 更新账户汇总数据
+                all_sheets_data['账户汇总'] = summary_df
+                
+            logger.info(f"已更新 {account_name} 的账户汇总信息")
+        except Exception as e:
+            logger.error(f"更新账户汇总信息失败: {e}")
 
     # 更新持仓信息
     def update_holding_info_all(self):

@@ -27,8 +27,7 @@ from Investment.THS.AutoTrade.config.settings import (
     MIN_DELAY,
     MAX_DELAY,
     MAX_RUN_TIME,
-    Account_holding_file, Combination_holding_file, Strategy_holding_file, Trade_history
-)
+    Account_holding_file, Combination_holding_file, Strategy_holding_file, Trade_history)
 
 # 导入你的20日监控模块
 # from Investment.THS.AutoTrade.scripts.monitor_20day import daily_check, check_morning_signals
@@ -43,12 +42,15 @@ ACCOUNTS = ["中山证券", "中泰证券"]
 
 # 账户与策略映射关系
 ACCOUNT_STRATEGY_MAP = {
-    "中山证券": "逻辑为王",
-    "中泰证券": "一枝梨花"
+    "中山证券": "逻辑为王"
+    # "中泰证券": "一枝梨花"
 }
 
 # 添加全局变量来跟踪是否已执行过信号检测
 morning_signal_checked = False
+
+# 添加全局变量来跟踪是否需要更新账户数据
+account_update_needed = True
 
 def is_trading_day(date: datetime.date) -> bool:
     """
@@ -96,163 +98,172 @@ def switch_to_next_account(d, current_account_index):
 
     return next_account_index
 
-async def execute_combination_trades():
-    """执行组合交易"""
-    try:
-        logger.info("🚀 开始执行组合交易...")
-
-        # 更新策略持仓数据
-        strategy_df = get_portfolio_holding_data_all()
-        logger.info(f"✅ 策略持仓数据已更新\n{strategy_df}")
-
-
-        # 首先更新账户数据，只更新ACCOUNT_STRATEGY_MAP中的账户
-        logger.info("🔄 开始更新账户数据...")
-        account_info = AccountInfo()
-        update_success = True
-        
-        # 只更新需要的账户
-        for account_name in ACCOUNT_STRATEGY_MAP.keys():
-            logger.info(f"正在更新账户 {account_name} 的数据...")
-            account_update_success = account_info.update_holding_info_for_account(account_name)
-            if not account_update_success:
-                logger.warning(f"⚠️ 账户 {account_name} 数据更新失败")
-                update_success = False
-        
-        if update_success:
-            logger.info("✅ 所需账户数据更新完成")
-        else:
-            logger.warning("⚠️ 部分账户数据更新失败，将继续使用现有数据执行交易")
-        
-        # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-        strategy_file = Strategy_holding_file
-        # trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
-        trade_file = Trade_history
-
-        # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-        # 设置pandas显示选项，确保所有列都能完整显示
-        pd.set_option('display.max_columns', None)
-        pd.set_option('display.width', None)
-        pd.set_option('display.max_colwidth', None)
-
-        # 预先收集所有账户和策略的数据
-        logger.info("🔍 预先收集所有账户和策略的数据...")
-        processor_data = {}
-        for account_name, strategy_name in ACCOUNT_STRATEGY_MAP.items():
-            logger.info(f"🔄 收集账户 {account_name} 和策略 {strategy_name} 的数据")
-            processor = CommonHoldingProcessor()
-            diff = processor.extract_different_holding(
-                Account_holding_file, 
-                account_name, 
-                Combination_holding_file, 
-                strategy_name
-            )
-            filtered_result = processor.filter_executed_operations(diff, account_name)
-            processor_data[account_name] = {
-                'processor': processor,
-                'diff': diff,
-                'filtered_result': filtered_result,
-                'strategy_name': strategy_name
-            }
-        
-        # 为每个账户执行对应的策略
-        execution_results = {}
-        for account_name, data in processor_data.items():
-            strategy_name = data['strategy_name']
-            logger.info(f"🔄 处理账户 {account_name} 对应的策略 {strategy_name}")
-            
-            try:
-                # 执行策略
-                processor = data['processor']
-                to_sell = data['filtered_result'].get('to_sell', pd.DataFrame())
-                to_buy = data['filtered_result'].get('to_buy', pd.DataFrame())
-                
-                # 只保留市场为沪深A股的
-                if not to_sell.empty and '市场' in to_sell.columns:
-                    to_sell = to_sell[to_sell['市场'] == '沪深A股']
-                if not to_buy.empty and '市场' in to_buy.columns:
-                    to_buy = to_buy[to_buy['市场'] == '沪深A股']
-                
-                # 标记是否执行了任何交易操作
-                any_trade_executed = False
-                
-                # 遍历每一项卖出操作，执行交易
-                for idx, op in to_sell.iterrows():
-                    stock_name = op['股票名称'] if '股票名称' in op else op['股票名称']
-                    operation = op['操作']
-                    # 安全获取可能不存在的字段
-                    new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
-
-                    # 计算交易数量：对于卖出操作，使用策略中的目标比例
-                    volume = processor.calculate_trade_volume(Account_holding_file, account_name, strategy_file, strategy_name, stock_name, new_ratio, operation)
-                    logger.info(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
-
-                    logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
-
-                    # 切换到对应账户
-                    processor.common_page.change_account(account_name)
-                    logger.info(f"✅ 已切换到账户: {account_name}")
-
-                    # 调用交易逻辑
-                    status, info = processor.trader.operate_stock(operation, stock_name, volume)
-
-                    # 检查交易是否成功执行
-                    if status is None:
-                        logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                        continue
-
-                    # 标记已执行交易
-                    any_trade_executed = True
-
-                # 遍历每一项买入操作，执行交易
-                for idx, op in to_buy.iterrows():
-                    stock_name = op['股票名称'] if '股票名称' in op else op['股票名称']
-                    operation = op['操作']
-                    # 安全获取可能不存在的字段
-                    new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
-
-                    # 计算交易数量：对于买入操作，使用策略中的目标比例
-                    volume = processor.calculate_trade_volume(Account_holding_file, account_name, strategy_file, strategy_name, stock_name, new_ratio, operation)
-                    logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
-
-                    logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
-
-                    # 切换到对应账户
-                    processor.common_page.change_account(account_name)
-                    logger.info(f"✅ 已切换到账户: {account_name}")
-
-                    # 调用交易逻辑
-                    status, info = processor.trader.operate_stock(operation, stock_name, volume)
-
-                    # 检查交易是否成功执行
-                    if status is None:
-                        logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                        continue
-
-                    # 标记已执行交易
-                    any_trade_executed = True
-                
-                execution_results[account_name] = True
-                logger.info(f"✅ 账户 {account_name} 对应的策略 {strategy_name} 执行完成")
-                send_notification(f"✅ 账户 {account_name} 对应的策略 {strategy_name} 执行完成")
-            except Exception as e:
-                execution_results[account_name] = False
-                logger.error(f"❌ 账户 {account_name} 对应的策略 {strategy_name} 执行失败: {e}")
-                send_notification(f"❌ 账户 {account_name} 对应的策略 {strategy_name} 执行失败: {e}")
-        
-        # 检查执行结果
-        all_success = all(execution_results.values())
-        if all_success:
-            logger.info("🎉 所有组合交易执行完成")
-        else:
-            failed_accounts = [acc for acc, success in execution_results.items() if not success]
-            logger.error(f"❌ 以下账户交易执行失败: {failed_accounts}")
-            
-        return all_success
-    except Exception as e:
-        logger.error(f"❌ 组合交易执行异常: {e}")
-        send_notification(f"组合交易执行异常: {e}")
-        return False
+# async def execute_combination_trades():
+#     """执行组合交易"""
+#     try:
+#         logger.info("🚀 开始执行组合交易...")
+#
+#         # 更新策略持仓数据
+#         strategy_df = get_portfolio_holding_data_all()
+#         logger.info(f"✅ 策略持仓数据已更新\n{strategy_df}")
+#
+#         # 首先更新账户数据，只更新ACCOUNT_STRATEGY_MAP中的账户
+#         global account_update_needed
+#         if account_update_needed:
+#             logger.info("🔄 开始更新账户数据...")
+#             account_info = AccountInfo()
+#             update_success = True
+#
+#             # 只更新需要的账户
+#             for account_name in ACCOUNT_STRATEGY_MAP.keys():
+#                 logger.info(f"正在更新账户 {account_name} 的数据...")
+#                 account_update_success = account_info.update_holding_info_for_account(account_name)
+#                 if not account_update_success:
+#                     logger.warning(f"⚠️ 账户 {account_name} 数据更新失败")
+#                     update_success = False
+#
+#             if update_success:
+#                 logger.info("✅ 所需账户数据更新完成")
+#                 # 重置更新标志
+#                 account_update_needed = False
+#             else:
+#                 logger.warning("⚠️ 部分账户数据更新失败，将继续使用现有数据执行交易")
+#         else:
+#             logger.info("🔄 账户数据无需更新，使用上一轮数据")
+#
+#         # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+#         strategy_file = Strategy_holding_file
+#         # trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
+#         trade_file = Trade_history
+#
+#         # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+#         # 设置pandas显示选项，确保所有列都能完整显示
+#         pd.set_option('display.max_columns', None)
+#         pd.set_option('display.width', None)
+#         pd.set_option('display.max_colwidth', None)
+#
+#         # 预先收集所有账户和策略的数据
+#         logger.info("🔍 预先收集所有账户和策略的数据...")
+#         processor_data = {}
+#         for account_name, strategy_name in ACCOUNT_STRATEGY_MAP.items():
+#             logger.info(f"🔄 收集账户 {account_name} 和策略 {strategy_name} 的数据")
+#             processor = CommonHoldingProcessor()
+#             diff = processor.extract_different_holding(
+#                 Account_holding_file,
+#                 account_name,
+#                 Combination_holding_file,
+#                 strategy_name
+#             )
+#             filtered_result = processor.filter_executed_operations(diff, account_name)
+#             processor_data[account_name] = {
+#                 'processor': processor,
+#                 'diff': diff,
+#                 'filtered_result': filtered_result,
+#                 'strategy_name': strategy_name
+#             }
+#
+#         # 为每个账户执行对应的策略
+#         execution_results = {}
+#         for account_name, data in processor_data.items():
+#             strategy_name = data['strategy_name']
+#             logger.info(f"🔄 处理账户 {account_name} 对应的策略 {strategy_name}")
+#
+#             try:
+#                 # 执行策略
+#                 processor = data['processor']
+#                 to_sell = data['filtered_result'].get('to_sell', pd.DataFrame())
+#                 to_buy = data['filtered_result'].get('to_buy', pd.DataFrame())
+#
+#                 # 只保留市场为沪深A股的
+#                 if not to_sell.empty and '市场' in to_sell.columns:
+#                     to_sell = to_sell[to_sell['市场'] == '沪深A股']
+#                 if not to_buy.empty and '市场' in to_buy.columns:
+#                     to_buy = to_buy[to_buy['市场'] == '沪深A股']
+#
+#                 # 标记是否执行了任何交易操作
+#                 any_trade_executed = False
+#
+#                 # 遍历每一项卖出操作，执行交易
+#                 for idx, op in to_sell.iterrows():
+#                     stock_name = op['股票名称'] if '股票名称' in op else op['股票名称']
+#                     operation = op['操作']
+#                     # 安全获取可能不存在的字段
+#                     new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
+#
+#                     # 计算交易数量：对于卖出操作，使用策略中的目标比例
+#                     volume = processor.calculate_trade_volume(Account_holding_file, account_name, strategy_file, strategy_name, stock_name, new_ratio, operation)
+#                     logger.info(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+#
+#                     logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
+#
+#                     # 切换到对应账户
+#                     processor.common_page.change_account(account_name)
+#                     logger.info(f"✅ 已切换到账户: {account_name}")
+#
+#                     # 调用交易逻辑
+#                     status, info = processor.trader.operate_stock(operation, stock_name, volume)
+#
+#                     # 检查交易是否成功执行
+#                     if status is None:
+#                         logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+#                         continue
+#
+#                     # 标记已执行交易
+#                     any_trade_executed = True
+#                     # 标记下次需要更新账户数据
+#                     account_update_needed = True
+#
+#                 # 遍历每一项买入操作，执行交易
+#                 for idx, op in to_buy.iterrows():
+#                     stock_name = op['股票名称'] if '股票名称' in op else op['股票名称']
+#                     operation = op['操作']
+#                     # 安全获取可能不存在的字段
+#                     new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
+#
+#                     # 计算交易数量：对于买入操作，使用策略中的目标比例
+#                     volume = processor.calculate_trade_volume(Account_holding_file, account_name, strategy_file, strategy_name, stock_name, new_ratio, operation)
+#                     logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+#
+#                     logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
+#
+#                     # 切换到对应账户
+#                     processor.common_page.change_account(account_name)
+#                     logger.info(f"✅ 已切换到账户: {account_name}")
+#
+#                     # 调用交易逻辑
+#                     status, info = processor.trader.operate_stock(operation, stock_name, volume)
+#
+#                     # 检查交易是否成功执行
+#                     if status is None:
+#                         logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+#                         continue
+#
+#                     # 标记已执行交易
+#                     any_trade_executed = True
+#                     # 标记下次需要更新账户数据
+#                     account_update_needed = True
+#
+#                 execution_results[account_name] = True
+#                 logger.info(f"✅ 账户 {account_name} 对应的策略 {strategy_name} 执行完成")
+#                 send_notification(f"✅ 账户 {account_name} 对应的策略 {strategy_name} 执行完成")
+#             except Exception as e:
+#                 execution_results[account_name] = False
+#                 logger.error(f"❌ 账户 {account_name} 对应的策略 {strategy_name} 执行失败: {e}")
+#                 send_notification(f"❌ 账户 {account_name} 对应的策略 {strategy_name} 执行失败: {e}")
+#
+#         # 检查执行结果
+#         all_success = all(execution_results.values())
+#         if all_success:
+#             logger.info("🎉 所有组合交易执行完成")
+#         else:
+#             failed_accounts = [acc for acc, success in execution_results.items() if not success]
+#             logger.error(f"❌ 以下账户交易执行失败: {failed_accounts}")
+#
+#         return all_success
+#     except Exception as e:
+#         logger.error(f"❌ 组合交易执行异常: {e}")
+#         send_notification(f"组合交易执行异常: {e}")
+#         return False
 
 async def execute_guozhai_trades(d):
     """执行国债逆回购交易"""
@@ -339,7 +350,8 @@ async def main():
             if dt_time(9, 25) <= now <= dt_time(end_time_hour, 0):
                 # if not portfolio_updates_executed:
                 logger.warning("---------------------组合更新任务开始---------------------")
-                await execute_combination_trades()
+                combination_processor = CombinationHoldingProcessor()
+                combination_processor.execute_combination_trades()
                 logger.warning("---------------------组合更新任务结束---------------------")
                 # portfolio_updates_executed = True
                 # else:

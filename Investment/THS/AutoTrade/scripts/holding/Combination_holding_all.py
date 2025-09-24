@@ -77,12 +77,13 @@ def get_portfolio_holding_data_all():
         all_dfs.extend(df)
     # 合并所有DataFrame
     final_df = pd.concat(all_dfs, ignore_index=True)
+    logger.info(f"策略持仓数据已合并\n{final_df}")
 
     # 保存为Excel文件
     file_path = Combination_holding_file
     today = pd.Timestamp.now().strftime('%Y-%m-%d')
     final_df.to_excel(file_path, sheet_name=today, index=False)
-    logger.info("策略持仓数据已保存到Excel文件：", file_path)
+    logger.info("策略持仓数据已保存到Excel文件：%s", file_path)
 
     # 打印最终的DataFrame
     # print(final_df)

@@ -230,6 +230,8 @@ class CommonHoldingProcessor:
                 # 在策略中存在，但在证券账户中不存在的股票（需要买入到目标比例）
                 to_buy_candidates = logicofking_holdings[
                     ~logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
+                # 添加调试信息
+                logger.debug(f"新股票候选列表: {to_buy_candidates['股票名称'].tolist() if not to_buy_candidates.empty else []}")
 
                 # 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'大的股票（需要买入到目标比例）
                 # 找出共同持有的股票
@@ -247,23 +249,35 @@ class CommonHoldingProcessor:
                         (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) & 
                         ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
                     ]
+                    # 添加调试信息
+                    logger.debug(f"比例调整股票候选列表: {to_buy_candidates2['股票名称'].tolist() if not to_buy_candidates2.empty else []}")
                 else:
                     to_buy_candidates2 = pd.DataFrame()
 
                 # 合并两种需要买入的情况
                 to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
+                # 添加调试信息
+                logger.debug(f"合并后买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
                 to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
+                # 添加调试信息
+                logger.debug(f"排除后买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
 
                 # 只保留市场为沪深A股的
                 if '市场' in to_buy.columns:
                     to_buy = to_buy[to_buy['市场'] == '沪深A股']
+                    # 添加调试信息
+                    logger.debug(f"市场筛选后买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
                 to_buy.index = range(1, len(to_buy) + 1)
+                # 添加调试信息
+                logger.debug(f"最终买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
             elif not logicofking_holdings.empty:
                 # 如果证券账户持仓为空，则所有策略持仓都是需要买入的（除去排除项）
                 to_buy = logicofking_holdings[~logicofking_holdings['股票名称'].isin(excluded_holdings)]
                 # 只保留市场为沪深A股的
                 if '市场' in to_buy.columns:
                     to_buy = to_buy[to_buy['市场'] == '沪深A股']
+                # 确保索引从1开始
+                to_buy.index = range(1, len(to_buy) + 1)
             else:
                 to_buy = pd.DataFrame(columns=['股票名称'])
 
@@ -546,7 +560,7 @@ class CommonHoldingProcessor:
                 send_notification(f"❌ 策略持仓数据保存失败: {e2}")
                 return False
 
-    def calculate_trade_volume(self, account_file, account_name, strategy_name, stock_name, new_ratio, operation_type):
+    def calculate_trade_volume(self, account_file, account_name, strategy_file, strategy_name, stock_name, new_ratio, operation_type):
         """
         根据账户信息和策略要求计算买入或卖出的股数
         
@@ -559,7 +573,7 @@ class CommonHoldingProcessor:
         :return: 计算出的交易股数
         """
         logger.info(f"开始计算交易股数: 账户={account_name}, 股票={stock_name}, 操作={operation_type}, 新比例={new_ratio}%")
-        account_asset, account_balance, stock_available, stock_ratio, stock_price = self.trader.get_account_info(account_file, account_name, stock_name)
+        account_asset, account_balance, stock_available, stock_ratio, stock_price = self.account_info.get_account_summary_info_from_file(account_file, account_name, stock_name)
         
         # 确保必要参数有效
         if account_asset is None or account_asset == 0:
@@ -580,23 +594,42 @@ class CommonHoldingProcessor:
         if stock_price is None or stock_price <= 0:
             # 尝试从策略持仓数据中获取股票价格
             try:
-                today_str = datetime.date.today().strftime('%Y-%m-%d')
-                strategy_file_path = 'D:/Xander/Inverstment/Investment/THS/AutoTrade/data/position/Combination_position.xlsx'
+                today_str = str(datetime.date.today())
+                # print(f"正在尝试从策略持仓数据中获取股票价格...{today_str} {type(today_str)}")
+                strategy_file_path = strategy_file
+
                 if os.path.exists(strategy_file_path):
+                    # # 修复：使用ExcelFile来处理可能的工作表名称不匹配问题
+                    # with pd.ExcelFile(strategy_file_path, engine='openpyxl') as xls:
+                    #     # 首先尝试精确匹配今天日期的工作表
+                    #     if today_str in xls.sheet_names:
+                    #         strategy_data = pd.read_excel(xls, sheet_name=today_str)
+                    #         logger.info(f"找到精确匹配的工作表: {today_str}")
+                    #     else:
+                    #         # 如果没有精确匹配，尝试查找最接近的日期
+                    #         available_sheets = [sheet for sheet in xls.sheet_names if sheet != 'Sheet1']
+                    #         if available_sheets:
+                    #             # 使用最新的工作表
+                    #             latest_sheet = available_sheets[-1]
+                    #             strategy_data = pd.read_excel(xls, sheet_name=latest_sheet)
+                    #             logger.info(f"未找到今日工作表，使用最新工作表: {latest_sheet}")
+                    #         else:
+                    #             raise Exception("未找到有效的策略数据工作表")
                     strategy_data = pd.read_excel(strategy_file_path, sheet_name=today_str)
+                    logger.info(f"读取策略数据成功，今日工作表: {today_str}\n{strategy_data}")
                     strategy_row = strategy_data[(strategy_data['名称'] == strategy_name) & (strategy_data['股票名称'] == stock_name)]
                     if not strategy_row.empty:
                         stock_price = float(strategy_row['最新价'].values[0])
                         logger.info(f"从策略数据中获取到股票价格: {stock_price}")
                     else:
-                        logger.warning(f"无法从策略数据中获取 {stock_name} 的价格，使用默认值0.01")
-                        stock_price = 0.01
+                        logger.warning(f"无法从策略数据中获取 {stock_name} 的价格，使用默认值0.00")
+                        stock_price = 0.00
                 else:
                     logger.warning(f"策略文件不存在: {strategy_file_path}，使用默认值0.01")
                     stock_price = 0.01
             except Exception as e:
-                logger.warning(f"读取策略数据获取股票价格失败: {e}，使用默认值0.01")
-                stock_price = 0.01
+                logger.warning(f"读取策略数据获取股票价格失败: {e}，使用默认值0.00")
+                stock_price = 0.00
             
         if stock_available is None:
             logger.warning(f"无法获取股票 {stock_name} 的可用数量，使用默认值0")
@@ -669,7 +702,7 @@ class CommonHoldingProcessor:
             new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
 
             # 计算交易数量：对于卖出操作，使用策略中的目标比例
-            volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
+            volume = self.calculate_trade_volume(account_file, account_name, strategy_file,strategy_name, stock_name, new_ratio, operation)
             logger.info(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
 
             logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
@@ -697,7 +730,7 @@ class CommonHoldingProcessor:
             new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
 
             # 计算交易数量：对于买入操作，使用策略中的目标比例
-            volume = self.calculate_trade_volume(account_file, account_name, strategy_name, stock_name, new_ratio, operation)
+            volume = self.calculate_trade_volume(account_file, account_name, strategy_file, strategy_name, stock_name, new_ratio, operation)
             logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
 
             logger.info(f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
@@ -736,18 +769,18 @@ class CommonHoldingProcessor:
 if __name__ == '__main__':
     # 定义文件路径
     # account_holding_main()
-    account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
-    strategy_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
-    trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
-    
-    # 设置pandas显示选项，确保所有列都能完整显示
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.width', None)
-    pd.set_option('display.max_colwidth', None)
-    
-    com = CommonHoldingProcessor()
+    # account_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Account_position.xlsx"
+    # strategy_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
+    # trade_file = r"D:\Xander\Inverstment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx"
+    #
+    # # 设置pandas显示选项，确保所有列都能完整显示
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.width', None)
+    # pd.set_option('display.max_colwidth', None)
+    #
+    # com = CommonHoldingProcessor()
 
-    # strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Strategy_position.xlsx"
+    strategy_file =r"E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\Combination_position.xlsx"
     # account_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\position\account_info.xlsx'
     # trade_file = r'E:\git_documents\Investment\Investment\THS\AutoTrade\data\portfolio\trade_operations.xlsx'
     account_name = '中山证券'
@@ -758,7 +791,10 @@ if __name__ == '__main__':
     # to_operate = com.filter_executed_operations(diff,account_name)
 
     # volume= com.calculate_trade_volume(account_file, account_name, strategy_name, '超讯通信', 10, '卖出')
-    com.operate_strategy(account_file, account_name, strategy_file, strategy_name)
+    # com.operate_strategy(account_file, account_name, strategy_file, strategy_name)
     # print(diff)
     # print('-'*50)
     # print(to_operate)
+    today = str(datetime.date.today())
+    data = pd.read_excel(strategy_file,sheet_name=today)
+    print(data)
