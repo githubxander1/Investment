@@ -5,9 +5,11 @@ from pprint import pprint
 from fake_useragent import UserAgent
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(f"项目根目录：{BASE_DIR}")
 
 package_name = 'com.hexin.plat.android'
-# 文件路径配置
+
+# 文件夹路径配置
 LOGS_DIR = os.path.join(BASE_DIR, 'logs')
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
@@ -47,6 +49,7 @@ Strategy_metrics_file = os.path.join(DATA_DIR, '策略对比.xlsx')
 #ai诊断文件
 Ai_file = os.path.join(DATA_DIR, 'ai_诊股结果.csv')
 
+# 账户xml文件
 account_xml_file: str = os.path.join(DATA_DIR, 'xml','account_info_xml.xml')
 
 
@@ -102,13 +105,13 @@ Strategy_id_to_name = {
         # '118188': '均线粘合平台突破'
     }
 
-
 # 组合 手动创建组合ID到组合名称的映射
 Combination_ids = ['9800']
 # Combination_ids = ['19347']
 Combination_ids_to_name = {
     '20811': '一枝梨花',#胜率低，收益高
     '9800': '逻辑为王',#胜率低，收益高
+    '18828': '跨越牛熊短线出击',
     # '20811': '组-一枝梨花压海棠',
     '7152': '中线龙头',#胜率低，收益高
     '12404': '精选个股',#
@@ -130,7 +133,7 @@ robots = {
             # "建筑行业": "ca2d654c-ab95-448e-9588-cbc89cbb7a9e"
         }
 
-RObot_ids = []
+Robot_ids = []
 Robot_ids_to_name = {
     '11': '精选机器人',
     '21': '沪深300', #
@@ -190,10 +193,6 @@ STRATEGY_WINDOW_END = dt_time(9, 35)
 REPO_TIME_START = dt_time(14, 59)
 REPO_TIME_END = dt_time(15, 1)
 
-# 文件路径
-# Strategy_portfolio_today_file = "path/to/strategy.xlsx"
-# Combination_portfolio_today_file = "path/to/combination.xlsx"
-# OPERATION_HISTORY_FILE = "path/to/history.json"
 
 # 延迟范围（秒）
 MIN_DELAY = 30
