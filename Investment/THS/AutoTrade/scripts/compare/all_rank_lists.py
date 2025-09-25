@@ -24,8 +24,9 @@ url = "https://dq.10jqka.com.cn/fuyao/portfolio_game/portfolio/v1/all_income_ran
 headers = Combination_headers
 params = {
     "offset": 0,
-    "page_size": 8,
-    "block_id": 0,
+    "page_size": 20,
+    # "block_id": 0,
+    "block_id": 886065,#886065可控核聚变，886102中国A50,886032固态电池，885756芯片概念，886069人形机器人，
     "list_type": 4,
     "match_id": -1
 }

@@ -265,6 +265,11 @@ class TradeLogic:
             # 搜索股票
             self.ths_page.search_stock(stock_name)
 
+            # 检查交易数量是否有效
+            if volume is None:
+                logger.warning(f"{operation} {stock_name} 交易数量为 None，跳过交易")
+                return False, f"{operation} {stock_name} 交易数量无效，跳过交易"
+
             # 输入交易数量
             self.ths_page.input_volume(int(volume))
             # 点击提交按钮

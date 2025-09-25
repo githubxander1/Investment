@@ -12,7 +12,8 @@ from Investment.THS.AutoTrade.config.settings import (
     Account_holding_file, Trade_history, Combination_ids, Combination_ids_to_name, ACCOUNTS
 )
 from Investment.THS.AutoTrade.pages.account_info import AccountInfo
-from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
+from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
+# from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
 from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
@@ -29,9 +30,11 @@ ACCOUNT_TO_STRATEGY = {
 # 添加全局变量来跟踪是否需要更新账户数据
 account_update_needed = True
 
-class CombinationHoldingProcessor(CommonHoldingProcessor):
+class CombinationHoldingProcessor:
     def __init__(self):
-        super().__init__(account_name="中山证券")  # 默认账户设为中山证券
+        self.strategy_name = '逻辑为王'
+        self.account_name = "中山证券"
+        self.trader = TradeLogic()
 
     # 获取单个组合的持仓数据
     def get_single_holding_data(self, portfolio_id):
@@ -138,7 +141,7 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         # 如果账户中没有该股票的价格信息，尝试从策略数据中获取
         if stock_price <= 0 and strategy_holdings_df is not None and not strategy_holdings_df.empty:
             strategy_stock_data = strategy_holdings_df[
-                (strategy_holdings_df['名称'] == strategy_name) & 
+                (strategy_holdings_df['策略名称'] == strategy_name) &
                 (strategy_holdings_df['股票名称'] == stock_name)
             ]
             if not strategy_stock_data.empty and '最新价' in strategy_stock_data.columns:
@@ -174,6 +177,344 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
             logger.error(f"计算交易股数时发生错误: {e}")
             return None
 
+    def _update_strategy_holdings(self):
+        """
+        更新策略持仓数据
+        """
+        logger.info("🔄 开始更新策略持仓数据...")
+        strategy_holdings = []
+        for id in Combination_ids:  # 只处理映射中的组合
+            positions_df = self.get_single_holding_data(id)
+            # 只保留沪深A股的
+            if not positions_df.empty and '市场' in positions_df.columns:
+                positions_df = positions_df[positions_df['市场'].isin(['沪深A股'])]
+            # 检查并添加非空数据
+            if positions_df is not None and not positions_df.empty:
+                strategy_holdings.append(positions_df)
+            else:
+                logger.info(f"没有获取到组合数据，组合ID: {id}")
+
+        # 检查是否获取到任何数据
+        if not strategy_holdings:
+            logger.warning("未获取到任何组合持仓数据")
+            return None
+
+        # 策略持仓汇总
+        strategy_holdings_df = pd.concat(strategy_holdings, ignore_index=True)
+        logger.info(f"策略持仓数据:{len(strategy_holdings_df)}\n{strategy_holdings_df}")
+        return strategy_holdings_df
+
+    def _update_account_holdings(self):
+        """
+        更新账户持仓数据
+        """
+        global account_update_needed
+        account_holdings_df = pd.DataFrame()
+        account_summary_df = pd.DataFrame()
+        
+        # 判断是否需要更新账户数据
+        if account_update_needed:
+            logger.info("🔄 开始更新账户数据...")
+            account_info = AccountInfo()
+            update_success = True
+
+            # 更新指定账户
+            logger.info(f"正在更新账户 {self.account_name} 的数据...")
+            # 修复：正确处理update_holding_info_for_account的返回值
+            update_result = account_info.update_holding_info_for_account(self.account_name)
+            if update_result is False:
+                logger.warning(f"⚠️ 账户 {self.account_name} 数据更新失败")
+                update_success = False
+            else:
+                # 解包返回的DataFrame
+                account_summary_df, account_holdings_df = update_result
+
+            # 处理更新结果
+            if update_success:
+                logger.info("✅ 所需账户数据更新完成")
+                # 重置更新标志
+                account_update_needed = False
+            else:
+                logger.warning("⚠️ 账户数据更新失败，将继续使用现有数据执行交易")
+                return None, None
+        else:
+            logger.info("🔄 账户数据无需更新，使用上一轮数据")
+            # 如果不需要更新，尝试从账户文件中读取最新数据
+            try:
+                if os.path.exists(Account_holding_file):
+                    account_holdings_df = pd.read_excel(Account_holding_file, sheet_name=self.account_name)
+                    account_summary_df = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
+                    account_summary_df = account_summary_df[account_summary_df['账户名'] == self.account_name]
+                else:
+                    logger.warning("账户持仓文件不存在")
+                    account_holdings_df = pd.DataFrame()
+                    account_summary_df = pd.DataFrame()
+            except Exception as e:
+                logger.error(f"读取账户持仓数据失败: {e}")
+                account_holdings_df = pd.DataFrame()
+                account_summary_df = pd.DataFrame()
+                
+        return account_summary_df, account_holdings_df
+
+    def _extract_strategy_holdings(self, strategy_holdings_df):
+        """
+        筛选出指定策略的股票持仓信息
+        """
+        strategy_holdings_extracted_df = strategy_holdings_df[strategy_holdings_df['策略名称'] == self.strategy_name] if '策略名称' in strategy_holdings_df.columns else strategy_holdings_df
+        
+        if not strategy_holdings_extracted_df.empty and ('股票名称' in strategy_holdings_extracted_df.columns or '标的名称' in strategy_holdings_extracted_df.columns):
+            logicofking_holdings = strategy_holdings_extracted_df.copy()
+            logger.info(
+                f"✅ 成功获取策略 {self.strategy_name} 的持仓数据，共 {len(logicofking_holdings)} 条记录")
+        else:
+            logicofking_holdings = pd.DataFrame()
+            logger.warning(f"策略 {self.strategy_name} 持仓数据为空或不包含股票名称列")
+            
+        return logicofking_holdings
+
+    def _standardize_data(self, account_holdings_df, logicofking_holdings):
+        """
+        标准化股票名称和处理数据格式
+        """
+        account_holdings = account_holdings_df.copy() if not account_holdings_df.empty else pd.DataFrame()
+        
+        # 需要排除的股票名称
+        excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+
+        # 标准化股票名称
+        from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
+        # 确保列名统一（账户持仓）
+        if not account_holdings.empty:
+            if '股票名称' not in account_holdings.columns and '标的名称' in account_holdings.columns:
+                account_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
+            account_holdings = standardize_dataframe_stock_names(account_holdings)
+
+        # 确保列名统一（策略持仓）
+        if not logicofking_holdings.empty:
+            if '股票名称' not in logicofking_holdings.columns and '标的名称' in logicofking_holdings.columns:
+                logicofking_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
+            logicofking_holdings = standardize_dataframe_stock_names(logicofking_holdings)
+
+        # 对持仓占比和新比例%进行四舍五入取整处理
+        if '持仓占比' in account_holdings.columns:
+            account_holdings['持仓占比'] = account_holdings['持仓占比'].round(0).astype(int)
+
+        if '新比例%' in logicofking_holdings.columns:
+            logicofking_holdings['新比例%'] = logicofking_holdings['新比例%'].round(0).astype(int)
+
+        # 去掉'持有金额'为0的
+        if '持有金额' in account_holdings.columns:
+            account_holdings = account_holdings[account_holdings['持有金额'] > 0]
+            
+        return account_holdings, logicofking_holdings, excluded_holdings
+
+    def _identify_sell_operations(self, account_holdings, logicofking_holdings, excluded_holdings):
+        """
+        找出需要卖出的标的
+        """
+        # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
+        to_sell = pd.DataFrame()
+        if not account_holdings.empty and not logicofking_holdings.empty:
+            # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
+            to_sell_candidates = account_holdings[
+                ~account_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
+
+            # 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'小的股票（需要部分卖出）
+            # 先找出共同持有的股票
+            common_stocks = account_holdings[
+                account_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
+
+            # 合并策略数据以便比较
+            merged_data = pd.merge(common_stocks, logicofking_holdings[['股票名称', '新比例%']], on='股票名称',
+                                   how='left')
+
+            # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
+            # 优化：只有当差异大于等于10%时才考虑卖出，避免小幅度调整触发交易
+            if '持仓占比' in merged_data.columns:
+                to_sell_candidates2 = merged_data[
+                    (merged_data['新比例%'] < merged_data['持仓占比']) &
+                    ((merged_data['持仓占比'] - merged_data['新比例%']) >= 10)
+                    ]
+            else:
+                to_sell_candidates2 = pd.DataFrame()
+
+            # 合并两种需要卖出的情况
+            to_sell = pd.concat([to_sell_candidates, to_sell_candidates2]).drop_duplicates(subset=['股票名称'])
+            to_sell = to_sell[~to_sell['股票名称'].isin(excluded_holdings)].copy()
+        elif not account_holdings.empty:
+            # 如果策略持仓为空，则所有证券账户持仓都是需要卖出的（除去排除项）
+            to_sell = account_holdings[~account_holdings['股票名称'].isin(excluded_holdings)].copy()
+        else:
+            to_sell = pd.DataFrame(columns=account_holdings.columns) if not account_holdings.empty else pd.DataFrame()
+
+        # 确保to_sell包含股票名称列
+        if not to_sell.empty and '股票名称' not in to_sell.columns and '标的名称' in to_sell.columns:
+            to_sell.rename(columns={'标的名称': '股票名称'}, inplace=True)
+
+        if not to_sell.empty:
+            to_sell['操作'] = '卖出'
+            logger.info(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
+        else:
+            logger.info("✅ 当前无需卖出的标的")
+            
+        return to_sell
+
+    def _identify_buy_operations(self, account_holdings, logicofking_holdings, excluded_holdings):
+        """
+        找出需要买入的标的
+        """
+        to_buy = pd.DataFrame()
+        if not logicofking_holdings.empty:
+            if not account_holdings.empty:
+                # 在策略中存在，但在证券账户中不存在的股票（需要买入到目标比例）
+                to_buy_candidates = logicofking_holdings[
+                    ~logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
+
+                # 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'大的股票（需要买入到目标比例）
+                # 找出共同持有的股票
+                common_stocks_buy = logicofking_holdings[
+                    logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
+
+                # 合并账户数据以便比较
+                merged_data_buy = pd.merge(common_stocks_buy, account_holdings[['股票名称', '持仓占比']],
+                                           on='股票名称',
+                                           how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
+
+                # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
+                # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
+                if not merged_data_buy.empty:
+                    to_buy_candidates2 = merged_data_buy[
+                        (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
+                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
+                        ]
+                else:
+                    to_buy_candidates2 = pd.DataFrame()
+
+                # 合并两种需要买入的情况
+                to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
+                to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
+            else:
+                # 如果账户持仓为空，则策略中的所有股票都需要买入
+                logger.info("账户持仓为空，策略中的所有股票都需要买入")
+                to_buy = logicofking_holdings.copy()
+                to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
+
+            # 只保留市场为沪深A股的
+            if '市场' in to_buy.columns:
+                to_buy = to_buy[to_buy['市场'].isin(['沪深A股'])]
+        else:
+            to_buy = pd.DataFrame(columns=['股票名称'])
+
+        # 确保to_buy包含股票名称列
+        if not to_buy.empty and '股票名称' not in to_buy.columns and '标的名称' in to_buy.columns:
+            to_buy.rename(columns={'标的名称': '股票名称'}, inplace=True)
+
+        if not to_buy.empty:
+            to_buy['操作'] = '买入'
+            logger.info(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
+        else:
+            logger.info("✅ 当前无需买入的标的")
+            
+        return to_buy
+
+    def _execute_sell_operations(self, to_sell, account_summary_df, account_holdings_df, logicofking_holdings):
+        """
+        执行卖出操作
+        """
+        any_trade_executed = False
+        
+        # 遍历每一项卖出操作，执行交易
+        for idx, op in to_sell.iterrows():
+            stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
+            operation = op['操作']
+            # 安全获取可能不存在的字段
+            new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
+
+            # 计算交易数量：对于卖出操作，使用策略中的目标比例
+            volume = self._calculate_trade_volume_optimized(
+                account_summary_df, account_holdings_df, logicofking_holdings,
+                self.strategy_name, stock_name, new_ratio, operation)
+            logger.info(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+
+            # 如果交易数量为None或小于等于0，则跳过
+            if volume is None or volume <= 0:
+                logger.warning(f"⚠️ {operation} {stock_name} 交易数量无效({volume})，跳过交易")
+                continue
+
+            logger.info(
+                f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{self.strategy_name} 账户:{self.account_name}")
+
+            # 切换到对应账户
+            self.common_page.change_account(self.account_name)
+            logger.info(f"✅ 已切换到账户: {self.account_name}")
+
+            # 调用交易逻辑
+            status, info = self.trader.operate_stock(operation, stock_name, volume)
+
+            # 检查交易是否成功执行
+            if status is None:
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                continue
+
+            # 标记已执行交易
+            any_trade_executed = True
+            # 标记下次需要更新账户数据
+            global account_update_needed
+            account_update_needed = True
+            
+        return any_trade_executed
+
+    def _execute_buy_operations(self, to_buy, account_summary_df, account_holdings_df, logicofking_holdings):
+        """
+        执行买入操作
+        """
+        any_trade_executed = False
+        
+        # 按最新价升序排列买入操作
+        if not to_buy.empty and '最新价' in to_buy.columns:
+            to_buy = to_buy.sort_values(by='最新价', ascending=True)
+
+        # 遍历每一项买入操作，执行交易
+        for idx, op in to_buy.iterrows():
+            stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
+            operation = op['操作']
+            # 安全获取可能不存在的字段
+            new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
+
+            # 计算交易数量：对于买入操作，使用策略中的目标比例
+            volume = self._calculate_trade_volume_optimized(
+                account_summary_df, account_holdings_df, logicofking_holdings,
+                self.strategy_name, stock_name, new_ratio, operation)
+            logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
+
+            # 如果交易数量为None或小于等于0，则跳过
+            if volume is None or volume <= 0:
+                logger.warning(f"⚠️ {operation} {stock_name} 交易数量无效({volume})，跳过交易")
+                continue
+
+            logger.info(
+                f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{self.strategy_name} 账户:{self.account_name}")
+
+            # 切换到对应账户
+            self.common_page.change_account(self.account_name)
+            logger.info(f"✅ 已切换到账户: {self.account_name}")
+
+            # 调用交易逻辑
+            status, info = self.trader.operate_stock(operation, stock_name, volume)
+
+            # 检查交易是否成功执行
+            if status is None:
+                logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
+                continue
+
+            # 标记已执行交易
+            any_trade_executed = True
+            # 标记下次需要更新账户数据
+            global account_update_needed
+            account_update_needed = True
+            
+        return any_trade_executed
+
     def operate_strategy_with_account(self):
         '''
         整合
@@ -182,494 +523,61 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         3.以策略为准，根据股票名称，持仓比例找出需要买入和卖出的,去掉'持有金额'为0的,对持仓占比和新比例%进行四舍五入取整处理,允许比例差异在10%以内的股票不计入操作范围
         4.执行交易：先卖出，再按价格升序依次买入
         '''
-        # 初始化strategy_name以防止异常时未定义
-        strategy_name = '逻辑为王'
         try:
             # 1. 更新策略持仓
-            # 1.1 获取所有组合的持仓数据
-            logger.info("🔄 开始更新策略持仓数据...")
-            strategy_holdings = []
-            for id in Combination_ids:  # 只处理映射中的组合
-                positions_df = self.get_single_holding_data(id)
-                # 1.2 只保留沪深A股的
-                # if not positions_df.empty and '市场' in positions_df.columns:
-                    # positions_df = positions_df[positions_df['市场'].isin(['沪深A股'])]
-                # 1.3 检查并添加非空数据
-                if positions_df is not None and not positions_df.empty:
-                    strategy_holdings.append(positions_df)
-                else:
-                    logger.info(f"没有获取到组合数据，组合ID: {id}")
-
-            # 1.4 检查是否获取到任何数据
-            if not strategy_holdings:
-                logger.warning("未获取到任何组合持仓数据")
+            strategy_holdings_df = self._update_strategy_holdings()
+            if strategy_holdings_df is None:
                 return False
 
-            # 1.5 策略持仓汇总
-            strategy_holdings_df = pd.concat(strategy_holdings, ignore_index=True)
-            logger.info(f"策略持仓数据:{len(strategy_holdings_df)}\n{strategy_holdings_df}")
-
             # 2. 更新账户持仓
-            # 2.1 初始化账户持仓数据
-            global account_update_needed
-            account_holdings_df = pd.DataFrame()
-            account_summary_df = pd.DataFrame()
-            
-            account_name = "中山证券"  # 当前只处理中山证券账户
-            # 2.2 判断是否需要更新账户数据
-            if account_update_needed:
-                logger.info("🔄 开始更新账户数据...")
-                account_info = AccountInfo()
-                update_success = True
+            account_summary_df, account_holdings_df = self._update_account_holdings()
+            if account_summary_df is None or account_holdings_df is None:
+                return False
 
-                # 2.3 更新指定账户
-                logger.info(f"正在更新账户 {account_name} 的数据...")
-                # 修复：正确处理update_holding_info_for_account的返回值
-                update_result = account_info.update_holding_info_for_account(account_name)
-                if update_result is False:
-                    logger.warning(f"⚠️ 账户 {account_name} 数据更新失败")
-                    update_success = False
-                else:
-                    # 解包返回的DataFrame
-                    account_summary_df, account_holdings_df = update_result
+            # 3. 筛选出指定策略的股票持仓信息
+            logicofking_holdings = self._extract_strategy_holdings(strategy_holdings_df)
 
-                # 2.4 处理更新结果
-                if update_success:
-                    logger.info("✅ 所需账户数据更新完成")
-                    # 重置更新标志
-                    account_update_needed = False
-                else:
-                    logger.warning("⚠️ 账户数据更新失败，将继续使用现有数据执行交易")
-                    return False
-            else:
-                logger.info("🔄 账户数据无需更新，使用上一轮数据")
-                # 2.5 如果不需要更新，尝试从账户文件中读取最新数据
-                try:
-                    if os.path.exists(Account_holding_file):
-                        account_holdings_df = pd.read_excel(Account_holding_file, sheet_name=account_name)
-                        account_summary_df = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
-                        account_summary_df = account_summary_df[account_summary_df['账户名'] == account_name]
-                    else:
-                        logger.warning("账户持仓文件不存在")
-                        account_holdings_df = pd.DataFrame()
-                        account_summary_df = pd.DataFrame()
-                except Exception as e:
-                    logger.error(f"读取账户持仓数据失败: {e}")
-                    account_holdings_df = pd.DataFrame()
-                    account_summary_df = pd.DataFrame()
+            # 4. 标准化数据
+            account_holdings, logicofking_holdings, excluded_holdings = self._standardize_data(account_holdings_df, logicofking_holdings)
 
-            # 3. 以策略为准，根据股票名称，持仓比例找出需要买入和卖出的
-            # 3.1 筛选出指定策略的股票持仓信息
-            strategy_holdings_extracted_df = strategy_holdings_df[strategy_holdings_df['策略名称'] == strategy_name] if '策略名称' in strategy_holdings_df.columns else strategy_holdings_df
-            
-            if not strategy_holdings_extracted_df.empty and ('股票名称' in strategy_holdings_extracted_df.columns or '标的名称' in strategy_holdings_extracted_df.columns):
-                logicofking_holdings = strategy_holdings_extracted_df.copy()
-                logger.info(
-                    f"✅ 成功获取策略 {strategy_name} 的持仓数据，共 {len(logicofking_holdings)} 条记录")
-            else:
-                logicofking_holdings = pd.DataFrame()
-                logger.warning(f"策略 {strategy_name} 持仓数据为空或不包含股票名称列")
+            # 5. 找出需要卖出的标的
+            to_sell = self._identify_sell_operations(account_holdings, logicofking_holdings, excluded_holdings)
 
-            # 3.2 处理账户持仓数据
-            account_holdings = account_holdings_df.copy() if not account_holdings_df.empty else pd.DataFrame()
-            
-            # 3.3 需要排除的股票名称
-            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF", '东材科技']
+            # 6. 找出需要买入的标的
+            to_buy = self._identify_buy_operations(account_holdings, logicofking_holdings, excluded_holdings)
 
-            # 3.4 标准化股票名称
-            from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
-            # 3.4.1 确保列名统一（账户持仓）
-            if not account_holdings.empty:
-                if '股票名称' not in account_holdings.columns and '标的名称' in account_holdings.columns:
-                    account_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
-                account_holdings = standardize_dataframe_stock_names(account_holdings)
-
-            # 3.4.2 确保列名统一（策略持仓）
-            if not logicofking_holdings.empty:
-                if '股票名称' not in logicofking_holdings.columns and '标的名称' in logicofking_holdings.columns:
-                    logicofking_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
-                logicofking_holdings = standardize_dataframe_stock_names(logicofking_holdings)
-
-            # 3.5 对持仓占比和新比例%进行四舍五入取整处理
-            if '持仓占比' in account_holdings.columns:
-                account_holdings['持仓占比'] = account_holdings['持仓占比'].round(0).astype(int)
-
-            if '新比例%' in logicofking_holdings.columns:
-                logicofking_holdings['新比例%'] = logicofking_holdings['新比例%'].round(0).astype(int)
-
-            # 3.6 去掉'持有金额'为0的
-            if '持有金额' in account_holdings.columns:
-                account_holdings = account_holdings[account_holdings['持有金额'] > 0]
-
-            # 3.7 找出需要卖出的标的
-            # 3.7.1 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
-            to_sell = pd.DataFrame()
-            if not account_holdings.empty and not logicofking_holdings.empty:
-                # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
-                to_sell_candidates = account_holdings[
-                    ~account_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
-
-                # 3.7.2 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'小的股票（需要部分卖出）
-                # 先找出共同持有的股票
-                common_stocks = account_holdings[
-                    account_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
-
-                # 合并策略数据以便比较
-                merged_data = pd.merge(common_stocks, logicofking_holdings[['股票名称', '新比例%']], on='股票名称',
-                                       how='left')
-
-                # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
-                # 优化：只有当差异大于等于10%时才考虑卖出，避免小幅度调整触发交易
-                if '持仓占比' in merged_data.columns:
-                    to_sell_candidates2 = merged_data[
-                        (merged_data['新比例%'] < merged_data['持仓占比']) &
-                        ((merged_data['持仓占比'] - merged_data['新比例%']) >= 10)
-                        ]
-                else:
-                    to_sell_candidates2 = pd.DataFrame()
-
-                # 3.7.3 合并两种需要卖出的情况
-                to_sell = pd.concat([to_sell_candidates, to_sell_candidates2]).drop_duplicates(subset=['股票名称'])
-                to_sell = to_sell[~to_sell['股票名称'].isin(excluded_holdings)].copy()
-            elif not account_holdings.empty:
-                # 如果策略持仓为空，则所有证券账户持仓都是需要卖出的（除去排除项）
-                to_sell = account_holdings[~account_holdings['股票名称'].isin(excluded_holdings)].copy()
-            else:
-                to_sell = pd.DataFrame(columns=account_holdings.columns) if not account_holdings.empty else pd.DataFrame()
-
-            # 3.7.4 确保to_sell包含股票名称列
-            if not to_sell.empty and '股票名称' not in to_sell.columns and '标的名称' in to_sell.columns:
-                to_sell.rename(columns={'标的名称': '股票名称'}, inplace=True)
-
-            if not to_sell.empty:
-                to_sell['操作'] = '卖出'
-                logger.info(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
-            else:
-                logger.info("✅ 当前无需卖出的标的")
-
-            # 3.8 找出需要买入的标的
-            to_buy = pd.DataFrame()
-            if not logicofking_holdings.empty:
-                if not account_holdings.empty:
-                    # 3.8.1 在策略中存在，但在证券账户中不存在的股票（需要买入到目标比例）
-                    to_buy_candidates = logicofking_holdings[
-                        ~logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
-
-                    # 3.8.2 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'大的股票（需要买入到目标比例）
-                    # 找出共同持有的股票
-                    common_stocks_buy = logicofking_holdings[
-                        logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
-
-                    # 合并账户数据以便比较
-                    merged_data_buy = pd.merge(common_stocks_buy, account_holdings[['股票名称', '持仓占比']],
-                                               on='股票名称',
-                                               how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
-
-                    # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
-                    # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
-                    if not merged_data_buy.empty:
-                        to_buy_candidates2 = merged_data_buy[
-                            (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
-                            ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
-                            ]
-                    else:
-                        to_buy_candidates2 = pd.DataFrame()
-
-                    # 3.8.3 合并两种需要买入的情况
-                    to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
-                    to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
-                else:
-                    # 3.8.4 如果账户持仓为空，则策略中的所有股票都需要买入
-                    logger.info("账户持仓为空，策略中的所有股票都需要买入")
-                    to_buy = logicofking_holdings.copy()
-                    to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
-
-                # 3.8.5 只保留市场为沪深A股的
-                if '市场' in to_buy.columns:
-                    to_buy = to_buy[to_buy['市场'].isin(['沪深A股', '创业板', '科创板'])]
-            else:
-                to_buy = pd.DataFrame(columns=['股票名称'])
-
-            # 3.8.6 确保to_buy包含股票名称列
-            if not to_buy.empty and '股票名称' not in to_buy.columns and '标的名称' in to_buy.columns:
-                to_buy.rename(columns={'标的名称': '股票名称'}, inplace=True)
-
-            if not to_buy.empty:
-                to_buy['操作'] = '买入'
-                logger.info(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
-            else:
-                logger.info("✅ 当前无需买入的标的")
-
-            # 3.9 构建完整差异报告
-            difference_report = {
-                "to_sell": to_sell,
-                "to_buy": to_buy
-            }
+            # # 7. 构建完整差异报告
+            # difference_report = {
+            #     "to_sell": to_sell,
+            #     "to_buy": to_buy
+            # }
 
             logger.info(f"📊 最终差异报告 - 需要卖出: {len(to_sell)} 条, 需要买入: {len(to_buy)} 条")
             
-            # 4. 执行交易：先卖出，再按价格升序依次买入
-            # 4.1 标记是否执行了任何交易操作
-            any_trade_executed = False
+            # 8. 执行交易：先卖出，再按价格升序依次买入
+            # 8.1 执行卖出操作
+            any_trade_executed = self._execute_sell_operations(to_sell, account_summary_df, account_holdings_df, logicofking_holdings)
             
-            strategy_file = Combination_holding_file
-            trade_file = Trade_history
+            # 8.2 执行买入操作
+            buy_executed = self._execute_buy_operations(to_buy, account_summary_df, account_holdings_df, logicofking_holdings)
+            any_trade_executed = any_trade_executed or buy_executed
 
-            # 4.2 遍历每一项卖出操作，执行交易
-            for idx, op in to_sell.iterrows():
-                stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
-                operation = op['操作']
-                # 安全获取可能不存在的字段
-                new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
-
-                # 计算交易数量：对于卖出操作，使用策略中的目标比例
-                volume = self._calculate_trade_volume_optimized(
-                    account_summary_df, account_holdings_df, logicofking_holdings,
-                    strategy_name, stock_name, new_ratio, operation)
-                logger.info(f"🛠️ 卖出 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
-
-                logger.info(
-                    f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
-
-                # 切换到对应账户
-                self.common_page.change_account(account_name)
-                logger.info(f"✅ 已切换到账户: {account_name}")
-
-                # 调用交易逻辑
-                status, info = self.trader.operate_stock(operation, stock_name, volume)
-
-                # 检查交易是否成功执行
-                if status is None:
-                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                    continue
-
-                # 标记已执行交易
-                any_trade_executed = True
-                # 标记下次需要更新账户数据
-                account_update_needed = True
-
-            # 4.3 按最新价升序排列买入操作
-            if not to_buy.empty and '最新价' in to_buy.columns:
-                to_buy = to_buy.sort_values(by='最新价', ascending=True)
-
-            # 4.4 遍历每一项买入操作，执行交易
-            for idx, op in to_buy.iterrows():
-                stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
-                operation = op['操作']
-                # 安全获取可能不存在的字段
-                new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
-
-                # 计算交易数量：对于买入操作，使用策略中的目标比例
-                volume = self._calculate_trade_volume_optimized(
-                    account_summary_df, account_holdings_df, logicofking_holdings,
-                    strategy_name, stock_name, new_ratio, operation)
-                logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
-
-                logger.info(
-                    f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{strategy_name} 账户:{account_name}")
-
-                # 切换到对应账户
-                self.common_page.change_account(account_name)
-                logger.info(f"✅ 已切换到账户: {account_name}")
-
-                # 调用交易逻辑
-                status, info = self.trader.operate_stock(operation, stock_name, volume)
-
-                # 检查交易是否成功执行
-                if status is None:
-                    logger.error(f"❌ {operation} {stock_name} 交易执行失败: {info}")
-                    continue
-
-                # 标记已执行交易
-                any_trade_executed = True
-                # 标记下次需要更新账户数据
-                account_update_needed = True
-
-            # 4.5 处理交易执行结果
+            # 9. 处理交易执行结果
             if any_trade_executed:
                 logger.info("✅ 交易执行完成")
-                send_notification(f"✅ 账户 {account_name} 对应的策略 {strategy_name} 交易执行完成")
+                # send_notification(f"✅ 账户 {self.account_name} 对应的策略 {self.strategy_name} 交易执行完成")
             else:
                 logger.info("✅ 无需执行交易")
 
-            logger.info(f"完成比较账户 {account_name} 与策略 {strategy_name} 的持仓差异并执行交易")
+            logger.info(f"完成比较账户 {self.account_name} 与策略 {self.strategy_name} 的持仓差异并执行交易")
             return True
 
         except Exception as e:
-            error_msg = f"处理证券与策略 {strategy_name} 持仓差异并执行交易时发生错误: {e}"
+            error_msg = f"处理证券与策略 {self.strategy_name} 持仓差异并执行交易时发生错误: {e}"
             logger.error(error_msg)
             send_notification(error_msg)
             return False
 
-    def operate_strategy_with_account_data_only(self, strategy_holdings_df, account_holdings_df):
-        '''
-        整合
-        1.更新策略持仓（已由传入参数提供）
-        2.更新账户持仓（已由传入参数提供）
-        3.以策略为准，根据股票名称，持仓比例找出需要买入和卖出的,去掉'持有金额'为0的,对持仓占比和新比例%进行四舍五入取整处理,允许比例差异在10%以内的股票不计入操作范围
-        4.执行交易：先卖出，再按价格升序依次买入（此版本不执行交易，仅返回差异）
-        '''
-        try:
-            # 3. 以策略为准，根据股票名称，持仓比例找出需要买入和卖出的
-            # 3.1 筛选出指定策略的股票持仓信息
-            strategy_name = '逻辑为王'
-            strategy_holdings_extracted_df = strategy_holdings_df[strategy_holdings_df['策略名称'] == strategy_name] if '策略名称' in strategy_holdings_df.columns else strategy_holdings_df
-            
-            if not strategy_holdings_extracted_df.empty and ('股票名称' in strategy_holdings_extracted_df.columns or '标的名称' in strategy_holdings_extracted_df.columns):
-                logicofking_holdings = strategy_holdings_extracted_df.copy()
-                logger.info(
-                    f"✅ 成功获取策略 {strategy_name} 的持仓数据，共 {len(logicofking_holdings)} 条记录")
-            else:
-                logicofking_holdings = pd.DataFrame()
-                logger.warning(f"策略 {strategy_name} 持仓数据为空或不包含股票名称列")
-
-            # 3.2 处理账户持仓数据
-            account_holdings = account_holdings_df.copy() if not account_holdings_df.empty else pd.DataFrame()
-            
-            # 3.3 需要排除的股票名称
-            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF", '东材科技']
-
-            # 3.4 标准化股票名称
-            from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
-            # 3.4.1 确保列名统一（账户持仓）
-            if not account_holdings.empty:
-                if '股票名称' not in account_holdings.columns and '标的名称' in account_holdings.columns:
-                    account_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
-                account_holdings = standardize_dataframe_stock_names(account_holdings)
-
-            # 3.4.2 确保列名统一（策略持仓）
-            if not logicofking_holdings.empty:
-                if '股票名称' not in logicofking_holdings.columns and '标的名称' in logicofking_holdings.columns:
-                    logicofking_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
-                logicofking_holdings = standardize_dataframe_stock_names(logicofking_holdings)
-
-            # 3.5 对持仓占比和新比例%进行四舍五入取整处理
-            if '持仓占比' in account_holdings.columns:
-                account_holdings['持仓占比'] = account_holdings['持仓占比'].round(0).astype(int)
-
-            if '新比例%' in logicofking_holdings.columns:
-                logicofking_holdings['新比例%'] = logicofking_holdings['新比例%'].round(0).astype(int)
-
-            # 3.6 去掉'持有金额'为0的
-            if '持有金额' in account_holdings.columns:
-                account_holdings = account_holdings[account_holdings['持有金额'] > 0]
-
-            # 3.7 找出需要卖出的标的
-            # 3.7.1 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
-            to_sell = pd.DataFrame()
-            if not account_holdings.empty and not logicofking_holdings.empty:
-                # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
-                to_sell_candidates = account_holdings[
-                    ~account_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
-
-                # 3.7.2 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'小的股票（需要部分卖出）
-                # 先找出共同持有的股票
-                common_stocks = account_holdings[
-                    account_holdings['股票名称'].isin(logicofking_holdings['股票名称'])]
-
-                # 合并策略数据以便比较
-                merged_data = pd.merge(common_stocks, logicofking_holdings[['股票名称', '新比例%']], on='股票名称',
-                                       how='left')
-
-                # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
-                # 优化：只有当差异大于等于10%时才考虑卖出，避免小幅度调整触发交易
-                if '持仓占比' in merged_data.columns:
-                    to_sell_candidates2 = merged_data[
-                        (merged_data['新比例%'] < merged_data['持仓占比']) &
-                        ((merged_data['持仓占比'] - merged_data['新比例%']) >= 10)
-                        ]
-                else:
-                    to_sell_candidates2 = pd.DataFrame()
-
-                # 3.7.3 合并两种需要卖出的情况
-                to_sell = pd.concat([to_sell_candidates, to_sell_candidates2]).drop_duplicates(subset=['股票名称'])
-                to_sell = to_sell[~to_sell['股票名称'].isin(excluded_holdings)].copy()
-            elif not account_holdings.empty:
-                # 如果策略持仓为空，则所有证券账户持仓都是需要卖出的（除去排除项）
-                to_sell = account_holdings[~account_holdings['股票名称'].isin(excluded_holdings)].copy()
-            else:
-                to_sell = pd.DataFrame(columns=account_holdings.columns) if not account_holdings.empty else pd.DataFrame()
-
-            # 3.7.4 确保to_sell包含股票名称列
-            if not to_sell.empty and '股票名称' not in to_sell.columns and '标的名称' in to_sell.columns:
-                to_sell.rename(columns={'标的名称': '股票名称'}, inplace=True)
-
-            if not to_sell.empty:
-                to_sell['操作'] = '卖出'
-                logger.info(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
-            else:
-                logger.info("✅ 当前无需卖出的标的")
-
-            # 3.8 找出需要买入的标的
-            to_buy = pd.DataFrame()
-            if not logicofking_holdings.empty:
-                if not account_holdings.empty:
-                    # 3.8.1 在策略中存在，但在证券账户中不存在的股票（需要买入到目标比例）
-                    to_buy_candidates = logicofking_holdings[
-                        ~logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
-
-                    # 3.8.2 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'大的股票（需要买入到目标比例）
-                    # 找出共同持有的股票
-                    common_stocks_buy = logicofking_holdings[
-                        logicofking_holdings['股票名称'].isin(account_holdings['股票名称'])]
-
-                    # 合并账户数据以便比较
-                    merged_data_buy = pd.merge(common_stocks_buy, account_holdings[['股票名称', '持仓占比']],
-                                               on='股票名称',
-                                               how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
-
-                    # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
-                    # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
-                    if not merged_data_buy.empty:
-                        to_buy_candidates2 = merged_data_buy[
-                            (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
-                            ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
-                            ]
-                    else:
-                        to_buy_candidates2 = pd.DataFrame()
-
-                    # 3.8.3 合并两种需要买入的情况
-                    to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
-                    to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
-                else:
-                    # 3.8.4 如果账户持仓为空，则策略中的所有股票都需要买入
-                    logger.info("账户持仓为空，策略中的所有股票都需要买入")
-                    to_buy = logicofking_holdings.copy()
-                    to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
-
-                # 3.8.5 只保留市场为沪深A股的
-                if '市场' in to_buy.columns:
-                    to_buy = to_buy[to_buy['市场'].isin(['沪深A股', '创业板', '科创板'])]
-            else:
-                to_buy = pd.DataFrame(columns=['股票名称'])
-
-            # 3.8.6 确保to_buy包含股票名称列
-            if not to_buy.empty and '股票名称' not in to_buy.columns and '标的名称' in to_buy.columns:
-                to_buy.rename(columns={'标的名称': '股票名称'}, inplace=True)
-
-            if not to_buy.empty:
-                to_buy['操作'] = '买入'
-                logger.info(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
-            else:
-                logger.info("✅ 当前无需买入的标的")
-
-            # 3.9 构建完整差异报告
-            difference_report = {
-                "to_sell": to_sell,
-                "to_buy": to_buy
-            }
-
-            logger.info(f"📊 最终差异报告 - 需要卖出: {len(to_sell)} 条, 需要买入: {len(to_buy)} 条")
-            
-            # 返回计算结果，不执行实际交易
-            logger.info(f"完成比较账户与策略 {strategy_name} 的持仓差异")
-            return difference_report
-
-        except Exception as e:
-            error_msg = f"处理证券与策略 {strategy_name} 持仓差异时发生错误: {e}"
-            logger.error(error_msg)
-            # 确保即使出错也返回一个有效的字典
-            return {"to_sell": pd.DataFrame(), "to_buy": pd.DataFrame()}
 
 if __name__ == '__main__':
     processor = CombinationHoldingProcessor()

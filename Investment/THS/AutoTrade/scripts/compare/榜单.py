@@ -49,9 +49,10 @@ def get_all_portfolio_rank_data(match_id):
 
     params = {
         "offset": 0,
-        "page_size": 100,
+        "page_size": 50,
         "match_id": match_id,
-        "block_id": 0,
+        # "block_id": 0,
+        "block_id": 886065,
         "list_type": 4
     }
 
