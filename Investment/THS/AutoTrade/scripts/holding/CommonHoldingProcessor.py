@@ -145,7 +145,7 @@ class CommonHoldingProcessor:
                 return {"error": f"读取策略持仓文件失败: {e}"}
 
             # 需要排除的股票名称
-            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF",'东材科技']
 
             # 标准化股票名称
             from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
@@ -263,10 +263,10 @@ class CommonHoldingProcessor:
                 logger.debug(f"排除后买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
 
                 # 只保留市场为沪深A股的
-                if '市场' in to_buy.columns:
-                    to_buy = to_buy[to_buy['市场'] == '沪深A股']
-                    # 添加调试信息
-                    logger.debug(f"市场筛选后买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
+                # if '市场' in to_buy.columns:
+                #     to_buy = to_buy[to_buy['市场'] == '沪深A股']
+                #     # 添加调试信息
+                #     logger.debug(f"市场筛选后买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
                 to_buy.index = range(1, len(to_buy) + 1)
                 # 添加调试信息
                 logger.debug(f"最终买入列表: {to_buy['股票名称'].tolist() if not to_buy.empty else []}")
@@ -274,8 +274,8 @@ class CommonHoldingProcessor:
                 # 如果证券账户持仓为空，则所有策略持仓都是需要买入的（除去排除项）
                 to_buy = logicofking_holdings[~logicofking_holdings['股票名称'].isin(excluded_holdings)]
                 # 只保留市场为沪深A股的
-                if '市场' in to_buy.columns:
-                    to_buy = to_buy[to_buy['市场'] == '沪深A股']
+                # if '市场' in to_buy.columns:
+                #     to_buy = to_buy[to_buy['市场'] == '沪深A股']
                 # 确保索引从1开始
                 to_buy.index = range(1, len(to_buy) + 1)
             else:
@@ -330,6 +330,7 @@ class CommonHoldingProcessor:
 
                     to_sell_report['变化比例'] = to_sell_report['目标比例'] - to_sell_report['持仓占比'] if '持仓占比' in to_sell_report.columns else -to_sell_report['目标比例']
                     logger.info(f"📈 需要卖出的股票及其当前/目标比例:\n{to_sell_report}")
+                    send_notification(f"需要卖出的股票及其当前/目标比例:\n{to_sell_report}")
                 except Exception as e:
                     logger.error(f"处理卖出报告时出错: {e}")
                     logger.debug(f"卖出数据: {to_sell}")
@@ -362,11 +363,13 @@ class CommonHoldingProcessor:
 
                         to_buy_report['变化比例'] = to_buy_report['新比例%'] - to_buy_report['原始比例']
                         logger.info(f"📈 需要买入的股票及其当前/目标比例:\n{to_buy_report}")
+                        send_notification(f"需要买入的股票及其当前/目标比例:\n{to_buy_report}")
                 except Exception as e:
                     logger.error(f"处理买入报告时出错: {e}")
                     logger.debug(f"买入数据: {to_buy}")
 
             logger.info(f"完成比较账户 {account_name} 与策略 {strategy_name} 的持仓差异")
+            # send_notification(f"账户持仓差异报告\n{difference_report}")
             return difference_report
 
         except Exception as e:
@@ -506,7 +509,7 @@ class CommonHoldingProcessor:
         # 汇总所有数据
         all_holdings_df = pd.concat(all_holdings, ignore_index=False)
         # 从1开始计数，只保留沪深A股的, 按价格从低到高排序
-        all_holdings_df = all_holdings_df[all_holdings_df['市场'] == '沪深A股']
+        # all_holdings_df = all_holdings_df[all_holdings_df['市场'] == '沪深A股']
         all_holdings_df.sort_values('最新价', ascending=True)
         all_holdings_df.index = all_holdings_df.index + 1
         # 添加一列账户名
@@ -617,7 +620,7 @@ class CommonHoldingProcessor:
                     #             raise Exception("未找到有效的策略数据工作表")
                     strategy_data = pd.read_excel(strategy_file_path, sheet_name=today_str)
                     logger.info(f"读取策略数据成功，今日工作表: {today_str}\n{strategy_data}")
-                    strategy_row = strategy_data[(strategy_data['名称'] == strategy_name) & (strategy_data['股票名称'] == stock_name)]
+                    strategy_row = strategy_data[(strategy_data['策略名称'] == strategy_name) & (strategy_data['股票名称'] == stock_name)]
                     if not strategy_row.empty:
                         stock_price = float(strategy_row['最新价'].values[0])
                         logger.info(f"从策略数据中获取到股票价格: {stock_price}")
@@ -685,11 +688,11 @@ class CommonHoldingProcessor:
         to_sell = filtered_result.get('to_sell', pd.DataFrame())
         to_buy = filtered_result.get('to_buy', pd.DataFrame())
 
-        # 只保留市场为沪深A股的
-        if not to_sell.empty and '市场' in to_sell.columns:
-            to_sell = to_sell[to_sell['市场'] == '沪深A股']
-        if not to_buy.empty and '市场' in to_buy.columns:
-            to_buy = to_buy[to_buy['市场'] == '沪深A股']
+        # # 只保留市场为沪深A股的
+        # if not to_sell.empty and '市场' in to_sell.columns:
+        #     to_sell = to_sell[to_sell['市场'] == '沪深A股']
+        # if not to_buy.empty and '市场' in to_buy.columns:
+        #     to_buy = to_buy[to_buy['市场'] == '沪深A股']
 
         # 标记是否执行了任何交易操作
         any_trade_executed = False
@@ -764,6 +767,9 @@ class CommonHoldingProcessor:
         
         logger.info(f"策略执行完成: 账户={account_name}, 策略={strategy_name}")
         return True
+
+
+
 
 
 if __name__ == '__main__':

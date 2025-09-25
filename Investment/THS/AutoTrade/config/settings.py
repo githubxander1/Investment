@@ -5,7 +5,7 @@ from pprint import pprint
 from fake_useragent import UserAgent
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(f"项目根目录：{BASE_DIR}")
+# print(f"项目根目录：{BASE_DIR}")
 
 package_name = 'com.hexin.plat.android'
 
@@ -57,9 +57,9 @@ fake_useragent = UserAgent()
 
 # 定义账户信息
 ACCOUNTS = {
-    "中泰证券": "133508019",
-    "川财证券": "108048932",
-    "长城证券": "103353867",
+    # "中泰证券": "133508019",
+    # "川财证券": "108048932",
+    # "长城证券": "103353867",
     "中山证券": "139269044"
 }
 

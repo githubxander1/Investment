@@ -12,6 +12,7 @@ from Investment.THS.AutoTrade.pages.devices_init import initialize_device, is_de
 from Investment.THS.AutoTrade.pages.page_common import CommonPage
 from Investment.THS.AutoTrade.scripts.holding.Combination_holding_all import get_portfolio_holding_data_all
 from Investment.THS.AutoTrade.scripts.holding.CommonHoldingProcessor import CommonHoldingProcessor
+from Investment.THS.AutoTrade.scripts.monitor_20day import check_morning_signals
 # 自定义模块
 from Investment.THS.AutoTrade.scripts.portfolio_today.Combination_portfolio_today import Combination_main
 from Investment.THS.AutoTrade.pages.page_guozhai import GuozhaiPage
@@ -325,10 +326,10 @@ async def main():
                 break
 
             # 检查是否在11:30到13:00之间，如果是则跳过本次循环
-            # if dt_time(11, 30) <= now < dt_time(13, 0):
-            #     logger.info("当前时间在11:30到13:00之间，跳过本次循环")
-            #     await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
-            #     continue
+            if dt_time(11, 30) <= now < dt_time(13, 0):
+                logger.info("当前时间在11:30到13:00之间，跳过本次循环")
+                await asyncio.sleep(random.uniform(MIN_DELAY, MAX_DELAY))
+                continue
 
             # 检测设备是否断开
             if not is_device_connected(d):
@@ -343,8 +344,8 @@ async def main():
             logger.warning("开始任务")
 
             # 1. 执行早盘信号检查
-            # global morning_signal_checked
-            # await check_morning_signals()
+            global morning_signal_checked
+            await check_morning_signals()
 
             # 2. 组合更新任务（9:25-15:00）
             if dt_time(9, 25) <= now <= dt_time(end_time_hour, 0):
@@ -444,7 +445,7 @@ async def main():
             continue
 
 if __name__ == '__main__':
-    end_time_hour = 23
+    end_time_hour = 15
     end_time_minute = 30
 
     asyncio.run(main())

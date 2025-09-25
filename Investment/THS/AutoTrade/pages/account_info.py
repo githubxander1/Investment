@@ -600,7 +600,7 @@ class AccountInfo:
             return None, None, None, None, None
             
     # 更新指定账户的持仓信息
-    def update_holding_info_for_account(self, account_name):
+    def update_holding_info_for_account1(self, account_name):
         """
         获取指定账户的持仓信息，并保存到 Excel 文件
         """
@@ -827,7 +827,58 @@ class AccountInfo:
             logger.error(f"❌ 保存持仓信息失败: {e}", exc_info=True)
             return False
 
+    def update_holding_info_for_account(self, account_name):
+        """
+        获取指定账户的持仓信息，并保存到 Excel 文件
+        """
+        logger.info("-" * 50)
+        logger.info(f"开始：更新 {account_name} 账户持仓信息...")
 
+        try:
+            # 切换到指定账户
+            logger.info(f"正在切换到 {account_name} 账户...")
+            switch_success = common_page.change_account(account_name)
+
+            # 等待账户切换完成
+            time.sleep(2)
+
+            # 检查账户切换是否成功
+            if not switch_success:
+                logger.warning(f"❌ {account_name} 账户切换失败")
+                return False
+
+            # 提取该账户的数据
+            header_info_df = self.extract_header_info()
+            stocks_df = self.extract_stock_info()
+
+            # 如果有持仓数据且账户汇总信息不为空，计算持仓占比
+            if not stocks_df.empty and not header_info_df.empty:
+                try:
+                    # 从账户汇总信息中获取总资产
+                    total_asset_text = header_info_df.iloc[0]["总资产"]
+                    if total_asset_text and total_asset_text != "None":
+                        total_asset = float(str(total_asset_text).replace(',', ''))
+                        logger.info(f"账户 {account_name} 总资产: {total_asset}")
+
+                        # 计算每只股票的持仓占比，并四舍五入为整数
+                        if '市值' in stocks_df.columns:
+                            stocks_df['持仓占比'] = (stocks_df['市值'] / total_asset * 100).round(0).astype(int)
+                            logger.info(f"已为账户 {account_name} 的持仓股票计算持仓占比")
+                    else:
+                        logger.warning(f"账户 {account_name} 无总资产信息，无法计算持仓占比")
+                except Exception as e:
+                    logger.error(f"计算持仓占比时出错: {e}")
+
+            # 如果数据为空，记录警告
+            if header_info_df.empty and stocks_df.empty:
+                logger.warning(f"{account_name} 账户数据为空")
+                return False
+        except Exception as e:
+            logger.error(f"获取 {account_name} 账户数据时出错: {e}", exc_info=True)
+            return False
+
+        logger.info(f"完成：✅ {account_name} 账户持仓信息已更新")
+        return header_info_df, stocks_df
 
 
 if __name__ == '__main__':
