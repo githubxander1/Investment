@@ -187,12 +187,13 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
         try:
             # 1. 更新策略持仓
             # 1.1 获取所有组合的持仓数据
+            logger.info("🔄 开始更新策略持仓数据...")
             strategy_holdings = []
             for id in Combination_ids:  # 只处理映射中的组合
                 positions_df = self.get_single_holding_data(id)
                 # 1.2 只保留沪深A股的
-                if not positions_df.empty and '市场' in positions_df.columns:
-                    positions_df = positions_df[positions_df['市场'].isin(['沪深A股', '创业板', '科创板'])]
+                # if not positions_df.empty and '市场' in positions_df.columns:
+                    # positions_df = positions_df[positions_df['市场'].isin(['沪深A股'])]
                 # 1.3 检查并添加非空数据
                 if positions_df is not None and not positions_df.empty:
                     strategy_holdings.append(positions_df)
@@ -206,7 +207,8 @@ class CombinationHoldingProcessor(CommonHoldingProcessor):
 
             # 1.5 策略持仓汇总
             strategy_holdings_df = pd.concat(strategy_holdings, ignore_index=True)
-            
+            logger.info(f"策略持仓数据:{len(strategy_holdings_df)}\n{strategy_holdings_df}")
+
             # 2. 更新账户持仓
             # 2.1 初始化账户持仓数据
             global account_update_needed
