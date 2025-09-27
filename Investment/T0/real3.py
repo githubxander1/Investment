@@ -8,11 +8,13 @@ import os
 
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
+
 matplotlib.use('TkAgg')  # 使用TkAgg后端，适用于大多数环境
 plt.rcParams.update({
     'font.sans-serif': ['SimHei'],
     'axes.unicode_minus': False
 })
+
 
 # ---------------------- 1. 指标计算（严格还原通达信公式） ----------------------
 def calculate_tdx_indicators(df, prev_close, threshold=0.01):
@@ -55,7 +57,7 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.01):
     df['longcross_resistance'] = ((df['收盘'].shift(2) < df['阻力'].shift(2)) & \
                                   (df['收盘'].shift(1) < df['阻力'].shift(1)) & \
                                   (df['收盘'] > df['阻力']))
-                                 # (abs(df['收盘'] - df['阻力']) > threshold)
+    # (abs(df['收盘'] - df['阻力']) > threshold)
 
     return df
 
@@ -91,25 +93,19 @@ def get_prev_close(stock_code, trade_date):
         print(f"昨收获取失败: {e}，将使用分时开盘价替代")
         return None
 
+
 # ---------------------- 3. 缓存功能 ----------------------
 def get_cached_data(stock_code, trade_date):
     """从缓存中获取数据"""
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
+    cache_file = f"stock_data/{stock_code}.csv"
     if os.path.exists(cache_file):
         try:
             df = pd.read_csv(cache_file)
-            # 检查列名，修复可能的编码问题
-            time_col = None
-            for col in df.columns:
-                if '时间' in col:
-                    time_col = col
-                    break
 
-            if time_col:
-                df['时间'] = pd.to_datetime(df[time_col])
-                df = df.drop(columns=[time_col])
-                df = df.set_index('时间')
-                print(f"从缓存加载数据: {cache_file}")
+            # 检查是否包含时间列
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                # 注意：缓存数据不设置时间列为索引，保持与网络获取数据一致的格式
                 return df
             else:
                 print("缓存文件中未找到时间列")
@@ -121,8 +117,8 @@ def save_data_to_cache(df, stock_code, trade_date):
     """保存数据到缓存"""
     # 确保 stock_data 目录存在
     os.makedirs("stock_data", exist_ok=True)
-    
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
+
+    cache_file = f"stock_data/{stock_code}.csv"
     try:
         df_reset = df.reset_index()
         df_reset.to_csv(cache_file, index=False)
@@ -130,7 +126,8 @@ def save_data_to_cache(df, stock_code, trade_date):
     except Exception as e:
         print(f"保存缓存文件失败: {e}")
 
-# ---------------------- 4. 绘图函数（严格模仿通达信分时风格） ----------------------
+
+# ---------------------- 4. 绘图函数 ----------------------
 def plot_tdx_intraday(stock_code, trade_date=None):
     try:
         # 1. 时间处理
@@ -139,7 +136,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 2. 先尝试从缓存获取数据
         df = get_cached_data(stock_code, trade_date)
-        
+
         # 3. 如果缓存没有数据，则从网络获取
         if df is None:
             print("缓存中无数据，从网络获取...")
@@ -153,38 +150,60 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             if df.empty:
                 print("❌ 无分时数据")
                 return None
-            
+
+            # 保存到缓存前确保列名正确
+            if '时间' not in df.columns:
+                # 查找实际的时间列
+                time_col = None
+                for col in df.columns:
+                    if '时间' in col or 'date' in col.lower() or 'time' in col.lower():
+                        time_col = col
+                        break
+                if time_col:
+                    df.rename(columns={time_col: '时间'}, inplace=True)
+
             # 保存到缓存
             save_data_to_cache(df.copy(), stock_code, trade_date)
+            data_from_cache = False
         else:
             print("使用缓存数据")
+            data_from_cache = True
 
-        # 打印原始时间列（调试用）
-        # print("📅 分时数据原始时间列（前5行）：")
-        # print(df['时间'].head())
-        # print("🕒 时间列原始类型：", df['时间'].dtype)
-
-        # 强制转换为 datetime（AkShare 返回的时间已包含日期）
-        df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
+        # 如果数据来自缓存，则时间列已经是索引，否则需要转换时间列
+        if not data_from_cache:
+            # 强制转换为 datetime（AkShare 返回的时间已包含日期）
+            df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
 
         df = df[df['时间'].notna()]
+
+        # 只保留指定日期的数据，不延伸到今天
+        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        df = df[df['时间'].dt.date == target_date.date()]
+
+        # 过滤掉 11:30 到 13:00 之间的数据
         df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
         if df.empty:
             print("❌ 所有时间数据均无效")
             return None
 
-        # 强制校准时间索引（只生成到当前时间的索引）
-        current_time = datetime.now().strftime('%Y%m%d %H:%M:%S')
-        full_index = pd.date_range(
+        # 分离上午和下午的数据
+        morning_data = df[df['时间'].dt.hour < 12]
+        afternoon_data = df[df['时间'].dt.hour >= 13]
+
+        # 强制校准时间索引（只生成到指定日期的时间索引）
+        morning_index = pd.date_range(
             start=f"{trade_date} 09:30:00",
-            end=current_time,
+            end=f"{trade_date} 11:30:00",
             freq='1min'
         )
-        full_index = full_index[
-            ((full_index.hour == 9) & (full_index.minute >= 30)) |
-            ((full_index.hour >= 10) & (full_index.hour <= 11) & (full_index.minute < 30)) |
-            ((full_index.hour >= 13) & (full_index.hour <= 14))
-            ]
+        afternoon_index = pd.date_range(
+            start=f"{trade_date} 13:00:00",
+            end=f"{trade_date} 15:00:00",
+            freq='1min'
+        )
+
+        # 合并索引
+        full_index = morning_index.union(afternoon_index)
         df = df.set_index('时间').reindex(full_index)
         df.index.name = '时间'
 
@@ -224,125 +243,175 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         # 创建三个子图，按照要求布局（顶部信息栏、中部价格图、底部时间轴）
         fig = plt.figure(figsize=(12, 10))
         gs = fig.add_gridspec(3, 1, height_ratios=[1, 8, 1], hspace=0.1)
-        
-        ax_info = fig.add_subplot(gs[0])      # 顶部信息栏
-        ax_price = fig.add_subplot(gs[1])     # 中部价格图
-        ax_time = fig.add_subplot(gs[2])      # 底部时间轴
 
-        # 过滤掉 11:30 到 13:00 之间的数据
-        df_filtered = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & ~((df.index.hour == 12))]
+        ax_info = fig.add_subplot(gs[0])  # 顶部信息栏
+        ax_price = fig.add_subplot(gs[1])  # 中部价格图
+        ax_time = fig.add_subplot(gs[2])  # 底部时间轴
+
+        # 移除缺失数据的行，确保只绘制有效数据
+        df_filtered = df.dropna(subset=['收盘'])
 
         # 顶部信息栏显示均价、最新价、涨跌幅
         latest_price = df_filtered['收盘'].iloc[-1]
         avg_price = df_filtered['均价'].iloc[-1]
         change = latest_price - prev_close
         change_pct = (change / prev_close) * 100
-        
+
         ax_info.clear()
         ax_info.set_xlim(0, 1)
         ax_info.set_ylim(0, 1)
         ax_info.axis('off')
-        
+
         info_text = f"均价: {avg_price:.2f}    最新: {latest_price:.2f}    涨跌幅: {change:+.2f} ({change_pct:+.2f}%)"
         ax_info.text(0.5, 0.5, info_text, ha='center', va='center', fontsize=14, transform=ax_info.transAxes)
-        
-        # 中部价格图
+
+        # 中部价格图 - 分别绘制上午和下午的价格线，中间断开
         price_min = df_filtered['收盘'].min()
         price_max = df_filtered['收盘'].max()
         margin = (price_max - price_min) * 0.1
         if margin == 0:
             margin = 0.01
         ax_price.set_ylim(price_min - margin, price_max + margin)
-        
-        # 绘制价格线
-        ax_price.plot(
-            df_filtered.index,
-            df_filtered['收盘'],
-            color='crimson',
-            linewidth=1.5,
-            label='现价',
-            antialiased=True
-        )
-        
-        # 绘制均价线（黄线）
-        ax_price.plot(
-            df_filtered.index,
-            df_filtered['均价'],
-            color='yellow',
-            linewidth=1.5,
-            label='均价',
-            antialiased=True
-        )
 
-        # 9. 绘制支撑、阻力线
-        ax_price.plot(df_filtered.index, df_filtered['支撑'], color='#00DD00', linestyle='--', linewidth=1, label='支撑')
-        ax_price.plot(df_filtered.index, df_filtered['阻力'], color='#ff0000', linestyle='--', linewidth=1, label='阻力')
+        # 分离上午和下午的数据用于绘图
+        morning_filtered = df_filtered[df_filtered.index.hour < 12]
+        afternoon_filtered = df_filtered[df_filtered.index.hour >= 13]
 
-        # 10. 绘制黄色柱状线（CROSS(支撑, 现价)）
-        for idx in df_filtered[df_filtered['cross_support']].index:
-            ax_price.plot([idx, idx], [df_filtered['支撑'][idx], df_filtered['阻力'][idx]],
-                    'yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
+        # 绘制上午的价格线
+        if not morning_filtered.empty:
+            ax_price.plot(
+                morning_filtered.index,
+                morning_filtered['收盘'],
+                color='crimson',
+                linewidth=1.5,
+                antialiased=True
+            )
+            # 绘制上午的均价线
+            ax_price.plot(
+                morning_filtered.index,
+                morning_filtered['均价'],
+                color='yellow',
+                linewidth=1.5,
+                antialiased=True
+            )
+            # 绘制上午的支撑阻力线
+            ax_price.plot(morning_filtered.index, morning_filtered['支撑'], color='#00DD00', linestyle='--', linewidth=1)
+            ax_price.plot(morning_filtered.index, morning_filtered['阻力'], color='#ff0000', linestyle='--', linewidth=1)
 
-        # 绘制买信号（红三角）
-        buy_signals = df_filtered[df_filtered['longcross_support']].dropna()
+        # 绘制下午的价格线
+        if not afternoon_filtered.empty:
+            ax_price.plot(
+                afternoon_filtered.index,
+                afternoon_filtered['收盘'],
+                color='crimson',
+                linewidth=1.5,
+                antialiased=True
+            )
+            # 绘制下午的均价线
+            ax_price.plot(
+                afternoon_filtered.index,
+                afternoon_filtered['均价'],
+                color='yellow',
+                linewidth=1.5,
+                antialiased=True
+            )
+            # 绘制下午的支撑阻力线
+            ax_price.plot(afternoon_filtered.index, afternoon_filtered['支撑'], color='#00DD00', linestyle='--', linewidth=1)
+            ax_price.plot(afternoon_filtered.index, afternoon_filtered['阻力'], color='#ff0000', linestyle='--', linewidth=1)
+
+        # 设置x轴限制为实际数据范围，避免显示空白区域
+        ax_price.set_xlim(df_filtered.index.min(), df_filtered.index.max())
+
+        # 绘制黄色柱状线（CROSS(支撑, 现价)）- 上午数据
+        for idx in morning_filtered[morning_filtered['cross_support']].index:
+            ax_price.plot([idx, idx], [morning_filtered['支撑'][idx], morning_filtered['阻力'][idx]],
+                          'yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
+
+        # 绘制黄色柱状线（CROSS(支撑, 现价)）- 下午数据
+        for idx in afternoon_filtered[afternoon_filtered['cross_support']].index:
+            ax_price.plot([idx, idx], [afternoon_filtered['支撑'][idx], afternoon_filtered['阻力'][idx]],
+                          'yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
+
+        # 绘制买信号（红三角）- 上午数据
+        buy_signals = morning_filtered[morning_filtered['longcross_support']].dropna()
         for idx, row in buy_signals.iterrows():
             ax_price.scatter(idx, row['支撑'] * 1.001, marker='^', color='red', s=60, zorder=5)
             ax_price.text(idx, row['支撑'] * 1.001, '买',
-                    color='red', fontsize=10, ha='center', va='bottom', fontweight='bold')
+                          color='red', fontsize=10, ha='center', va='bottom', fontweight='bold')
 
-        # 绘制卖信号（绿三角）
-        sell_signals = df_filtered[df_filtered['longcross_resistance']].dropna()
+        # 绘制买信号（红三角）- 下午数据
+        buy_signals = afternoon_filtered[afternoon_filtered['longcross_support']].dropna()
+        for idx, row in buy_signals.iterrows():
+            ax_price.scatter(idx, row['支撑'] * 1.001, marker='^', color='red', s=60, zorder=5)
+            ax_price.text(idx, row['支撑'] * 1.001, '买',
+                          color='red', fontsize=10, ha='center', va='bottom', fontweight='bold')
+
+        # 绘制卖信号（绿三角）- 上午数据
+        sell_signals = morning_filtered[morning_filtered['longcross_resistance']].dropna()
         for idx, row in sell_signals.iterrows():
             ax_price.scatter(idx, row['收盘'] * 0.999, marker='v', color='green', s=60, zorder=5)
             ax_price.text(idx, row['收盘'] * 0.999, '卖',
-                    color='green', fontsize=10, ha='center', va='top', fontweight='bold')
+                          color='green', fontsize=10, ha='center', va='top', fontweight='bold')
+
+        # 绘制卖信号（绿三角）- 下午数据
+        sell_signals = afternoon_filtered[afternoon_filtered['longcross_resistance']].dropna()
+        for idx, row in sell_signals.iterrows():
+            ax_price.scatter(idx, row['收盘'] * 0.999, marker='v', color='green', s=60, zorder=5)
+            ax_price.text(idx, row['收盘'] * 0.999, '卖',
+                          color='green', fontsize=10, ha='center', va='top', fontweight='bold')
 
         # 设置价格图的网格
         ax_price.grid(True, linestyle='--', alpha=0.5, color='gray')
         ax_price.set_ylabel('价格', fontsize=12)
-        
+
         # 昨收价参考线
         ax_price.axhline(prev_close, color='gray', linestyle='--', linewidth=1, alpha=0.7)
-        
+
         # 隐藏中部图表的x轴标签
         ax_price.set_xticklabels([])
-        
+
         # 底部时间轴
         ax_time.set_xlim(df_filtered.index.min(), df_filtered.index.max())
         ax_time.set_ylim(0, 1)
         ax_time.axis('off')
-        
+
         # 设置时间轴刻度
         time_ticks = []
         time_labels = []
-        
+
         # 添加上午时间刻度 (9:30 - 11:30)
         morning_times = pd.date_range(start=f"{trade_date} 09:30", end=f"{trade_date} 11:30", freq='30min')
         for time in morning_times:
             if time in df_filtered.index or True:  # 总是添加主要时间点
                 time_ticks.append(time)
                 time_labels.append(time.strftime('%H:%M'))
-        
+
         # 添加下午时间刻度 (13:00 - 15:00)
         afternoon_times = pd.date_range(start=f"{trade_date} 13:00", end=f"{trade_date} 15:00", freq='30min')
         for time in afternoon_times:
             if time in df_filtered.index or True:  # 总是添加主要时间点
                 time_ticks.append(time)
                 time_labels.append(time.strftime('%H:%M'))
-        
+
         # 在时间轴上显示时间标签
         for i, (tick, label) in enumerate(zip(time_ticks, time_labels)):
             ax_time.text(tick, 0.5, label, ha='center', va='center', fontsize=10)
-            # 添加时间刻度线
-            ax_price.axvline(tick, color='gray', linestyle='-', linewidth=0.5, alpha=0.5)
-        
+
         ax_time.set_xticks(time_ticks)
         ax_time.set_xticklabels(time_labels)
-        
+
+        # 在价格图上添加中午休市的分隔线标记
+        morning_close = pd.to_datetime(f"{trade_date} 11:30")
+        afternoon_open = pd.to_datetime(f"{trade_date} 13:00")
+
+        # 计算11:30和13:00之间的时间中点，用于显示分隔线
+        mid_point = morning_close + (afternoon_open - morning_close) / 2
+        ax_price.axvline(mid_point, color='gray', linestyle='-', linewidth=1, alpha=0.7)
+
         # 鼠标悬浮显示价格和时间
-        annotation = ax_price.annotate('', xy=(0,0), xytext=(10, 10), textcoords='offset points',
-                                      bbox=dict(boxstyle='round', fc='yellow', alpha=0.7),
-                                      arrowprops=dict(arrowstyle='->'), fontsize=10)
+        annotation = ax_price.annotate('', xy=(0, 0), xytext=(10, 10), textcoords='offset points',
+                                       bbox=dict(boxstyle='round', fc='yellow', alpha=0.7),
+                                       arrowprops=dict(arrowstyle='->'), fontsize=10)
         annotation.set_visible(False)
 
         def on_move(event):
@@ -351,14 +420,18 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                     # 找到最近的时间点
                     x_date = mdates.num2date(event.xdata)
                     x_date = x_date.replace(tzinfo=None)
-                    closest_idx = df_filtered.index.get_indexer([x_date], method='nearest')[0]
-                    if 0 <= closest_idx < len(df_filtered):
-                        data_point = df_filtered.iloc[closest_idx]
-                        time_str = df_filtered.index[closest_idx].strftime('%H:%M')
+                    # 确保只在有效数据点上显示
+                    if x_date in df_filtered.index and not pd.isna(df_filtered.loc[x_date, '收盘']):
+                        data_point = df_filtered.loc[x_date]
+                        time_str = x_date.strftime('%H:%M')
                         annotation.xy = (event.xdata, event.ydata)
                         annotation.set_text(f"时间: {time_str}\n价格: {data_point['收盘']:.2f}")
                         annotation.set_visible(True)
                         fig.canvas.draw_idle()
+                    else:
+                        if annotation.get_visible():
+                            annotation.set_visible(False)
+                            fig.canvas.draw_idle()
             else:
                 if annotation.get_visible():
                     annotation.set_visible(False)
@@ -368,13 +441,13 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 设置图表标题
         fig.suptitle(f'{stock_code} 分时图 - {trade_date}', fontsize=14, y=0.98)
-        
+
         # 添加图例到价格图
-        ax_price.legend(loc='upper left', fontsize=10)
+        ax_price.legend(['现价', '均价', '支撑', '阻力'], loc='upper left', fontsize=10)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.95)
-        
+
         # 强制显示（解决后端静默问题）
         plt.show(block=True)
 
