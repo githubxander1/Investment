@@ -127,7 +127,7 @@ def get_cached_data(stock_code, trade_date):
 
 def save_data_to_cache(df, stock_code, trade_date):
     """保存数据到缓存"""
-    os.makedirs("stock_data", exist_ok=True)
+    os.makedirs("../stock_data", exist_ok=True)
     cache_file = f"stock_data/{stock_code}.csv"
     try:
         df_reset = df.reset_index()

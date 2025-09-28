@@ -4,7 +4,7 @@ import sys
 
 # 添加项目根目录到路径，以便导入notification模块
 sys.path.append('d:\\Xander\\Inverstment')
-from Investment.THS.AutoTrade_copy.utils.notification import send_notification
+# from Investment.THS.AutoTrade_copy.utils.notification import send_notification
 
 
 def is_trading_time():

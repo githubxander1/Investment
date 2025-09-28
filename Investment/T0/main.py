@@ -27,6 +27,8 @@ class T0Strategy:
         try:
             # 1. 时间处理
             today = datetime.now().strftime('%Y%m%d')
+            # 前天
+            # today = (datetime.now() - timedelta(days=2)).strftime('%Y%m%d')
             trade_date = trade_date or today
     
             # 2. 先尝试从缓存获取数据
@@ -173,7 +175,7 @@ except ImportError:
 
 if __name__ == "__main__":
     # 可以从命令行参数获取股票代码
-    stock_codes = None
+    stock_codes = '600900'
     if len(sys.argv) > 1:
         stock_codes = sys.argv[1:]
         
