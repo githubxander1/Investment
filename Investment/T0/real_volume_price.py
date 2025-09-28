@@ -16,53 +16,73 @@ plt.rcParams.update({
 })
 
 
-# ---------------------- 1. 指标计算（严格还原通达信公式） ----------------------
-def calculate_tdx_indicators(df, prev_close, threshold=0.01):
+# ---------------------- 1. 指标计算（量价关系指标） ----------------------
+def calculate_volume_price_indicators(df, prev_close, threshold=0.01):
     """
-    通达信公式还原：
-    H1:=MAX(昨收, 当日最高价);
-    L1:=MIN(昨收, 当日最低价);
+    量价关系指标计算（严格还原通达信公式）：
+    量价:=(VOL/CLOSE)/3;
+    A2:=SUM((IF(((量价>0.20) AND (CLOSE>(REF(CLOSE,1)))),量价,0)),0);
+    A3:=SUM((IF(((量价>0.20) AND (CLOSE< (REF(CLOSE,1)))),量价,0)),0);
+    A6:=A2+A3;DD1:=1;
+    比:=A2/A3;
+    AAA1:=STRCAT(STRCAT('买: ',CON2STR((100*A2)/A6,0)),'%');
+    AAA2:=STRCAT(STRCAT('卖: ',CON2STR((100*A3)/A6,0)),'%');
+    AAA3:=STRCAT(STRCAT('差: ',CON2STR((100*(A2-A3))/A6,0)),'%');
+    
+    H1:=MAX(DYNAINFO(3),DYNAINFO(5));  # 昨收，当日最高
+    L1:=MIN(DYNAINFO(3),DYNAINFO(6));  # 昨收，当日最低
     P1:=H1-L1;
+    支撑:L1+P1*1/8;
     阻力:L1+P1*7/8;
-    支撑:L1+P1*0.5/8;
-    CROSS(支撑,现价) → 支撑上穿现价（画黄色柱）
-    LONGCROSS(支撑,现价,2) → 买信号（红三角）
-    LONGCROSS(现价,阻力,2) → 卖信号（绿三角）
+    章鱼底参考:L1+P1/3;
+    
+    DRAWTEXT(LONGCROSS(支撑,C,2),C,'买'),COLORYELLOW;
+    DRAWTEXT(LONGCROSS(C,阻力,2),C,'卖'),COLOR70DB93;
+    DRAWICON(LONGCROSS(支撑,C,2),C,1);  { 买入箭头 }
+    DRAWICON(LONGCROSS(C,阻力,2),C,2);  { 卖出箭头 }
     """
-    # 获取当日最高价和最低价（不是累积最大值/最小值）
+    # 计算量价指标
+    df['量价'] = (df['成交量'] / df['收盘']) / 3
+    
+    # 计算A2和A3
+    condition_buy = (df['量价'] > 0.20) & (df['收盘'] > df['收盘'].shift(1))
+    condition_sell = (df['量价'] > 0.20) & (df['收盘'] < df['收盘'].shift(1))
+    
+    df['A2_component'] = np.where(condition_buy, df['量价'], 0)
+    df['A3_component'] = np.where(condition_sell, df['量价'], 0)
+    
+    # 计算当日最高价和最低价
     daily_high = df['最高'].max()
     daily_low = df['最低'].min()
-
-    # 计算 H1、L1（昨收 vs 日内高低）
+    
+    # 计算H1, L1, P1
     df['H1'] = np.maximum(prev_close, daily_high)
     df['L1'] = np.minimum(prev_close, daily_low)
-
-    # 支撑、阻力计算（严格按公式 0.5/8 和 7/8）
     df['P1'] = df['H1'] - df['L1']
-    df['支撑'] = df['L1'] + df['P1'] * 0.5 / 8
+    
+    # 计算支撑、阻力和章鱼底参考线
+    df['支撑'] = df['L1'] + df['P1'] * 1 / 8
     df['阻力'] = df['L1'] + df['P1'] * 7 / 8
-
-    # 信号计算（严格对齐通达信逻辑）
-    # 1. CROSS(支撑, 现价)：支撑上穿现价（前一周期支撑 < 现价，当前支撑 > 现价）= 现价下穿支撑（信号）
-    df['cross_support'] = ((df['支撑'].shift(1) < df['收盘'].shift(1)) & (df['支撑'] > df['收盘'])) & \
-                          (abs(df['支撑'] - df['收盘']) > threshold)
-
-    # 2. LONGCROSS(支撑, 现价, 2)：连续2周期支撑 < 现价，当前支撑 > 现价（买信号）
-    df['longcross_support'] = ((df['支撑'].shift(2) < df['收盘'].shift(2)) & \
-                               (df['支撑'].shift(1) < df['收盘'].shift(1)) & \
-                               (df['支撑'] > df['收盘'])) & \
-                              (abs(df['支撑'] - df['收盘']) > threshold)
-
-    # 3. LONGCROSS(现价, 阻力, 2)：连续2周期现价 < 阻力，当前现价 > 阻力（卖信号）
-    df['longcross_resistance'] = ((df['收盘'].shift(2) < df['阻力'].shift(2)) & \
-                                  (df['收盘'].shift(1) < df['阻力'].shift(1)) & \
-                                  (df['收盘'] > df['阻力']))
-    # (abs(df['收盘'] - df['阻力']) > threshold)
-
+    df['章鱼底参考'] = df['L1'] + df['P1'] / 3
+    
+    # 计算买入和卖出信号
+    df['cross_support_buy'] = (df['支撑'].shift(1) >= df['收盘'].shift(1)) & (df['支撑'] < df['收盘'])
+    df['longcross_support_buy'] = (df['支撑'].shift(2) >= df['收盘'].shift(2)) & \
+                                  (df['支撑'].shift(1) >= df['收盘'].shift(1)) & \
+                                  (df['支撑'] < df['收盘'])
+    
+    df['cross_resistance_sell'] = (df['阻力'].shift(1) <= df['收盘'].shift(1)) & (df['阻力'] > df['收盘'])
+    df['longcross_resistance_sell'] = (df['阻力'].shift(2) <= df['收盘'].shift(2)) & \
+                                      (df['阻力'].shift(1) <= df['收盘'].shift(1)) & \
+                                      (df['阻力'] > df['收盘'])
+    
+    # 计算均价线
+    df['均价'] = (df['收盘'] * df['成交量']).expanding().sum() / df['成交量'].expanding().sum()
+    
     return df
 
 
-# ---------------------- 2. 昨收价获取（严格对应通达信 DYNAINFO(3)） ----------------------
+# ---------------------- 2. 昨收价获取 ----------------------
 def get_prev_close(stock_code, trade_date):
     """从日线数据获取前一日收盘价，失败则用分时开盘价替代"""
     try:
@@ -77,17 +97,11 @@ def get_prev_close(stock_code, trade_date):
             end_date=trade_date,
             adjust=""
         )
-        print(f"获取日线数据成功，日期: {daily_df['日期'].values[0]}")
-
-        # 确保格式一致：把日期列也转为 'YYYYMMDD' 格式
-        daily_df['日期'] = pd.to_datetime(daily_df['日期']).dt.strftime('%Y%m%d')
-        print(daily_df)
 
         if daily_df.empty or prev_date not in daily_df['日期'].values:
             raise ValueError("前一日数据缺失")
 
         prev_close = daily_df[daily_df['日期'] == prev_date]['收盘'].values[0]
-        print(f"昨收价: {prev_close:.2f}")
         return prev_close
     except Exception as e:
         print(f"昨收获取失败: {e}，将使用分时开盘价替代")
@@ -101,11 +115,8 @@ def get_cached_data(stock_code, trade_date):
     if os.path.exists(cache_file):
         try:
             df = pd.read_csv(cache_file)
-
-            # 检查是否包含时间列
             if '时间' in df.columns:
                 df['时间'] = pd.to_datetime(df['时间'])
-                # 注意：缓存数据不设置时间列为索引，保持与网络获取数据一致的格式
                 return df
             else:
                 print("缓存文件中未找到时间列")
@@ -116,9 +127,7 @@ def get_cached_data(stock_code, trade_date):
 
 def save_data_to_cache(df, stock_code, trade_date):
     """保存数据到缓存"""
-    # 确保 stock_data 目录存在
     os.makedirs("stock_data", exist_ok=True)
-
     cache_file = f"stock_data/{stock_code}.csv"
     try:
         df_reset = df.reset_index()
@@ -129,7 +138,7 @@ def save_data_to_cache(df, stock_code, trade_date):
 
 
 # ---------------------- 4. 绘图函数 ----------------------
-def plot_tdx_intraday(stock_code, trade_date=None):
+def plot_volume_price_indicators(stock_code, trade_date=None):
     try:
         # 1. 时间处理
         today = datetime.now().strftime('%Y%m%d')
@@ -154,7 +163,6 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
             # 保存到缓存前确保列名正确
             if '时间' not in df.columns:
-                # 查找实际的时间列
                 time_col = None
                 for col in df.columns:
                     if '时间' in col or 'date' in col.lower() or 'time' in col.lower():
@@ -170,14 +178,10 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             print("使用缓存数据")
             data_from_cache = True
 
-        # 如果数据来自缓存，则时间列已经是索引，否则需要转换时间列
         if not data_from_cache:
-            # 强制转换为 datetime（AkShare 返回的时间已包含日期）
             df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
 
         df = df[df['时间'].notna()]
-
-        # 只保留指定日期的数据，不延伸到今天
         target_date = pd.to_datetime(trade_date, format='%Y%m%d')
         df = df[df['时间'].dt.date == target_date.date()]
 
@@ -187,11 +191,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             print("❌ 所有时间数据均无效")
             return None
 
-        # 分离上午和下午的数据
-        morning_data = df[df['时间'].dt.hour < 12]
-        afternoon_data = df[df['时间'].dt.hour >= 13]
-
-        # 强制校准时间索引（只生成到指定日期的时间索引）
+        # 强制校准时间索引
         morning_index = pd.date_range(
             start=f"{trade_date} 09:30:00",
             end=f"{trade_date} 11:30:00",
@@ -203,12 +203,11 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             freq='1min'
         )
 
-        # 合并索引
         full_index = morning_index.union(afternoon_index)
         df = df.set_index('时间').reindex(full_index)
         df.index.name = '时间'
 
-        # 获取昨收（fallback到开盘价）
+        # 获取昨收
         prev_close = get_prev_close(stock_code, trade_date)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
@@ -216,20 +215,13 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 计算指标
         df = df.ffill().bfill()  # 填充缺失值
-        df = calculate_tdx_indicators(df, prev_close)
-
-        # 计算均价
-        df['均价'] = df['收盘'].expanding().mean()
+        df = calculate_volume_price_indicators(df, prev_close)
 
         # 数据校验
-        required_cols = ['开盘', '收盘', '最高', '最低', '支撑', '阻力']
+        required_cols = ['开盘', '收盘', '最高', '最低', '成交量']
         if not all(col in df.columns for col in required_cols):
             missing_cols = [col for col in required_cols if col not in df.columns]
             print(f"❌ 数据缺失关键列：{missing_cols}")
-            return None
-
-        if df['收盘'].isna().all():
-            print("❌ 收盘价全为空")
             return None
 
         # 调试信息
@@ -237,6 +229,18 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         print(df[['开盘', '收盘', '最高', '最低']].head())
         print(f"数据时间范围：{df.index.min()} ~ {df.index.max()}")
         print(f"有效数据量：{len(df)} 条")
+
+        # 计算统计信息
+        A2 = df['A2_component'].sum()
+        A3 = df['A3_component'].sum()
+        A6 = A2 + A3
+        
+        if A6 > 0:
+            buy_ratio = (100 * A2) / A6
+            sell_ratio = (100 * A3) / A6
+            diff_ratio = (100 * (A2 - A3)) / A6
+        else:
+            buy_ratio = sell_ratio = diff_ratio = 0
 
         # 绘图设置（规范图形创建）
         plt.close('all')  # 关闭之前未关闭的图形，释放资源
@@ -252,9 +256,8 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         # 移除缺失数据的行，确保只绘制有效数据
         df_filtered = df.dropna(subset=['收盘'])
 
-        # 顶部信息栏显示均价、最新价、涨跌幅
+        # 顶部信息栏显示最新价、涨跌幅
         latest_price = df_filtered['收盘'].iloc[-1]
-        avg_price = df_filtered['均价'].iloc[-1]
         change = latest_price - prev_close
         change_pct = (change / prev_close) * 100
 
@@ -263,7 +266,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         ax_info.set_ylim(0, 1)
         ax_info.axis('off')
 
-        info_text = f"均价: {avg_price:.2f}    最新: {latest_price:.2f}    涨跌幅: {change:+.2f} ({change_pct:+.2f}%)"
+        info_text = f"最新: {latest_price:.2f}    涨跌幅: {change:+.2f} ({change_pct:+.2f}%)"
         ax_info.text(0.5, 0.5, info_text, ha='center', va='center', fontsize=14, transform=ax_info.transAxes)
 
         # 使用T.py中的绘图方式替换原有的中部价格图绘制逻辑
@@ -273,41 +276,47 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         # 绘制收盘价曲线，严格按照文件中的实际时间点连接
         ax_price.plot(x_values, df_filtered['收盘'], marker='', linestyle='-', color='blue', linewidth=2,
                       label='收盘价')
-
+        
         # 绘制均价线
         if '均价' in df_filtered.columns and not df_filtered['均价'].isna().all():
             ax_price.plot(x_values, df_filtered['均价'], marker='', linestyle='-', color='yellow', linewidth=1.5,
                           label='均价线')
 
-        # 绘制支撑线和阻力线
-        ax_price.plot(x_values, df_filtered['支撑'], marker='', linestyle='--', color='#00DD00', linewidth=1,
+        # 绘制支撑线、阻力线和章鱼底参考线
+        ax_price.plot(x_values, df_filtered['支撑'], marker='', linestyle='--', color='magenta', linewidth=1,
                       label='支撑')
-        ax_price.plot(x_values, df_filtered['阻力'], marker='', linestyle='--', color='#ff0000', linewidth=1,
+        ax_price.plot(x_values, df_filtered['阻力'], marker='', linestyle='--', color='green', linewidth=1,
                       label='阻力')
+        ax_price.plot(x_values, df_filtered['章鱼底参考'], marker='', linestyle='-.', color='cyan', linewidth=1,
+                      label='章鱼底参考')
 
-        # 绘制黄色柱状线（CROSS(支撑, 现价)）
-        cross_support_points = df_filtered[df_filtered['cross_support']]
-        for idx in cross_support_points.index:
-            x_pos = df_filtered.index.get_loc(idx)
-            ax_price.plot([x_pos, x_pos],
-                          [cross_support_points.loc[idx, '支撑'], cross_support_points.loc[idx, '阻力']],
-                          color='yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
-
-        # 绘制买信号（红三角）
-        buy_signals = df_filtered[df_filtered['longcross_support']].dropna()
+        # 绘制买入信号（红三角）
+        buy_signals = df_filtered[df_filtered['longcross_support_buy']].dropna()
         for idx, row in buy_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
-            ax_price.scatter(x_pos, row['支撑'] * 1.001, marker='^', color='red', s=60, zorder=5)
-            ax_price.text(x_pos, row['支撑'] * 1.001, '买',
-                          color='red', fontsize=10, ha='center', va='bottom', fontweight='bold')
+            ax_price.scatter(x_pos, row['支撑'] * 0.999, marker='^', color='red', s=60, zorder=5)
+            ax_price.text(x_pos, row['支撑'] * 0.999, '买',
+                          color='red', fontsize=10, ha='center', va='top', fontweight='bold')
 
-        # 绘制卖信号（绿三角）
-        sell_signals = df_filtered[df_filtered['longcross_resistance']].dropna()
+        # 绘制卖出信号（绿三角）
+        sell_signals = df_filtered[df_filtered['longcross_resistance_sell']].dropna()
         for idx, row in sell_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
-            ax_price.scatter(x_pos, row['收盘'] * 0.999, marker='v', color='green', s=60, zorder=5)
-            ax_price.text(x_pos, row['收盘'] * 0.999, '卖',
-                          color='green', fontsize=10, ha='center', va='top', fontweight='bold')
+            ax_price.scatter(x_pos, row['阻力'] * 1.001, marker='v', color='green', s=60, zorder=5)
+            ax_price.text(x_pos, row['阻力'] * 1.001, '卖',
+                          color='green', fontsize=10, ha='center', va='bottom', fontweight='bold')
+
+        # 绘制支撑下方的红色柱状线
+        below_support = df_filtered[df_filtered['收盘'] < df_filtered['支撑']]
+        for idx, row in below_support.iterrows():
+            x_pos = df_filtered.index.get_loc(idx)
+            ax_price.plot([x_pos, x_pos], [row['支撑'], row['收盘']], color='red', linewidth=2)
+
+        # 绘制阻力上方的绿色柱状线
+        above_resistance = df_filtered[df_filtered['收盘'] > df_filtered['阻力']]
+        for idx, row in above_resistance.iterrows():
+            x_pos = df_filtered.index.get_loc(idx)
+            ax_price.plot([x_pos, x_pos], [row['阻力'], row['收盘']], color='green', linewidth=2)
 
         # 设置坐标轴标签
         ax_price.set_ylabel('价格', fontsize=12)
@@ -357,34 +366,47 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         ax_time.set_xticks(selected_indices)
         ax_time.set_xticklabels([t.strftime('%H:%M') for t in selected_times])
 
-        # # 添加右侧纵轴显示当前价格相对于均线的涨跌幅
-        # ax_diff = ax_price.twinx()
-        # latest_price = df_filtered['收盘'].iloc[-1]
-        # avg_price = df_filtered['均价'].iloc[-1]
-        # diff_pct = ((latest_price - avg_price) / avg_price) * 100
-        #
-        # # 在右侧纵轴上显示涨跌幅信息
-        # ax_diff.text(0.98, 0.98, f"相对均线: {diff_pct:+.2f}%", transform=ax_diff.transAxes, fontsize=10,
-        #              verticalalignment='top', horizontalalignment='right',
-        #              bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.7))
-        #
-        # # 设置右侧纵轴的标签
-        # ax_diff.set_ylabel('相对均线涨跌幅 (%)', fontsize=10)
-        #
-        # # 设置右侧纵轴的刻度
-        # ax_diff.set_yticks([-2, -1, 0, 1, 2])
-        # ax_diff.set_yticklabels(['-2%', '-1%', '0%', '1%', '2%'])
-        #
-        # # 设置右侧纵轴的范围
-        # ax_diff.set_ylim(-3, 3)
+        # 添加统计信息文本
+        ax_price.text(0.5, 0.98, f"买: {buy_ratio:.0f}%", transform=ax_price.transAxes, fontsize=10,
+                      verticalalignment='top', horizontalalignment='center',
+                      bbox=dict(boxstyle='round,pad=0.3', facecolor='red', alpha=0.7))
+        
+        ax_price.text(0.7, 0.98, f"卖: {sell_ratio:.0f}%", transform=ax_price.transAxes, fontsize=10,
+                      verticalalignment='top', horizontalalignment='center',
+                      bbox=dict(boxstyle='round,pad=0.3', facecolor='green', alpha=0.7))
+        
+        ax_price.text(0.9, 0.98, f"差: {diff_ratio:.0f}%", transform=ax_price.transAxes, fontsize=10,
+                      verticalalignment='top', horizontalalignment='center',
+                      bbox=dict(boxstyle='round,pad=0.3', facecolor='cyan', alpha=0.7))
+
+        # 添加右侧纵轴显示当前价格相对于均线的涨跌幅
+        ax_diff = ax_price.twinx()
+        if '均价' in df_filtered.columns and not df_filtered['均价'].isna().all():
+            latest_avg_price = df_filtered['均价'].iloc[-1]
+            diff_pct = ((latest_price - latest_avg_price) / latest_avg_price) * 100
+            
+            # 在右侧纵轴上显示涨跌幅信息
+            ax_diff.text(0.98, 0.94, f"相对均线: {diff_pct:+.2f}%", transform=ax_diff.transAxes, fontsize=10,
+                         verticalalignment='top', horizontalalignment='right',
+                         bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.7))
+            
+            # 设置右侧纵轴的标签
+            ax_diff.set_ylabel('相对均线涨跌幅 (%)', fontsize=10)
+            
+            # 设置右侧纵轴的刻度
+            ax_diff.set_yticks([-2, -1, 0, 1, 2])
+            ax_diff.set_yticklabels(['-2%', '-1%', '0%', '1%', '2%'])
+            
+            # 设置右侧纵轴的范围
+            ax_diff.set_ylim(-3, 3)
 
         # 设置图表标题
-        fig.suptitle(f'{stock_code} 分时图 - {trade_date}', fontsize=14, y=0.98)
+        fig.suptitle(f'{stock_code} 量价关系图 - {trade_date}', fontsize=14, y=0.98)
 
         # 添加图例到价格图
         ax_price.legend(loc='upper left', fontsize=10)
 
-        # 鼠标悬浮显示价格、时间以及当前价格相对于均线的涨跌幅
+        # 鼠标悬浮显示价格和时间
         annotation = ax_price.annotate('', xy=(0, 0), xytext=(10, 10), textcoords='offset points',
                                        bbox=dict(boxstyle='round', fc='yellow', alpha=0.7),
                                        arrowprops=dict(arrowstyle='->'), fontsize=10)
@@ -399,18 +421,8 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                     if 0 <= x_index < len(df_filtered):
                         data_point = df_filtered.iloc[x_index]
                         time_str = df_filtered.index[x_index].strftime('%H:%M')
-                        price = data_point['收盘']
-                        avg_price = data_point['均价']
-
-                        # 计算当前价格相对于均线的涨跌幅
-                        if pd.notna(avg_price) and avg_price != 0:
-                            diff_pct = ((price - avg_price) / avg_price) * 100
-                            annotation.xy = (x_index, price)
-                            annotation.set_text(f"时间: {time_str}\n价格: {price:.2f}\n相对均线: {diff_pct:+.2f}%")
-                        else:
-                            annotation.xy = (x_index, price)
-                            annotation.set_text(f"时间: {time_str}\n价格: {price:.2f}\n相对均线: N/A")
-
+                        annotation.xy = (x_index, event.ydata)
+                        annotation.set_text(f"时间: {time_str}\n价格: {data_point['收盘']:.2f}")
                         annotation.set_visible(True)
                         fig.canvas.draw_idle()
                     else:
@@ -439,27 +451,10 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         return None
 
 
-# ---------------------- 5. 主程序（运行示例） ----------------------
+# ---------------------- 5. 主程序 ----------------------
 if __name__ == "__main__":
-    # stock_code = '600900'  # 长江电力
-    # stock_code = '601728'  # 中国电信
-    # stock_code = '601766'  # 中国中车
     stock_code = '601398'  # 工商银行
     trade_date = '20250926'  # 交易日期
 
     # 绘制并获取结果
-    result_df = plot_tdx_intraday(stock_code, trade_date)
-    # get_prev_close(stock_code, trade_date)
-    # df = ak.stock_zh_a_hist_min_em(
-    #     symbol=stock_code,
-    #     period="1",
-    #     start_date=trade_date,
-    #     end_date=trade_date,
-    #     adjust=''
-    # )
-    # print(df)
-
-    # 保存结果（可选）
-    # if result_df is not None:
-    #     result_df.to_csv(f'{stock_code}_{trade_date}_通达信分时信号.csv', encoding='utf-8-sig')
-    #     print(f"结果已保存到: {stock_code}_{trade_date}_通达信分时信号.csv")
+    result_df = plot_volume_price_indicators(stock_code, trade_date)

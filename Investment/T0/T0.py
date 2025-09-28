@@ -5,6 +5,13 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 import os
+import time
+import sys
+import akshare as ak
+
+# 添加项目根目录到路径，以便导入notification模块
+sys.path.append('d:\\Xander\\Inverstment')
+from Investment.THS.AutoTrade_copy.utils.notification import send_notification
 
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
@@ -300,6 +307,9 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             ax_price.scatter(x_pos, row['支撑'] * 1.001, marker='^', color='red', s=60, zorder=5)
             ax_price.text(x_pos, row['支撑'] * 1.001, '买',
                           color='red', fontsize=10, ha='center', va='bottom', fontweight='bold')
+            # 调用通知函数
+            time_str = idx.strftime('%H:%M:%S')
+            notify_signal('buy', stock_code, row['收盘'], time_str)
 
         # 绘制卖信号（绿三角）
         sell_signals = df_filtered[df_filtered['longcross_resistance']].dropna()
@@ -308,6 +318,9 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             ax_price.scatter(x_pos, row['收盘'] * 0.999, marker='v', color='green', s=60, zorder=5)
             ax_price.text(x_pos, row['收盘'] * 0.999, '卖',
                           color='green', fontsize=10, ha='center', va='top', fontweight='bold')
+            # 调用通知函数
+            time_str = idx.strftime('%H:%M:%S')
+            notify_signal('sell', stock_code, row['收盘'], time_str)
 
         # 设置坐标轴标签
         ax_price.set_ylabel('价格', fontsize=12)
@@ -401,7 +414,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                         time_str = df_filtered.index[x_index].strftime('%H:%M')
                         price = data_point['收盘']
                         avg_price = data_point['均价']
-
+                        
                         # 计算当前价格相对于均线的涨跌幅
                         if pd.notna(avg_price) and avg_price != 0:
                             diff_pct = ((price - avg_price) / avg_price) * 100
@@ -410,7 +423,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                         else:
                             annotation.xy = (x_index, price)
                             annotation.set_text(f"时间: {time_str}\n价格: {price:.2f}\n相对均线: N/A")
-
+                        
                         annotation.set_visible(True)
                         fig.canvas.draw_idle()
                     else:
@@ -439,27 +452,96 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         return None
 
 
-# ---------------------- 5. 主程序（运行示例） ----------------------
+# ---------------------- 6. 时间检查函数 ----------------------
+def is_trading_time():
+    """检查当前是否为交易日的交易时间（9:30-11:30 和 13:00-15:00）"""
+    now = datetime.now()
+    
+    # 检查是否为周末（周六、周日不交易）
+    if now.weekday() >= 5:
+        print(f"当前为非交易日（{now.strftime('%Y-%m-%d %H:%M:%S')}）")
+        return False
+    
+    # 检查是否在交易时间内
+    hour = now.hour
+    minute = now.minute
+    
+    # 上午交易时间：9:30-11:30
+    morning_trading = (hour == 9 and minute >= 30) or (10 <= hour < 11) or (hour == 11 and minute < 30)
+    # 下午交易时间：13:00-15:00
+    afternoon_trading = 13 <= hour < 15
+    
+    is_trading = morning_trading or afternoon_trading
+    if not is_trading:
+        print(f"当前不在交易时间内（{now.strftime('%Y-%m-%d %H:%M:%S')}）")
+    
+    return is_trading
+
+
+# ---------------------- 7. 信号通知函数 ----------------------
+def notify_signal(signal_type, stock_code, price, time_str):
+    """当出现买卖信号时进行通知提醒"""
+    if signal_type == 'buy':
+        message = f"【买入信号】股票: {stock_code}, 价格: {price:.2f}, 时间: {time_str}"
+        print(message)
+        # 使用notification.py中的通知方式
+        send_notification(message)
+    elif signal_type == 'sell':
+        message = f"【卖出信号】股票: {stock_code}, 价格: {price:.2f}, 时间: {time_str}"
+        print(message)
+        # 使用notification.py中的通知方式
+        send_notification(message)
+
+
+# ---------------------- 8. 主程序 ----------------------
 if __name__ == "__main__":
+    # 股票池配置 - 工商银行、长江电力、中国电信
+    stock_pool = {
+        '601398': '工商银行',
+        '600900': '长江电力',
+        '601728': '中国电信'
+    }
+    
+    # 选择要分析的股票代码（可根据需要切换）
+    # stock_code = '601398'  # 工商银行
     # stock_code = '600900'  # 长江电力
-    # stock_code = '601728'  # 中国电信
-    # stock_code = '601766'  # 中国中车
-    stock_code = '601398'  # 工商银行
-    trade_date = '20250926'  # 交易日期
-
-    # 绘制并获取结果
-    result_df = plot_tdx_intraday(stock_code, trade_date)
-    # get_prev_close(stock_code, trade_date)
-    # df = ak.stock_zh_a_hist_min_em(
-    #     symbol=stock_code,
-    #     period="1",
-    #     start_date=trade_date,
-    #     end_date=trade_date,
-    #     adjust=''
-    # )
-    # print(df)
-
-    # 保存结果（可选）
-    # if result_df is not None:
-    #     result_df.to_csv(f'{stock_code}_{trade_date}_通达信分时信号.csv', encoding='utf-8-sig')
-    #     print(f"结果已保存到: {stock_code}_{trade_date}_通达信分时信号.csv")
+    stock_code = '601728'  # 中国电信
+    
+    trade_date = datetime.now().strftime('%Y%m%d')  # 使用当前日期作为交易日期
+    
+    print(f"T0策略监控开始，当前监控标的：{stock_code}({stock_pool.get(stock_code, '未知股票')})")
+    print(f"策略分析基于分时图支撑阻力位突破信号")
+    print(f"建议关注：工商银行、长江电力、中国电信均为大盘蓝筹，波动相对较小但流动性好，适合稳健型T0操作")
+    print(f"\n开始监控交易时间...")
+    
+    # 等待进入交易时间
+    while not is_trading_time():
+        time.sleep(60)  # 每分钟检查一次
+    
+    print(f"\n已进入交易时间，开始分析 {stock_code} 在 {trade_date} 的分时数据...")
+    
+    # 交易时间内每分钟运行一次
+    try:
+        while is_trading_time():
+            # 获取当前时间，确定是整点还是半点
+            now = datetime.now()
+            current_minute = now.minute
+            
+            # 绘制并分析分时图数据
+            print(f"\n[{now.strftime('%H:%M:%S')}] 正在分析最新分时数据...")
+            result_df = plot_tdx_intraday(stock_code, trade_date)
+            
+            # 保存结果
+            if result_df is not None:
+                result_df.to_csv(f'{stock_code}_{trade_date}_通达信分时信号.csv', encoding='utf-8-sig')
+                print(f"结果已保存到: {stock_code}_{trade_date}_通达信分时信号.csv")
+            
+            # 等待下一分钟
+            print("等待下一分钟再次分析...")
+            next_minute = (now.minute + 1) % 60
+            wait_seconds = 60 - now.second
+            time.sleep(wait_seconds)
+    except KeyboardInterrupt:
+        print("\n程序被用户中断")
+    finally:
+        print("交易时间结束，程序退出")
