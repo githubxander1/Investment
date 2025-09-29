@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 import os
+import akshare as ak
 
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
@@ -17,7 +18,7 @@ plt.rcParams.update({
 
 
 # ---------------------- 1. 指标计算（严格还原通达信公式） ----------------------
-def calculate_tdx_indicators(df, prev_close, threshold=0.01):
+def calculate_tdx_indicators(df, prev_close, threshold=0.005):
     """
     通达信公式还原：
     H1:=MAX(昨收, 当日最高价);
@@ -34,31 +35,49 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.01):
     daily_low = df['最低'].min()
 
     # 计算 H1、L1（昨收 vs 日内高低）
+    # 注意：在通达信中，H1和L1是基于动态行情数据的，这里尽量还原
     df['H1'] = np.maximum(prev_close, daily_high)
     df['L1'] = np.minimum(prev_close, daily_low)
+    
+    # 添加调试信息，查看H1和L1的计算结果
+    print(f"计算得到的H1: {df['H1'].iloc[0]:.2f}")
+    print(f"计算得到的L1: {df['L1'].iloc[0]:.2f}")
 
-    # 支撑、阻力计算（严格按公式 0.5/8 和 7/8）
+    # 支撑、阻力计算（严格按通达信公式：L1+P1*0.5/8 和 L1+P1*7/8）
+    # 注意：这里的计算与通达信公式完全一致
     df['P1'] = df['H1'] - df['L1']
     df['支撑'] = df['L1'] + df['P1'] * 0.5 / 8
     df['阻力'] = df['L1'] + df['P1'] * 7 / 8
+    
+    print(f"计算得到的P1: {df['P1'].iloc[0]:.2f}")
+    print(f"计算得到的支撑: {df['支撑'].iloc[0]:.2f}")
+    print(f"计算得到的阻力: {df['阻力'].iloc[0]:.2f}")
 
     # 信号计算（严格对齐通达信逻辑）
     # 1. CROSS(支撑, 现价)：支撑上穿现价（前一周期支撑 < 现价，当前支撑 > 现价）= 现价下穿支撑（信号）
-    df['cross_support'] = ((df['支撑'].shift(1) < df['收盘'].shift(1)) & (df['支撑'] > df['收盘'])) & \
+    # 这是通达信中黄色竖线的买入信号
+    df['cross_support'] = ((df['支撑'].shift(1) < df['收盘'].shift(1)) & 
+                          (df['支撑'] > df['收盘'])) & \
                           (abs(df['支撑'] - df['收盘']) > threshold)
 
     # 2. LONGCROSS(支撑, 现价, 2)：连续2周期支撑 < 现价，当前支撑 > 现价（买信号）
-    # 调整信号判断逻辑，确保信号正确触发
+    # 通达信中的LONGCROSS(X,Y,N)函数表示X在N周期内都小于Y，本周期X上穿Y
+    # 修复索引问题，使用正确的逐行计算方式
     df['longcross_support'] = ((df['支撑'].shift(2) < df['收盘'].shift(2)) & \
                                (df['支撑'].shift(1) < df['收盘'].shift(1)) & \
                                (df['支撑'] > df['收盘'])) & \
                               (abs(df['支撑'] - df['收盘']) > threshold)
-
+    
     # 3. LONGCROSS(现价, 阻力, 2)：连续2周期现价 < 阻力，当前现价 > 阻力（卖信号）
     df['longcross_resistance'] = ((df['收盘'].shift(2) < df['阻力'].shift(2)) & \
                                   (df['收盘'].shift(1) < df['阻力'].shift(1)) & \
-                                  (df['收盘'] > df['阻力']))
-    # (abs(df['收盘'] - df['阻力']) > threshold)
+                                  (df['收盘'] > df['阻力'])) & \
+                                 (abs(df['收盘'] - df['阻力']) > threshold)
+
+    # 添加调试信息，查看信号计算结果
+    print(f"支撑信号数量 (cross_support): {df['cross_support'].sum()}")
+    print(f"买入信号数量 (longcross_support): {df['longcross_support'].sum()}")
+    print(f"卖出信号数量 (longcross_resistance): {df['longcross_resistance'].sum()}")
 
     return df
 
@@ -223,6 +242,8 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
             print(f"⚠️ 使用分时开盘价替代昨收: {prev_close:.2f}")
+        
+        print(f"用于计算指标的昨收价: {prev_close:.2f}")
 
         # 计算指标
         df = df.ffill().bfill()  # 填充缺失值
@@ -295,16 +316,27 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         ax_price.plot(x_values, df_filtered['阻力'], marker='', linestyle='--', color='#ff0000', linewidth=1,
                       label='阻力')
 
-        # 绘制黄色柱状线（CROSS(支撑, 现价)）
+        # 绘制黄色柱状线（CROSS(支撑, 现价)）- 这是通达信中显示的买入信号（黄色竖线）
         cross_support_points = df_filtered[df_filtered['cross_support']]
+        print(f"CROSS信号数量 (黄色竖线买入信号): {len(cross_support_points)}")
+        if len(cross_support_points) > 0:
+            print(f"CROSS信号位置: {cross_support_points.index}")
+            print(f"CROSS信号详情:\n{cross_support_points[['支撑', '收盘']].head()}")
         for idx in cross_support_points.index:
             x_pos = df_filtered.index.get_loc(idx)
             ax_price.plot([x_pos, x_pos],
                           [cross_support_points.loc[idx, '支撑'], cross_support_points.loc[idx, '阻力']],
                           color='yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
 
-        # 绘制买信号（红三角 + 竖线）
+        # 绘制买信号（红三角 + 竖线）- 这是LONGCROSS信号
         buy_signals = df_filtered[df_filtered['longcross_support']].dropna()
+        print(f"LONGCROSS买信号数量 (红三角): {len(buy_signals)}")
+        if len(buy_signals) > 0:
+            print(f"LONGCROSS买信号位置: {buy_signals.index}")
+            print(f"LONGCROSS买信号详情:\n{buy_signals[['支撑', '收盘']].head()}")
+        
+        # 重要提示：通达信中黄色竖线是CROSS(支撑,现价)信号，而红三角是LONGCROSS信号
+        # 黄色竖线是更基础的买入信号，红三角是更严格的买入信号
         for idx, row in buy_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
             # 绘制红三角
@@ -314,13 +346,20 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             # 绘制竖线信号
             ax_price.axvline(x=x_pos, color='red', linestyle='-', linewidth=2, alpha=0.7, zorder=4)
 
-        # 绘制卖信号（绿三角）
+        # 绘制卖信号（绿三角 + 绿色竖线）
         sell_signals = df_filtered[df_filtered['longcross_resistance']].dropna()
+        print(f"LONGCROSS卖信号数量 (绿三角): {len(sell_signals)}")
+        if len(sell_signals) > 0:
+            print(f"LONGCROSS卖信号位置: {sell_signals.index}")
+            print(f"LONGCROSS卖信号详情:\n{sell_signals[['阻力', '收盘']].head()}")
+        
         for idx, row in sell_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
             ax_price.scatter(x_pos, row['收盘'] * 0.999, marker='v', color='green', s=60, zorder=5)
             ax_price.text(x_pos, row['收盘'] * 0.999, '卖',
                           color='green', fontsize=10, ha='center', va='top', fontweight='bold')
+            # 添加绿色竖线（与买入信号的黄色竖线相区分）
+            ax_price.axvline(x=x_pos, color='green', linestyle='-', linewidth=2, alpha=0.7, zorder=4)
 
         # 设置坐标轴标签
         ax_price.set_ylabel('价格', fontsize=12)
@@ -473,6 +512,15 @@ if __name__ == "__main__":
     # print(df)
 
     # 保存结果（可选）
-    # if result_df is not None:
-    #     result_df.to_csv(f'{stock_code}_{trade_date}_通达信分时信号.csv', encoding='utf-8-sig')
-    #     print(f"结果已保存到: {stock_code}_{trade_date}_通达信分时信号.csv")
+    if result_df is not None:
+        csv_file = f'{stock_code}_{trade_date}_通达信分时信号.csv'
+        result_df.to_csv(csv_file, encoding='utf-8-sig')
+        print(f"结果已保存到: {csv_file}")
+        
+        # 显示保存的信号统计
+        signal_stats = {
+            'cross_support': result_df['cross_support'].sum(),
+            'longcross_support': result_df['longcross_support'].sum(),
+            'longcross_resistance': result_df['longcross_resistance'].sum()
+        }
+        print(f"信号统计: {signal_stats}")

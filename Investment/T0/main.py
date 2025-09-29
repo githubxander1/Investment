@@ -222,3 +222,55 @@ if __name__ == '__main__':
         notification_enabled=True
     )
     strategy.run()
+# T0交易系统入口
+import sys
+import os
+
+# 添加项目根目录到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+def show_help():
+    """显示帮助信息"""
+    help_text = """
+T0交易系统使用说明:
+
+命令行参数:
+  gui [股票代码...]      启动图形界面监控
+  monitor [股票代码...]  启动命令行监控
+  help                  显示此帮助信息
+
+示例:
+  python main.py gui              # 启动图形界面监控默认股票
+  python main.py gui 601088       # 以图形界面监控指定股票
+  python main.py monitor          # 启动命令行监控默认股票
+  python main.py monitor 601088 600900  # 监控多个指定股票
+
+默认监控股票: 601088 (中国神华)
+"""
+    print(help_text)
+
+def main():
+    """主函数"""
+    if len(sys.argv) < 2:
+        show_help()
+        return
+    
+    mode = sys.argv[1]
+    stock_codes = sys.argv[2:] if len(sys.argv) > 2 else None
+    
+    if mode == "gui":
+        # 启动图形界面
+        from monitor.gui import main as gui_main
+        gui_main(stock_codes)
+    elif mode == "monitor":
+        # 启动命令行监控
+        from monitor.main import main as monitor_main
+        monitor_main(stock_codes)
+    elif mode in ["-h", "--help", "help"]:
+        show_help()
+    else:
+        print("未知的命令参数")
+        show_help()
+
+if __name__ == "__main__":
+    main()

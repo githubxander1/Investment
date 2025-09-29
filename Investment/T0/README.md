@@ -6,14 +6,26 @@
 
 ```
 T0/
+├── config/              # 配置文件
+│   └── settings.py       # 系统配置
 ├── indicators/          # 指标计算模块
-│   └── tdx_indicators.py  # 通达信指标计算
-├── data/                # 数据处理模块
-│   └── data_handler.py   # 数据获取和缓存
+│   ├── resistance_support_indicators.py  # 阻力支撑指标计算
+│   ├── extended_indicators.py            # 扩展指标计算
+│   ├── volume_price_indicators.py        # 量价指标计算
+│   └── tdx_indicators.py # 通达信指标计算
+├── monitor/             # 监控系统模块
+│   ├── gui.py            # 图形界面监控
+│   ├── main.py           # 命令行监控主程序
+│   ├── signal_detector.py# 信号检测器
+│   └── trade_executor.py # 交易执行器
+├── utils/               # 工具函数模块
+│   ├── data_handler.py   # 数据获取和缓存
+│   ├── logger.py         # 日志记录
+│   └── tools.py          # 辅助功能（时间检查、通知等）
 ├── visualization/       # 可视化模块
 │   └── plotting.py       # 图表绘制功能
-├── utils/               # 工具函数模块
-│   └── tools.py          # 辅助功能（时间检查、通知等）
+├── examples/            # 使用示例
+├── others/              # 其他文件（保留目录）
 ├── main.py              # 主程序入口
 ├── __init__.py          # 包初始化文件
 ├── requirements.txt     # 项目依赖
@@ -22,21 +34,29 @@ T0/
 
 ## 功能模块
 
-### 1. 指标计算模块 (indicators/)
+### 1. 配置模块 (config/)
+- **settings.py**: 系统配置文件，包括股票池、监控间隔等参数
+
+### 2. 指标计算模块 (indicators/)
+- **resistance_support_indicators.py**: 阻力支撑指标计算，基于通达信公式计算支撑位和阻力位
+- **extended_indicators.py**: 扩展指标计算，包括MACD、资金流向等
+- **volume_price_indicators.py**: 量价指标计算
 - **tdx_indicators.py**: 实现通达信指标计算，包括H1/L1/P1、支撑位、阻力位和交易信号计算
 
-### 2. 数据处理模块 (data/)
-- **data_handler.py**: 处理股票数据的获取、缓存、预处理等功能
-- 支持从akshare获取实时和历史数据
-- 提供数据缓存机制，避免重复获取
+### 3. 监控系统模块 (monitor/)
+- **gui.py**: 图形界面监控程序，提供可视化图表和信号日志
+- **main.py**: 命令行监控主程序，适合后台运行
+- **signal_detector.py**: 信号检测器，检测各类技术指标信号
+- **trade_executor.py**: 交易执行器，执行买卖交易
 
-### 3. 可视化模块 (visualization/)
+### 4. 数据处理模块 (utils/)
+- **data_handler.py**: 处理股票数据的获取、缓存、预处理等功能
+- **logger.py**: 日志记录模块
+- **tools.py**: 提供时间检查、信号通知等辅助功能
+
+### 5. 可视化模块 (visualization/)
 - **plotting.py**: 实现分时图的绘制，包括价格曲线、指标线和交易信号标记
 - 支持交互式功能，如鼠标悬浮显示详情
-
-### 4. 工具函数模块 (utils/)
-- **tools.py**: 提供时间检查、信号通知等辅助功能
-- 集成系统通知和钉钉通知功能
 
 ## 安装和配置
 
@@ -52,34 +72,45 @@ pip install -r requirements.txt
 
 ## 使用方法
 
-### 基本使用
+### 图形界面模式
 
-直接运行主程序：
+启动图形界面监控程序：
 
 ```bash
-python main.py
+python main.py gui
+```
+
+### 命令行监控模式
+
+启动命令行监控程序：
+
+```bash
+python main.py monitor
 ```
 
 ### 自定义股票池
 
-可以通过命令行参数指定要分析的股票代码：
+可以通过命令行参数指定要监控的股票代码：
 
 ```bash
-python main.py 601398 600900 601728
+python main.py gui 601398 600900 601728
+python main.py monitor 601088
 ```
 
 ### 修改源码配置
 
-也可以直接在`main.py`中修改`stock_codes`参数来自定义股票池。
+也可以直接在`config/settings.py`中修改配置参数来自定义系统行为。
 
 ## 策略说明
 
-当前系统实现了基于通达信指标的T0交易策略，主要包括：
+当前系统实现了基于多个技术指标的T0交易监控，主要包括：
 
-1. **买入信号**：当价格跌破支撑位且出现交叉时
-2. **卖出信号**：当价格突破阻力位且出现交叉时
+1. **阻力支撑指标**：基于通达信公式计算支撑位和阻力位
+2. **扩展指标**：包括MACD、移动平均线等技术指标
+3. **量价指标**：基于成交量和价格关系的指标
 
-系统会在交易时间内（9:30-11:30 和 13:00-15:00）每分钟运行一次分析，并在发现交易信号时发送通知。
+系统会在交易时间内（9:30-11:30 和 13:00-15:00）每分钟检测一次信号，
+并在发现交易信号时发送通知和执行交易（默认每笔交易100股）。
 
 ## 扩展指南
 
@@ -89,13 +120,13 @@ python main.py 601398 600900 601728
 
 1. 在`indicators/`目录下创建新的指标计算文件
 2. 实现指标计算函数
-3. 在`main.py`中导入并使用新的指标
+3. 在`monitor/signal_detector.py`中集成新的指标检测逻辑
 
 ### 修改交易策略
 
 要修改交易策略逻辑：
 
-1. 修改`main.py`中的`analyze_stock`方法
+1. 修改`monitor/signal_detector.py`中的信号检测方法
 2. 调整信号生成和过滤条件
 
 ## 注意事项
