@@ -10,6 +10,12 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.logger import log_signal
+from indicators.resistance_support_indicators import calculate_tdx_indicators as calc_resistance_support
+from indicators.extended_indicators import calculate_tdx_indicators as calc_extended
+from indicators.volume_price_indicators import (calculate_volume_price_indicators, 
+                                               calculate_support_resistance, 
+                                               calculate_fund_flow_indicators, 
+                                               detect_signals)
 
 class SignalDetector:
     """信号检测器"""
@@ -140,32 +146,20 @@ class SignalDetector:
             return None
             
         try:
-            # 计算阻力支撑指标（简化版）
-            daily_high = df['最高'].max()
-            daily_low = df['最低'].min()
-            
-            H1 = max(prev_close, daily_high)
-            L1 = min(prev_close, daily_low)
-            P1 = H1 - L1
-            resistance = L1 + P1 * 7 / 8
-            support = L1 + P1 * 0.5 / 8
-            
-            # 获取最新数据
-            latest = df.iloc[-1]
-            prev = df.iloc[-2] if len(df) > 1 else None
+            # 使用完整的指标计算函数
+            df_with_indicators = calc_resistance_support(df.copy(), prev_close)
             
             signals = {'buy': False, 'sell': False, 'details': ''}
             
-            if prev is not None:
-                # 买入信号：支撑线上穿现价（简化检测）
-                if support > latest['收盘'] and support <= prev['收盘']:
-                    signals['buy'] = True
-                    signals['details'] = f"支撑位: {support:.2f}, 现价: {latest['收盘']:.2f}"
-                    
-                # 卖出信号：现价上穿阻力线（简化检测）
-                if latest['收盘'] > resistance and prev['收盘'] <= resistance:
-                    signals['sell'] = True
-                    signals['details'] = f"阻力位: {resistance:.2f}, 现价: {latest['收盘']:.2f}"
+            # 检查是否有买入信号（longcross_support）
+            if df_with_indicators['longcross_support'].any():
+                signals['buy'] = True
+                signals['details'] = f"支撑位买入信号触发"
+                
+            # 检查是否有卖出信号（longcross_resistance）
+            if df_with_indicators['longcross_resistance'].any():
+                signals['sell'] = True
+                signals['details'] = f"阻力位卖出信号触发"
             
             return signals
             
@@ -174,31 +168,58 @@ class SignalDetector:
             return None
     
     def detect_extended_signals(self, df, prev_close):
-        """检测扩展指标信号（简化版）"""
+        """检测扩展指标信号"""
         if df is None or df.empty:
             return None
             
         try:
+            # 获取日线数据用于扩展指标计算
+            try:
+                daily_df = ak.stock_zh_a_hist(
+                    symbol=self.stock_code,
+                    period="daily",
+                    adjust=""
+                )
+            except:
+                daily_df = pd.DataFrame()
+            
+            # 使用完整的指标计算函数
+            df_with_indicators = calc_extended(df.copy(), prev_close, daily_df)
+            
             signals = {'buy': False, 'sell': False, 'details': ''}
             
-            # 简化的MACD信号检测
-            if len(df) > 30:
-                # 计算简单的移动平均线
-                df['MA10'] = df['收盘'].rolling(window=10).mean()
-                df['MA20'] = df['收盘'].rolling(window=20).mean()
+            # 检查买入信号
+            buy_conditions = (
+                df_with_indicators['longcross_support'].any() or 
+                df_with_indicators['主力_拉信号'].any() or 
+                df_with_indicators['主力_冲信号'].any()
+            )
+            
+            if buy_conditions:
+                signals['buy'] = True
+                details = []
+                if df_with_indicators['longcross_support'].any():
+                    details.append("支撑位买入信号")
+                if df_with_indicators['主力_拉信号'].any():
+                    details.append("主力拉信号")
+                if df_with_indicators['主力_冲信号'].any():
+                    details.append("主力冲信号")
+                signals['details'] = ", ".join(details)
                 
-                latest = df.iloc[-1]
-                prev = df.iloc[-2]
-                
-                # 金叉信号
-                if prev['MA10'] <= prev['MA20'] and latest['MA10'] > latest['MA20']:
-                    signals['buy'] = True
-                    signals['details'] = f"MA10: {latest['MA10']:.2f}, MA20: {latest['MA20']:.2f}"
-                
-                # 死叉信号
-                if prev['MA10'] >= prev['MA20'] and latest['MA10'] < latest['MA20']:
-                    signals['sell'] = True
-                    signals['details'] = f"MA10: {latest['MA10']:.2f}, MA20: {latest['MA20']:.2f}"
+            # 检查卖出信号
+            sell_conditions = (
+                df_with_indicators['longcross_resistance'].any() or 
+                df_with_indicators['压力信号'].any()
+            )
+            
+            if sell_conditions:
+                signals['sell'] = True
+                details = []
+                if df_with_indicators['longcross_resistance'].any():
+                    details.append("阻力位卖出信号")
+                if df_with_indicators['压力信号'].any():
+                    details.append("压力信号")
+                signals['details'] = ", ".join(details)
             
             return signals
             
@@ -207,35 +228,44 @@ class SignalDetector:
             return None
     
     def detect_volume_price_signals(self, df, prev_close):
-        """检测量价指标信号（简化版）"""
+        """检测量价指标信号"""
         if df is None or df.empty:
             return None
             
         try:
+            # 计算支撑阻力位
+            df = calculate_support_resistance(df, prev_close)
+            
+            # 计算资金流向指标
+            df = calculate_fund_flow_indicators(df)
+            
+            # 检测信号
+            df = detect_signals(df)
+            
             signals = {'buy': False, 'sell': False, 'details': ''}
             
-            # 简化的量价关系检测
-            if len(df) > 10:
-                # 计算量价指标
-                df['量价'] = (df['成交量'] / df['收盘']) / 3
-                df['均价'] = df['收盘'].expanding().mean()
+            # 检查买入信号
+            buy_conditions = (
+                df['买入信号'].any() or 
+                df['主力资金流入'].any()
+            )
+            
+            if buy_conditions:
+                signals['buy'] = True
+                details = []
+                if df['买入信号'].any():
+                    details.append("量价买入信号")
+                if df['主力资金流入'].any():
+                    details.append("主力资金流入")
+                signals['details'] = ", ".join(details)
                 
-                latest = df.iloc[-1]
-                prev = df.iloc[-2]
-                
-                # 放量上涨信号
-                if (latest['成交量'] > df['成交量'].rolling(window=10).mean().iloc[-1] * 1.5 and 
-                    latest['收盘'] > latest['均价'] and 
-                    prev['收盘'] <= prev['均价']):
-                    signals['buy'] = True
-                    signals['details'] = f"成交量: {latest['成交量']}, 均价: {latest['均价']:.2f}"
-                
-                # 放量下跌信号
-                if (latest['成交量'] > df['成交量'].rolling(window=10).mean().iloc[-1] * 1.5 and 
-                    latest['收盘'] < latest['均价'] and 
-                    prev['收盘'] >= prev['均价']):
-                    signals['sell'] = True
-                    signals['details'] = f"成交量: {latest['成交量']}, 均价: {latest['均价']:.2f}"
+            # 检查卖出信号
+            if df['卖出信号'].any():
+                signals['sell'] = True
+                details = []
+                if df['卖出信号'].any():
+                    details.append("量价卖出信号")
+                signals['details'] = ", ".join(details)
             
             return signals
             

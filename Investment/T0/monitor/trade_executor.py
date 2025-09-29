@@ -1,6 +1,12 @@
 # T0交易系统交易执行模块
-from Investment.T0.config.settings import TRADE_QUANTITY
-from Investment.T0.utils.logger import setup_logger
+import sys
+import os
+
+# 添加项目根目录到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config.settings import TRADE_QUANTITY
+from utils.logger import setup_logger
 
 logger = setup_logger('trade_executor')
 

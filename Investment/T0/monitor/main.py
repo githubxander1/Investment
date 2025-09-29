@@ -84,37 +84,34 @@ class T0Monitor:
         logger.info(f"开始监控T0交易信号，股票池: {self.stock_pool}")
         logger.info("等待交易时间开始...")
         
-        while True:
-            # 检查并重置每日信号
-            self.check_and_reset_daily_signals()
+        # 为了测试，我们移除时间限制
+        print("=== T0交易系统测试模式 ===")
+        print("移除交易时间限制，直接运行一次信号检测...")
+        
+        # 检查并重置每日信号
+        self.check_and_reset_daily_signals()
+        
+        # 检查每个股票的信号（只运行一次用于测试）
+        for stock_code in self.stock_pool:
+            if stock_code != self.detector.stock_code:
+                self.detector = SignalDetector(stock_code)
             
-            # 等待到交易时间
-            self.detector.wait_until_trading_time()
-            
-            # 检查是否已收盘
-            if self.detector.is_market_closed():
-                logger.info("交易日已结束")
-                time.sleep(60)  # 等待一分钟再检查
-                continue
-            
-            # 检查每个股票的信号
-            for stock_code in self.stock_pool:
-                if stock_code != self.detector.stock_code:
-                    self.detector = SignalDetector(stock_code)
-                
-                try:
-                    signals = self.detector.detect_all_signals()
-                    if signals:
-                        logger.info(f"检测到 {len(signals)} 个新信号")
-                        self.process_signals(signals)
-                    else:
-                        logger.debug(f"未检测到新信号: {stock_code}")
-                except Exception as e:
-                    logger.error(f"检测信号时出错: {e}")
-            
-            # 等待下次检测
-            logger.info(f"等待 {MONITOR_INTERVAL} 秒后进行下次检测...")
-            time.sleep(MONITOR_INTERVAL)
+            try:
+                signals = self.detector.detect_all_signals()
+                if signals:
+                    logger.info(f"检测到 {len(signals)} 个新信号")
+                    self.process_signals(signals)
+                    print(f"\n✅ 检测到 {len(signals)} 个信号:")
+                    for signal in signals:
+                        print(f"  - 指标: {signal['indicator']}, 类型: {signal['type']}, 详情: {signal['details']}")
+                else:
+                    logger.debug(f"未检测到新信号: {stock_code}")
+                    print("❌ 未检测到任何新信号")
+            except Exception as e:
+                logger.error(f"检测信号时出错: {e}")
+                print(f"❌ 检测信号时出错: {e}")
+        
+        print("\n=== T0交易系统测试完成 ===")
 
 def main(stock_pool=None):
     """主函数"""
