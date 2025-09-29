@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单前后端项目</title>
+    <link rel="stylesheet" href="/frontend/css/home/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>项目列表</h1>
+        <div class="add-item">
+            <input type="text" id="item-name" placeholder="项目名称">
+            <input type="text" id="item-description" placeholder="项目描述">
+            <button onclick="addItem()">添加项目</button>
+        </div>
+        <ul id="items-list"></ul>
+    </div>
+
+    <div class="container">
+        <h1>Referer链接列表</h1>
+        <div class="filter-controls">
+            <div>
+                <label for="project-filter">按项目筛选:</label>
+                <select id="project-filter">
+                    <option value="">所有项目</option>
+                </select>
+            </div>
+            <div>
+                <label for="id-filter">按ID筛选:</label>
+                <input type="text" id="id-filter" placeholder="输入链接ID">
+                <button onclick="filterLinks()">筛选</button>
+            </div>
+        </div>
+        <ul id="referer-links"></ul>
+    </div>
+
+    <script src="/frontend/js/home/app.js"></script>
+</body>
+</html>

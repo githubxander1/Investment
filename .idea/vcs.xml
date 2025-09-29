@@ -6,7 +6,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Investment/THS/AutoTrade" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Investment/THS/AutoTrade/AutoTrade" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Investment/THS/AutoTrade_copy" vcs="Git" />
   </component>
 </project>
