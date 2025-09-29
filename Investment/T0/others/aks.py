@@ -2,7 +2,7 @@ from pprint import pprint
 
 from Investment.T0.real1 import indicator1
 from Investment.T0.real2 import indicator2
-from Investment.T0.real3 import indicator3
+from Investment.T0.T0阻力支撑 import indicator3
 
 
 def evaluate_indicators(df):

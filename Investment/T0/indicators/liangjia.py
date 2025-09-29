@@ -230,30 +230,34 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     ax_price.plot(x_values, df_filtered['阻力'], marker='', linestyle='--', color='green', linewidth=1, label='阻力')
     ax_price.plot(x_values, df_filtered['章鱼底参考'], marker='', linestyle=':', color='blue', linewidth=1, label='章鱼底参考')
     
-    # 绘制买入信号（红三角）
+    # 绘制买入信号（红三角 + 红色文字 + 红色竖线）
     buy_signals = df_filtered[df_filtered['买入信号']].dropna()
     for idx in buy_signals.index:
         if idx in df_filtered.index:
             x_pos = df_filtered.index.get_loc(idx)
             ax_price.scatter(x_pos, buy_signals.loc[idx, '支撑'] * 0.999, marker='^', color='red', s=60, zorder=5)
             ax_price.text(x_pos, buy_signals.loc[idx, '支撑'] * 0.995, '买',
-                          color='yellow', fontsize=10, ha='center', va='top', fontweight='bold')
+                          color='red', fontsize=10, ha='center', va='top', fontweight='bold')
+            # 添加红色竖线
+            ax_price.axvline(x=x_pos, color='red', linestyle='-', alpha=0.7, linewidth=2, zorder=3)
     
-    # 绘制卖出信号（绿三角）
+    # 绘制卖出信号（绿三角 + 绿色文字 + 绿色竖线）
     sell_signals = df_filtered[df_filtered['卖出信号']].dropna()
     for idx in sell_signals.index:
         if idx in df_filtered.index:
             x_pos = df_filtered.index.get_loc(idx)
             ax_price.scatter(x_pos, sell_signals.loc[idx, '阻力'] * 1.001, marker='v', color='green', s=60, zorder=5)
-            ax_price.text(x_pos, sell_signals.loc[idx, '阻力'] * 1.005, '卖',
+            ax_price.text(x_pos, sell_signals.loc[idx, '阻力'] * 1.002, '卖',
                           color='green', fontsize=10, ha='center', va='bottom', fontweight='bold')
+            # 添加绿色竖线
+            ax_price.axvline(x=x_pos, color='green', linestyle='-', alpha=0.7, linewidth=2, zorder=3)
     
     # 绘制主力资金流入信号
     fund_signals = df_filtered[df_filtered['主力资金流入']].dropna()
     for idx in fund_signals.index:
         if idx in df_filtered.index:
             x_pos = df_filtered.index.get_loc(idx)
-            ax_price.scatter(x_pos, fund_signals.loc[idx, '收盘'] * 1.005, marker='*', color='yellow', s=80, zorder=5)
+            ax_price.scatter(x_pos, fund_signals.loc[idx, '收盘'] * 1.005, marker='*', color='purple', s=80, zorder=5)
     
     # 绘制精准线（底部支撑）
     precise_signals = df_filtered[df_filtered['精准左']].dropna()
