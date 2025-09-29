@@ -7,16 +7,16 @@ import pandas
 import pandas as pd
 
 # from Investment.AutoPublic.jrtt.jrtt import send_notification
-from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
+from config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
-    Combination_holding_file, Strategy_portfolio_today_file, Combination_portfolio_today_file, Lhw_portfolio_today_file, \
+    Combination_holding_file, Combination_portfolio_today_file, Lhw_portfolio_today_file, \
     Robot_holding_file
-from Investment.THS.AutoTrade.pages.page_common import CommonPage
-from Investment.THS.AutoTrade.scripts.trade_logic import TradeLogic
-from Investment.THS.AutoTrade.pages.account_info import AccountInfo
-from Investment.THS.AutoTrade.utils.format_data import normalize_time
-from Investment.THS.AutoTrade.utils.logger import setup_logger
-from Investment.THS.AutoTrade.utils.notification import send_notification
+from pages.base.page_common import CommonPage
+from pages.trading.trade_logic import TradeLogic
+from scripts.holding.account_info import AccountInfo
+from utils.format_data import normalize_time
+from utils.logger import setup_logger
+from utils.notification import send_notification
 
 logger = setup_logger(trade_operations_log_file)
 common_page = CommonPage()
@@ -570,7 +570,7 @@ def get_difference_holding():
         excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
 
         # 标准化股票名称
-        from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
+        from utils.format_data import standardize_dataframe_stock_names
         if not account_df.empty:
             account_df = standardize_dataframe_stock_names(account_df)
         if not combined_holdings.empty:

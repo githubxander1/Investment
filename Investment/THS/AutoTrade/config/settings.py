@@ -4,6 +4,10 @@ from pprint import pprint
 
 from fake_useragent import UserAgent
 
+import sys
+
+sys.path.append('C:\\Users\\HQ\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages')
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # print(f"项目根目录：{BASE_DIR}")
 
@@ -41,6 +45,7 @@ Account_holding_file = os.path.join(DATA_DIR, 'position','Account_position.xlsx'
 
 # 对比
 compare_ETF_info_file = os.path.join(DATA_DIR, 'ETF组合对比.xlsx')
+combination_paid_advisor_list_file = os.path.join(DATA_DIR, '组合付费投顾列表.xlsx')
 
 Combination_list_file = os.path.join(DATA_DIR, '组合列表.xlsx')
 Strategy_list_file = os.path.join(DATA_DIR, '策略列表.csv')

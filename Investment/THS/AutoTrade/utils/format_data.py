@@ -3,8 +3,8 @@ from datetime import datetime
 import pandas as pd
 from dateutil.utils import today
 
-# from Investment.THS.AutoTrade.utils.common_config import EXPECTED_COLUMNS
-from Investment.THS.AutoTrade.utils.logger import setup_logger
+# from utils.common_config import EXPECTED_COLUMNS
+from utils.logger import setup_logger
 logger = setup_logger('data_process.log')
 
 

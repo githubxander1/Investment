@@ -1,6 +1,6 @@
-websockets==10.4
-uiautomator2==2.16.13
-pandas==1.5.3
-openpyxl==3.0.10
-fake-useragent==1.2.1
-requests==2.28.1
+websockets
+uiautomator2
+pandas
+openpyxl
+fake-useragent
+requests

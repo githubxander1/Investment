@@ -6,9 +6,9 @@ import datetime
 import logging
 from datetime import time as dt_time
 
-from Investment.THS.AutoTrade.config.settings import Account_holding_file
-from Investment.THS.AutoTrade.scripts.data_process import read_operation_history
-from Investment.THS.AutoTrade.utils.notification import send_notification
+from config.settings import Account_holding_file
+from scripts.data_process import read_operation_history
+from utils.notification import send_notification
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

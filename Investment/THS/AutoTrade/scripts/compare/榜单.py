@@ -1,8 +1,8 @@
 import pandas as pd
 import requests
 
-from Investment.THS.AutoTrade.config.settings import Combination_headers, Combination_list_file
-from Investment.THS.组合.其他.组合_榜单排行榜数据 import extract_data
+from config.settings import Combination_headers, Combination_list_file
+# from Investment.THS.组合.其他.组合_榜单排行榜数据 import extract_data
 
 
 def fetch_and_save_to_sheet(writer, match_id, sheet_name):
@@ -35,6 +35,33 @@ def fetch_and_save_to_sheet(writer, match_id, sheet_name):
     else:
         print(f"❌ {sheet_name} 数据为空")
 
+def extract_data(data):
+    list_data = data["data"]["list"]
+    # pprint(list_data)
+
+    extract_data = []
+    for item in list_data:
+        portfolio_labels = item["portfolio_labels"]
+        # 判断 portfolio_labels 的长度
+        if len(portfolio_labels) > 1:
+            grab_tzt_count = portfolio_labels[1].get("label")
+        elif len(portfolio_labels) == 1:
+            grab_tzt_count = portfolio_labels[0].get("label")  # 或者设置默认值，如 None 或 ""
+        else:
+            grab_tzt_count = None  # 如果没有 label，设置为 None
+        extract_data.append(
+            {
+                "排名": item["rank"],
+                # "排名变化": item["rank_change"],
+                "组合id": item["portfolio_id"],
+                "组合名称": item["portfolio_name"],
+                "组合作者": item["user_info"].get("user_name"),
+                "作者id": item["user_info"].get("user_id"),
+                "组合收益": f'{item["income_rate"] * 100:.2f}%',
+                "标签": grab_tzt_count
+            }
+        )
+    return extract_data
 
 def get_all_portfolio_rank_data(match_id):
     """

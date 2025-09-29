@@ -13,8 +13,8 @@ import sys
 import os
 
 # 修改导入，使用新的读写函数
-from Investment.THS.AutoTrade.scripts.data_process import read_portfolio_or_operation_data, save_to_excel_append,read_today_portfolio_record,save_to_operation_history_excel
-from Investment.THS.AutoTrade.utils.logger import setup_logger
+from scripts.data_process import read_portfolio_or_operation_data, save_to_excel_append,read_today_portfolio_record,save_to_operation_history_excel
+from utils.logger import setup_logger
 
 # # 获取根目录
 others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))))
@@ -22,10 +22,10 @@ others_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.
 sys.path.append(others_dir)
 # print(f'包路径：{sys.path}')
 
-from Investment.THS.AutoTrade.config.settings import Combination_portfolio_today_file, all_ids, \
+from config.settings import Combination_portfolio_today_file, all_ids, \
     id_to_name
-from Investment.THS.AutoTrade.utils.notification import send_notification
-from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
+from utils.notification import send_notification
+from utils.format_data import standardize_dataframe, get_new_records, normalize_time, \
     determine_market
 
 # 使用setup_logger获取统一的logger实例
@@ -267,7 +267,7 @@ async def Combination_main():
         save_to_operation_history_excel(new_data, history_df_file, f'{today}', index=False)
         # logger.info(f"保存新增数据到文件：{history_df_file}")
         # 添加这一行：更新文件状态
-        # from Investment.THS.AutoTrade.utils.file_monitor import update_file_status
+        # from utils.file_monitor import update_file_status
         # update_file_status(history_df_file)
         # new_file_hash = get_file_hash(history_df_file)
         # 写入成功后，触发自动化交易
@@ -276,9 +276,9 @@ async def Combination_main():
         new_data_print_without_header = new_data_without_content.to_string(index=False)
         send_notification(f" 新增交易 {len(new_data)}条：\n{new_data_print_without_header}")
         # logger.info(f"✅ 保存新增调仓数据成功 \n{history_df}")
-        # from Investment.THS.AutoTrade.utils.event_bus import event_bus
+        # from utils.event_bus import event_bus
         # event_bus.publish('new_trades_available', new_data)
-        # from Investment.THS.AutoTrade.utils.trade_utils import mark_new_trades_as_scheduled
+        # from utils.trade_utils import mark_new_trades_as_scheduled
         #
         # mark_new_trades_as_scheduled(new_data, OPERATION_HISTORY_FILE)
 
