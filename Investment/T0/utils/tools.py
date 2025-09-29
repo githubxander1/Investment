@@ -122,6 +122,9 @@ def notify_signal(signal_type, stock_code, price, time_str):
     time_str: 时间字符串
     """
     try:
+        if isinstance(price, str):
+            price = float(price)
+            
         if signal_type.lower() == 'buy':
             title = f"买入信号 - {stock_code}"
             content = f"股票 {stock_code} 在 {time_str} 发出买入信号，价格: {price:.2f}"

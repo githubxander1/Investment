@@ -146,3 +146,50 @@ def calculate_bollinger_bands(df, period=20, num_std=2):
     df['布林卖出信号'] = (df['收盘'] > df['布林上轨']) & (df['收盘'].shift(1) <= df['布林上轨'].shift(1))
     
     return df
+
+
+def generate_trading_signals(df):
+    """
+    生成交易信号
+    
+    参数:
+    df: 包含指标的DataFrame
+    
+    返回:
+    dict: 包含买入和卖出信号的字典
+    """
+    signals = {
+        'buy_signals': [],
+        'sell_signals': []
+    }
+    
+    if df.empty:
+        return signals
+    
+    # 生成买入信号
+    buy_indices = df[df['longcross_support']].index
+    for idx in buy_indices:
+        signal_time = df.loc[idx, '时间']
+        price = df.loc[idx, '收盘']
+        signal_type = '支撑位突破买入'
+        
+        signals['buy_signals'].append({
+            'time': pd.to_datetime(signal_time),
+            'price': float(price),
+            'type': signal_type
+        })
+    
+    # 生成卖出信号
+    sell_indices = df[df['longcross_resistance']].index
+    for idx in sell_indices:
+        signal_time = df.loc[idx, '时间']
+        price = df.loc[idx, '收盘']
+        signal_type = '阻力位突破卖出'
+        
+        signals['sell_signals'].append({
+            'time': pd.to_datetime(signal_time),
+            'price': float(price),
+            'type': signal_type
+        })
+    
+    return signals

@@ -48,6 +48,7 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.01):
                           (abs(df['支撑'] - df['收盘']) > threshold)
 
     # 2. LONGCROSS(支撑, 现价, 2)：连续2周期支撑 < 现价，当前支撑 > 现价（买信号）
+    # 调整信号判断逻辑，确保信号正确触发
     df['longcross_support'] = ((df['支撑'].shift(2) < df['收盘'].shift(2)) & \
                                (df['支撑'].shift(1) < df['收盘'].shift(1)) & \
                                (df['支撑'] > df['收盘'])) & \
@@ -67,26 +68,35 @@ def get_prev_close(stock_code, trade_date):
     """从日线数据获取前一日收盘价，失败则用分时开盘价替代"""
     try:
         trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
-        prev_date = (trade_date_dt - timedelta(days=1)).strftime('%Y%m%d')
-
-        # 获取日线数据（前一日 + 当日）
+        
+        # 如果是周末，获取上周五的收盘价
+        weekday = trade_date_dt.weekday()  # 0=Monday, 6=Sunday
+        if weekday == 5:  # Saturday
+            trade_date_dt = trade_date_dt - timedelta(days=1)  # Friday
+        elif weekday == 6:  # Sunday
+            trade_date_dt = trade_date_dt - timedelta(days=2)  # Friday
+        
+        # 获取日线数据
         daily_df = ak.stock_zh_a_hist(
             symbol=stock_code,
             period="daily",
-            start_date=prev_date,
-            end_date=trade_date,
             adjust=""
         )
-        print(f"获取日线数据成功，日期: {daily_df['日期'].values[0]}")
+        
+        if daily_df.empty:
+            raise ValueError("无法获取日线数据")
 
-        # 确保格式一致：把日期列也转为 'YYYYMMDD' 格式
-        daily_df['日期'] = pd.to_datetime(daily_df['日期']).dt.strftime('%Y%m%d')
-        print(daily_df)
+        # 转换日期列为datetime类型
+        daily_df['日期'] = pd.to_datetime(daily_df['日期'])
+        
+        # 筛选出在交易日期之前的数据
+        df_before = daily_df[daily_df['日期'] < trade_date_dt]
+        
+        if df_before.empty:
+            raise ValueError("没有找到前一日数据")
 
-        if daily_df.empty or prev_date not in daily_df['日期'].values:
-            raise ValueError("前一日数据缺失")
-
-        prev_close = daily_df[daily_df['日期'] == prev_date]['收盘'].values[0]
+        # 获取最近的收盘价（上一个交易日）
+        prev_close = df_before.iloc[-1]['收盘']
         print(f"昨收价: {prev_close:.2f}")
         return prev_close
     except Exception as e:
@@ -117,7 +127,7 @@ def get_cached_data(stock_code, trade_date):
 def save_data_to_cache(df, stock_code, trade_date):
     """保存数据到缓存"""
     # 确保 stock_data 目录存在
-    os.makedirs("../T0/stock_data", exist_ok=True)
+    os.makedirs("stock_data", exist_ok=True)
 
     cache_file = f"stock_data/{stock_code}.csv"
     try:
@@ -293,13 +303,16 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                           [cross_support_points.loc[idx, '支撑'], cross_support_points.loc[idx, '阻力']],
                           color='yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
 
-        # 绘制买信号（红三角）
+        # 绘制买信号（红三角 + 竖线）
         buy_signals = df_filtered[df_filtered['longcross_support']].dropna()
         for idx, row in buy_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
+            # 绘制红三角
             ax_price.scatter(x_pos, row['支撑'] * 1.001, marker='^', color='red', s=60, zorder=5)
             ax_price.text(x_pos, row['支撑'] * 1.001, '买',
                           color='red', fontsize=10, ha='center', va='bottom', fontweight='bold')
+            # 绘制竖线信号
+            ax_price.axvline(x=x_pos, color='red', linestyle='-', linewidth=2, alpha=0.7, zorder=4)
 
         # 绘制卖信号（绿三角）
         sell_signals = df_filtered[df_filtered['longcross_resistance']].dropna()
@@ -441,11 +454,11 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
 # ---------------------- 5. 主程序（运行示例） ----------------------
 if __name__ == "__main__":
-    # stock_code = '600900'  # 长江电力
+    stock_code = '600900'  # 长江电力
     # stock_code = '601728'  # 中国电信
     # stock_code = '601766'  # 中国中车
-    stock_code = '601398'  # 工商银行
-    trade_date = '20250926'  # 交易日期
+    # stock_code = '601398'  # 工商银行
+    trade_date = '20250929'  # 交易日期
 
     # 绘制并获取结果
     result_df = plot_tdx_intraday(stock_code, trade_date)

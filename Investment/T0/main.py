@@ -5,12 +5,14 @@ from datetime import datetime
 import time
 
 # 添加项目根目录到路径
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.append(project_root)
 
 # 导入各个模块
-from Investment.T0.indicators import tdx_indicators
-from Investment.T0.visualization import plotting
-from Investment.T0.utils import tools, data_handler
+from indicators import tdx_indicators
+from visualization import plotting
+from utils import tools, data_handler
 
 
 class T0Strategy:
@@ -29,7 +31,8 @@ class T0Strategy:
         notification_enabled: 是否启用通知
         """
         # 设置股票池
-        self.stock_pool = stock_pool if stock_pool else ['600900']
+        # 600900长江电力，601088中国神华
+        self.stock_pool = stock_pool if stock_pool else ['600900','601088']
         # 设置参数
         self.refresh_interval = refresh_interval
         self.save_charts = save_charts
@@ -63,266 +66,76 @@ class T0Strategy:
             # 获取当前日期
             current_date = tools.get_current_date_str()
             
-            # 尝试从缓存获取数据
-            df = data_handler.get_cached_data(stock_code, current_date)
+            # 获取股票分时数据
+            df = data_handler.get_stock_intraday_data(stock_code)
             
-            # 如果缓存中没有数据，从API获取
-            if df is None or df.empty:
-                df = data_handler.get_stock_intraday_data(stock_code)
-                
-                # 验证数据
-                if not data_handler.validate_data(df):
-                    print(f"股票{stock_code}数据无效")
-                    return None
-                
-                # 处理交易时间段
-                df = data_handler.process_time_period(df)
-                
-                # 填充缺失数据
-                df = data_handler.fill_missing_data(df)
-                
-                # 保存到缓存
-                data_handler.save_data_to_cache(df, stock_code, current_date)
-            
-            # 获取前一日收盘价
-            prev_close = data_handler.get_prev_close(stock_code)
-            if prev_close is None:
-                print(f"无法获取股票{stock_code}的前一日收盘价")
+            # 验证数据
+            if not data_handler.validate_data(df):
+                print(f"股票{stock_code}数据无效")
                 return None
             
-            # 计算通达信指标
+            # 数据预处理
+            df = data_handler.preprocess_data(df)
+            
+            # 检查是否有NaN值
+            if df.isnull().values.any():
+                print("数据包含NaN值，进行填充处理")
+                df = df.fillna(method='ffill').fillna(method='bfill')
+            
+            # 计算前一日收盘价
+            prev_close = data_handler.get_previous_close(stock_code, current_date)
+            
+            # 计算技术指标
             df = tdx_indicators.calculate_tdx_indicators(df, prev_close)
             
-            # 计算其他指标
-            df = tdx_indicators.calculate_rsi(df)
-            df = tdx_indicators.calculate_macd(df)
-            df = tdx_indicators.calculate_bollinger_bands(df)
+            # 生成交易信号
+            signals = tdx_indicators.generate_trading_signals(df)
             
-            # 检查交易信号
-            signals = self._check_signals(df)
-            
-            # 生成图表
-            if self.save_charts:
-                chart_path = self._generate_charts(df, stock_code, prev_close)
-            else:
-                chart_path = None
-            
-            # 记录结果
+            # 保存结果
             result = {
                 'stock_code': stock_code,
                 'data': df,
-                'prev_close': prev_close,
-                'signals': signals,
-                'chart_path': chart_path,
-                'timestamp': tools.get_current_time_str()
+                'prev_close': float(prev_close),
+                'signals': signals
             }
-            
             self.results[stock_code] = result
             
-            # 发送信号通知
-            if self.notification_enabled:
-                self._send_signal_notifications(stock_code, df, signals)
-            
-            return result
-            
-        except Exception as e:
-            print(f"分析股票{stock_code}失败: {e}")
-            return None
-    
-    def _check_signals(self, df):
-        """
-        检查交易信号
-        
-        参数:
-        df: 包含股票数据和指标的DataFrame
-        
-        返回:
-        dict: 信号字典
-        """
-        signals = {
-            'buy_signals': [],
-            'sell_signals': [],
-            'other_signals': []
-        }
-        
-        # 检查买入信号
-        if 'longcross_support' in df.columns:
-            buy_signals = df[df['longcross_support']]
-            for _, row in buy_signals.iterrows():
-                signals['buy_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'longcross_support'
-                })
-        
-        # 检查RSI买入信号
-        if 'RSI_买入信号' in df.columns:
-            rsi_buy_signals = df[df['RSI_买入信号']]
-            for _, row in rsi_buy_signals.iterrows():
-                signals['buy_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'RSI_buy'
-                })
-        
-        # 检查MACD买入信号
-        if 'MACD_买入信号' in df.columns:
-            macd_buy_signals = df[df['MACD_买入信号']]
-            for _, row in macd_buy_signals.iterrows():
-                signals['buy_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'MACD_buy'
-                })
-        
-        # 检查布林带买入信号
-        if '布林买入信号' in df.columns:
-            boll_buy_signals = df[df['布林买入信号']]
-            for _, row in boll_buy_signals.iterrows():
-                signals['buy_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'Bollinger_buy'
-                })
-        
-        # 检查卖出信号
-        if 'longcross_resistance' in df.columns:
-            sell_signals = df[df['longcross_resistance']]
-            for _, row in sell_signals.iterrows():
-                signals['sell_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'longcross_resistance'
-                })
-        
-        # 检查RSI卖出信号
-        if 'RSI_卖出信号' in df.columns:
-            rsi_sell_signals = df[df['RSI_卖出信号']]
-            for _, row in rsi_sell_signals.iterrows():
-                signals['sell_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'RSI_sell'
-                })
-        
-        # 检查MACD卖出信号
-        if 'MACD_卖出信号' in df.columns:
-            macd_sell_signals = df[df['MACD_卖出信号']]
-            for _, row in macd_sell_signals.iterrows():
-                signals['sell_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'MACD_sell'
-                })
-        
-        # 检查布林带卖出信号
-        if '布林卖出信号' in df.columns:
-            boll_sell_signals = df[df['布林卖出信号']]
-            for _, row in boll_sell_signals.iterrows():
-                signals['sell_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'Bollinger_sell'
-                })
-        
-        # 检查其他信号
-        if 'cross_support' in df.columns:
-            cross_signals = df[df['cross_support']]
-            for _, row in cross_signals.iterrows():
-                signals['other_signals'].append({
-                    'time': row['时间'],
-                    'price': row['收盘'],
-                    'type': 'cross_support'
-                })
-        
-        return signals
-    
-    def _generate_charts(self, df, stock_code, prev_close):
-        """
-        生成图表
-        
-        参数:
-        df: 包含股票数据和指标的DataFrame
-        stock_code: 股票代码
-        prev_close: 前一日收盘价
-        
-        返回:
-        str: 图表保存路径
-        """
-        try:
-            # 创建股票特定的输出目录
-            stock_output_dir = os.path.join(self.output_dir, stock_code)
-            tools.create_directory(stock_output_dir)
-            
-            # 生成带信号的分时图
-            timestamp = tools.get_current_time_str('%Y%m%d_%H%M%S')
-            chart_path = os.path.join(stock_output_dir, f'{stock_code}_signals_{timestamp}.png')
-            
-            # 绘制图表
-            title = f'{stock_code} 分时图与交易信号'
-            fig = plotting.plot_with_signals(df, prev_close, title=title, save_path=chart_path)
-            
-            # 关闭图表以释放资源
-            if fig:
-                import matplotlib.pyplot as plt
-                plt.close(fig)
-            
-            # 生成其他图表
-            # 量价关系图
-            volume_price_path = os.path.join(stock_output_dir, f'{stock_code}_volume_price_{timestamp}.png')
-            plotting.plot_volume_price(df, title=f'{stock_code} 量价关系图', save_path=volume_price_path)
-            
-            # RSI指标图
-            if 'RSI' in df.columns:
-                rsi_path = os.path.join(stock_output_dir, f'{stock_code}_rsi_{timestamp}.png')
-                plotting.plot_rsi(df, title=f'{stock_code} RSI指标图', save_path=rsi_path)
-            
-            return chart_path
-            
-        except Exception as e:
-            print(f"生成图表失败: {e}")
-            return None
-    
-    def _send_signal_notifications(self, stock_code, df, signals):
-        """
-        发送信号通知
-        
-        参数:
-        stock_code: 股票代码
-        df: 包含股票数据和指标的DataFrame
-        signals: 信号字典
-        """
-        try:
-            # 获取最新的价格和时间
-            latest_data = df.iloc[-1] if not df.empty else None
-            if latest_data is None:
-                return
-            
-            latest_price = latest_data['收盘']
-            latest_time = latest_data['时间'].strftime('%Y-%m-%d %H:%M:%S')
+            # 保存图表（如果启用）
+            if self.save_charts:
+                plotting.plot_stock_with_signals(df, stock_code, signals, self.output_dir)
             
             # 检查是否有新的买入信号
             if signals['buy_signals']:
                 # 获取最新的买入信号
-                latest_buy_signal = max(signals['buy_signals'], key=lambda x: x['time'])
+                latest_buy_signal = max(signals['buy_signals'], key=lambda x: pd.to_datetime(x['time']))
                 signal_time_str = latest_buy_signal['time'].strftime('%Y-%m-%d %H:%M:%S')
+                latest_time = df['时间'].max()
                 
                 # 如果信号是最近5分钟内的，发送通知
-                signal_time = pd.to_datetime(signal_time_str)
-                if (pd.to_datetime(latest_time) - signal_time).total_seconds() < 300:
-                    tools.notify_signal(stock_code, 'buy', latest_buy_signal['price'], signal_time_str)
+                signal_time = pd.to_datetime(latest_buy_signal['time'])
+                latest_time = pd.to_datetime(latest_time)
+                time_diff = (latest_time - signal_time).total_seconds()
+                if time_diff < 300 and time_diff >= 0:
+                    try:
+                        tools.notify_signal('buy', stock_code, latest_buy_signal['price'], signal_time_str)
+                    except Exception as e:
+                        print(f"发送买入信号通知失败: {e}")
             
             # 检查是否有新的卖出信号
             if signals['sell_signals']:
                 # 获取最新的卖出信号
-                latest_sell_signal = max(signals['sell_signals'], key=lambda x: x['time'])
+                latest_sell_signal = max(signals['sell_signals'], key=lambda x: pd.to_datetime(x['time']))
                 signal_time_str = latest_sell_signal['time'].strftime('%Y-%m-%d %H:%M:%S')
                 
                 # 如果信号是最近5分钟内的，发送通知
-                signal_time = pd.to_datetime(signal_time_str)
-                if (pd.to_datetime(latest_time) - signal_time).total_seconds() < 300:
-                    tools.notify_signal(stock_code, 'sell', latest_sell_signal['price'], signal_time_str)
-            
+                signal_time = pd.to_datetime(latest_sell_signal['time'])
+                latest_time = pd.to_datetime(latest_time)
+                time_diff = (latest_time - signal_time).total_seconds()
+                if time_diff < 300 and time_diff >= 0:
+                    try:
+                        tools.notify_signal('sell', stock_code, latest_sell_signal['price'], signal_time_str)
+                    except Exception as e:
+                        print(f"发送卖出信号通知失败: {e}")
         except Exception as e:
             print(f"发送信号通知失败: {e}")
     
@@ -380,6 +193,9 @@ class T0Strategy:
                 if 'data' in result and not result['data'].empty:
                     latest_price = result['data'].iloc[-1]['收盘']
                     prev_close = result['prev_close']
+                    # 确保数据类型正确
+                    latest_price = float(latest_price)
+                    prev_close = float(prev_close)
                     change_percent = tools.calculate_percentage_change(latest_price, prev_close)
                     
                     print(f"股票: {stock_code}, 最新价: {latest_price:.2f}, 涨跌幅: {change_percent:.2f}%")
@@ -387,120 +203,20 @@ class T0Strategy:
                     
                     # 如果有最近的信号，显示
                     if signals['buy_signals']:
-                        latest_buy = max(signals['buy_signals'], key=lambda x: x['time'])
+                        latest_buy = max(signals['buy_signals'], key=lambda x: pd.to_datetime(x['time']))
                         print(f"  最近买入信号: {latest_buy['time'].strftime('%H:%M:%S')}, 价格: {latest_buy['price']:.2f}, 类型: {latest_buy['type']}")
+                    
                     if signals['sell_signals']:
-                        latest_sell = max(signals['sell_signals'], key=lambda x: x['time'])
+                        latest_sell = max(signals['sell_signals'], key=lambda x: pd.to_datetime(x['time']))
                         print(f"  最近卖出信号: {latest_sell['time'].strftime('%H:%M:%S')}, 价格: {latest_sell['price']:.2f}, 类型: {latest_sell['type']}")
         
         print("======================\n")
 
 
-# 保持与旧系统兼容的函数
-def is_trading_time():
-    """检查当前是否为交易时间（兼容旧版接口）"""
-    return tools.is_trading_time()
-
-
-def notify_signal(signal_type, stock_code, price, time_str):
-    """发送信号通知（兼容旧版接口）"""
-    tools.notify_signal(signal_type, stock_code, price, time_str)
-
-
-def plot_tdx_intraday(stock_code, trade_date=None):
-    """绘制通达信分时图（兼容旧版接口）"""
-    try:
-        # 1. 时间处理
-        today = datetime.now().strftime('%Y%m%d')
-        trade_date = trade_date or today
-
-        # 2. 先尝试从缓存获取数据
-        df = data_handler.get_cached_data(stock_code, trade_date)
-
-        # 3. 如果缓存没有数据，则从网络获取
-        if df is None:
-            print("缓存中无数据，从网络获取...")
-            df = data_handler.fetch_intraday_data(stock_code, trade_date)
-            if df is None:
-                return None
-
-            # 保存到缓存
-            data_handler.save_data_to_cache(df.copy(), stock_code, trade_date)
-            data_from_cache = False
-        else:
-            print("使用缓存数据")
-            data_from_cache = True
-
-        # 4. 预处理数据
-        df = data_handler.preprocess_intraday_data(df, trade_date)
-        if df is None:
-            return None
-
-        # 5. 校准时间索引
-        # 分离上午和下午的数据
-        morning_data = df[df['时间'].dt.hour < 12]
-        afternoon_data = df[df['时间'].dt.hour >= 13]
-
-        # 强制校准时间索引
-        morning_index = pd.date_range(
-            start=f"{trade_date} 09:30:00",
-            end=f"{trade_date} 11:30:00",
-            freq='1min'
-        )
-        afternoon_index = pd.date_range(
-            start=f"{trade_date} 13:00:00",
-            end=f"{trade_date} 15:00:00",
-            freq='1min'
-        )
-
-        # 合并索引
-        full_index = morning_index.union(afternoon_index)
-        df = df.set_index('时间').reindex(full_index)
-        df.index.name = '时间'
-
-        # 6. 获取昨收（fallback到开盘价）
-        prev_close = data_handler.get_prev_close(stock_code)
-        if prev_close is None:
-            prev_close = df['开盘'].dropna().iloc[0]
-            print(f"⚠️ 使用分时开盘价替代昨收: {prev_close:.2f}")
-
-        # 7. 计算指标
-        df = df.ffill().bfill()  # 填充缺失值
-        df = tdx_indicators.calculate_tdx_indicators(df, prev_close)
-
-        # 8. 计算均价
-        df['均价'] = df['收盘'].expanding().mean()
-
-        # 9. 数据校验
-        required_cols = ['开盘', '收盘', '最高', '最低', '支撑', '阻力']
-        if not all(col in df.columns for col in required_cols):
-            missing_cols = [col for col in required_cols if col not in df.columns]
-            print(f"❌ 数据缺失关键列：{missing_cols}")
-            return None
-
-        if df['收盘'].isna().all():
-            print("❌ 收盘价全为空")
-            return None
-
-        # 10. 创建图表
-        fig = plotting.create_intraday_plot(df, stock_code, trade_date, prev_close, tools.notify_signal)
-        if fig:
-            # 强制显示（解决后端静默问题）
-            import matplotlib.pyplot as plt
-            plt.show(block=True)
-
-        return df
-    except Exception as e:
-        print(f"❌ 错误: {e}")
-        import traceback
-        traceback.print_exc()
-        return None
-
-
 if __name__ == '__main__':
     # 创建并运行T0策略
     strategy = T0Strategy(
-        stock_pool=['600000', '000001', '601318', '000858', '600519'],
+        stock_pool=['600900', '601088'],  # 长江电力、中国神华
         refresh_interval=60,
         save_charts=True,
         notification_enabled=True

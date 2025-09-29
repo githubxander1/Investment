@@ -11,35 +11,43 @@ def get_stock_intraday_data(stock_code, start_date=None, end_date=None):
     
     参数:
     stock_code: 股票代码，例如'600000'
-    start_date: 开始日期，格式'YYYYMMDD'
-    end_date: 结束日期，格式'YYYYMMDD'
+    start_date: 开始日期，格式'YYYYMMDD' (此参数当前版本akshare不支持)
+    end_date: 结束日期，格式'YYYYMMDD' (此参数当前版本akshare不支持)
     
     返回:
     df: 分时数据DataFrame
     """
     try:
-        # 如果没有指定日期，使用今天的日期
-        if start_date is None or end_date is None:
-            today = datetime.now().strftime('%Y%m%d')
-            start_date = today
-            end_date = today
+        # 确保股票代码格式正确（akshare需要sh或sz前缀）
+        if stock_code.startswith('6'):
+            symbol = f'sh{stock_code}'
+        elif stock_code.startswith(('0', '3')):
+            symbol = f'sz{stock_code}'
+        else:
+            symbol = stock_code
             
-        # 获取A股分时数据
-        df = ak.stock_zh_a_minute(symbol=stock_code, period="1", adjust="qfq", start_date=start_date, end_date=end_date)
+        # 获取A股分时数据（当前版本akshare不支持日期范围参数）
+        df = ak.stock_zh_a_minute(symbol=symbol, period="1", adjust="qfq")
+        
+        # 检查是否获取到数据
+        if df.empty:
+            print(f"{stock_code} 股票数据不存在，请检查是否已退市")
+            return pd.DataFrame()
         
         # 重命名列以符合系统需求
         column_mapping = {
-            '开盘': '开盘',
-            '最高': '最高', 
-            '最低': '最低',
-            '收盘': '收盘',
-            '成交量': '成交量',
-            '成交额': '成交额',
-            '时间': '时间'
+            'day': '时间',
+            'open': '开盘',
+            'high': '最高', 
+            'low': '最低',
+            'close': '收盘',
+            'volume': '成交量'
         }
         
-        # 只保留需要的列
+        # 只保留需要的列并重命名
         df = df.rename(columns=column_mapping)
+        required_columns = ['时间', '开盘', '最高', '最低', '收盘', '成交量']
+        df = df[required_columns]
         
         # 确保时间列是datetime类型
         if '时间' in df.columns:
@@ -48,6 +56,9 @@ def get_stock_intraday_data(stock_code, start_date=None, end_date=None):
         # 排序并重置索引
         df = df.sort_values('时间').reset_index(drop=True)
         
+        # 处理NaN值
+        df = df.dropna()
+        
         return df
         
     except Exception as e:
@@ -55,33 +66,113 @@ def get_stock_intraday_data(stock_code, start_date=None, end_date=None):
         return pd.DataFrame()
 
 
-def get_prev_close(stock_code):
+def get_previous_close(stock_code, trade_date):
     """
-    获取股票前一日收盘价
+    获取前一日收盘价（处理周末情况）
     
     参数:
-    stock_code: 股票代码，例如'600000'
+    stock_code: 股票代码
+    trade_date: 交易日期，格式'YYYYMMDD'
     
     返回:
-    prev_close: 前一日收盘价
+    float: 前一日收盘价
     """
     try:
-        # 获取股票历史行情
-        stock_zh_a_daily = ak.stock_zh_a_daily(symbol=stock_code, adjust="qfq")
+        # 确保股票代码格式正确（akshare需要sh或sz前缀）
+        if stock_code.startswith('6'):
+            symbol = f'sh{stock_code}'
+        elif stock_code.startswith(('0', '3')):
+            symbol = f'sz{stock_code}'
+        else:
+            symbol = stock_code
+            
+        # 将交易日期转换为datetime对象
+        trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
         
-        # 检查是否有数据
-        if stock_zh_a_daily.empty:
-            print(f"无法获取股票{stock_code}的历史数据")
-            return None
+        # 如果是周末，获取上周五的收盘价
+        weekday = trade_date_dt.weekday()  # 0=Monday, 6=Sunday
+        if weekday == 5:  # Saturday
+            trade_date_dt = trade_date_dt - timedelta(days=1)  # Friday
+        elif weekday == 6:  # Sunday
+            trade_date_dt = trade_date_dt - timedelta(days=2)  # Friday
         
-        # 获取前一日收盘价（倒数第二行的收盘价）
-        prev_close = stock_zh_a_daily.iloc[-2]['close'] if len(stock_zh_a_daily) > 1 else stock_zh_a_daily.iloc[-1]['close']
+        # 获取历史日线数据
+        df = ak.stock_zh_a_hist(symbol=symbol, period="daily", adjust="qfq")
         
-        return prev_close
-        
+        if not df.empty:
+            # 转换日期列为datetime类型
+            df['日期'] = pd.to_datetime(df['日期'])
+            
+            # 筛选出在交易日期之前的数据
+            df_before = df[df['日期'] < trade_date_dt]
+            
+            if not df_before.empty:
+                # 获取最近的收盘价
+                prev_close = df_before.iloc[-1]['收盘']
+                return float(prev_close)
+            else:
+                print(f"无法获取股票 {stock_code} 的前一日收盘价")
+                return 0.0
+        else:
+            print(f"无法获取股票 {stock_code} 的历史数据")
+            return 0.0
+            
     except Exception as e:
         print(f"获取前一日收盘价失败: {e}")
-        return None
+        return 0.0
+
+
+def validate_data(df):
+    """
+    验证数据有效性
+    
+    参数:
+    df: DataFrame
+    
+    返回:
+    bool: 数据是否有效
+    """
+    if df is None or df.empty:
+        print("数据为空")
+        return False
+    
+    required_columns = ['时间', '开盘', '最高', '最低', '收盘', '成交量']
+    for col in required_columns:
+        if col not in df.columns:
+            print(f"缺少必要列: {col}")
+            return False
+    
+    # 检查是否有NaN值
+    if df.isnull().values.any():
+        print("数据包含NaN值")
+        # 不直接返回False，因为可以在预处理阶段处理NaN值
+    
+    return True
+
+
+def preprocess_data(df):
+    """
+    数据预处理
+    
+    参数:
+    df: 原始数据DataFrame
+    
+    返回:
+    df: 预处理后的DataFrame
+    """
+    # 填充NaN值
+    df = df.fillna(method='ffill').fillna(method='bfill')
+    
+    # 确保数值列的数据类型正确
+    numeric_columns = ['开盘', '最高', '最低', '收盘', '成交量']
+    for col in numeric_columns:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+    
+    # 移除仍有NaN值的行
+    df = df.dropna()
+    
+    return df
 
 
 def process_time_period(df, start_time='09:30:00', end_time='15:00:00'):
