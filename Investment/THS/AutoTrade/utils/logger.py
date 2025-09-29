@@ -3,7 +3,10 @@ import inspect
 import os
 import logging
 import colorlog
-from config.settings import LOGS_DIR
+
+from Investment.THS.AutoTrade.config.settings import LOGS_DIR
+
+
 
 
 def ensure_log_dir():
