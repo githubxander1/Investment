@@ -249,7 +249,7 @@ def get_cached_data(stock_code, trade_date):
 def save_data_to_cache(df, stock_code, trade_date):
     """保存数据到缓存"""
     # 确保 stock_data 目录存在
-    os.makedirs("stock_data", exist_ok=True)
+    os.makedirs("../indicators/stock_data", exist_ok=True)
 
     cache_file = f"stock_data/{stock_code}.csv"
     try:
@@ -421,13 +421,13 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                 ax_price.plot(x_values, df_filtered[col_name], marker='', linestyle='-',
                               color=ma_colors[i - 1], linewidth=0.8, alpha=0.7, label=f'MA{i}')
 
-        # 绘制橙色柱状线（CROSS(支撑, 现价)）
+        # 绘制黄色柱状线（CROSS(支撑, 现价)）
         cross_support_points = df_filtered[df_filtered['cross_support']]
         for idx in cross_support_points.index:
             x_pos = df_filtered.index.get_loc(idx)
             ax_price.plot([x_pos, x_pos],
                           [cross_support_points.loc[idx, '支撑'], cross_support_points.loc[idx, '阻力']],
-                          color='orange', linewidth=2, alpha=0.7, solid_capstyle='round')
+                          color='yellow', linewidth=2, alpha=0.7, solid_capstyle='round')
 
         # 绘制买信号（红三角）
         # 更精确地选择信号点
@@ -452,8 +452,8 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         for idx, row in sell_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
-            ax_price.scatter(x_pos, row['收盘'] * 0.99, marker='v', color='green', s=100, zorder=10)
-            ax_price.text(x_pos, row['收盘'] * 0.98, '卖',
+            ax_price.scatter(x_pos, row['收盘'] * 0.98, marker='v', color='green', s=100, zorder=10)
+            ax_price.text(x_pos, row['收盘'] * 0.97, '卖',
                           color='green', fontsize=12, ha='center', va='top', fontweight='bold')
 
         # 绘制主力相关信号

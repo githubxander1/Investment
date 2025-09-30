@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib.ticker import FuncFormatter
 import matplotlib.dates as mdates
 from datetime import datetime
+import os
 
 
 def plot_stock_intraday(df, title=None, save_path=None):
@@ -354,6 +355,21 @@ def set_chinese_font():
     plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
     # 解决负号显示问题
     plt.rcParams['axes.unicode_minus'] = False
+
+
+def plot_stock_with_signals(df, stock_code, signals, output_dir):
+    """
+    直接使用已有的三个指标图表，不生成新的图表
+    
+    参数:
+    df: 包含股票数据和指标的DataFrame
+    stock_code: 股票代码
+    signals: 交易信号
+    output_dir: 输出目录
+    """
+    # 根据需求，直接使用已有的三个指标图表，无需生成新的图表
+    print(f"已使用现有的三个指标图表: {stock_code}")
+    return None
 
 
 def setup_matplotlib():

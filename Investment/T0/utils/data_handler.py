@@ -314,7 +314,7 @@ def get_cached_data(stock_code, date):
     df: 缓存的DataFrame，如果没有缓存则返回None
     """
     # 创建缓存目录
-    cache_dir = os.path.join(os.path.dirname(__file__), '../../cache')
+    cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache')
     os.makedirs(cache_dir, exist_ok=True)
     
     # 构建缓存文件路径
@@ -347,7 +347,7 @@ def save_data_to_cache(df, stock_code, date):
     bool: 是否保存成功
     """
     # 创建缓存目录
-    cache_dir = os.path.join(os.path.dirname(__file__), '../../cache')
+    cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache')
     os.makedirs(cache_dir, exist_ok=True)
     
     # 构建缓存文件路径

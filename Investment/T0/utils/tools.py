@@ -40,7 +40,7 @@ def is_trading_time():
     morning_start = datetime.strptime('09:30:00', '%H:%M:%S').time()
     morning_end = datetime.strptime('11:30:00', '%H:%M:%S').time()
     afternoon_start = datetime.strptime('13:00:00', '%H:%M:%S').time()
-    afternoon_end = datetime.strptime('15:00:00', '%H:%M:%S').time()
+    afternoon_end = datetime.strptime('19:00:00', '%H:%M:%S').time()
     
     # 检查是否在交易时间内
     is_morning_trading = morning_start <= current_time <= morning_end

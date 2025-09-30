@@ -194,6 +194,42 @@ def detect_signals(df):
         df['主力=HHV30'] & df['CROSS主力1.003']
     )
     
+    # 打印第一次买入信号的时间点
+    first_buy_signal = df[df['买入信号']].first_valid_index()
+    if first_buy_signal is not None:
+        first_buy_price = df.loc[first_buy_signal, '收盘']
+        # 计算相对均线的涨跌幅
+        if '均价' in df.columns:
+            first_buy_avg_price = df.loc[first_buy_signal, '均价']
+            if pd.notna(first_buy_avg_price) and first_buy_avg_price != 0:
+                diff_pct = ((first_buy_price - first_buy_avg_price) / first_buy_avg_price) * 100
+                print(f"量价指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            else:
+                print(f"量价指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: N/A")
+        else:
+            print(f"量价指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}")
+    else:
+        print("未检测到买入信号")
+    
+    # 打印第一次卖出信号的时间点
+    first_sell_signal = df[df['卖出信号']].first_valid_index()
+    if first_sell_signal is not None:
+        first_sell_price = df.loc[first_sell_signal, '收盘']
+        # 计算相对均线的涨跌幅
+        if '均价' in df.columns:
+            first_sell_avg_price = df.loc[first_sell_signal, '均价']
+            if pd.notna(first_sell_avg_price) and first_sell_avg_price != 0:
+                diff_pct = ((first_sell_price - first_sell_avg_price) / first_sell_avg_price) * 100
+                print(f"量价指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            else:
+                print(f"量价指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: N/A")
+        else:
+            print(f"量价指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}")
+    else:
+        print("未检测到卖出信号")
+
+    # plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio)
+    
     return df
 
 
@@ -307,7 +343,15 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     
     plt.subplots_adjust(top=0.95, bottom=0.1, left=0.1, right=0.9)
     plt.subplots_adjust(top=0.95)
-    plt.show(block=True)
+    
+    # 保存图表到output目录
+    output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
+    os.makedirs(output_dir, exist_ok=True)
+    chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_量价指标.png')
+    plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
+    
+    # 关闭图形以避免阻塞
+    plt.close(fig)
     
     return fig
 
@@ -403,8 +447,6 @@ def analyze_volume_price(stock_code, trade_date=None):
         except:
             prev_close = df['开盘'].dropna().iloc[0]
         
-        print(f"昨收价: {prev_close:.2f}")
-        
         # 填充缺失值
         df = df.ffill().bfill()
         
@@ -429,13 +471,17 @@ def analyze_volume_price(stock_code, trade_date=None):
 
 # 主程序
 if __name__ == "__main__":
-    stock_code = '601398'  # 工商银行
-    trade_date = '20250929'  # 交易日期
+    stock_code = '600900'  # 工商银行
+    trade_date = '20250930'  # 交易日期
     
     # 分析并绘图
     result_df = analyze_volume_price(stock_code, trade_date)
     
     if result_df is not None:
+        # 保存结果到CSV文件
+        csv_file = f'{stock_code}_{trade_date}_量价指标分析.csv'
+        result_df.to_csv(csv_file, encoding='utf-8-sig')
+        print(f"结果已保存到: {csv_file}")
         print("分析完成")
     else:
         print("分析失败")

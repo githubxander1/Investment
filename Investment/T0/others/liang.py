@@ -177,39 +177,12 @@ def calculate_tdx_indicators(df, prev_close, daily_data, threshold=0.01):
     # 添加压信号
     df['压力信号'] = ((df['收盘'] > df['阻力']) & (df['收盘'].shift(1) <= df['阻力']))
     
-    # 打印第一次买入信号的时间点
-    first_buy_signal = df[df['longcross_support']].first_valid_index()
-    if first_buy_signal is not None:
-        first_buy_price = df.loc[first_buy_signal, '收盘']
-        # 计算相对均线的涨跌幅
-        if '均线' in df.columns:
-            first_buy_avg_price = df.loc[first_buy_signal, '均线']
-            if pd.notna(first_buy_avg_price) and first_buy_avg_price != 0:
-                diff_pct = ((first_buy_price - first_buy_avg_price) / first_buy_avg_price) * 100
-                print(f"扩展指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
-            else:
-                print(f"扩展指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: N/A")
-        else:
-            print(f"扩展指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}")
-    else:
-        print("未检测到买入信号")
-    
-    # 打印第一次卖出信号的时间点
-    first_sell_signal = df[df['longcross_resistance']].first_valid_index()
-    if first_sell_signal is not None:
-        first_sell_price = df.loc[first_sell_signal, '收盘']
-        # 计算相对均线的涨跌幅
-        if '均线' in df.columns:
-            first_sell_avg_price = df.loc[first_sell_signal, '均线']
-            if pd.notna(first_sell_avg_price) and first_sell_avg_price != 0:
-                diff_pct = ((first_sell_price - first_sell_avg_price) / first_sell_avg_price) * 100
-                print(f"扩展指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
-            else:
-                print(f"扩展指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: N/A")
-        else:
-            print(f"扩展指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}")
-    else:
-        print("未检测到卖出信号")
+    # 调试信息：打印信号触发情况
+    print(f"触发买信号的次数: {df['longcross_support'].sum()}")
+    print(f"触发卖信号的次数: {df['longcross_resistance'].sum()}")
+    print(f"触发拉信号的次数: {df['主力_拉信号'].sum()}")
+    print(f"触发冲信号的次数: {df['主力_冲信号'].sum()}")
+    print(f"触发压力信号的次数: {df['压力信号'].sum()}")
 
     return df
 
@@ -248,8 +221,10 @@ def get_prev_close(stock_code, trade_date):
 
         # 获取最近的收盘价（上一个交易日）
         prev_close = df_before.iloc[-1]['收盘']
+        print(f"昨收价: {prev_close:.2f}")
         return prev_close, daily_df
     except Exception as e:
+        print(f"昨收获取失败: {e}，将使用分时开盘价替代")
         return None, pd.DataFrame()
 
 
@@ -274,12 +249,13 @@ def get_cached_data(stock_code, trade_date):
 def save_data_to_cache(df, stock_code, trade_date):
     """保存数据到缓存"""
     # 确保 stock_data 目录存在
-    os.makedirs("stock_data", exist_ok=True)
+    os.makedirs("../indicators/stock_data", exist_ok=True)
 
     cache_file = f"stock_data/{stock_code}.csv"
     try:
         df_reset = df.reset_index()
         df_reset.to_csv(cache_file, index=False)
+        print(f"数据已保存到缓存: {cache_file}")
     except Exception as e:
         print(f"保存缓存文件失败: {e}")
 
@@ -296,6 +272,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 3. 如果缓存没有数据，则从网络获取
         if df is None:
+            print("缓存中无数据，从网络获取...")
             df = ak.stock_zh_a_hist_min_em(
                 symbol=stock_code,
                 period="1",
@@ -325,6 +302,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
             save_data_to_cache(df.copy(), stock_code, trade_date)
             data_from_cache = False
         else:
+            print("使用缓存数据")
             data_from_cache = True
 
         # 处理时间列
@@ -364,6 +342,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         prev_close, daily_data = get_prev_close(stock_code, trade_date)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
+            print(f"⚠️ 使用分时开盘价替代昨收: {prev_close:.2f}")
 
         # 计算指标
         df = df.ffill().bfill()  # 填充缺失值
@@ -379,6 +358,12 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         if df['收盘'].isna().all():
             print("❌ 收盘价全为空")
             return None
+
+        # 调试信息
+        print("✅ 过滤后数据概览：")
+        print(df[['开盘', '收盘', '最高', '最低']].head())
+        print(f"数据时间范围：{df.index.min()} ~ {df.index.max()}")
+        print(f"有效数据量：{len(df)} 条")
 
         # 绘图设置
         plt.close('all')  # 关闭之前未关闭的图形
@@ -396,9 +381,19 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         df_filtered = df.copy()
         # 只过滤掉开盘、最高、最低、收盘都为空的行
         df_filtered = df_filtered.dropna(subset=['开盘', '最高', '最低', '收盘'], how='all')
-
+        
         # 价格图绘制
         x_values = list(range(len(df_filtered)))
+        
+        # 调试：检查信号在过滤后的数据中是否存在
+        print(f"过滤后数据中买信号数量: {df_filtered['longcross_support'].sum()}")
+        print(f"过滤后数据中卖信号数量: {df_filtered['longcross_resistance'].sum()}")
+        print(f"过滤后数据中压力信号数量: {df_filtered['压力信号'].sum()}")
+        
+        # 保存过滤后的数据用于调试
+        debug_df = df_filtered[['收盘', '支撑', '阻力', 'longcross_support', 'longcross_resistance', '压力信号']]
+        debug_df.to_csv(f'{stock_code}_{trade_date}_debug_signals.csv')
+        print(f"调试信号数据已保存到: {stock_code}_{trade_date}_debug_signals.csv")
 
         # 绘制收盘价曲线
         ax_price.plot(x_values, df_filtered['收盘'], marker='', linestyle='-', color='blue', linewidth=2,
@@ -435,7 +430,12 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                           color='orange', linewidth=2, alpha=0.7, solid_capstyle='round')
 
         # 绘制买信号（红三角）
+        # 更精确地选择信号点
         buy_signals = df_filtered[df_filtered['longcross_support'] == True]
+        print(f"买信号数量: {len(buy_signals)}")
+        if len(buy_signals) > 0:
+            print(f"买信号详情: {buy_signals.index}")
+            print(f"买信号支撑值: {buy_signals['支撑'].values}")
 
         for idx, row in buy_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
@@ -445,6 +445,10 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 绘制卖信号（绿三角）
         sell_signals = df_filtered[df_filtered['longcross_resistance'] == True]
+        print(f"卖信号数量: {len(sell_signals)}")
+        if len(sell_signals) > 0:
+            print(f"卖信号详情: {sell_signals.index}")
+            print(f"卖信号收盘值: {sell_signals['收盘'].values}")
 
         for idx, row in sell_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
@@ -454,6 +458,9 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 绘制主力相关信号
         pull_signals = df_filtered[df_filtered['主力_拉信号'] == True]
+        print(f"拉信号数量: {len(pull_signals)}")
+        if len(pull_signals) > 0:
+            print(f"拉信号详情: {pull_signals.index}")
 
         for idx, row in pull_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
@@ -462,6 +469,9 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                           color='magenta', fontsize=12, ha='center', va='top', fontweight='bold')
 
         rush_signals = df_filtered[df_filtered['主力_冲信号'] == True]
+        print(f"冲信号数量: {len(rush_signals)}")
+        if len(rush_signals) > 0:
+            print(f"冲信号详情: {rush_signals.index}")
 
         for idx, row in rush_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
@@ -471,6 +481,10 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 绘制压力信号
         pressure_signals = df_filtered[df_filtered['压力信号'] == True]
+        print(f"压力信号数量: {len(pressure_signals)}")
+        if len(pressure_signals) > 0:
+            print(f"压力信号详情: {pressure_signals.index}")
+            print(f"压力信号收盘值: {pressure_signals['收盘'].values}")
 
         for idx, row in pressure_signals.iterrows():
             x_pos = df_filtered.index.get_loc(idx)
@@ -570,17 +584,25 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                                        arrowprops=dict(arrowstyle='->'), fontsize=10)
         annotation.set_visible(False)
 
+        # 显示信号统计
+        print(f"触发买信号次数: {df_filtered['longcross_support'].sum()}")
+        print(f"触发卖信号次数: {df_filtered['longcross_resistance'].sum()}")
+        print(f"触发压力信号次数: {df_filtered['压力信号'].sum()}")
+        print(f"触发拉信号次数: {df_filtered['主力_拉信号'].sum()}")
+        print(f"触发冲信号次数: {df_filtered['主力_冲信号'].sum()}")
+
+        # 检查并打印最近的信号点
+        recent_signals = df_filtered.tail(30)
+        if recent_signals['longcross_support'].any():
+            print(f"最近买信号位置: {recent_signals[recent_signals['longcross_support']].index}")
+        if recent_signals['longcross_resistance'].any():
+            print(f"最近卖信号位置: {recent_signals[recent_signals['longcross_resistance']].index}")
+
         plt.tight_layout()
         plt.subplots_adjust(top=0.92, bottom=0.1)
 
-        # 保存图表到output目录
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
-        os.makedirs(output_dir, exist_ok=True)
-        chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_扩展指标.png')
-        plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
-
-        # 关闭图形以避免阻塞
-        plt.close(fig)
+        # 显示图表
+        plt.show(block=True)
 
         return df
 
@@ -595,7 +617,10 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 if __name__ == "__main__":
     # 可以替换为其他股票代码
     stock_code = '600900'  # 长江电力
-    trade_date = '20250930'  # 交易日期
+    # stock_code = '601728'  # 中国电信
+    # stock_code = '601766'  # 中国中车
+    # stock_code = '601398'  # 工商银行
+    trade_date = '20250929'  # 交易日期
 
     # 绘制并获取结果
     result_df = plot_tdx_intraday(stock_code, trade_date)

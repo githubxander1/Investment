@@ -40,8 +40,8 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
     df['L1'] = np.minimum(prev_close, daily_low)
     
     # 添加调试信息，查看H1和L1的计算结果
-    print(f"计算得到的H1: {df['H1'].iloc[0]:.2f}")
-    print(f"计算得到的L1: {df['L1'].iloc[0]:.2f}")
+    # print(f"计算得到的H1: {df['H1'].iloc[0]:.2f}")
+    # print(f"计算得到的L1: {df['L1'].iloc[0]:.2f}")
 
     # 支撑、阻力计算（严格按通达信公式：L1+P1*0.5/8 和 L1+P1*7/8）
     # 注意：这里的计算与通达信公式完全一致
@@ -49,9 +49,9 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
     df['支撑'] = df['L1'] + df['P1'] * 0.5 / 8
     df['阻力'] = df['L1'] + df['P1'] * 7 / 8
     
-    print(f"计算得到的P1: {df['P1'].iloc[0]:.2f}")
-    print(f"计算得到的支撑: {df['支撑'].iloc[0]:.2f}")
-    print(f"计算得到的阻力: {df['阻力'].iloc[0]:.2f}")
+    # print(f"计算得到的P1: {df['P1'].iloc[0]:.2f}")
+    # print(f"计算得到的支撑: {df['支撑'].iloc[0]:.2f}")
+    # print(f"计算得到的阻力: {df['阻力'].iloc[0]:.2f}")
 
     # 信号计算（严格对齐通达信逻辑）
     # 1. CROSS(支撑, 现价)：支撑上穿现价（前一周期支撑 < 现价，当前支撑 > 现价）= 现价下穿支撑（信号）
@@ -75,9 +75,9 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
                                  (abs(df['收盘'] - df['阻力']) > threshold)
 
     # 添加调试信息，查看信号计算结果
-    print(f"支撑信号数量 (cross_support): {df['cross_support'].sum()}")
-    print(f"买入信号数量 (longcross_support): {df['longcross_support'].sum()}")
-    print(f"卖出信号数量 (longcross_resistance): {df['longcross_resistance'].sum()}")
+    # print(f"支撑信号数量 (cross_support): {df['cross_support'].sum()}")
+    # print(f"买入信号数量 (longcross_support): {df['longcross_support'].sum()}")
+    # print(f"卖出信号数量 (longcross_resistance): {df['longcross_resistance'].sum()}")
 
     return df
 

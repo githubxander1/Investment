@@ -20,5 +20,9 @@ SIGNAL_RECORD_FILE = os.path.join(BASE_DIR, 'logs', 'signal_records.txt')
 CHARTS_DIR = os.path.join(BASE_DIR, 'output', 'charts')
 os.makedirs(CHARTS_DIR, exist_ok=True)
 
+# 缓存目录
+CACHE_DIR = os.path.join(BASE_DIR, 'cache')
+os.makedirs(CACHE_DIR, exist_ok=True)
+
 # 确保日志目录存在
 os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)

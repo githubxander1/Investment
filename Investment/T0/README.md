@@ -25,14 +25,18 @@ T0/
 ├── visualization/       # 可视化模块
 │   └── plotting.py       # 图表绘制功能
 ├── examples/            # 使用示例
-├── others/              # 其他文件（保留目录）
+├── cache/               # 数据缓存目录
+├── logs/                # 日志文件目录
+├── output/              # 输出文件目录
+│   └── charts/           # 图表输出目录
 ├── main.py              # 主程序入口
+├── run_t0_system.py     # 实际交易运行脚本
 ├── __init__.py          # 包初始化文件
 ├── requirements.txt     # 项目依赖
 └── README.md            # 项目说明文档
 ```
 
-## 功能模块
+## 功能模块说明
 
 ### 1. 配置模块 (config/)
 - **settings.py**: 系统配置文件，包括股票池、监控间隔等参数
@@ -58,6 +62,11 @@ T0/
 - **plotting.py**: 实现分时图的绘制，包括价格曲线、指标线和交易信号标记
 - 支持交互式功能，如鼠标悬浮显示详情
 
+### 6. 输出目录
+- **cache/**: 存储获取的股票数据缓存，避免重复请求
+- **logs/**: 存储系统运行日志和信号记录
+- **output/charts/**: 存储生成的图表文件
+
 ## 安装和配置
 
 ### 1. 安装依赖
@@ -72,6 +81,28 @@ pip install -r requirements.txt
 
 ## 使用方法
 
+### 实际交易模式（推荐）
+
+在交易时间内持续运行系统：
+
+```bash
+python main.py run
+```
+
+或
+
+```bash
+python run_t0_system.py
+```
+
+### 测试模式
+
+立即运行一次信号检测（用于测试）：
+
+```bash
+python main.py monitor
+```
+
 ### 图形界面模式
 
 启动图形界面监控程序：
@@ -80,21 +111,14 @@ pip install -r requirements.txt
 python main.py gui
 ```
 
-### 命令行监控模式
-
-启动命令行监控程序：
-
-```bash
-python main.py monitor
-```
-
 ### 自定义股票池
 
 可以通过命令行参数指定要监控的股票代码：
 
 ```bash
-python main.py gui 601398 600900 601728
-python main.py monitor 601088
+python main.py run 601398 600900 601728
+python main.py gui 601088
+python main.py monitor 601088 600900
 ```
 
 ### 修改源码配置
@@ -109,7 +133,7 @@ python main.py monitor 601088
 2. **扩展指标**：包括MACD、移动平均线等技术指标
 3. **量价指标**：基于成交量和价格关系的指标
 
-系统会在交易时间内（9:30-11:30 和 13:00-15:00）每分钟检测一次信号，
+系统会在交易时间内（9:30-11:30 和 13:00-15:00）按配置间隔检测信号，
 并在发现交易信号时发送通知和执行交易（默认每笔交易100股）。
 
 ## 扩展指南
