@@ -1,7 +1,7 @@
 # T0交易系统信号检测模块
 import pandas as pd
 import numpy as np
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import akshare as ak
 import sys
 import os
@@ -9,13 +9,10 @@ import os
 # 添加项目根目录到路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from Investment.T0.utils.logger import log_signal
-from Investment.T0.indicators.resistance_support_indicators import calculate_tdx_indicators as calc_resistance_support, plot_tdx_intraday
-from Investment.T0.indicators.extended_indicators import calculate_tdx_indicators as calc_extended
-from Investment.T0.indicators.volume_price_indicators import (calculate_volume_price_indicators,
-                                               calculate_support_resistance, 
-                                               calculate_fund_flow_indicators, 
-                                               detect_signals)
+from utils.logger import log_signal
+from indicators.resistance_support_indicators import plot_tdx_intraday as plot_resistance_support
+from indicators.extended_indicators import plot_tdx_intraday as plot_extended
+from indicators.volume_price_indicators import analyze_volume_price
 
 class SignalDetector:
     """信号检测器"""
@@ -49,8 +46,9 @@ class SignalDetector:
     
     def get_stock_data(self, trade_date=None):
         """获取股票分时数据"""
+        # 如果没有指定交易日期，则使用昨天的日期（因为今天是假期）
         if trade_date is None:
-            trade_date = datetime.now().strftime('%Y%m%d')
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
             
         try:
             df = ak.stock_zh_a_hist_min_em(
@@ -113,12 +111,76 @@ class SignalDetector:
             
         except Exception as e:
             print(f"获取股票数据时出错: {e}")
+            # 添加重试机制
+            try:
+                print("正在重试获取股票数据...")
+                time.sleep(2)  # 等待2秒后重试
+                df = ak.stock_zh_a_hist_min_em(
+                    symbol=self.stock_code,
+                    period="1",
+                    start_date=trade_date,
+                    end_date=trade_date,
+                    adjust=''
+                )
+                
+                if df.empty:
+                    return None
+                    
+                # 重命名列以匹配我们的代码
+                df = df.rename(columns={
+                    '时间': '时间',
+                    '开盘': '开盘',
+                    '收盘': '收盘',
+                    '最高': '最高',
+                    '最低': '最低',
+                    '成交量': '成交量',
+                    '成交额': '成交额'
+                })
+                
+                # 转换时间列为datetime类型
+                df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
+                df = df[df['时间'].notna()]
+                
+                # 只保留指定日期的数据
+                target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+                df = df[df['时间'].dt.date == target_date.date()]
+                
+                # 过滤掉 11:30 到 13:00 之间的数据
+                df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
+                
+                if df.empty:
+                    return None
+                
+                # 强制校准时间索引
+                morning_index = pd.date_range(
+                    start=f"{trade_date} 09:30:00",
+                    end=f"{trade_date} 11:30:00",
+                    freq='1min'
+                )
+                afternoon_index = pd.date_range(
+                    start=f"{trade_date} 13:00:00",
+                    end=f"{trade_date} 15:00:00",
+                    freq='1min'
+                )
+                
+                # 合并索引
+                full_index = morning_index.union(afternoon_index)
+                df = df.set_index('时间').reindex(full_index)
+                df.index.name = '时间'
+                
+                # 填充缺失值
+                df = df.ffill().bfill()
+                
+                return df
+            except Exception as retry_e:
+                print(f"重试获取股票数据失败: {retry_e}")
             return None
     
     def get_prev_close(self, trade_date=None):
         """获取昨收价"""
+        # 如果没有指定交易日期，则使用昨天的日期
         if trade_date is None:
-            trade_date = datetime.now().strftime('%Y%m%d')
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
             
         target_date = pd.to_datetime(trade_date, format='%Y%m%d')
         
@@ -137,6 +199,23 @@ class SignalDetector:
                     
         except Exception as e:
             print(f"获取昨收价时出错: {e}")
+            # 添加重试机制
+            try:
+                print("正在重试获取昨收价...")
+                time.sleep(2)  # 等待2秒后重试
+                daily_df = ak.stock_zh_a_hist(
+                    symbol=self.stock_code,
+                    period="daily",
+                    adjust=""
+                )
+                
+                if not daily_df.empty:
+                    daily_df['日期'] = pd.to_datetime(daily_df['日期'])
+                    df_before = daily_df[daily_df['日期'] < target_date]
+                    if not df_before.empty:
+                        return df_before.iloc[-1]['收盘']
+            except Exception as retry_e:
+                print(f"重试获取昨收价失败: {retry_e}")
             
         return None
     
@@ -146,8 +225,16 @@ class SignalDetector:
             return None
             
         try:
-            # 使用完整的指标计算函数
-            df_with_indicators = calc_resistance_support(df.copy(), prev_close)
+            # 直接调用优化后的阻力支撑指标绘图函数进行分析
+            # 使用昨天的日期进行测试
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            # 获取股票名称
+            from utils.tools import get_stock_name
+            stock_name = get_stock_name(self.stock_code)
+            df_with_indicators = plot_resistance_support(self.stock_code, trade_date=trade_date, stock_name=stock_name)
+            
+            if df_with_indicators is None:
+                return None
             
             signals = {'buy': False, 'sell': False, 'buy_details': '', 'sell_details': ''}
             
@@ -162,7 +249,7 @@ class SignalDetector:
                 signals['sell_details'] = f"阻力位卖出信号触发"
             
             # 保存图表
-            self._save_resistance_support_chart(df_with_indicators, prev_close)
+            self._save_resistance_support_chart()
             
             return signals
             
@@ -170,20 +257,16 @@ class SignalDetector:
             print(f"检测阻力支撑信号时出错: {e}")
             return None
 
-    def _save_resistance_support_chart(self, df, prev_close):
+    def _save_resistance_support_chart(self):
         """保存阻力支撑指标图表"""
         try:
-            import os
-            from Investment.T0.indicators.resistance_support_indicators import plot_tdx_intraday
-            import pandas as pd
-            from datetime import datetime
-            
+            # 使用昨天的日期进行测试
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            # 获取股票名称
+            from utils.tools import get_stock_name
+            stock_name = get_stock_name(self.stock_code)
             # 调用阻力支撑指标文件中的完整绘图方法
-            stock_code = self.stock_code
-            trade_date = datetime.now().strftime('%Y%m%d')
-            
-            # 直接调用绘图方法
-            plot_tdx_intraday(stock_code, trade_date)
+            plot_resistance_support(self.stock_code, trade_date=trade_date, stock_name=stock_name)
                                
         except Exception as e:
             print(f"保存阻力支撑指标图表时出错: {e}")
@@ -194,18 +277,16 @@ class SignalDetector:
             return None
             
         try:
-            # 获取日线数据用于扩展指标计算
-            try:
-                daily_df = ak.stock_zh_a_hist(
-                    symbol=self.stock_code,
-                    period="daily",
-                    adjust=""
-                )
-            except:
-                daily_df = pd.DataFrame()
+            # 直接调用优化后的扩展指标绘图函数进行分析
+            # 使用昨天的日期进行测试
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            # 获取股票名称
+            from utils.tools import get_stock_name
+            stock_name = get_stock_name(self.stock_code)
+            df_with_indicators = plot_extended(self.stock_code, trade_date=trade_date, stock_name=stock_name)
             
-            # 使用完整的指标计算函数
-            df_with_indicators = calc_extended(df.copy(), prev_close, daily_df)
+            if df_with_indicators is None:
+                return None
             
             signals = {'buy': False, 'sell': False, 'buy_details': '', 'sell_details': ''}
             
@@ -245,7 +326,7 @@ class SignalDetector:
                 signals['sell_details'] = ", ".join(details)
             
             # 保存图表
-            self._save_extended_chart(df_with_indicators, prev_close)
+            self._save_extended_chart()
             
             return signals
             
@@ -253,19 +334,16 @@ class SignalDetector:
             print(f"检测扩展指标信号时出错: {e}")
             return None
 
-    def _save_extended_chart(self, df, prev_close):
+    def _save_extended_chart(self):
         """保存扩展指标图表"""
         try:
-            import os
-            from Investment.T0.indicators.extended_indicators import plot_tdx_intraday
-            from datetime import datetime
-            
+            # 使用昨天的日期进行测试
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            # 获取股票名称
+            from utils.tools import get_stock_name
+            stock_name = get_stock_name(self.stock_code)
             # 调用扩展指标文件中的完整绘图方法
-            stock_code = self.stock_code
-            trade_date = datetime.now().strftime('%Y%m%d')
-            
-            # 直接调用绘图方法
-            plot_tdx_intraday(stock_code, trade_date)
+            plot_extended(self.stock_code, trade_date=trade_date, stock_name=stock_name)
                                
         except Exception as e:
             print(f"保存扩展指标图表时出错: {e}")
@@ -276,44 +354,46 @@ class SignalDetector:
             return None
             
         try:
-            # 计算支撑阻力位
-            df = calculate_support_resistance(df, prev_close)
+            # 直接调用优化后的量价指标分析函数
+            # 使用昨天的日期进行测试
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            # 获取股票名称
+            from utils.tools import get_stock_name
+            stock_name = get_stock_name(self.stock_code)
+            df_with_indicators = analyze_volume_price(self.stock_code, trade_date=trade_date, stock_name=stock_name)
             
-            # 计算资金流向指标
-            df = calculate_fund_flow_indicators(df)
-            
-            # 检测信号
-            df = detect_signals(df)
+            if df_with_indicators is None:
+                return None
             
             signals = {'buy': False, 'sell': False, 'buy_details': '', 'sell_details': ''}
             
             # 检查买入信号（只包含买入相关的信号）
             buy_conditions = (
-                df['买入信号'].any() or 
-                df['主力资金流入'].any()
+                df_with_indicators['买入信号'].any() or 
+                df_with_indicators['主力资金流入'].any()
             )
             
             if buy_conditions:
                 signals['buy'] = True
                 details = []
                 # 仅添加买入相关的详情
-                if df['买入信号'].any():
+                if df_with_indicators['买入信号'].any():
                     details.append("量价买入信号")
-                if df['主力资金流入'].any():
+                if df_with_indicators['主力资金流入'].any():
                     details.append("主力资金流入")
                 signals['buy_details'] = ", ".join(details)
                 
             # 检查卖出信号（只包含卖出相关的信号）
-            if df['卖出信号'].any():
+            if df_with_indicators['卖出信号'].any():
                 signals['sell'] = True
                 details = []
                 # 仅添加卖出相关的详情
-                if df['卖出信号'].any():
+                if df_with_indicators['卖出信号'].any():
                     details.append("量价卖出信号")
                 signals['sell_details'] = ", ".join(details)
             
             # 保存图表
-            self._save_volume_price_chart(df, prev_close)
+            self._save_volume_price_chart()
 
             return signals
             
@@ -321,19 +401,16 @@ class SignalDetector:
             print(f"检测量价指标信号时出错: {e}")
             return None
 
-    def _save_volume_price_chart(self, df, prev_close):
+    def _save_volume_price_chart(self):
         """保存量价指标图表"""
         try:
-            import os
-            from Investment.T0.indicators.volume_price_indicators import analyze_volume_price
-            from datetime import datetime
-            
+            # 使用昨天的日期进行测试
+            trade_date = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            # 获取股票名称
+            from utils.tools import get_stock_name
+            stock_name = get_stock_name(self.stock_code)
             # 调用量价指标文件中的完整分析和绘图方法
-            stock_code = self.stock_code
-            trade_date = datetime.now().strftime('%Y%m%d')
-            
-            # 直接调用分析方法，它会自动绘图并保存
-            analyze_volume_price(stock_code, trade_date)
+            analyze_volume_price(self.stock_code, trade_date=trade_date, stock_name=stock_name)
                                
         except Exception as e:
             print(f"保存量价指标图表时出错: {e}")

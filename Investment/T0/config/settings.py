@@ -4,8 +4,8 @@ import os
 # 项目根目录
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# 股票池配置
-DEFAULT_STOCK_POOL = ['601088']  # 中国神华
+# 股票池配置 - 使用美的集团和招商银行进行测试
+DEFAULT_STOCK_POOL = ['000333', '600036']  # 美的集团、招商银行
 
 # 监控间隔（秒）
 MONITOR_INTERVAL = 60

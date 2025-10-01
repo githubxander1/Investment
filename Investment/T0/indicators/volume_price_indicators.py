@@ -233,7 +233,7 @@ def detect_signals(df):
     return df
 
 
-def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio):
+def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio, stock_name=None):
     """
     绘制量价指标图
     """
@@ -318,7 +318,8 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     ax_price.grid(True, linestyle='--', alpha=0.7)
     
     # 设置标题
-    fig.suptitle(f'{stock_code} 量价指标 - {trade_date}', fontsize=14, y=0.98)
+    display_name = f"{stock_name}({stock_code})" if stock_name else stock_code
+    fig.suptitle(f'{display_name} 量价指标 - {trade_date}', fontsize=14, y=0.98)
     
     # 添加图例
     ax_price.legend(loc='upper left', fontsize=10)
@@ -341,22 +342,25 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
         ax_time.set_xticks(selected_indices)
         ax_time.set_xticklabels([t.strftime('%H:%M') if hasattr(t, 'strftime') else str(t) for t in selected_times])
     
-    plt.subplots_adjust(top=0.95, bottom=0.1, left=0.1, right=0.9)
-    plt.subplots_adjust(top=0.95)
-    
+    plt.rcParams['figure.constrained_layout.use'] = True
+    # plt.tight_layout()  # 注释掉这行以避免警告
+
     # 保存图表到output目录
     output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
     os.makedirs(output_dir, exist_ok=True)
-    chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_量价指标.png')
-    plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
     
+    # 文件名包含股票名称和代码
+    filename_stock_part = f"{stock_name}_{stock_code}" if stock_name else stock_code
+    chart_filename = os.path.join(output_dir, f'{filename_stock_part}_{trade_date}_量价指标.png')
+    plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
+
     # 关闭图形以避免阻塞
     plt.close(fig)
-    
+
     return fig
 
 
-def analyze_volume_price(stock_code, trade_date=None):
+def analyze_volume_price(stock_code, trade_date=None, stock_name=None):
     """
     分析量价关系主函数
     """
@@ -458,7 +462,7 @@ def analyze_volume_price(stock_code, trade_date=None):
         df = detect_signals(df)
         
         # 绘图
-        fig = plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio)
+        fig = plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio, stock_name)
         
         return df
         
@@ -469,19 +473,76 @@ def analyze_volume_price(stock_code, trade_date=None):
         return None
 
 
+# 批量分析函数
+def analyze_volume_price_batch(stock_info, trade_date=None):
+    """
+    批量分析多个股票的量价关系
+    
+    :param stock_info: dict, 股票代码和名称的映射字典，例如 {'000333': '美的集团', '600036': '招商银行'}
+    :param trade_date: str, 交易日期，格式为 'YYYYMMDD'
+    :return: dict, 每只股票的分析结果
+    """
+    results = {}
+    trade_date = trade_date or datetime.now().strftime('%Y%m%d')
+    
+    # 遍历所有股票进行分析
+    for stock_code, stock_name in stock_info.items():
+        print(f"正在分析 {stock_name}({stock_code})...")
+        
+        # 分析并绘图
+        result_df = analyze_volume_price(stock_code, trade_date, stock_name)
+        results[stock_code] = {
+            'name': stock_name,
+            'data': result_df
+        }
+        
+        if result_df is not None:
+            # 保存结果到CSV文件，文件名包含股票名称和代码
+            filename_stock_part = f"{stock_name}_{stock_code}" if stock_name else stock_code
+            
+            # 创建stock_data目录并保存CSV文件
+            stock_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'stock_data')
+            os.makedirs(stock_data_dir, exist_ok=True)
+            csv_file = os.path.join(stock_data_dir, f'{filename_stock_part}_{trade_date}_量价指标分析.csv')
+            result_df.to_csv(csv_file, encoding='utf-8-sig')
+            print(f"结果已保存到: {csv_file}")
+        else:
+            print(f"{stock_name}({stock_code}) 分析失败")
+        
+        print("-" * 50)
+    
+    return results
+
+
 # 主程序
 if __name__ == "__main__":
-    stock_code = '600900'  # 工商银行
+    stock_info = {
+        '000333': '美的集团',
+        '600036': '招商银行'
+    }
+    # stock_code = '000333'  # 工商银行
     trade_date = '20250930'  # 交易日期
     
-    # 分析并绘图
-    result_df = analyze_volume_price(stock_code, trade_date)
+    # 遍历所有股票进行分析并绘图
+    for stock_code, stock_name in stock_info.items():
+        print(f"正在分析 {stock_name}({stock_code})...")
+        
+        # 分析并绘图
+        result_df = analyze_volume_price(stock_code, trade_date, stock_name)
+        
+        if result_df is not None:
+            # 保存结果到CSV文件，文件名包含股票名称和代码
+            filename_stock_part = f"{stock_name}_{stock_code}" if stock_name else stock_code
+            
+            # 创建stock_data目录并保存CSV文件
+            stock_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'stock_data')
+            os.makedirs(stock_data_dir, exist_ok=True)
+            csv_file = os.path.join(stock_data_dir, f'{filename_stock_part}_{trade_date}_量价指标分析.csv')
+            result_df.to_csv(csv_file, encoding='utf-8-sig')
+            print(f"结果已保存到: {csv_file}")
+        else:
+            print(f"{stock_name}({stock_code}) 分析失败")
+        
+        print("-" * 50)
     
-    if result_df is not None:
-        # 保存结果到CSV文件
-        csv_file = f'{stock_code}_{trade_date}_量价指标分析.csv'
-        result_df.to_csv(csv_file, encoding='utf-8-sig')
-        print(f"结果已保存到: {csv_file}")
-        print("分析完成")
-    else:
-        print("分析失败")
+    print("所有股票分析完成")
