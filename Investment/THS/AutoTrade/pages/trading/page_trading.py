@@ -1,8 +1,8 @@
 import time
 import uiautomator2
-from pages.base.page_base import BasePage
-from pages.base.page_common import CommonPage
-from utils.logger import setup_logger
+from Investment.THS.AutoTrade.pages.base.page_base import BasePage
+from Investment.THS.AutoTrade.pages.base.page_common import CommonPage
+from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger('page_trading.log')
 
