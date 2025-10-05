@@ -179,6 +179,14 @@ def detect_signals(df):
     df['卖出信号'] = condition_sell
     
     # 主力资金信号
+    # 确保必要的列存在
+    if '主力' not in df.columns:
+        df['主力'] = 0
+    if '大户' not in df.columns:
+        df['大户'] = 0
+    if '散户' not in df.columns:
+        df['散户'] = 0
+        
     df['主力>大户'] = df['主力'] > df['大户']
     df['大户>散户'] = df['大户'] > df['散户']
     df['C>EXPMA20'] = df['收盘'] > df['收盘'].ewm(span=20, adjust=False).mean()

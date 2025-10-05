@@ -100,7 +100,7 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
     else:
         print("未检测到卖出信号")
 
-        return df
+    return df
 
 
 # ---------------------- 2. 昨收价获取（严格对应通达信 DYNAINFO(3)） ----------------------

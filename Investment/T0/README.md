@@ -2,10 +2,24 @@
 
 一个模块化、可扩展的T0交易策略系统，支持不同指标的应用和配置。
 
+## 回测系统
+
+系统还包含一个完整的回测框架，用于测试和评估各种T0交易策略。详细信息请查看 [回测系统说明](backtest/README_backtest.md)。
+有关回测系统的开发过程和实现细节，请查看 [回测开发文档](BACKTEST_DEVELOPMENT.md)。
+
 ## 项目结构
 
 ```
 T0/
+├── backtest/            # 回测系统模块
+│   ├── __init__.py       # 包初始化文件
+│   ├── config.py         # 回测配置
+│   ├── models.py         # 数据模型
+│   ├── data_loader.py    # 数据加载器
+│   ├── strategies.py     # 策略实现
+│   ├── engine.py         # 回测引擎
+│   ├── main.py           # 回测主程序
+│   └── README_backtest.md # 回测系统说明
 ├── config/              # 配置文件
 │   └── settings.py       # 系统配置
 ├── indicators/          # 指标计算模块
