@@ -2,10 +2,10 @@ import re
 import time
 import uiautomator2 as u2
 
-from pages.base.page_base import BasePage
-from pages.base.page_common import CommonPage
-from utils.logger import setup_logger
-from utils.notification import send_notification
+from Investment.THS.AutoTrade.pages.base.page_base import BasePage
+from Investment.THS.AutoTrade.pages.base.page_common import CommonPage
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger('national_debt.log')
 

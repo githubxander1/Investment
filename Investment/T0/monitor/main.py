@@ -2,17 +2,17 @@
 import time
 import sys
 import os
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 # 添加项目根目录到路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from Investment.T0.config.settings import DEFAULT_STOCK_POOL, MONITOR_INTERVAL
-from Investment.T0.monitor.signal_detector import SignalDetector
-from Investment.T0.monitor.trade_executor import TradeExecutor
-from Investment.T0.utils.logger import setup_logger
-from Investment.T0.utils import tools
-from Investment.THS.AutoTrade.utils.notification import send_notification
+from config.settings import DEFAULT_STOCK_POOL, MONITOR_INTERVAL
+from monitor.signal_detector import SignalDetector
+from monitor.trade_executor import TradeExecutor
+from utils.logger import setup_logger
+from utils import tools
+from THS.AutoTrade.utils.notification import send_notification
 NOTIFICATION_AVAILABLE = True
 
 logger = setup_logger('t0_main')
@@ -22,24 +22,28 @@ class T0Monitor:
     
     def __init__(self, stock_pool=None):
         self.stock_pool = stock_pool if stock_pool else DEFAULT_STOCK_POOL
-        self.detector = SignalDetector(self.stock_pool[0])  # 暂时只监控第一个股票
+        self.detector = None  # 不再在初始化时创建detector
         self.executor = TradeExecutor()
         self.last_trade_date = None
         
     def check_and_reset_daily_signals(self):
         """检查并重置每日信号"""
-        current_date = date.today()
+        # 使用昨天的日期作为交易日期，因为今天是假期
+        current_date = date.today() - timedelta(days=1)
         if self.last_trade_date != current_date:
             self.executor.reset_daily_signals()
-            self.detector.prev_signals = {
-                'resistance_support': {'buy': False, 'sell': False},
-                'extended': {'buy': False, 'sell': False},
-                'volume_price': {'buy': False, 'sell': False}
-            }
+            # 重置所有detector的信号状态
+            for stock_code in self.stock_pool:
+                detector = SignalDetector(stock_code)
+                detector.prev_signals = {
+                    'resistance_support': {'buy': False, 'sell': False},
+                    'extended': {'buy': False, 'sell': False},
+                    'volume_price': {'buy': False, 'sell': False}
+                }
             self.last_trade_date = current_date
             logger.info(f"开始新交易日: {current_date}")
     
-    def process_signals(self, signals):
+    def process_signals(self, signals, stock_code):
         """处理检测到的信号"""
         if not signals:
             return
@@ -61,7 +65,6 @@ class T0Monitor:
             first_buy_signal = buy_signals[0]  # 取第一个买入信号
             indicator = first_buy_signal['indicator']
             details = first_buy_signal['details']
-            stock_code = self.stock_pool[0]
             
             signal_key = f"{indicator}_买入"
             processed_signals.append(signal_key)
@@ -89,7 +92,6 @@ class T0Monitor:
             first_sell_signal = sell_signals[0]  # 取第一个卖出信号
             indicator = first_sell_signal['indicator']
             details = first_sell_signal['details']
-            stock_code = self.stock_pool[0]
             
             signal_key = f"{indicator}_卖出"
             processed_signals.append(signal_key)
@@ -118,25 +120,26 @@ class T0Monitor:
         
         while True:
             # 检查是否为交易时间
-            if not tools.is_trading_time():
-                print("当前非交易时间，等待交易时间开始...")
-                logger.info("当前非交易时间，等待交易时间开始...")
-                tools.wait_until_trading_time()
-                continue
+            # 暂时注释掉交易时间限制，以便测试
+            # if not tools.is_trading_time():
+            #     print("当前非交易时间，等待交易时间开始...")
+            #     logger.info("当前非交易时间，等待交易时间开始...")
+            #     tools.wait_until_trading_time()
+            #     continue
             
             # 检查并重置每日信号
             self.check_and_reset_daily_signals()
             
             # 检查每个股票的信号
             for stock_code in self.stock_pool:
-                if stock_code != self.detector.stock_code:
-                    self.detector = SignalDetector(stock_code)
+                # 为每个股票创建独立的detector
+                detector = SignalDetector(stock_code)
                 
                 try:
-                    signals = self.detector.detect_all_signals()
+                    signals = detector.detect_all_signals()
                     if signals:
                         logger.info(f"检测到 {len(signals)} 个新信号")
-                        self.process_signals(signals)
+                        self.process_signals(signals, stock_code)
                     else:
                         logger.debug(f"未检测到新信号: {stock_code}")
                         print(f"未检测到 {stock_code} 的新信号")
@@ -149,10 +152,11 @@ class T0Monitor:
             time.sleep(MONITOR_INTERVAL)
             
             # 检查是否已收盘
-            if tools.is_market_closed():
-                print("今日交易已结束，等待下一个交易日...")
-                logger.info("今日交易已结束，等待下一个交易日...")
-                tools.wait_until_trading_time()
+            # 暂时注释掉收盘检查
+            # if tools.is_market_closed():
+            #     print("今日交易已结束，等待下一个交易日...")
+            #     logger.info("今日交易已结束，等待下一个交易日...")
+            #     tools.wait_until_trading_time()
     
     def run_once(self):
         """运行一次检测（用于测试）"""
@@ -164,14 +168,14 @@ class T0Monitor:
         
         # 检查每个股票的信号（只运行一次用于测试）
         for stock_code in self.stock_pool:
-            if stock_code != self.detector.stock_code:
-                self.detector = SignalDetector(stock_code)
+            # 为每个股票创建独立的detector
+            detector = SignalDetector(stock_code)
             
             try:
-                signals = self.detector.detect_all_signals()
+                signals = detector.detect_all_signals()
                 if signals:
                     logger.info(f"检测到 {len(signals)} 个新信号")
-                    self.process_signals(signals)
+                    self.process_signals(signals, stock_code)
                 else:
                     logger.debug(f"未检测到新信号: {stock_code}")
                     print("❌ 未检测到任何新信号")

@@ -7,6 +7,14 @@ import pytz
 # 添加项目根目录到路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+# 股票代码和名称映射
+STOCK_NAME_MAPPING = {
+    '000333': '美的集团',
+    '600036': '招商银行',
+    '600900': '长江电力',
+    '601088': '中国神华'
+}
+
 # 假设notification模块存在于项目中
 try:
     from notification import send_notification
@@ -15,6 +23,19 @@ except ImportError:
     def send_notification(title, content):
         """发送通知的占位函数"""
         print(f"通知: {title}\n{content}")
+
+
+def get_stock_name(stock_code):
+    """
+    根据股票代码获取股票名称
+    
+    参数:
+    stock_code: 股票代码
+    
+    返回:
+    str: 股票名称
+    """
+    return STOCK_NAME_MAPPING.get(stock_code, stock_code)
 
 
 def is_trading_time():
@@ -125,15 +146,16 @@ def notify_signal(signal_type, stock_code, price, time_str):
         if isinstance(price, str):
             price = float(price)
             
+        stock_name = get_stock_name(stock_code)
         if signal_type.lower() == 'buy':
-            title = f"买入信号 - {stock_code}"
-            content = f"股票 {stock_code} 在 {time_str} 发出买入信号，价格: {price:.2f}"
+            title = f"买入信号 - {stock_name}({stock_code})"
+            content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出买入信号，价格: {price:.2f}"
         elif signal_type.lower() == 'sell':
-            title = f"卖出信号 - {stock_code}"
-            content = f"股票 {stock_code} 在 {time_str} 发出卖出信号，价格: {price:.2f}"
+            title = f"卖出信号 - {stock_name}({stock_code})"
+            content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出卖出信号，价格: {price:.2f}"
         else:
-            title = f"信号通知 - {stock_code}"
-            content = f"股票 {stock_code} 在 {time_str} 发出 {signal_type} 信号，价格: {price:.2f}"
+            title = f"信号通知 - {stock_name}({stock_code})"
+            content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出 {signal_type} 信号，价格: {price:.2f}"
         
         # 发送通知
         send_notification(title, content)

@@ -1,10 +1,10 @@
 import pandas as pd
 import uiautomator2 as u2
 
-from pages.trading.page_trading import TradingPage
-from utils.logger import setup_logger
-from utils.notification import send_notification
-from pages.base.page_common import CommonPage
+from Investment.THS.AutoTrade.pages.trading.page_trading import TradingPage
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.pages.base.page_common import CommonPage
 
 logger = setup_logger('trade.log')
 
