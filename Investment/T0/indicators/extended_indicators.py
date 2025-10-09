@@ -570,7 +570,6 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                                        arrowprops=dict(arrowstyle='->'), fontsize=10)
         annotation.set_visible(False)
 
-        plt.tight_layout()
         plt.subplots_adjust(top=0.92, bottom=0.1)
 
         # 保存图表到output目录

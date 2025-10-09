@@ -341,9 +341,6 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
         ax_time.set_xticks(selected_indices)
         ax_time.set_xticklabels([t.strftime('%H:%M') if hasattr(t, 'strftime') else str(t) for t in selected_times])
     
-    plt.subplots_adjust(top=0.95, bottom=0.1, left=0.1, right=0.9)
-    plt.subplots_adjust(top=0.95)
-    
     # 保存图表到output目录
     output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
     os.makedirs(output_dir, exist_ok=True)

@@ -5,7 +5,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 股票池配置
-DEFAULT_STOCK_POOL = ['601088']  # 中国神华
+DEFAULT_STOCK_POOL = ['000333']  # 600036招商银行，000333美的集团，600030中信证券
 
 # 监控间隔（秒）
 MONITOR_INTERVAL = 60

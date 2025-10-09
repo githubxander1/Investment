@@ -453,7 +453,6 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         # 使用 constrained_layout 替代 tight_layout 来避免警告
         plt.rcParams['figure.constrained_layout.use'] = True
         # plt.tight_layout()  # 移除这行以避免警告
-        plt.subplots_adjust(top=0.95)
 
         # 保存图表到output目录
         output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
