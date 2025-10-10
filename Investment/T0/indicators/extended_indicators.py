@@ -10,7 +10,7 @@ from scipy.signal import argrelextrema
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
 
-matplotlib.use('TkAgg')  # 使用TkAgg后端，适用于大多数环境
+matplotlib.use('Agg')  # 使用Agg后端，不显示图形界面
 plt.rcParams.update({
     'font.sans-serif': ['SimHei'],
     'axes.unicode_minus': False
@@ -256,7 +256,7 @@ def get_prev_close(stock_code, trade_date):
 # ---------------------- 3. 缓存功能 ----------------------
 def get_cached_data(stock_code, trade_date):
     """从缓存中获取数据"""
-    cache_file = f"stock_data/{stock_code}.csv"
+    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
     if os.path.exists(cache_file):
         try:
             df = pd.read_csv(cache_file)
@@ -276,7 +276,7 @@ def save_data_to_cache(df, stock_code, trade_date):
     # 确保 stock_data 目录存在
     os.makedirs("stock_data", exist_ok=True)
 
-    cache_file = f"stock_data/{stock_code}.csv"
+    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
     try:
         df_reset = df.reset_index()
         df_reset.to_csv(cache_file, index=False)
@@ -335,6 +335,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 只保留指定日期的数据
         target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        df_original = df.copy()  # 保存原始数据
         df = df[df['时间'].dt.date == target_date.date()]
 
         # 过滤掉 11:30 到 13:00 之间的数据
@@ -570,12 +571,18 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                                        arrowprops=dict(arrowstyle='->'), fontsize=10)
         annotation.set_visible(False)
 
-        plt.subplots_adjust(top=0.92, bottom=0.1)
+        # plt.tight_layout()
+        # plt.subplots_adjust(top=0.95, bottom=0.1, left=0.1, right=0.9)
+        
+        # 使用 constrained_layout 替代 tight_layout 来避免警告
+        plt.rcParams['figure.constrained_layout.use'] = True
 
         # 保存图表到output目录
         output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
         os.makedirs(output_dir, exist_ok=True)
         chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_扩展指标.png')
+        
+        # 直接保存，覆盖同名文件
         plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
 
         # 关闭图形以避免阻塞
@@ -593,8 +600,8 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 # ---------------------- 5. 主程序（运行示例） ----------------------
 if __name__ == "__main__":
     # 可以替换为其他股票代码
-    stock_code = '600900'  # 长江电力
-    trade_date = '20250930'  # 交易日期
+    stock_code = '000333'  # 美的集团
+    trade_date = '20251010'  # 交易日期
 
     # 绘制并获取结果
     result_df = plot_tdx_intraday(stock_code, trade_date)

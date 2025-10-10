@@ -100,7 +100,7 @@ pip install -r requirements.txt
 在交易时间内持续运行系统：
 
 ```bash
-python main.py run
+python T0_main.py run
 ```
 
 或
@@ -114,7 +114,7 @@ python run_t0_system.py
 立即运行一次信号检测（用于测试）：
 
 ```bash
-python main.py monitor
+python T0_main.py monitor
 ```
 
 ### 图形界面模式
@@ -122,7 +122,7 @@ python main.py monitor
 启动图形界面监控程序：
 
 ```bash
-python main.py gui
+python T0_main.py gui
 ```
 
 ### 自定义股票池
@@ -130,9 +130,9 @@ python main.py gui
 可以通过命令行参数指定要监控的股票代码：
 
 ```bash
-python main.py run 601398 600900 601728
-python main.py gui 601088
-python main.py monitor 601088 600900
+python T0_main.py run 601398 600900 601728
+python T0_main.py gui 601088
+python T0_main.py monitor 601088 600900
 ```
 
 ### 修改源码配置

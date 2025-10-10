@@ -4,14 +4,14 @@ import os
 # 项目根目录
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# 股票池配置 - 使用美的集团和招商银行进行测试
-DEFAULT_STOCK_POOL = ['000333', '600036']  # # 600036招商银行，000333美的集团，600030中信证券
+# 股票池配置 - 使用美的集团和中信证券进行测试
+DEFAULT_STOCK_POOL = ['000333', '600030']  # 000333美的集团，600030中信证券
 
 # 监控间隔（秒）
 MONITOR_INTERVAL = 60
 
 # 交易数量
-TRADE_QUANTITY = 100
+TRADE_QUANTITY = 200
 
 # 信号记录文件
 SIGNAL_RECORD_FILE = os.path.join(BASE_DIR, 'logs', 'signal_records.txt')

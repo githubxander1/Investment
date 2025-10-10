@@ -49,19 +49,19 @@ class TradeExecutor:
         signal_key = f"{stock_code}_{indicator_name}_buy"
         
         if signal_key in self.executed_signals:
-            logger.info(f"买入信号 {signal_key} 已执行过，跳过")
+            logger.info(f"[{stock_code}] 买入信号 {signal_key} 已执行过，跳过")
             return False
             
         # 执行买入交易逻辑
-        logger.info(f"执行买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
-        print(f"💰 执行买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
+        logger.info(f"[{stock_code}] 执行买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
+        print(f"💰 [{stock_code}] 执行买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
         
         # 如果有AutoTrade交易逻辑，则实际执行交易
         if self.trade_logic and self.common_page:
             try:
                 # 切换到指定账户
-                logger.info(f"切换到账户: {self.account_name}")
-                print(f"🔄 切换到账户: {self.account_name}")
+                logger.info(f"[{stock_code}] 切换到账户: {self.account_name}")
+                print(f"🔄 [{stock_code}] 切换到账户: {self.account_name}")
                 self.common_page.change_account(self.account_name)
                 
                 # 执行买入操作
@@ -72,18 +72,18 @@ class TradeExecutor:
                 )
                 
                 if success:
-                    logger.info(f"买入交易成功: {stock_code} {TRADE_QUANTITY}股")
-                    print(f"✅ 买入交易成功: {stock_code} {TRADE_QUANTITY}股")
+                    logger.info(f"[{stock_code}] 买入交易成功: {stock_code} {TRADE_QUANTITY}股")
+                    print(f"✅ [{stock_code}] 买入交易成功: {stock_code} {TRADE_QUANTITY}股")
                 else:
-                    logger.error(f"买入交易失败: {info}")
-                    print(f"❌ 买入交易失败: {info}")
+                    logger.error(f"[{stock_code}] 买入交易失败: {info}")
+                    print(f"❌ [{stock_code}] 买入交易失败: {info}")
             except Exception as e:
-                logger.error(f"执行买入交易时发生异常: {e}")
-                print(f"❌ 执行买入交易时发生异常: {e}")
+                logger.error(f"[{stock_code}] 执行买入交易时发生异常: {e}")
+                print(f"❌ [{stock_code}] 执行买入交易时发生异常: {e}")
         else:
             # 模拟交易（用于测试）
-            logger.info(f"模拟买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
-            print(f"🧪 模拟买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
+            logger.info(f"[{stock_code}] 模拟买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
+            print(f"🧪 [{stock_code}] 模拟买入交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
         
         # 记录已执行的信号
         self.executed_signals.add(signal_key)
@@ -95,19 +95,19 @@ class TradeExecutor:
         signal_key = f"{stock_code}_{indicator_name}_sell"
         
         if signal_key in self.executed_signals:
-            logger.info(f"卖出信号 {signal_key} 已执行过，跳过")
+            logger.info(f"[{stock_code}] 卖出信号 {signal_key} 已执行过，跳过")
             return False
             
         # 执行卖出交易逻辑
-        logger.info(f"执行卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
-        print(f"💰 执行卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
+        logger.info(f"[{stock_code}] 执行卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
+        print(f"💰 [{stock_code}] 执行卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
         
         # 如果有AutoTrade交易逻辑，则实际执行交易
         if self.trade_logic and self.common_page:
             try:
                 # 切换到指定账户
-                logger.info(f"切换到账户: {self.account_name}")
-                print(f"🔄 切换到账户: {self.account_name}")
+                logger.info(f"[{stock_code}] 切换到账户: {self.account_name}")
+                print(f"🔄 [{stock_code}] 切换到账户: {self.account_name}")
                 self.common_page.change_account(self.account_name)
                 
                 # 执行卖出操作
@@ -118,18 +118,18 @@ class TradeExecutor:
                 )
                 
                 if success:
-                    logger.info(f"卖出交易成功: {stock_code} {TRADE_QUANTITY}股")
-                    print(f"✅ 卖出交易成功: {stock_code} {TRADE_QUANTITY}股")
+                    logger.info(f"[{stock_code}] 卖出交易成功: {stock_code} {TRADE_QUANTITY}股")
+                    print(f"✅ [{stock_code}] 卖出交易成功: {stock_code} {TRADE_QUANTITY}股")
                 else:
-                    logger.error(f"卖出交易失败: {info}")
-                    print(f"❌ 卖出交易失败: {info}")
+                    logger.error(f"[{stock_code}] 卖出交易失败: {info}")
+                    print(f"❌ [{stock_code}] 卖出交易失败: {info}")
             except Exception as e:
-                logger.error(f"执行卖出交易时发生异常: {e}")
-                print(f"❌ 执行卖出交易时发生异常: {e}")
+                logger.error(f"[{stock_code}] 执行卖出交易时发生异常: {e}")
+                print(f"❌ [{stock_code}] 执行卖出交易时发生异常: {e}")
         else:
             # 模拟交易（用于测试）
-            logger.info(f"模拟卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
-            print(f"🧪 模拟卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
+            logger.info(f"[{stock_code}] 模拟卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}, 价格={price}")
+            print(f"🧪 [{stock_code}] 模拟卖出交易: 股票={stock_code}, 指标={indicator_name}, 数量={TRADE_QUANTITY}")
         
         # 记录已执行的信号
         self.executed_signals.add(signal_key)

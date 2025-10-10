@@ -8,7 +8,7 @@ import os
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
 
-matplotlib.use('TkAgg')  # 使用TkAgg后端，适用于大多数环境
+matplotlib.use('Agg')  # 使用Agg后端，不显示图形界面
 plt.rcParams.update({
     'font.sans-serif': ['SimHei'],
     'axes.unicode_minus': False
@@ -341,16 +341,52 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
         ax_time.set_xticks(selected_indices)
         ax_time.set_xticklabels([t.strftime('%H:%M') if hasattr(t, 'strftime') else str(t) for t in selected_times])
     
+    # 使用 constrained_layout 替代 tight_layout 来避免警告
+    plt.rcParams['figure.constrained_layout.use'] = True
+    
     # 保存图表到output目录
     output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
     os.makedirs(output_dir, exist_ok=True)
     chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_量价指标.png')
+    
+    # 直接保存，覆盖同名文件
     plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
     
     # 关闭图形以避免阻塞
     plt.close(fig)
     
     return fig
+
+
+# ---------------------- 3. 缓存功能 ----------------------
+def get_cached_data(stock_code, trade_date):
+    """从缓存中获取数据"""
+    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
+    if os.path.exists(cache_file):
+        try:
+            df = pd.read_csv(cache_file)
+
+            # 检查是否包含时间列
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                return df
+            else:
+                print("缓存文件中未找到时间列")
+        except Exception as e:
+            print(f"读取缓存文件失败: {e}")
+    return None
+
+def save_data_to_cache(df, stock_code, trade_date):
+    """保存数据到缓存"""
+    # 确保 stock_data 目录存在
+    os.makedirs("stock_data", exist_ok=True)
+
+    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
+    try:
+        df_reset = df.reset_index()
+        df_reset.to_csv(cache_file, index=False)
+    except Exception as e:
+        print(f"保存缓存文件失败: {e}")
 
 
 def analyze_volume_price(stock_code, trade_date=None):
@@ -394,11 +430,12 @@ def analyze_volume_price(stock_code, trade_date=None):
         
         # 只保留指定日期的数据
         target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        df_original = df.copy()  # 保存原始数据
         df = df[df['时间'].dt.date == target_date.date()]
         
         # 过滤掉 11:30 到 13:00 之间的数据
         df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
-        
+
         if df.empty:
             print("❌ 所有时间数据均无效")
             return None
@@ -468,8 +505,8 @@ def analyze_volume_price(stock_code, trade_date=None):
 
 # 主程序
 if __name__ == "__main__":
-    stock_code = '600900'  # 工商银行
-    trade_date = '20250930'  # 交易日期
+    stock_code = '000333'  # 工商银行
+    trade_date = '20251010'  # 交易日期
     
     # 分析并绘图
     result_df = analyze_volume_price(stock_code, trade_date)

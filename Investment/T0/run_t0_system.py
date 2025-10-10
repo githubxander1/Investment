@@ -15,7 +15,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.settings import DEFAULT_STOCK_POOL
-from monitor.main import T0Monitor
+from monitor.T0_main import T0Monitor
 from utils.logger import setup_logger
 
 # 设置日志

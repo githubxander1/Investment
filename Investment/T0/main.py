@@ -241,12 +241,12 @@ T0交易系统使用说明:
   help                  显示此帮助信息
 
 示例:
-  python main.py gui              # 启动图形界面监控默认股票
-  python main.py gui 601088       # 以图形界面监控指定股票
-  python main.py monitor          # 启动命令行监控默认股票
-  python main.py monitor 601088 600900  # 监控多个指定股票
-  python main.py run              # 启动实际交易监控默认股票
-  python main.py run 601088       # 启动实际交易监控指定股票
+  python T0_main.py gui              # 启动图形界面监控默认股票
+  python T0_main.py gui 601088       # 以图形界面监控指定股票
+  python T0_main.py monitor          # 启动命令行监控默认股票
+  python T0_main.py monitor 601088 600900  # 监控多个指定股票
+  python T0_main.py run              # 启动实际交易监控默认股票
+  python T0_main.py run 601088       # 启动实际交易监控指定股票
 
 默认监控股票: 601088 (中国神华)
 """
@@ -267,7 +267,7 @@ def main():
         gui_main(stock_codes)
     elif mode == "monitor":
         # 启动命令行监控（测试模式）
-        from monitor.main import main as monitor_main
+        from monitor.T0_main import main as monitor_main
         # 添加测试参数
         sys.argv = [sys.argv[0], '--test'] + (stock_codes if stock_codes else [])
         monitor_main()

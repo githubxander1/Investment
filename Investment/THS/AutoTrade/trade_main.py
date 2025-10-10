@@ -45,6 +45,8 @@ def is_trading_day(date: datetime.date) -> bool:
         return False
 
     # 可以在此添加节假日列表进行排除
+    # 注意：这里的日期需要根据具体年份调整，特别是国庆节等可能变动的假期
+    current_year = date.year
     holidays = [
         (1, 1),     # 元旦
         (2, 10),    # 春节

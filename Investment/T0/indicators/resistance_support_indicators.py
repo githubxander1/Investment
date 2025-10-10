@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 import os
-import akshare as ak
+import time
 
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
 
-matplotlib.use('TkAgg')  # 使用TkAgg后端，适用于大多数环境
+matplotlib.use('Agg')  # 使用Agg后端，不显示图形界面
 plt.rcParams.update({
     'font.sans-serif': ['SimHei'],
     'axes.unicode_minus': False
@@ -100,52 +100,77 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
     else:
         print("未检测到卖出信号")
 
-        return df
+    return df
 
 
 # ---------------------- 2. 昨收价获取（严格对应通达信 DYNAINFO(3)） ----------------------
+# def get_prev_close(stock_code, trade_date):
+#     daily_df = ak.stock_zh_a_daily(symbol=stock_code, start_date=trade_date, end_date=trade_date)
+#     # daily_df = ak.stock_sz_a_spot_em()
+#     print(daily_df)
+#     close = daily_df['close'].iloc[-1]
+#     print("close: ", close)
+
 def get_prev_close(stock_code, trade_date):
     """从日线数据获取前一日收盘价，失败则用分时开盘价替代"""
-    try:
-        trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
-        
-        # 如果是周末，获取上周五的收盘价
-        weekday = trade_date_dt.weekday()  # 0=Monday, 6=Sunday
-        if weekday == 5:  # Saturday
-            trade_date_dt = trade_date_dt - timedelta(days=1)  # Friday
-        elif weekday == 6:  # Sunday
-            trade_date_dt = trade_date_dt - timedelta(days=2)  # Friday
-        
-        # 获取日线数据
-        daily_df = ak.stock_zh_a_hist(
-            symbol=stock_code,
-            period="daily",
-            adjust=""
-        )
-        
-        if daily_df.empty:
-            raise ValueError("无法获取日线数据")
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
+            
+            # 如果是周末，获取上周五的收盘价
+            weekday = trade_date_dt.weekday()  # 0=Monday, 6=Sunday
+            if weekday == 5:  # Saturday
+                trade_date_dt = trade_date_dt - timedelta(days=1)  # Friday
+            elif weekday == 6:  # Sunday
+                trade_date_dt = trade_date_dt - timedelta(days=2)  # Friday
+            
+            # 获取日线数据
+            daily_df = ak.stock_zh_a_hist(
+                symbol=stock_code,
+                period="daily",
+                adjust=""
+            )
 
-        # 转换日期列为datetime类型
-        daily_df['日期'] = pd.to_datetime(daily_df['日期'])
-        
-        # 筛选出在交易日期之前的数据
-        df_before = daily_df[daily_df['日期'] < trade_date_dt]
-        
-        if df_before.empty:
-            raise ValueError("没有找到前一日数据")
 
-        # 获取最近的收盘价（上一个交易日）
-        prev_close = df_before.iloc[-1]['收盘']
-        return prev_close
-    except Exception as e:
-        return None
+            if daily_df.empty:
+                raise ValueError("无法获取日线数据")
+                
+            # 检查是否存在日期列
+            if '日期' not in daily_df.columns:
+                print(f"日线数据中缺少'日期'列，列名包括: {list(daily_df.columns)}")
+                raise ValueError("日线数据格式错误，缺少日期列")
+
+            # 转换日期列为datetime类型
+            daily_df['日期'] = pd.to_datetime(daily_df['日期'])
+
+            # 筛选出在交易日期之前的数据
+            df_before = daily_df[daily_df['日期'] < trade_date_dt]
+
+            if df_before.empty:
+                raise ValueError("没有找到前一日数据")
+
+            # 检查是否存在收盘列
+            if '收盘' not in df_before.columns:
+                print(f"日线数据中缺少'收盘'列，列名包括: {list(df_before.columns)}")
+                raise ValueError("日线数据格式错误，缺少收盘列")
+
+            # 获取最近的收盘价（上一个交易日）
+            prev_close = df_before.iloc[-1]['收盘']
+            return prev_close
+        except Exception as e:
+            if attempt == max_retries - 1:
+                print(f"获取昨收价失败，最后一次尝试出错: {e}")
+                return None
+            else:
+                print(f"获取昨收价时出错: {e}，正在重试... (第{attempt+1}次)")
+                time.sleep(3)  # 等待3秒后重试
 
 
 # ---------------------- 3. 缓存功能 ----------------------
 def get_cached_data(stock_code, trade_date):
     """从缓存中获取数据"""
-    cache_file = f"stock_data/{stock_code}.csv"
+    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
     if os.path.exists(cache_file):
         try:
             df = pd.read_csv(cache_file)
@@ -167,7 +192,7 @@ def save_data_to_cache(df, stock_code, trade_date):
     # 确保 stock_data 目录存在
     os.makedirs("stock_data", exist_ok=True)
 
-    cache_file = f"stock_data/{stock_code}.csv"
+    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
     try:
         df_reset = df.reset_index()
         df_reset.to_csv(cache_file, index=False)
@@ -224,6 +249,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 只保留指定日期的数据，不延伸到今天
         target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        df_original = df.copy()  # 保存原始数据
         df = df[df['时间'].dt.date == target_date.date()]
 
         # 过滤掉 11:30 到 13:00 之间的数据
@@ -257,7 +283,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         prev_close = get_prev_close(stock_code, trade_date)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
-        
+
         # 计算指标
         df = df.ffill().bfill()  # 填充缺失值
         df = calculate_tdx_indicators(df, prev_close)
@@ -458,6 +484,8 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
         os.makedirs(output_dir, exist_ok=True)
         chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_阻力支撑指标.png')
+        
+        # 直接保存，覆盖同名文件
         plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
 
         # 关闭图形以避免阻塞
@@ -474,8 +502,11 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
 # ---------------------- 5. 主程序（运行示例） ----------------------
 if __name__ == "__main__":
-    stock_code = '600900'  # 长江电力
-    trade_date = '20250930'  # 交易日期
+    stock_code = '600030'  #
+    trade_date = '20251010'  # 交易日期
+
+    # pre = get_prev_close(stock_code, trade_date)
+    # print(f"前收盘价: {pre}")
 
     # 绘制并获取结果
     result_df = plot_tdx_intraday(stock_code, trade_date)
@@ -484,3 +515,12 @@ if __name__ == "__main__":
     if result_df is not None:
         csv_file = f'{stock_code}_{trade_date}_通达信分时信号.csv'
         result_df.to_csv(csv_file, encoding='utf-8-sig')
+        print(f"结果已保存到: {csv_file}")
+
+        # 显示保存的信号统计
+        signal_stats = {
+            'cross_support': result_df['cross_support'].sum(),
+            'longcross_support': result_df['longcross_support'].sum(),
+            'longcross_resistance': result_df['longcross_resistance'].sum()
+        }
+        print(f"信号统计: {signal_stats}")
