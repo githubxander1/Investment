@@ -33,7 +33,7 @@ account_update_needed = True
 class CombinationHoldingProcessor:
     def __init__(self):
         self.strategy_name = '逻辑为王'
-        self.account_name = "中山证券"
+        self.account_name = "中泰证券"
         self.trader = TradeLogic()
         self.common_page = self.trader.common_page
 

@@ -24,35 +24,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\T0\indicators\stock_data\000333.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Investment\T0\indicators\stock_data\000333_20251010.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\indicators\stock_data\600036.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\monitor\stock_data\000333.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\monitor\stock_data\600030.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

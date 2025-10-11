@@ -16,8 +16,8 @@ except ImportError:
     TradeLogic = None
     CommonPage = None
 
-from config.settings import TRADE_QUANTITY
-from utils.logger import setup_logger
+from Investment.T0.config.settings import TRADE_QUANTITY
+from Investment.T0.utils.logger import setup_logger
 
 logger = setup_logger('trade_executor')
 
@@ -27,7 +27,7 @@ class TradeExecutor:
     def __init__(self):
         # 这里可以初始化与交易相关的配置
         self.executed_signals = set()  # 记录已执行的信号
-        self.account_name = "中泰证券"  # 默认使用中泰证券账户
+        self.account_name = "长城证券"
         
         # 初始化交易逻辑（如果AutoTrade可用）
         if AUTO_TRADE_AVAILABLE:
