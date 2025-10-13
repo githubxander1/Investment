@@ -10,9 +10,13 @@ from PIL import Image
 import cv2
 import pytesseract
 
-from config.settings import Account_holding_file, account_xml_file
-from utils.logger import setup_logger
-from pages1.page_common import CommonPage
+from Investment.THS.AutoTrade.config.settings import account_xml_file, Account_holding_file
+from Investment.THS.AutoTrade.pages import CommonPage
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+
+# from config.settings import Account_holding_file, account_xml_file
+# from utils.logger import setup_logger
+# from Investment.THS.AutoTrade.pages.page_common import CommonPage
 
 logger = setup_logger("account_info.log")  # 创建日志实例
 

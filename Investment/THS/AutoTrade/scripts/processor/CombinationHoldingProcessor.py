@@ -33,7 +33,7 @@ account_update_needed = True
 class CombinationHoldingProcessor:
     def __init__(self):
         self.strategy_name = '逻辑为王'
-        self.account_name = "中泰证券"
+        self.account_name = "川财证券"
         self.trader = TradeLogic()
         self.common_page = self.trader.common_page
 
@@ -131,9 +131,21 @@ class CombinationHoldingProcessor:
         
         if account_summary_df is not None and not account_summary_df.empty:
             if '总资产' in account_summary_df.columns:
-                account_asset = float(str(account_summary_df['总资产'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+                # 修复：正确处理可能包含逗号的数字字符串
+                total_asset_text = str(account_summary_df['总资产'].iloc[0]).replace(',', '')
+                try:
+                    account_asset = float(total_asset_text) if not account_summary_df.empty else 0.0
+                except ValueError:
+                    logger.warning(f"无法将总资产转换为浮点数: {total_asset_text}")
+                    account_asset = 0.0
             if '可用' in account_summary_df.columns:
-                account_balance = float(str(account_summary_df['可用'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+                # 修复：正确处理可能包含逗号的数字字符串
+                available_text = str(account_summary_df['可用'].iloc[0]).replace(',', '')
+                try:
+                    account_balance = float(available_text) if not account_summary_df.empty else 0.0
+                except ValueError:
+                    logger.warning(f"无法将可用金额转换为浮点数: {available_text}")
+                    account_balance = 0.0
         
         # 从账户持仓数据中提取股票信息
         stock_available = 0

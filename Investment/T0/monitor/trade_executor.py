@@ -27,7 +27,7 @@ class TradeExecutor:
     def __init__(self):
         # 这里可以初始化与交易相关的配置
         self.executed_signals = set()  # 记录已执行的信号
-        self.account_name = "长城证券"
+        self.account_name = "中泰证券"
         
         # 初始化交易逻辑（如果AutoTrade可用）
         if AUTO_TRADE_AVAILABLE:

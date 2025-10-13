@@ -41,6 +41,14 @@ class TradeLogic:
 
             # 如果提供了新比例，则按比例计算买入金额
             if new_ratio is not None:
+                # 确保new_ratio是数值类型
+                try:
+                    new_ratio = float(new_ratio)
+                except (ValueError, TypeError):
+                    logger.warning(f"new_ratio转换为数值失败: {new_ratio}")
+                    new_ratio = None
+            
+            if new_ratio is not None and new_ratio > 0:
                 # 计算目标金额 = 账户总资产 * 新比例% / 100 （因为new_ratio是百分比）
                 target_amount = account_asset * float(new_ratio) / 100
                 logger.info(f"目标投资金额: {account_asset} * {new_ratio}% = {target_amount}")
