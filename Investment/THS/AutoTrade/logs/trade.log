@@ -1,0 +1,192 @@
+[32m2025-10-10 10:58:26 - INFO - 全部卖出[0m
+[32m2025-10-10 10:58:44 - INFO - 卖出 东材科技 800股 False 最新:[0m
+[32m2025-10-10 10:58:44 - INFO - 目标投资金额: 119699.69 * 33.0% = 39500.8977[0m
+[32m2025-10-10 10:58:44 - INFO - 计算股数: 39500.8977 / 16.13 = 2448[0m
+[32m2025-10-10 10:58:44 - INFO - 计算买入股数: 2400[0m
+[32m2025-10-10 13:35:34 - INFO - 卖出 600030 200股 False 最新:[0m
+[32m2025-10-10 14:39:16 - INFO - 卖出 000333 200股 False 最新:[0m
+[32m2025-10-10 14:39:39 - INFO - 卖出 600030 200股 False 最新:[0m
+[32m2025-10-10 15:31:43 - INFO - 卖出 000333 200股 False 最新:[0m
+[32m2025-10-10 15:32:17 - INFO - 买入 600030 200股 False 最新:[0m
+[32m2025-10-10 16:20:07 - INFO - 卖出 000333 200股 False 最新:[0m
+[32m2025-10-13 09:35:27 - INFO - 全部卖出[0m
+[32m2025-10-13 10:10:49 - INFO - 全部卖出[0m
+[31m2025-10-13 10:10:58 - ERROR - 卖出 东材科技 800 股失败: [0m
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 300, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\util\retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 300, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 113, in _http_request
+    r = requests.request(method, url, json=data, timeout=timeout, headers=headers)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\adapters.py", line 682, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 141, in _jsonrpc_call
+    r = _http_request(dev, "POST", "/jsonrpc/0", payload, timeout=timeout, print_request=print_request)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 126, in _http_request
+    raise HTTPError(f"HTTP request failed: {e}") from e
+uiautomator2.exceptions.HTTPError: HTTP request failed: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 256, in operate_stock
+    self.trading_page.click_submit_button(operation)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 328, in click_submit_button
+    if submit_button.exists:
+       ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 91, in __bool__
+    return self.__nonzero__()
+           ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\utils.py", line 87, in __nonzero__
+    return self.uiobject.jsonrpc.exist(self.uiobject.selector)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 282, in jsonrpc_call
+    self.stop_uiautomator()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 272, in stop_uiautomator
+    if not self._check_alive():
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 258, in _check_alive
+    response = _http_request(self._dev, "GET", "/ping")
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 91, in _http_request
+    lport = dev.forward_port(9008)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 339, in forward_port
+    self.forward("tcp:" + str(local_port), remote)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 324, in forward
+    c = self.open_transport(cmd)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_device_base.py", line 75, in open_transport
+    c.check_okay()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\_adb.py", line 192, in check_okay
+    raise AdbError(self.read_string_block())
+adbutils.errors.AdbError
+[32m2025-10-13 10:10:58 - INFO - 目标投资金额: 119699.69 * 31.0% = 37106.903900000005[0m
+[32m2025-10-13 10:10:58 - INFO - 计算股数: 37106.903900000005 / 14.8 = 2507[0m
+[32m2025-10-13 10:10:58 - INFO - 计算买入股数: 2500[0m
+[32m2025-10-13 10:21:35 - INFO - 全部卖出[0m
+[31m2025-10-13 10:22:08 - ERROR - 卖出 东材科技 800 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 254, in operate_stock
+    self.trading_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 268, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-10-13 10:22:08 - INFO - 目标投资金额: 119699.69 * 31.0% = 37106.903900000005[0m
+[32m2025-10-13 10:22:08 - INFO - 计算股数: 37106.903900000005 / 14.79 = 2508[0m
+[32m2025-10-13 10:22:08 - INFO - 计算买入股数: 2500[0m
+[32m2025-10-13 10:22:24 - INFO - 买入 豪能股份 2500股 False 最新:[0m
+[32m2025-10-13 14:01:51 - INFO - 全部卖出[0m
+[32m2025-10-13 14:06:31 - INFO - 全部卖出[0m
+[32m2025-10-13 14:46:43 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:46:43 - INFO - 计算股数: 0.0 / 18.5 = 0[0m
+[33m2025-10-13 14:46:43 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:46:43 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:46:43 - INFO - 计算股数: 0.0 / 22.77 = 0[0m
+[33m2025-10-13 14:46:43 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:47:24 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:47:24 - INFO - 计算股数: 0.0 / 18.51 = 0[0m
+[33m2025-10-13 14:47:24 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:47:24 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:47:24 - INFO - 计算股数: 0.0 / 22.78 = 0[0m
+[33m2025-10-13 14:47:24 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:48:12 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:48:12 - INFO - 计算股数: 0.0 / 18.52 = 0[0m
+[33m2025-10-13 14:48:12 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:48:12 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:48:12 - INFO - 计算股数: 0.0 / 22.77 = 0[0m
+[33m2025-10-13 14:48:12 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:49:00 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:49:00 - INFO - 计算股数: 0.0 / 18.53 = 0[0m
+[33m2025-10-13 14:49:00 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-13 14:49:00 - INFO - 目标投资金额: 0.0 * 33.0% = 0.0[0m
+[32m2025-10-13 14:49:00 - INFO - 计算股数: 0.0 / 22.78 = 0[0m
+[33m2025-10-13 14:49:00 - WARNING - 计算出的买入股数不足100股[0m
