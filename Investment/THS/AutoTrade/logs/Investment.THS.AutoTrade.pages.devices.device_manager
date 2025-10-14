@@ -22,3 +22,36 @@
 [32m2025-10-13 14:46:37 - INFO - 启动App成功: com.hexin.plat.android[0m
 [32m2025-10-13 15:32:23 - INFO - 连接设备: emulator-5554[0m
 [32m2025-10-13 15:32:24 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 09:27:43 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 09:27:44 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 09:28:34 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 09:28:34 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 09:33:34 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 09:33:34 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 09:47:07 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 09:47:07 - INFO - 启动App成功: com.hexin.plat.android[0m
+[31m2025-10-14 10:13:25 - ERROR - 连接设备失败: Can't find any android device/emulator[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\devices\device_manager.py", line 20, in connect_to_device
+    self.device = u2.connect()
+                  ~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 1103, in connect
+    return connect_usb(serial)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 1118, in connect_usb
+    serial = adbutils.adb.device()
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\adbutils\__init__.py", line 102, in device
+    raise AdbError("Can't find any android device/emulator")
+adbutils.errors.AdbError: Can't find any android device/emulator
+[31m2025-10-14 10:13:25 - ERROR - 设备连接失败[0m
+[32m2025-10-14 10:18:31 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 10:18:32 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 10:43:53 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 10:43:54 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 13:36:22 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 13:36:23 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 13:36:55 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 13:36:56 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 13:42:57 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 13:42:57 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-14 13:51:47 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-14 13:51:47 - INFO - 启动App成功: com.hexin.plat.android[0m

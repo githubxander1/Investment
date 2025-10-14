@@ -4,7 +4,7 @@ import pandas as pd
 from dateutil.utils import today
 
 # from utils.common_config import EXPECTED_COLUMNS
-from utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.logger import setup_logger
 logger = setup_logger('data_process.log')
 
 

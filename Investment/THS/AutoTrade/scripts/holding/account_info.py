@@ -357,7 +357,15 @@ class AccountInfo:
 
     # 获取持仓股票信息
     def extract_stock_info(self, max_swipe_attempts=40):
-        """提取持仓股票信息，支持滑动加载更多，并过滤无效条目"""
+        """
+        提取持仓股票信息，支持滑动加载更多，并过滤无效条目
+        
+        Args:
+            max_swipe_attempts: 最大滑动尝试次数
+            
+        Returns:
+            pandas.DataFrame: 持仓股票信息
+        """
         logger.info("-" * 50)
         logger.info('开始：获取账户持仓信息')
 
@@ -369,11 +377,11 @@ class AccountInfo:
         
         if not df.empty:
             # 添加代码列（如果不存在）
-            if '代码' not in df.columns:
-                df['代码'] = df['股票名称'].apply(self._get_stock_code_by_name)
+            # if '代码' not in df.columns:
+            #     df['代码'] = df['股票名称'].apply(self._get_stock_code_by_name)
             
             # 处理缺失值
-            numeric_columns = ['市值', '持仓', '可用', '盈亏', '盈亏率', '成本价', '当前价', '代码']
+            numeric_columns = ['市值', '持仓', '可用', '盈亏', '盈亏率', '成本价', '当前价']
             for col in numeric_columns:
                 if col in df.columns and col != '代码':  # 代码列不需要数值处理
                     # 将无法转换为数字的值替换为NaN
@@ -381,26 +389,8 @@ class AccountInfo:
                     # 用列的均值填充NaN值
                     df[col] = df[col].fillna(df[col].mean() if not df[col].isna().all() else 0)
             
-            # 计算并添加持仓占比列
-            try:
-                # 获取账户总资产
-                header_info = self.extract_header_info()
-                if not header_info.empty:
-                    total_asset_text = header_info.iloc[0]["总资产"]
-                    if total_asset_text and total_asset_text != "None":
-                        total_asset = float(str(total_asset_text).replace(',', ''))
-                        logger.info(f"账户总资产: {total_asset}")
-                        
-                        # 计算每只股票的持仓占比，并四舍五入取整
-                        if '市值' in df.columns:
-                            df['持仓占比'] = (df['市值'] / total_asset * 100).round(0).astype(int)
-                            logger.info("已计算持仓占比并取整")
-                    else:
-                        logger.warning("无法获取账户总资产信息，无法计算持仓占比")
-                else:
-                    logger.warning("无法获取账户汇总信息，无法计算持仓占比")
-            except Exception as e:
-                logger.error(f"计算持仓占比时出错: {e}")
+            # 注意：这里不再重复调用extract_header_info获取总资产
+            # 持仓占比的计算应该在调用此方法的上层进行，使用已获取的正确总资产数据
             
             # 从1开始索引
             df.index = range(1, len(df) + 1)
@@ -881,13 +871,19 @@ class AccountInfo:
             logger.error(f"获取 {account_name} 账户数据时出错: {e}", exc_info=True)
             return False
 
-        logger.info(f"完成：✅ {account_name} 账户持仓信息已更新")
+        logger.info(f"完成：✅ {account_name} 账户持仓信息已更新，持仓数据:\n{stocks_df}")
         return header_info_df, stocks_df
 
 
 if __name__ == '__main__':
-    account = AccountInfo()
-    account.update_holding_info_for_account("中山证券")
+    account_info = AccountInfo()
+    account_name = "川财证券"
+    # account.update_holding_info_for_account("川财证券")
+    header_info_df, stocks_df = account_info.update_holding_info_for_account(account_name)
+    # 打印header_info_df里的总资产和stocks_df里的股票名称为中国卫星的列，并打印’可用‘和持仓占比
+    print(header_info_df[['总资产']])
+    print(stocks_df[['股票名称', '可用']])
+
     # account.update_holding_info_all()
     # account_asset, account_balance, stock_available, stock_ratio, stock_price = account.get_account_summary_info_from_file(
     #     Account_holding_file, "中泰证券", "飞龙股份"

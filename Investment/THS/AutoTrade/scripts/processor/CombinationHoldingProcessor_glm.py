@@ -1,6 +1,5 @@
 import datetime
 import os
-import json
 from pprint import pprint
 
 import pandas as pd
@@ -37,7 +36,6 @@ class CombinationHoldingProcessor:
         self.account_name = "川财证券"
         self.trader = TradeLogic()
         self.common_page = self.trader.common_page
-        self.account_info = AccountInfo()
 
     # 获取单个组合的持仓数据
     def get_single_holding_data(self, portfolio_id):
@@ -133,11 +131,24 @@ class CombinationHoldingProcessor:
         
         # 修复：正确处理account_summary_df，确保即使它是None也能正常处理
         if account_summary_df is not None and not account_summary_df.empty:
-            logger.debug(f"账户汇总数据内容:\n{account_summary_df.to_string()}")
             if '总资产' in account_summary_df.columns:
-                account_asset = float(str(account_summary_df['总资产'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+                # 修复：正确处理可能包含逗号的数字字符串
+                total_asset_text = str(account_summary_df['总资产'].iloc[0]).replace(',', '')
+                try:
+                    account_asset = float(total_asset_text) if not account_summary_df.empty else 0.0
+                except ValueError:
+                    logger.warning(f"无法将总资产转换为浮点数: {total_asset_text}")
+                    account_asset = 0.0
             if '可用' in account_summary_df.columns:
-                account_balance = float(str(account_summary_df['可用'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+                # 修复：正确处理可能包含逗号的数字字符串
+                available_text = str(account_summary_df['可用'].iloc[0]).replace(',', '')
+                try:
+                    account_balance = float(available_text) if not account_summary_df.empty else 0.0
+                except ValueError:
+                    logger.warning(f"无法将可用金额转换为浮点数: {available_text}")
+                    account_balance = 0.0
+        else:
+            logger.warning("账户汇总数据为空或不存在")
         
         # 从账户持仓数据中提取股票信息
         stock_available = 0
@@ -183,32 +194,14 @@ class CombinationHoldingProcessor:
         # 计算买入或卖出股数
         try:
             if operation_type == '买入':
-                # 买入时，计算需要增加的股数（目标比例 - 当前比例）
-                target_ratio = new_ratio
-                current_ratio = stock_ratio
-                if target_ratio > current_ratio:
-                    # 计算需要增加的比例
-                    ratio_diff = target_ratio - current_ratio
-                    volume = self.trader.calculate_buy_volume(account_asset, stock_price, ratio_diff)
-                    logger.info(f"买入 {stock_name}，股数: {volume}")
-                    return volume
-                else:
-                    logger.info(f"当前持仓比例 {current_ratio}% 已达到或超过目标比例 {target_ratio}%，无需买入")
-                    return 0
+                volume = self.trader.calculate_buy_volume(account_asset, stock_price, new_ratio)
+                logger.info(f"买入 {stock_name}，股数: {volume}")
+                return volume
 
             elif operation_type == '卖出':
-                # 卖出时，计算需要减少的股数（当前比例 - 目标比例）
-                target_ratio = new_ratio
-                current_ratio = stock_ratio
-                if target_ratio < current_ratio:
-                    # 计算需要减少的比例
-                    ratio_diff = current_ratio - target_ratio
-                    volume = self.trader.calculate_sell_volume(account_asset, stock_available, stock_price, target_ratio)
-                    logger.info(f"卖出 {stock_name}，股数: {volume}")
-                    return volume
-                else:
-                    logger.info(f"当前持仓比例 {current_ratio}% 已达到或低于目标比例 {target_ratio}%，无需卖出")
-                    return 0
+                volume = self.trader.calculate_sell_volume(account_asset, stock_available, stock_price, new_ratio)
+                logger.info(f"卖出 {stock_name}，股数: {volume}")
+                return volume
                 
             else:
                 logger.error(f"不支持的操作类型: {operation_type}")
@@ -216,8 +209,6 @@ class CombinationHoldingProcessor:
                 
         except Exception as e:
             logger.error(f"计算交易股数时发生错误: {e}")
-            import traceback
-            logger.error(f"详细错误信息: {traceback.format_exc()}")
             return None
 
     def _update_strategy_holdings(self):
@@ -247,91 +238,54 @@ class CombinationHoldingProcessor:
         logger.info(f"策略持仓数据:{len(strategy_holdings_df)}\n{strategy_holdings_df}")
         return strategy_holdings_df
 
-    # def _update_account_holdings(self):
-    #     """
-    #     更新账户持仓数据
-    #     """
-    #     account_holdings_df = pd.DataFrame()
-    #     account_summary_df = pd.DataFrame()
-    #
-    #     # 判断是否需要更新账户数据
-    #     # if account_update_needed:
-    #     logger.info("🔄 开始更新账户数据...")
-    #     account_info = AccountInfo()
-    #     update_success = True
-    #
-    #     # 更新指定账户
-    #     logger.info(f"正在更新账户 {self.account_name} 的数据...")
-    #     header_info_df, stocks_df = account_info.update_holding_info_for_account(self.account_name)
-    #     if header_info_df is None or stocks_df is None:
-    #         logger.warning(f"⚠️ 账户 {self.account_name} 数据更新失败")
-    #         update_success = False
-    #
-    #     # 处理更新结果
-    #     logger.info("✅ 所需账户数据更新完成")
-    #     # 重置更新标志
-    #     account_update_needed = False
-    #     # 从文件中读取更新后的数据
-    #     try:
-    #         if os.path.exists(Account_holding_file):
-    #             account_holdings_df = pd.read_excel(Account_holding_file, sheet_name=self.account_name)
-    #             # 修复：正确读取账户汇总信息
-    #             # 原代码中读取的是整个账户汇总表，但我们需要筛选出特定账户的数据
-    #             full_account_summary_df = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
-    #             logger.debug(f"完整账户汇总数据:\n{full_account_summary_df}")
-    #             # 确保账户名字段存在并且匹配
-    #             if '账户名' in full_account_summary_df.columns:
-    #                 account_summary_df = full_account_summary_df[full_account_summary_df['账户名'] == self.account_name]
-    #             else:
-    #                 # 如果没有账户名列，尝试使用第一列
-    #                 first_col = full_account_summary_df.columns[0]
-    #                 account_summary_df = full_account_summary_df[full_account_summary_df[first_col] == self.account_name]
-    #
-    #             # 检查是否成功获取到账户汇总数据
-    #             if account_summary_df.empty:
-    #                 logger.warning(f"未能从账户汇总数据中找到账户 {self.account_name} 的信息")
-    #                 # 尝试从账户表头数据中获取
-    #                 try:
-    #                     header_sheet_name = f"{self.account_name}_表头"
-    #                     if header_sheet_name in pd.ExcelFile(Account_holding_file).sheet_names:
-    #                         header_df = pd.read_excel(Account_holding_file, sheet_name=header_sheet_name)
-    #                         if not header_df.empty:
-    #                             # 创建一个模拟的账户汇总数据
-    #                             account_summary_data = {
-    #                                 '账户名': [self.account_name],
-    #                                 '总资产': [header_df.iloc[0]['总资产'] if '总资产' in header_df.columns else '0'],
-    #                                 '可用': [header_df.iloc[0]['可用'] if '可用' in header_df.columns else '0']
-    #                             }
-    #                             account_summary_df = pd.DataFrame(account_summary_data)
-    #                             logger.info(f"从 {header_sheet_name} 创建了账户汇总数据")
-    #                 except Exception as e:
-    #                     logger.error(f"尝试从表头数据创建账户汇总数据失败: {e}")
-    #             else:
-    #                 logger.info(f"成功获取账户 {self.account_name} 的汇总信息")
-    #                 logger.debug(f"账户汇总数据:\n{account_summary_df}")
-    #         else:
-    #             logger.warning("账户持仓文件不存在")
-    #             account_holdings_df = pd.DataFrame()
-    #             account_summary_df = pd.DataFrame()
-    #     except Exception as e:
-    #         logger.error(f"读取账户持仓数据失败: {e}")
-    #         import traceback
-    #         logger.error(f"详细错误信息: {traceback.format_exc()}")
-    #         account_holdings_df = pd.DataFrame()
-    #         account_summary_df = pd.DataFrame()
-    #     # else:
-    #     #     logger.warning("⚠️ 账户数据更新失败，将继续使用现有数据执行交易")
-    #     return None, None
-    #
-    #     # 添加额外的调试信息
-    #     logger.info(f"返回的账户持仓数据框形状: {account_holdings_df.shape}")
-    #     logger.info(f"返回的账户汇总数据框形状: {account_summary_df.shape}")
-    #     if not account_summary_df.empty:
-    #         logger.debug(f"账户汇总数据内容:\n{account_summary_df.to_string()}")
-    #     else:
-    #         logger.warning("账户汇总数据框为空")
-    #
-    #     return account_summary_df, account_holdings_df
+    def _update_account_holdings(self):
+        """
+        更新账户持仓数据
+        """
+        global account_update_needed
+        account_holdings_df = pd.DataFrame()
+        account_summary_df = pd.DataFrame()
+        
+        # 判断是否需要更新账户数据
+        # if account_update_needed:
+        logger.info("🔄 开始更新账户数据...")
+        account_info = AccountInfo()
+        update_success = True
+
+        # 更新指定账户
+        logger.info(f"正在更新账户 {self.account_name} 的数据...")
+        # 修复：正确处理update_holding_info_for_account的返回值
+        update_result = account_info.update_holding_info_for_account(self.account_name)
+        if update_result is False:
+            logger.warning(f"⚠️ 账户 {self.account_name} 数据更新失败")
+            update_success = False
+
+        # 处理更新结果
+        if update_success and update_result is not False:
+            logger.info("✅ 所需账户数据更新完成")
+            # 重置更新标志
+            account_update_needed = False
+            # 从文件中读取更新后的数据
+            try:
+                if os.path.exists(Account_holding_file):
+                    account_holdings_df = pd.read_excel(Account_holding_file, sheet_name=self.account_name)
+                    # 修复：正确读取账户汇总信息
+                    # 原代码中读取的是整个账户汇总表，但我们需要筛选出特定账户的数据
+                    full_account_summary_df = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
+                    account_summary_df = full_account_summary_df[full_account_summary_df['账户名'] == self.account_name]
+                else:
+                    logger.warning("账户持仓文件不存在")
+                    account_holdings_df = pd.DataFrame()
+                    account_summary_df = pd.DataFrame()
+            except Exception as e:
+                logger.error(f"读取账户持仓数据失败: {e}")
+                account_holdings_df = pd.DataFrame()
+                account_summary_df = pd.DataFrame()
+        else:
+            logger.warning("⚠️ 账户数据更新失败，将继续使用现有数据执行交易")
+            return None, None
+
+        return account_summary_df, account_holdings_df
 
     def _extract_strategy_holdings(self, strategy_holdings_df):
         """
@@ -536,10 +490,6 @@ class CombinationHoldingProcessor:
             logger.info(f"✅ 已切换到账户: {self.account_name}")
 
             # 调用交易逻辑
-            # 修改：使用AutoGLM执行交易而不是直接执行
-            # self._execute_trade_via_autoglm(self.account_name, operation, stock_name, volume)
-
-            # 调用交易逻辑
             status, info = self.trader.operate_stock(operation, stock_name, volume)
 
             # 检查交易是否成功执行
@@ -583,10 +533,15 @@ class CombinationHoldingProcessor:
                 self.strategy_name, stock_name, new_ratio, operation)
             logger.info(f"🛠️ 买入 {stock_name}，目标比例:{new_ratio}，交易数量:{volume}")
 
-            # 如果交易数量为None或小于等于0，则跳过
-            if volume is None or volume <= 0:
+            # 如果交易数量为None则跳过
+            if volume is None:
                 logger.warning(f"⚠️ {operation} {stock_name} 交易数量无效({volume})，跳过交易")
                 continue
+
+            # 修改：允许交易数量为0的情况，让调用者决定是否执行
+            if volume <= 0:
+                logger.info(f"ℹ️ {operation} {stock_name} 计算出交易数量为{volume}，根据策略决定是否执行")
+                # 继续执行，让operate_stock方法决定是否执行交易
 
             logger.info(
                 f"🛠️ 开始处理: {operation} {stock_name} 目标比例:{new_ratio} 策略:{self.strategy_name} 账户:{self.account_name}")
@@ -595,9 +550,6 @@ class CombinationHoldingProcessor:
             self.common_page.change_account(self.account_name)
             logger.info(f"✅ 已切换到账户: {self.account_name}")
 
-            # 调用交易逻辑
-            # 修改：使用AutoGLM执行交易而不是直接执行
-            # self._execute_trade_via_autoglm(self.account_name, operation, stock_name, volume)
             # 调用交易逻辑
             status, info = self.trader.operate_stock(operation, stock_name, volume)
 
@@ -614,49 +566,6 @@ class CombinationHoldingProcessor:
             
         return any_trade_executed
 
-    def _execute_trade_via_autoglm(self, account_name, operation, stock_name, volume):
-        """
-        通过AutoGLM执行交易指令
-        
-        Args:
-            account_name: 账户名称
-            operation: 操作类型("买入"或"卖出")
-            stock_name: 股票名称
-            volume: 交易数量
-        """
-        try:
-            # 格式化交易指令
-            # 格式：打开同花顺，用xx证券执行xx（买入或卖出）xxx(股票)，xx股
-            instruction = f"打开同花顺，用{account_name}执行{operation}{stock_name}{volume}股"
-            logger.info(f"准备通过AutoGLM执行指令: {instruction}")
-            
-            # 将交易指令写入文件，供AutoGLM读取并执行
-            instruction_data = {
-                "account": account_name,
-                "operation": operation,
-                "stock": stock_name,
-                "volume": volume
-            }
-            
-            # 写入指令文件
-            instruction_file = "trade_instructions.json"
-            instructions = []
-            if os.path.exists(instruction_file):
-                with open(instruction_file, 'r', encoding='utf-8') as f:
-                    try:
-                        instructions = json.load(f)
-                    except:
-                        instructions = []
-            
-            instructions.append(instruction_data)
-            with open(instruction_file, 'w', encoding='utf-8') as f:
-                json.dump(instructions, f, ensure_ascii=False, indent=2)
-            
-            logger.info(f"✅ 已将交易指令写入文件供AutoGLM执行: {instruction}")
-            
-        except Exception as e:
-            logger.error(f"通过AutoGLM执行交易指令失败: {e}")
-
     def operate_strategy_with_account(self):
         '''
         整合
@@ -672,22 +581,22 @@ class CombinationHoldingProcessor:
                 return False
 
             # 2. 更新账户持仓
-            logger.info(f"正在更新账户 {self.account_name} 的数据...")
-            account_summary_df, account_holdings_df = self.account_info.update_holding_info_for_account(self.account_name)
-            # account_summary_df = header_info_df[['总资产']]
+            account_summary_df, account_holdings_df = self._update_account_holdings()
+            # 修复：正确检查返回值
+            if account_summary_df is None and account_holdings_df is None:
+                return False
 
             # 3. 筛选出指定策略的股票持仓信息
             strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)
 
             # 4. 标准化数据
-            # account_holdings, strategy_holding, excluded_holdings = self._standardize_data(account_holdings_df, strategy_holding)
-            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+            account_holdings, strategy_holding, excluded_holdings = self._standardize_data(account_holdings_df, strategy_holding)
 
             # 5. 找出需要卖出的标的
-            to_sell = self._identify_sell_operations(account_holdings_df, strategy_holding, excluded_holdings)
+            to_sell = self._identify_sell_operations(account_holdings, strategy_holding, excluded_holdings)
 
             # 6. 找出需要买入的标的
-            to_buy = self._identify_buy_operations(account_holdings_df, strategy_holding, excluded_holdings)
+            to_buy = self._identify_buy_operations(account_holdings, strategy_holding, excluded_holdings)
 
             # # 7. 构建完整差异报告
             # difference_report = {
@@ -718,8 +627,6 @@ class CombinationHoldingProcessor:
         except Exception as e:
             error_msg = f"处理证券与策略 {self.strategy_name} 持仓差异并执行交易时发生错误: {e}"
             logger.error(error_msg)
-            import traceback
-            logger.error(f"详细错误信息: {traceback.format_exc()}")
             send_notification(error_msg)
             return False
 

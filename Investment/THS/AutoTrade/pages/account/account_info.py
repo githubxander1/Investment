@@ -415,26 +415,8 @@ class AccountInfo:
                     # 用列的均值填充NaN值
                     df[col] = df[col].fillna(df[col].mean() if not df[col].isna().all() else 0)
             
-            # 计算并添加持仓占比列
-            try:
-                # 获取账户总资产
-                header_info = self.extract_header_info()
-                if not header_info.empty:
-                    total_asset_text = header_info.iloc[0]["总资产"]
-                    if total_asset_text and total_asset_text != "None":
-                        total_asset = float(str(total_asset_text).replace(',', ''))
-                        logger.info(f"账户总资产: {total_asset}")
-                        
-                        # 计算每只股票的持仓占比，并四舍五入取整
-                        if '市值' in df.columns:
-                            df['持仓占比'] = (df['市值'] / total_asset * 100).round(0).astype(int)
-                            logger.info("已计算持仓占比并取整")
-                    else:
-                        logger.warning("无法获取账户总资产信息，无法计算持仓占比")
-                else:
-                    logger.warning("无法获取账户汇总信息，无法计算持仓占比")
-            except Exception as e:
-                logger.error(f"计算持仓占比时出错: {e}")
+            # 注意：这里不再重复调用extract_header_info获取总资产
+            # 持仓占比的计算应该在调用此方法的上层进行，使用已获取的正确总资产数据
             
             # 从1开始索引
             df.index = range(1, len(df) + 1)
@@ -706,7 +688,7 @@ class AccountInfo:
             logger.error(f"获取 {account_name} 账户数据时出错: {e}", exc_info=True)
             return False
 
-        logger.info(f"完成：✅ {account_name} 账户持仓信息已更新")
+        logger.info(f"完成：✅ {account_name} 账户持仓信息已更新，持仓数据:\n{stocks_df}")
         return header_info_df, stocks_df
 
     def _update_account_summary(self, all_sheets_data, account_name, header_info_df):

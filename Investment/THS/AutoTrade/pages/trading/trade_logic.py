@@ -61,7 +61,8 @@ class TradeLogic:
                 volume = (volume // 100) * 100
                 if volume < 100:
                     logger.warning("计算出的买入股数不足100股")
-                    return None
+                    # 修改：即使不足100股也返回计算结果，让调用者决定是否执行
+                    return volume if volume > 0 else None
 
                 logger.info(f"计算买入股数: {volume}")
                 return volume
@@ -73,7 +74,8 @@ class TradeLogic:
             volume = (volume // 100) * 100  # 对齐100股整数倍
             if volume < 100:
                 logger.warning("买入数量不足100股")
-                return None
+                # 修改：即使不足100股也返回计算结果，让调用者决定是否执行
+                return volume if volume > 0 else None
             return volume
         except Exception as e:
             logger.error(f"买入数量计算失败: {e}")
@@ -135,6 +137,11 @@ class TradeLogic:
                 logger.info(f"按比例计算卖出: 当前持有{available_shares}股, 新比例{new_ratio}%, 目标持仓{target_volume}股, 卖出{volume}股")
 
             volume = (volume // 100) * 100
+            # 修改：即使不足100股也返回计算结果，让调用者决定是否执行
+            if volume <= 0:
+                logger.info("计算出的卖出数量为0或负数，将返回0表示不卖出")
+                return 0
+
             if volume < 100 and volume > 0:
                 logger.warning(f"卖出数量不足100股: 计算结果={volume}")
                 # 在这种情况下，我们仍然返回计算出的数量，让调用者决定是否继续
@@ -254,6 +261,7 @@ class TradeLogic:
             self.trading_page.search_stock(stock_name)
 
             # 检查交易数量是否有效
+            # 修改：允许volume为0的情况
             if volume is None:
                 logger.warning(f"{operation} {stock_name} 交易数量为 None，跳过交易")
                 return False, f"{operation} {stock_name} 交易数量无效，跳过交易"

@@ -11,7 +11,7 @@ import requests
 from dotenv import load_dotenv
 from plyer import notification
 
-from utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.logger import setup_logger
 # from Investment.THS.AutoTrade2.utils.logger import setup_logger
 
 # 加载 .venv 文件

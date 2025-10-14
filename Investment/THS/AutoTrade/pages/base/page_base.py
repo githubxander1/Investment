@@ -1,5 +1,5 @@
 import uiautomator2
-from utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.logger import setup_logger
 
 logger = setup_logger("page_base.log")
 
