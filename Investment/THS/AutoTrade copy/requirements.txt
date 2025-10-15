@@ -1,0 +1,6 @@
+websockets
+uiautomator2
+pandas
+openpyxl
+fake-useragent
+requests

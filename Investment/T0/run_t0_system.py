@@ -39,6 +39,7 @@ def main():
     logger.info("启动T0交易系统实际运行模式")
     logger.info(f"股票池: {stock_pool}")
     
+    monitor = None
     try:
         # 创建并运行监控器
         monitor = T0Monitor(stock_pool)
@@ -58,6 +59,14 @@ def main():
         print(f"\n系统运行出错: {e}")
         logger.error(f"系统运行出错: {e}")
     finally:
+        # 确保正确关闭资源
+        if monitor and hasattr(monitor, 'close'):
+            try:
+                monitor.close()
+                logger.info("监控器资源已正确关闭")
+            except Exception as e:
+                logger.error(f"关闭监控器资源时出错: {e}")
+        
         print("\nT0交易系统已停止运行")
         logger.info("T0交易系统已停止运行")
 

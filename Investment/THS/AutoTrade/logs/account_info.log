@@ -3971,3 +3971,518 @@ uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomat
 1  创新医疗  15365.0  700   0   59.51  0.39  21.865  21.95    25
 2  中国卫星  11364.0  300   0   40.19  0.35  37.747  37.88    18
 3  常山北明  19998.0  900   0 -490.64 -2.40  22.766  22.22    32[0m
+[32m2025-10-15 09:31:32 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 09:31:44 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 09:31:44 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:31:44 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 09:31:44 - INFO - 正在切换到 川财证券 账户...[0m
+[32m2025-10-15 09:31:49 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:31:49 - INFO - 开始：获取账户表头信息[0m
+[32m2025-10-15 09:31:51 - INFO - 结束：账户表头信息完成: 
+         仓位        总资产        总市值     浮动盈亏         可用      可取
+0  仓位 75.7%  61,352.71  46,439.00  -678.18  14,913.71  913.24[0m
+[32m2025-10-15 09:31:51 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:31:51 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:31:51 - INFO - 开始：获取账户持仓信息[0m
+[32m2025-10-15 09:31:51 - INFO - 已回到顶部[0m
+[32m2025-10-15 09:31:51 - INFO - 发现隐藏区域: 隐藏[0m
+[32m2025-10-15 09:31:51 - INFO - 发现隐藏区域: 隐藏[0m
+[32m2025-10-15 09:31:51 - INFO - 第 1 次尝试，当前页面提取到 3 条持仓信息，累计 3 条[0m
+[32m2025-10-15 09:31:52 - INFO - 🔄 页面继续滑动加载...[0m
+[32m2025-10-15 09:31:55 - INFO - 发现隐藏区域: 隐藏[0m
+[32m2025-10-15 09:31:55 - INFO - 发现隐藏区域: 隐藏[0m
+[32m2025-10-15 09:31:55 - INFO - 第 2 次尝试，当前页面提取到 3 条持仓信息，累计 3 条[0m
+[32m2025-10-15 09:31:55 - INFO - 检测到'查看已清仓股票'，已加载全部持仓[0m
+[32m2025-10-15 09:31:55 - INFO - ✅ 滚动加载完成，共获取 3 条持仓信息[0m
+[32m2025-10-15 09:31:55 - INFO - 完成：✅ 提取持仓数据，共 3 条:
+   股票名称       市值   持仓   可用      盈亏    盈亏率     成本价    当前价
+1  创新医疗  15218.0  700  700  -87.20 -0.570  21.865  21.74
+2  中国卫星  11259.0  300  300  -64.56 -0.573  37.746  37.53
+3  常山北明  19962.0  900  900 -526.42 -2.570  22.765  22.18[0m
+[32m2025-10-15 09:31:55 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:31:55 - INFO - 账户 川财证券 总资产: 61352.71[0m
+[32m2025-10-15 09:31:55 - INFO - 已为账户 川财证券 的持仓股票计算持仓占比[0m
+[32m2025-10-15 09:31:55 - INFO - 完成：✅ 川财证券 账户持仓信息已更新，持仓数据:
+   股票名称       市值   持仓   可用      盈亏    盈亏率     成本价    当前价  持仓占比
+1  创新医疗  15218.0  700  700  -87.20 -0.570  21.865  21.74    25
+2  中国卫星  11259.0  300  300  -64.56 -0.573  37.746  37.53    18
+3  常山北明  19962.0  900  900 -526.42 -2.570  22.765  22.18    33[0m
+[32m2025-10-15 09:51:41 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 09:51:50 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 09:51:50 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:51:50 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 09:51:50 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 09:52:15 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 09:57:58 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 09:58:01 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 09:58:01 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 09:58:01 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 09:58:01 - INFO - 正在切换到 川财证券 账户...[0m
+[32m2025-10-15 11:10:58 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 11:11:00 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 11:11:00 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 11:11:00 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 11:11:00 - INFO - 正在切换到 川财证券 账户...[0m
+[32m2025-10-15 13:34:06 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 13:34:09 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 13:34:09 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 13:34:09 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 13:34:09 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 13:34:40 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 13:35:18 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 13:35:18 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 13:35:18 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 13:35:18 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 13:35:43 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 13:36:21 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 13:36:21 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 13:36:21 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 13:36:21 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 13:36:46 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 13:58:22 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 13:58:35 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 13:58:35 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 13:58:35 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 13:58:35 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 13:58:48 - ERROR - 获取 川财证券 账户数据时出错: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/icon', 'instance': 3},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 144, in goto_trade_page
+    self.trade_button_entry.click()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/icon', 'instance': 3},))
+[32m2025-10-15 14:40:37 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:40:49 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:40:49 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:40:49 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:40:49 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:41:41 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:42:31 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:42:31 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:42:31 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:42:31 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:42:55 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:43:32 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:43:32 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:43:32 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:43:32 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:43:56 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:44:32 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:44:32 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:44:32 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:44:32 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:44:56 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:45:40 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:45:40 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:45:40 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:45:40 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:46:04 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:46:51 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:46:51 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:46:51 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:46:51 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:47:15 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:48:03 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:48:03 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:48:03 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:48:03 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:48:27 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:49:04 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:49:04 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:49:04 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:49:04 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:49:29 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:50:13 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:50:13 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:50:13 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:50:13 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:50:38 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:51:26 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:51:26 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:51:26 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:51:26 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:51:50 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:52:30 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:52:30 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:52:30 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:52:30 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:52:54 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:53:25 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:53:31 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:53:31 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:53:31 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:53:31 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:53:56 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:54:39 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:54:39 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:54:39 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:54:39 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:55:03 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:55:39 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:55:39 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:55:39 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:55:39 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:56:03 - ERROR - 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 139, in goto_trade_page
+    current_page = self.where_page()
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 84, in where_page
+    self.back_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-10-15 14:56:41 - INFO - 成功加载 5426 个股票代码名称映射[0m
+[32m2025-10-15 14:56:41 - INFO - --------------------------------------------------[0m
+[32m2025-10-15 14:56:41 - INFO - 开始：更新 川财证券 账户持仓信息...[0m
+[32m2025-10-15 14:56:41 - INFO - 正在切换到 川财证券 账户...[0m
+[31m2025-10-15 14:57:08 - ERROR - 获取 川财证券 账户数据时出错: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/icon', 'instance': 3},))[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\scripts\holding\account_info.py", line 834, in update_holding_info_for_account
+    switch_success = common_page.change_account(account_name)
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 171, in change_account
+    self.goto_trade_page()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\base\page_common.py", line 144, in goto_trade_page
+    self.trade_button_entry.click()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 149, in click
+    x, y = self.center(offset=offset)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 176, in center
+    lx, ly, rx, ry = self.bounds()
+                     ~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 163, in bounds
+    info = self.info
+           ^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 128, in info
+    return self.jsonrpc.objInfo(self.selector)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 185, in __call__
+    return self.server.jsonrpc_call(self.method, params, http_timeout)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 279, in jsonrpc_call
+    return _jsonrpc_call(self._dev, method, params, timeout, self._debug)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\core.py", line 159, in _jsonrpc_call
+    raise UiObjectNotFoundError(code, message, params)
+uiautomator2.exceptions.UiObjectNotFoundError: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/icon', 'instance': 3},))
