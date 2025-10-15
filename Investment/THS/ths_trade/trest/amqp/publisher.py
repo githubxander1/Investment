@@ -1,3 +1,8 @@
+# 修复Python 3.13+中asyncore模块缺失问题
+import sys
+import os
+# 添加当前目录到Python路径，以便找到我们的asyncore模块
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pika

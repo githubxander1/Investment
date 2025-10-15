@@ -3,7 +3,11 @@ from common.CommonHandler import CommonHandler
 from trest.router import post
 import json
 import pandas as pd
-from pandas.io.json import json_normalize
+# 适配新版本pandas
+try:
+    from pandas.io.json import json_normalize
+except ImportError:
+    json_normalize = pd.json_normalize
 import applications.Global_Var_Model as gl
 import applications.trade.Search_Work_Log as SearchWorkLog
 import uuid

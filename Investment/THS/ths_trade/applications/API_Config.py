@@ -1,6 +1,6 @@
 cfg = {
     # 同花顺xiadan.exe 所在位置
-    'exe_path': 'C:\\同花顺软件\\同花顺\\xiadan.exe',
+    'exe_path': r"D:\Xander\Applications\THS\同花顺\xiadan.exe",
 
     # 活动的工作流文件路径
     "activework_path": "./applications/work_queue/ActiveWork.csv",

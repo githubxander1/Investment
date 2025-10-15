@@ -22,7 +22,7 @@ from tornado.routing import PathMatches
 from tornado.log import LogFormatter
 from tornado.log import define_logging_options
 
-from raven.contrib.tornado import AsyncSentryClient
+# from raven.contrib.tornado import AsyncSentryClient
 
 from .config import settings
 from .exception import ConfigError
@@ -70,9 +70,10 @@ class Server(object):
              transforms=None, wsgi=False,
              middlewares=settings.MIDDLEWARE_CLASSES,
              **tornado_conf)
-        app_obj.sentry_client = AsyncSentryClient(
-            settings.get('sentry_url', '')
-        )
+        # 注释掉sentry相关代码以避免依赖问题
+        # app_obj.sentry_client = AsyncSentryClient(
+        #     settings.get('sentry_url', '')
+        # )
         return app_obj
 
     def _load_application(self):

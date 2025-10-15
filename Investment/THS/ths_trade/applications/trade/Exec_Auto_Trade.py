@@ -3,7 +3,12 @@ from applications.trade.server.THS_Trader_Server import THSTraderServer
 from applications.tool.CSV_Helper import CSVHelper
 from applications.work_queue.ActiveWork import ActiveWork
 import uuid
-from pandas.io.json import json_normalize
+# 适配新版本pandas
+import pandas as pd
+try:
+    from pandas.io.json import json_normalize
+except ImportError:
+    json_normalize = pd.json_normalize
 import  applications.API_Config as API_Config
 
 # 自动化交易初始化
