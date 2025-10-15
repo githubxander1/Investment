@@ -6,6 +6,7 @@
 """
 
 import os
+import sys
 import json
 import logging
 import traceback
@@ -13,23 +14,42 @@ import pandas as pd
 import requests
 from datetime import datetime
 
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 # 使用统一的日志记录器
-from Investment.THS.ths_trade.utils.logger import setup_logger
-from Investment.THS.ths_trade.utils.notification import send_trade_notification as send_notification
-from Investment.THS.ths_trade.pages.account.account_info import AccountInfo
-from Investment.THS.ths_trade.pages.trading.trade_logic import TradeLogic
-from Investment.THS.ths_trade.utils.common_utils import get_full_stock_code, is_trading_time
+from utils.logger import setup_logger
+from utils.notification import send_trade_notification as send_notification
+from pages.account.account_info import AccountInfo
+from pages.trading.trade_logic import TradeLogic
+from utils.common_utils import get_full_stock_code, is_trading_time
 
 # 设置日志
 logger = setup_logger('combination_holding_processor.log')
 
 # 导入配置（如果需要）
 try:
-    from Investment.THS.AutoTrade.config.settings import Combination_headers, id_to_name
+    # 尝试从相对路径导入
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'AutoTrade'))
+    from config.settings import Combination_headers, id_to_name
 except ImportError:
     logger.warning("无法导入AutoTrade配置，使用默认值")
     Combination_headers = {}
     id_to_name = {}
+
+# 修复缺少的导入
+try:
+    from Investment.THS.AutoTrade.utils.format_data import determine_market
+except ImportError:
+    # 如果无法导入，创建一个简单的替代函数
+    def determine_market(code):
+        """确定股票市场"""
+        if isinstance(code, str) and code.startswith('6'):
+            return '沪A'
+        elif isinstance(code, str) and (code.startswith('0') or code.startswith('3')):
+            return '深A'
+        else:
+            return '未知'
 
 
 class CombinationHoldingProcessor:
@@ -51,6 +71,7 @@ class CombinationHoldingProcessor:
         
         # 初始化交易相关的组件
         self.account_info = AccountInfo(account_name)
+        # 注意：TradeLogic不再在初始化时创建AccountInfo实例，避免循环导入
         self.trader = TradeLogic(account_name)
         
         logger.info(f"初始化组合持仓处理器 - 策略: {strategy_name}, 账户: {account_name}")
@@ -100,7 +121,7 @@ class CombinationHoldingProcessor:
                         "市场": determine_market(code),
                         "收益率(%)": position.get("incomeRate", 0) * 100,
                         "盈亏比例(%)": position.get("profitLossRate", 0) * 100,
-                        "时间": datetime.datetime.now().strftime('%m-%d %H:%M:%S')
+                        "时间": datetime.now().strftime('%m-%d %H:%M:%S')
                     })
 
                 result_df = pd.DataFrame(holding_data)
@@ -127,89 +148,28 @@ class CombinationHoldingProcessor:
 
         return pd.DataFrame()
     
-    def _calculate_trade_volume_optimized(self, account_summary_df, account_holdings_df, 
-                                        strategy_holding, strategy_name, stock_name, 
-                                        target_ratio, operation):
-        """
-        优化的交易数量计算方法
-        根据账户资产、持仓比例和股票价格计算买入/卖出股数
-        """
-        try:
-            # 如果账户汇总数据为空，无法计算
-            if account_summary_df.empty:
-                logger.warning("账户汇总数据为空，无法计算交易数量")
-                return None
-            
-            # 获取总资产
-            total_asset = float(account_summary_df.iloc[0].get('总资产', 0))
-            if total_asset <= 0:
-                logger.warning("账户总资产无效，无法计算交易数量")
-                return None
-            
-            # 计算目标金额
-            target_amount = total_asset * (target_ratio / 100)
-            
-            # 如果是卖出操作，先获取当前持仓
-            current_volume = 0
-            current_cost = 0
-            
-            if not account_holdings_df.empty and stock_name in account_holdings_df.get('股票名称', []).values:
-                holding_row = account_holdings_df[account_holdings_df['股票名称'] == stock_name].iloc[0]
-                current_volume = int(holding_row.get('持有数量', 0))
-                current_cost = float(holding_row.get('最新价', 0) or 0)
-            
-            # 如果当前价格未知，尝试从策略持仓中获取
-            if current_cost <= 0 and not strategy_holding.empty:
-                strategy_row = strategy_holding[strategy_holding['股票名称'] == stock_name]
-                if not strategy_row.empty:
-                    current_cost = float(strategy_row.iloc[0].get('最新价', 0) or 0)
-            
-            # 如果价格仍然未知，无法计算
-            if current_cost <= 0:
-                logger.warning(f"无法获取 {stock_name} 的价格信息，无法计算交易数量")
-                return None
-            
-            # 计算交易数量
-            if operation == "买入":
-                # 买入：根据目标金额和当前价格计算
-                trade_volume = int(target_amount / current_cost)
-                # 确保是100的整数倍（A股交易规则）
-                trade_volume = (trade_volume // 100) * 100
-            else:  # 卖出
-                if target_ratio == 0:
-                    # 全部卖出
-                    trade_volume = current_volume
-                else:
-                    # 部分卖出：计算目标持仓数量并减去当前持仓
-                    target_volume = int(target_amount / current_cost)
-                    trade_volume = current_volume - target_volume
-                
-                # 确保是100的整数倍
-                trade_volume = (trade_volume // 100) * 100
-            
-            # 确保交易数量为正数
-            trade_volume = max(0, trade_volume)
-            
-            logger.info(f"计算交易数量: {stock_name} {operation} {trade_volume}股 (价格: {current_cost}, 目标比例: {target_ratio}%)")
-            return trade_volume
-            
-        except Exception as e:
-            logger.error(f"计算交易数量时出错: {e}")
-            logger.error(traceback.format_exc())
-            return None
-    
     def _update_strategy_holdings(self):
         """
         更新策略持仓数据
         从数据源获取最新的策略持仓信息
         """
         try:
-            # 在实际应用中，这里应该从数据源获取策略持仓
-            # 这里返回一个空的DataFrame作为示例
-            logger.info(f"更新策略 {self.strategy_name} 的持仓数据")
-            return pd.DataFrame()
+            # 根据策略名称获取对应的组合ID
+            strategy_ids = [k for k, v in id_to_name.items() if v == self.strategy_name]
+            
+            if not strategy_ids:
+                logger.warning(f"未找到策略 {self.strategy_name} 对应的组合ID")
+                return pd.DataFrame()
+            
+            strategy_id = int(strategy_ids[0])
+            logger.info(f"更新策略 {self.strategy_name} (ID: {strategy_id}) 的持仓数据")
+            
+            # 获取策略持仓数据
+            strategy_holdings_df = self.get_single_holding_data(strategy_id)
+            return strategy_holdings_df
         except Exception as e:
             logger.error(f"更新策略持仓数据失败: {e}")
+            logger.error(traceback.format_exc())
             return None
     
     def _extract_strategy_holdings(self, strategy_holdings_df):
@@ -221,6 +181,8 @@ class CombinationHoldingProcessor:
         if not strategy_holdings_extracted_df.empty and ('股票名称' in strategy_holdings_extracted_df.columns or '标的名称' in strategy_holdings_extracted_df.columns):
             strategy_holding = strategy_holdings_extracted_df.copy()
             logger.info(f"✅ 成功获取策略 {self.strategy_name} 的持仓数据，共 {len(strategy_holding)} 条记录")
+            # 打印策略持仓详情
+            logger.info(f"策略 {self.strategy_name} 持仓详情:\n{strategy_holding.to_string()}")
         else:
             strategy_holding = pd.DataFrame()
             logger.warning(f"策略 {self.strategy_name} 持仓数据为空或不包含股票名称列")
@@ -239,26 +201,40 @@ class CombinationHoldingProcessor:
         # 标准化股票名称
         # 确保列名统一（账户持仓）
         if not account_holdings.empty:
-            if '股票名称' not in account_holdings.columns and '标的名称' in account_holdings.columns:
-                account_holdings.rename(columns={'标的名称': '股票名称'}, inplace=True)
-            account_holdings = standardize_dataframe_stock_names(account_holdings)
+            # 适配ths_trade返回的数据结构
+            column_mapping = {
+                'stock_name': '股票名称',
+                'position': '持有数量',
+                'available': '可用',
+                'price': '最新价',
+                'market_value': '市值',
+                'cost_price': '成本价',
+                'profit': '盈亏',
+                'profit_rate': '盈亏率(%)'
+            }
+            
+            # 重命名列以匹配原有逻辑
+            account_holdings.rename(columns=column_mapping, inplace=True)
 
         # 确保列名统一（策略持仓）
         if not strategy_holding.empty:
             if '股票名称' not in strategy_holding.columns and '标的名称' in strategy_holding.columns:
                 strategy_holding.rename(columns={'标的名称': '股票名称'}, inplace=True)
-            strategy_holding = standardize_dataframe_stock_names(strategy_holding)
 
         # 对持仓占比和新比例%进行四舍五入取整处理
         if '持仓占比' in account_holdings.columns:
+            # 先处理NaN值，再进行四舍五入
+            account_holdings['持仓占比'] = account_holdings['持仓占比'].fillna(0)
             account_holdings['持仓占比'] = account_holdings['持仓占比'].round(0).astype(int)
 
         if '新比例%' in strategy_holding.columns:
+            # 先处理NaN值，再进行四舍五入
+            strategy_holding['新比例%'] = strategy_holding['新比例%'].fillna(0)
             strategy_holding['新比例%'] = strategy_holding['新比例%'].round(0).astype(int)
 
-        # 去掉'持有金额'为0的
-        if '持有金额' in account_holdings.columns:
-            account_holdings = account_holdings[account_holdings['持有金额'] > 0]
+        # 去掉'市值'为0的
+        if '市值' in account_holdings.columns:
+            account_holdings = account_holdings[account_holdings['市值'] > 0]
             
         return account_holdings, strategy_holding, excluded_holdings
     
@@ -285,6 +261,10 @@ class CombinationHoldingProcessor:
             # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
             # 优化：只有当差异大于等于10%时才考虑卖出，避免小幅度调整触发交易
             if '持仓占比' in merged_data.columns:
+                # 处理NaN值
+                merged_data['新比例%'] = merged_data['新比例%'].fillna(0)
+                merged_data['持仓占比'] = merged_data['持仓占比'].fillna(0)
+                
                 to_sell_candidates2 = merged_data[
                     (merged_data['新比例%'] < merged_data['持仓占比']) &
                     ((merged_data['持仓占比'] - merged_data['新比例%']) >= 10)
@@ -310,6 +290,8 @@ class CombinationHoldingProcessor:
         if not to_sell.empty:
             to_sell['操作'] = '卖出'
             logger.info(f"⚠️ 发现需卖出的标的: {len(to_sell)} 条")
+            # 打印需要卖出的持仓详情
+            logger.info(f"需要卖出的持仓详情:\n{to_sell.to_string()}")
         else:
             logger.info("✅ 当前无需卖出的标的")
             
@@ -339,6 +321,10 @@ class CombinationHoldingProcessor:
                 # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
                 # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
                 if not merged_data_buy.empty:
+                    # 处理NaN值
+                    merged_data_buy['新比例%'] = merged_data_buy['新比例%'].fillna(0)
+                    merged_data_buy['持仓占比'] = merged_data_buy['持仓占比'].fillna(0)
+                    
                     to_buy_candidates2 = merged_data_buy[
                         (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
                         ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
@@ -370,6 +356,8 @@ class CombinationHoldingProcessor:
         if not to_buy.empty:
             to_buy['操作'] = '买入'
             logger.info(f"⚠️ 发现需买入的标的: {len(to_buy)} 条")
+            # 打印需要买入的持仓详情
+            logger.info(f"需要买入的持仓详情:\n{to_buy.to_string()}")
         else:
             logger.info("✅ 当前无需买入的标的")
             
@@ -383,8 +371,8 @@ class CombinationHoldingProcessor:
         
         # 遍历每一项卖出操作，执行交易
         for idx, op in to_sell.iterrows():
-            stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
-            operation = op['操作']
+            stock_name = op['股票名称'] if '股票名称' in op else op.get('标的名称', '')
+            operation = op.get('操作', '卖出')
             # 安全获取可能不存在的字段
             new_ratio = op.get('新比例%', None)  # 对于卖出操作，获取策略中的目标比例
 
@@ -416,17 +404,17 @@ class CombinationHoldingProcessor:
             stock_code = None
             # 尝试从account_holdings_df中获取股票代码
             if not account_holdings_df.empty:
-                stock_row = account_holdings_df[account_holdings_df['证券名称'] == stock_name]
-                if not stock_row.empty:
-                    stock_code = stock_row.iloc[0]['证券代码']
+                stock_row = account_holdings_df[account_holdings_df['股票名称'] == stock_name]
+                if not stock_row.empty and 'stock_code' in stock_row.columns:
+                    stock_code = stock_row.iloc[0]['stock_code']
                     logger.info(f"找到股票代码: {stock_code}")
 
             # 如果找不到股票代码，尝试获取最新价（这里简化处理）
             price = None
             if not account_holdings_df.empty and stock_code:
-                stock_row = account_holdings_df[account_holdings_df['证券代码'] == stock_code]
+                stock_row = account_holdings_df[account_holdings_df['stock_code'] == stock_code]
                 if not stock_row.empty:
-                    price = stock_row.iloc[0].get('最新价', None) or stock_row.iloc[0].get('当前价', None)
+                    price = stock_row.iloc[0].get('最新价', None) or stock_row.iloc[0].get('price', None)
 
             if not price:
                 # 如果没有价格，设置一个默认值或跳过
@@ -468,8 +456,8 @@ class CombinationHoldingProcessor:
 
         # 遍历每一项买入操作，执行交易
         for idx, op in to_buy.iterrows():
-            stock_name = op['股票名称'] if '股票名称' in op else op['标的名称']
-            operation = op['操作']
+            stock_name = op['股票名称'] if '股票名称' in op else op.get('标的名称', '')
+            operation = op.get('操作', '买入')
             # 安全获取可能不存在的字段
             new_ratio = op.get('新比例%', None)  # 对于买入操作，获取策略中的目标比例
 
@@ -499,18 +487,18 @@ class CombinationHoldingProcessor:
             # 获取股票代码
             stock_code = None
             # 尝试从to_buy中获取股票代码
-            if '证券代码' in op:
-                stock_code = op['证券代码']
-            elif '股票代码' in op:
-                stock_code = op['股票代码']
+            if 'stock_code' in op:
+                stock_code = op['stock_code']
+            elif '代码' in op:
+                stock_code = op['代码']
 
             # 获取价格
-            price = op.get('最新价', None) or op.get('当前价', None)
+            price = op.get('最新价', None) or op.get('price', None)
             if not price and not account_holdings_df.empty and stock_code:
                 # 尝试从account_holdings_df中获取价格
-                stock_row = account_holdings_df[account_holdings_df['证券代码'] == stock_code]
+                stock_row = account_holdings_df[account_holdings_df['stock_code'] == stock_code]
                 if not stock_row.empty:
-                    price = stock_row.iloc[0].get('最新价', None) or stock_row.iloc[0].get('当前价', None)
+                    price = stock_row.iloc[0].get('最新价', None) or stock_row.iloc[0].get('price', None)
 
             if not price:
                 # 如果没有价格，跳过交易
@@ -540,8 +528,77 @@ class CombinationHoldingProcessor:
             
         return any_trade_executed
     
+    def _calculate_trade_volume_optimized(self, account_summary_df, account_holdings_df, 
+                                        strategy_holding, strategy_name, stock_name, 
+                                        target_ratio, operation):
+        """
+        优化的交易数量计算方法
+        根据账户资产、持仓比例和股票价格计算买入/卖出股数
+        """
+        try:
+            # 如果账户汇总数据为空，无法计算
+            if account_summary_df.empty:
+                logger.warning("账户汇总数据为空，无法计算交易数量")
+                return None
+            
+            # 获取总资产
+            total_asset = float(account_summary_df.iloc[0].get('总资产', 0))
+            if total_asset <= 0:
+                logger.warning("账户总资产无效，无法计算交易数量")
+                return None
+            
+            # 计算目标金额
+            target_amount = total_asset * (target_ratio / 100)
+            
+            # 如果是卖出操作，先获取当前持仓
+            current_volume = 0
+            current_cost = 0
+            
+            if not account_holdings_df.empty and stock_name in account_holdings_df.get('股票名称', []).values:
+                holding_row = account_holdings_df[account_holdings_df['股票名称'] == stock_name].iloc[0]
+                current_volume = int(holding_row.get('持有数量', 0)) if holding_row.get('持有数量', 0) else 0
+                current_cost = float(holding_row.get('最新价', 0) or 0)
+            
+            # 如果当前价格未知，尝试从策略持仓中获取
+            if current_cost <= 0 and not strategy_holding.empty:
+                strategy_rows = strategy_holding[strategy_holding['股票名称'] == stock_name]
+                if not strategy_rows.empty:
+                    current_cost = float(strategy_rows.iloc[0].get('最新价', 0) or 0)
+            
+            # 如果价格仍然未知，无法计算
+            if current_cost <= 0:
+                logger.warning(f"无法获取 {stock_name} 的价格信息，无法计算交易数量")
+                return None
+            
+            # 计算交易数量
+            if operation == "买入":
+                # 买入：根据目标金额和当前价格计算
+                trade_volume = int(target_amount / current_cost) if current_cost > 0 else 0
+                # 确保是100的整数倍（A股交易规则）
+                trade_volume = (trade_volume // 100) * 100
+            else:  # 卖出
+                if target_ratio == 0:
+                    # 全部卖出
+                    trade_volume = current_volume
+                else:
+                    # 部分卖出：计算目标持仓数量并减去当前持仓
+                    target_volume = int(target_amount / current_cost) if current_cost > 0 else 0
+                    trade_volume = current_volume - target_volume
+                
+                # 确保是100的整数倍
+                trade_volume = (trade_volume // 100) * 100
+            
+            # 确保交易数量为正数
+            trade_volume = max(0, trade_volume)
+            
+            logger.info(f"计算交易数量: {stock_name} {operation} {trade_volume}股 (价格: {current_cost}, 目标比例: {target_ratio}%)")
+            return trade_volume
+            
+        except Exception as e:
+            logger.error(f"计算交易数量时出错: {e}")
+            logger.error(traceback.format_exc())
+            return None
 
-    
     def operate_strategy_with_account(self):
         '''
         整合
@@ -554,23 +611,34 @@ class CombinationHoldingProcessor:
             # 1. 更新策略持仓
             strategy_holdings_df = self._update_strategy_holdings()
             if strategy_holdings_df is None:
+                logger.error("无法获取策略持仓数据")
                 return False
 
-            # 2. 更新账户持仓
+            # 2. 更新账户持仓（使用ths_trade的逻辑）
             logger.info(f"正在更新账户 {self.account_name} 的数据...")
-            account_summary_df, account_holdings_df = self.account_info.update_holding_info_for_account(self.account_name)
+            account_summary_df, account_holdings_df = self.account_info.update_holding_info_for_account()
+            
+            # 计算账户持仓占比
+            if not account_holdings_df.empty and not account_summary_df.empty:
+                total_asset = float(account_summary_df.iloc[0].get('总资产', 0))
+                if total_asset > 0 and 'market_value' in account_holdings_df.columns:
+                    account_holdings_df['持仓占比'] = (account_holdings_df['market_value'] / total_asset * 100).round(0).astype(int)
 
             # 3. 筛选出指定策略的股票持仓信息
             strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)
 
             # 4. 标准化数据
-            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+            account_holdings, strategy_holding, excluded_holdings = self._standardize_data(account_holdings_df, strategy_holding)
+
+            # 打印标准化后的数据
+            logger.info(f"标准化后的账户持仓:\n{account_holdings.to_string() if not account_holdings.empty else '空'}")
+            logger.info(f"标准化后的策略持仓:\n{strategy_holding.to_string() if not strategy_holding.empty else '空'}")
 
             # 5. 找出需要卖出的标的
-            to_sell = self._identify_sell_operations(account_holdings_df, strategy_holding, excluded_holdings)
+            to_sell = self._identify_sell_operations(account_holdings, strategy_holding, excluded_holdings)
 
             # 6. 找出需要买入的标的
-            to_buy = self._identify_buy_operations(account_holdings_df, strategy_holding, excluded_holdings)
+            to_buy = self._identify_buy_operations(account_holdings, strategy_holding, excluded_holdings)
 
             logger.info(f"📊 最终差异报告 - 需要卖出: {len(to_sell)} 条, 需要买入: {len(to_buy)} 条")
             
@@ -595,7 +663,7 @@ class CombinationHoldingProcessor:
             error_msg = f"处理证券与策略 {self.strategy_name} 持仓差异并执行交易时发生错误: {e}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
-            send_notification(error_msg)
+            send_notification(error_msg, "", 0)  # 修正函数调用，添加缺失的参数
             return False
 
 # 全局变量
@@ -605,8 +673,9 @@ account_update_needed = False
 if __name__ == '__main__':
     # 示例用法
     processor = CombinationHoldingProcessor(strategy_name="逻辑为王", account_name="川财证券")
-    success = processor.operate_strategy_with_account()
-    if success:
-        logger.info("🎉 组合策略调仓任务成功完成")
-    else:
-        logger.error("❌ 组合策略调仓任务失败")
+    print(processor._update_strategy_holdings())
+    # success = processor.operate_strategy_with_account()
+    # if success:
+    #     logger.info("🎉 组合策略调仓任务成功完成")
+    # else:
+    #     logger.error("❌ 组合策略调仓任务失败")

@@ -7,6 +7,7 @@
 import logging
 import os
 from typing import Dict, Any, Optional
+import time
 
 # 配置日志
 logger = logging.getLogger('t0_ths_trade_wrapper')
@@ -47,7 +48,7 @@ class T0THSTradeWrapper:
             logger.debug(f"当前工作目录: {current_dir}")
             
             self.adapter = THSTradeAdapter(account_name=account_name)
-            if self.adapter.is_initialized():
+            if self.adapter.initialized:
                 self.is_success = True
                 logger.info(f"✅ T0 THS交易包装器初始化成功 - 账户: {account_name}")
             else:
@@ -109,22 +110,37 @@ class T0THSTradeWrapper:
                 logger.error("❌ 获取持仓失败：包装器未初始化")
                 return None
             
-            positions = self.adapter.get_account_position()
+            # 使用THS适配器的get_position方法
+            positions = self.adapter.get_position()
             if positions:
-                logger.info(f"✅ 成功获取到 {len(positions)} 条持仓信息")
+                logger.info(f"✅ 成功获取到持仓信息")
                 # 转换为结构化字典返回
                 result = []
                 for pos in positions:
-                    pos_dict = {
-                        '证券代码': pos.get('证券代码', ''),
-                        '证券名称': pos.get('证券名称', ''),
-                        '持仓数量': pos.get('持仓数量', 0),
-                        '可用数量': pos.get('可用数量', 0),
-                        '摊薄成本价': pos.get('摊薄成本价', 0.0),
-                        '最新价': pos.get('最新价', 0.0),
-                        '浮动盈亏': pos.get('浮动盈亏', 0.0)
-                    }
-                    result.append(pos_dict)
+                    # 根据返回的数据结构进行适配
+                    if isinstance(pos, dict):
+                        pos_dict = {
+                            '证券代码': pos.get('证券代码', '') or pos.get('stock_no', ''),
+                            '证券名称': pos.get('证券名称', '') or pos.get('stock_name', ''),
+                            '持仓数量': pos.get('持仓数量', 0) or pos.get('amount', 0),
+                            '可用数量': pos.get('可用数量', 0) or pos.get('available_amount', 0),
+                            '摊薄成本价': pos.get('摊薄成本价', 0.0) or pos.get('cost_price', 0.0),
+                            '最新价': pos.get('最新价', 0.0) or pos.get('current_price', 0.0),
+                            '浮动盈亏': pos.get('浮动盈亏', 0.0) or pos.get('profit', 0.0)
+                        }
+                        result.append(pos_dict)
+                    else:
+                        # 如果是DataFrame行，转换为字典
+                        pos_dict = {
+                            '证券代码': pos.get('证券代码', '') if hasattr(pos, 'get') else str(pos['证券代码']) if '证券代码' in pos else '',
+                            '证券名称': pos.get('证券名称', '') if hasattr(pos, 'get') else str(pos['证券名称']) if '证券名称' in pos else '',
+                            '持仓数量': pos.get('持仓数量', 0) if hasattr(pos, 'get') else int(pos['持仓数量']) if '持仓数量' in pos else 0,
+                            '可用数量': pos.get('可用数量', 0) if hasattr(pos, 'get') else int(pos['可用数量']) if '可用数量' in pos else 0,
+                            '摊薄成本价': pos.get('摊薄成本价', 0.0) if hasattr(pos, 'get') else float(pos['摊薄成本价']) if '摊薄成本价' in pos else 0.0,
+                            '最新价': pos.get('最新价', 0.0) if hasattr(pos, 'get') else float(pos['最新价']) if '最新价' in pos else 0.0,
+                            '浮动盈亏': pos.get('浮动盈亏', 0.0) if hasattr(pos, 'get') else float(pos['浮动盈亏']) if '浮动盈亏' in pos else 0.0
+                        }
+                        result.append(pos_dict)
                 return result
             else:
                 logger.info("ℹ️  账户暂无持仓")
@@ -196,15 +212,16 @@ class T0THSTradeWrapper:
                 logger.error("❌ 获取资金失败：包装器未初始化")
                 return None
             
-            funds = self.adapter.get_account_funds()
-            if funds:
+            # 使用THS适配器的get_balance方法
+            balance = self.adapter.get_balance()
+            if balance:
                 logger.info("✅ 成功获取账户资金信息")
                 # 转换为结构化字典返回
                 result = {
-                    '可用金额': funds.get('可用金额', 0.0),
-                    '总资产': funds.get('总资产', 0.0),
-                    '股票市值': funds.get('股票市值', 0.0),
-                    '冻结金额': funds.get('冻结金额', 0.0)
+                    '可用金额': balance.get('可用金额', 0.0) or balance.get('available_balance', 0.0),
+                    '总资产': balance.get('总资产', 0.0) or balance.get('total_asset', 0.0),
+                    '股票市值': balance.get('股票市值', 0.0) or balance.get('stock_value', 0.0),
+                    '冻结金额': balance.get('冻结金额', 0.0) or balance.get('frozen_balance', 0.0)
                 }
                 return result
             else:
@@ -229,7 +246,7 @@ class T0THSTradeWrapper:
         """
         try:
             # 模拟模式处理
-            if hasattr(self, 'is_mock') and self.is_mock:
+            if self.is_mock:
                 logger.info(f"🔶 模拟买入: {stock_code} {stock_name} {quantity}股 @ {price}")
                 return {
                     'success': True,
@@ -241,19 +258,29 @@ class T0THSTradeWrapper:
                 logger.error("❌ 买入失败：包装器未初始化")
                 return {'success': False, 'message': '包装器未初始化', 'order_no': ''}
             
+            # 使用THS适配器的buy_stock方法，注意参数适配
             result = self.adapter.buy_stock(
                 stock_code=stock_code,
                 stock_name=stock_name,
-                price=price,
-                quantity=quantity
+                amount=quantity  # THS适配器使用amount参数
             )
             
+            # 结果格式适配
             if result.get('success'):
-                logger.info(f"✅ 买入成功: {stock_code} {stock_name} {quantity}股 @ {price}")
+                logger.info(f"✅ 买入成功: {stock_code} {stock_name} {quantity}股")
+                return {
+                    'success': True,
+                    'message': result.get('msg', '买入成功'),
+                    'order_no': result.get('entrust_no', '')
+                }
             else:
-                logger.error(f"❌ 买入失败: {stock_code} {stock_name}, 原因: {result.get('message', '未知错误')}")
-            
-            return result
+                error_msg = result.get('msg', '买入失败')
+                logger.error(f"❌ 买入失败: {stock_code} {stock_name}, 原因: {error_msg}")
+                return {
+                    'success': False,
+                    'message': error_msg,
+                    'order_no': ''
+                }
         except Exception as e:
             logger.error(f"❌ 买入股票异常: {e}")
             return {'success': False, 'message': str(e), 'order_no': ''}
@@ -274,7 +301,7 @@ class T0THSTradeWrapper:
         """
         try:
             # 模拟模式处理
-            if hasattr(self, 'is_mock') and self.is_mock:
+            if self.is_mock:
                 logger.info(f"🔶 模拟卖出: {stock_code} {stock_name} {quantity}股 @ {price}")
                 return {
                     'success': True,
@@ -286,19 +313,29 @@ class T0THSTradeWrapper:
                 logger.error("❌ 卖出失败：包装器未初始化")
                 return {'success': False, 'message': '包装器未初始化', 'order_no': ''}
             
+            # 使用THS适配器的sell_stock方法，注意参数适配
             result = self.adapter.sell_stock(
                 stock_code=stock_code,
                 stock_name=stock_name,
-                price=price,
-                quantity=quantity
+                amount=quantity  # THS适配器使用amount参数
             )
             
+            # 结果格式适配
             if result.get('success'):
-                logger.info(f"✅ 卖出成功: {stock_code} {stock_name} {quantity}股 @ {price}")
+                logger.info(f"✅ 卖出成功: {stock_code} {stock_name} {quantity}股")
+                return {
+                    'success': True,
+                    'message': result.get('msg', '卖出成功'),
+                    'order_no': result.get('entrust_no', '')
+                }
             else:
-                logger.error(f"❌ 卖出失败: {stock_code} {stock_name}, 原因: {result.get('message', '未知错误')}")
-            
-            return result
+                error_msg = result.get('msg', '卖出失败')
+                logger.error(f"❌ 卖出失败: {stock_code} {stock_name}, 原因: {error_msg}")
+                return {
+                    'success': False,
+                    'message': error_msg,
+                    'order_no': ''
+                }
         except Exception as e:
             logger.error(f"❌ 卖出股票异常: {e}")
             return {'success': False, 'message': str(e), 'order_no': ''}
@@ -319,7 +356,7 @@ class T0THSTradeWrapper:
         """
         try:
             # 模拟模式处理
-            if hasattr(self, 'is_mock') and self.is_mock:
+            if self.is_mock:
                 logger.info(f"🔶 模拟T0交易: {stock_code} {stock_name} {quantity}股 @ 买{buy_price}/卖{sell_price}")
                 
                 # 模拟买入和卖出结果
@@ -528,11 +565,9 @@ class T0THSTradeWrapper:
         关闭资源
         """
         try:
-            if self.adapter:
+            # THS适配器可能没有close方法，所以这里做一个安全检查
+            if self.adapter and hasattr(self.adapter, 'close'):
                 self.adapter.close()
                 logger.info("✅ T0 THS交易包装器资源已关闭")
         except Exception as e:
             logger.error(f"❌ 关闭T0 THS交易包装器资源异常: {e}")
-
-# 导入time模块（do_t0_trade方法中使用）
-import time

@@ -6,12 +6,17 @@
 """
 
 import os
+import sys
 import re
 import time
 import pandas as pd
 from typing import Optional, List, Dict, Any, Tuple
 import datetime
-from Investment.THS.ths_trade.utils.logger import setup_logger
+
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from utils.logger import setup_logger
 
 logger = setup_logger('utils.log')
 
@@ -158,33 +163,32 @@ def load_stock_name_map(file_path: str = 'data/all_stocks.xlsx') -> Dict[str, st
     return stock_map
 
 
-def retry(func, max_retries: int = 3, delay: float = 1.0, *args, **kwargs):
+def retry(max_retries: int = 3, delay: float = 1.0):
     """
     重试装饰器
     
     Args:
-        func: 要重试的函数
         max_retries: 最大重试次数
         delay: 重试间隔（秒）
-        *args: 函数参数
-        **kwargs: 函数关键字参数
         
     Returns:
-        函数返回值
+        装饰器函数
     """
-    def wrapper(*args, **kwargs):
-        last_exception = None
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    logger.warning(f"尝试 {attempt + 1}/{max_retries} 失败: {e}")
+                    if attempt < max_retries - 1:
+                        time.sleep(delay)
+            
+            logger.error(f"达到最大重试次数，执行失败")
+            raise last_exception
         
-        for attempt in range(max_retries):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                last_exception = e
-                logger.warning(f"尝试 {attempt + 1}/{max_retries} 失败: {e}")
-                if attempt < max_retries - 1:
-                    time.sleep(delay)
-        
-        logger.error(f"达到最大重试次数，执行失败")
-        raise last_exception
-    
-    return wrapper
+        return wrapper
+    return decorator

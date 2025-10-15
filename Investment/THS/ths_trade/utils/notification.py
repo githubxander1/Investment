@@ -1,18 +1,45 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-通知工具模块
-提供系统通知、邮件通知等功能
+通知模块
+用于发送交易通知
 """
 
 import os
-import logging
-from typing import Optional, Dict, Any
+import sys
+import smtplib
+import requests
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from typing import Optional
 
-# 使用统一的日志记录器
-from Investment.THS.ths_trade.utils.logger import setup_logger
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from utils.logger import setup_logger
 
 logger = setup_logger('notification.log')
+
+
+def send_trade_notification(message: str, operation: str = "", volume: int = 0) -> bool:
+    """
+    发送交易通知
+    
+    Args:
+        message: 通知消息
+        operation: 操作类型（买入/卖出）
+        volume: 交易数量
+        
+    Returns:
+        bool: 是否发送成功
+    """
+    try:
+        logger.info(f"发送通知: {message}")
+        # 这里可以实现具体的发送逻辑，如邮件、短信、微信等
+        return True
+    except Exception as e:
+        logger.error(f"发送通知失败: {e}")
+        return False
 
 
 def send_notification(message: str, title: Optional[str] = "交易通知", 

@@ -6,14 +6,18 @@
 """
 
 import os
+import sys
 import time
 import pandas as pd
 from typing import Optional, Dict, List, Any
 
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
 # 使用统一的日志记录器
-from Investment.THS.ths_trade.utils.logger import setup_logger
-from Investment.THS.ths_trade.utils.common_utils import load_stock_name_map, format_stock_code, ensure_directory
-from Investment.THS.ths_trade.pages.trading.ths_trade_wrapper import trade_wrapper
+from utils.logger import setup_logger
+from utils.common_utils import load_stock_name_map, format_stock_code, ensure_directory
+from pages.trading.ths_trade_wrapper import trade_wrapper
 
 logger = setup_logger('account_info.log')
 
@@ -192,12 +196,12 @@ class AccountInfo:
         
         return stock_info_list
     
-    def update_holding_info_for_account(self) -> Optional[pd.DataFrame]:
+    def update_holding_info_for_account(self) -> tuple[Optional[pd.DataFrame], Optional[pd.DataFrame]]:
         """
         更新指定账户的持仓信息
         
         Returns:
-            Optional[pd.DataFrame]: 更新后的持仓数据表格
+            tuple: (账户汇总信息DataFrame, 持仓信息DataFrame)
         """
         try:
             # 验证账户切换
@@ -212,7 +216,7 @@ class AccountInfo:
             # 如果没有持仓，返回空DataFrame
             if position_df.empty:
                 logger.info(f"账户 {self.account_name} 无持仓")
-                return pd.DataFrame()
+                return pd.DataFrame(), pd.DataFrame()
             
             # 提取股票信息
             stock_info_list = self.extract_stock_info(position_df)
@@ -230,12 +234,20 @@ class AccountInfo:
             holding_file = os.path.join(self.holding_data_dir, f"{self.account_name}_holding.xlsx")
             holding_df.to_excel(holding_file, index=False)
             logger.info(f"持仓信息已保存到: {holding_file}")
+            # 打印账户持仓详情
+            if not holding_df.empty:
+                logger.info(f"账户 {self.account_name} 持仓详情:\n{holding_df.to_string()}")
             
-            return holding_df
+            # 获取账户汇总信息
+            account_summary = self.get_account_summary_info()
+            
+            # 返回账户汇总信息和持仓信息
+            summary_df = pd.DataFrame([account_summary])
+            return summary_df, holding_df
         
         except Exception as e:
             logger.error(f"更新持仓信息失败: {e}")
-            return None
+            return None, None
     
     def update_holding_info_all(self, account_list: Optional[List[str]] = None) -> Dict[str, pd.DataFrame]:
         """

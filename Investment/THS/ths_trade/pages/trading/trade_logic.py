@@ -2,20 +2,23 @@
 # -*- coding: utf-8 -*-
 """
 交易逻辑模块
-实现交易相关的业务逻辑
+提供买入、卖出等交易逻辑封装
 """
 
+import os
+import sys
 import time
-import math
-from typing import Optional, Dict, List, Any, Tuple
-import pandas as pd
+from typing import Optional, Dict, Any, Tuple, List
+
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 # 使用统一的日志记录器
-from Investment.THS.ths_trade.utils.logger import setup_logger
-from Investment.THS.ths_trade.utils.notification import send_trade_notification
-from Investment.THS.ths_trade.utils.common_utils import get_full_stock_code, calculate_trade_amount, is_trading_time
-from Investment.THS.ths_trade.pages.account.account_info import AccountInfo
-from Investment.THS.ths_trade.pages.trading.ths_trade_wrapper import trade_wrapper
+from utils.logger import setup_logger
+from utils.common_utils import retry, get_full_stock_code, is_trading_time
+from utils.notification import send_trade_notification
+from pages.trading.ths_trade_wrapper import trade_wrapper
+from pages.account.account_info import AccountInfo
 
 logger = setup_logger('trade_logic.log')
 
@@ -26,7 +29,7 @@ class TradeLogic:
     实现买入卖出的业务逻辑
     """
     
-    def __init__(self, account_name: str):
+    def __init__(self, account_name: str = "川财证券"):
         """
         初始化交易逻辑类
         
@@ -34,9 +37,11 @@ class TradeLogic:
             account_name: 账户名称
         """
         self.account_name = account_name
-        self.account_info = AccountInfo(account_name)
         self.trade_api = trade_wrapper
-        self.trade_api.switch_account(account_name)
+        # 初始化AccountInfo实例
+        self.account_info = AccountInfo(account_name)
+        
+        logger.info(f"初始化交易逻辑类 - 账户: {account_name}")
     
     def calculate_buy_volume(self, stock_code: str, price: float, 
                            use_percent: float = 1.0) -> Tuple[int, float]:
