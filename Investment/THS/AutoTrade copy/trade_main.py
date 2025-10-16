@@ -5,7 +5,7 @@ from datetime import time as dt_time
 
 from pages.trading import TradeLogic, NationalDebtPage
 from pages.devices import DeviceManager
-from scripts.processor.CombinationHoldingProcessor_glm import CombinationHoldingProcessor
+from scripts.processor.CombinationHoldingProcessor import CombinationHoldingProcessor
 from scripts.monitor_20day import check_morning_signals
 from utils.notification import send_notification
 from utils.logger import setup_logger

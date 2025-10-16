@@ -135,9 +135,22 @@ class CombinationHoldingProcessor:
         if account_summary_df is not None and not account_summary_df.empty:
             logger.debug(f"账户汇总数据内容:\n{account_summary_df.to_string()}")
             if '总资产' in account_summary_df.columns:
-                account_asset = float(str(account_summary_df['总资产'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+                # 修复：正确处理包含逗号的数字字符串
+                total_asset_text = str(account_summary_df['总资产'].iloc[0])
+                if total_asset_text and total_asset_text != "None":
+                    account_asset = float(total_asset_text.replace(',', ''))
             if '可用' in account_summary_df.columns:
-                account_balance = float(str(account_summary_df['可用'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+                # 修复：正确处理包含逗号的数字字符串
+                available_text = str(account_summary_df['可用'].iloc[0])
+                if available_text and available_text != "None":
+                    account_balance = float(available_text.replace(',', ''))
+        else:
+            logger.warning("账户汇总数据为空或不存在")
+        
+        # 如果账户总资产为0，尝试使用账户余额作为替代
+        if account_asset <= 0 and account_balance > 0:
+            account_asset = account_balance
+            logger.info(f"使用账户余额作为总资产: {account_asset}")
         
         # 从账户持仓数据中提取股票信息
         stock_available = 0
@@ -673,8 +686,17 @@ class CombinationHoldingProcessor:
 
             # 2. 更新账户持仓
             logger.info(f"正在更新账户 {self.account_name} 的数据...")
-            account_summary_df, account_holdings_df = self.account_info.update_holding_info_for_account(self.account_name)
-            # account_summary_df = header_info_df[['总资产']]
+            result = self.account_info.update_holding_info_for_account(self.account_name)
+            
+            # 处理返回结果，确保正确获取账户汇总和持仓数据
+            if isinstance(result, tuple) and len(result) == 2:
+                account_summary_df, account_holdings_df = result
+            else:
+                # 如果返回格式不正确，则使用默认空DataFrame
+                logger.warning("账户数据返回格式不正确，使用空数据")
+                import pandas as pd
+                account_summary_df = pd.DataFrame()
+                account_holdings_df = result if isinstance(result, pd.DataFrame) else pd.DataFrame()
 
             # 3. 筛选出指定策略的股票持仓信息
             strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)

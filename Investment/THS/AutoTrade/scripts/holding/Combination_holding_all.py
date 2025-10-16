@@ -1,6 +1,12 @@
+import os
+import sys
+
 import pandas as pd
 import requests
 
+
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from config.settings import Combination_holding_file, \
     all_ids, id_to_name, Combination_headers
 from utils.format_data import determine_market, logger

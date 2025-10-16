@@ -134,10 +134,43 @@ class CombinationHoldingProcessor:
         # 修复：正确处理account_summary_df，确保即使它是None也能正常处理
         if account_summary_df is not None and not account_summary_df.empty:
             logger.debug(f"账户汇总数据内容:\n{account_summary_df.to_string()}")
-            if '总资产' in account_summary_df.columns:
-                account_asset = float(str(account_summary_df['总资产'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
-            if '可用' in account_summary_df.columns:
-                account_balance = float(str(account_summary_df['可用'].iloc[0]).replace(',', '')) if not account_summary_df.empty else 0.0
+            logger.debug(f"账户汇总数据列名: {account_summary_df.columns.tolist()}")
+            
+            # 尝试多种可能的列名格式，以应对可能的空格或格式问题
+            found_asset = False
+            for col in account_summary_df.columns:
+                if '总资产' in str(col):
+                    asset_value = account_summary_df[col].iloc[0]
+                    account_asset = float(str(asset_value).replace(',', '').strip())
+                    found_asset = True
+                    logger.info(f"从列'{col}'提取到账户资产: {account_asset}")
+                    break
+                    
+            if not found_asset:
+                logger.warning(f"在账户汇总数据中未找到包含'总资产'的列")
+                # 检查数据框中的所有值，尝试找到资产信息
+                for idx, row in account_summary_df.iterrows():
+                    for value in row.values:
+                        if isinstance(value, str) and ('万' in value or '亿' in value or '.' in value):
+                            try:
+                                # 尝试将看起来像数字的字符串转换为浮点数
+                                clean_value = str(value).replace(',', '').strip()
+                                if clean_value.replace('.', '').isdigit():
+                                    test_asset = float(clean_value)
+                                    # 如果数值合理（不是太小），则使用它
+                                    if test_asset > 1000:
+                                        account_asset = test_asset
+                                        logger.warning(f"尝试从值'{value}'中提取资产: {account_asset}")
+                                        found_asset = True
+                                        break
+                            except ValueError:
+                                continue
+                    if found_asset:
+                        break
+        else:
+            logger.warning("账户汇总数据为空或不存在")
+            # 尝试从日志中的其他信息获取账户资产
+            # 这里是临时解决方案，在实际使用时需要确保account_summary_df正确获取
         
         # 从账户持仓数据中提取股票信息
         stock_available = 0
@@ -459,13 +492,23 @@ class CombinationHoldingProcessor:
                                            on='股票名称',
                                            how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
 
+                # 输出调试信息，查看合并后的数据
+                if not merged_data_buy.empty:
+                    logger.debug(f"合并后的共同持有股票数据:\n{merged_data_buy.to_string()}")
+
                 # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
                 # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
                 if not merged_data_buy.empty:
-                    to_buy_candidates2 = merged_data_buy[
-                        (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
-                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
-                        ]
+                    # 先筛选出新比例大于持仓占比的股票
+                    candidates_with_higher_ratio = merged_data_buy[merged_data_buy['新比例%'] > merged_data_buy['持仓占比']]
+                    logger.debug(f"新比例大于持仓占比的股票:\n{candidates_with_higher_ratio.to_string()}")
+                    
+                    # 进一步筛选出差异大于等于10%的股票
+                    to_buy_candidates2 = candidates_with_higher_ratio[
+                        (candidates_with_higher_ratio['新比例%'] - candidates_with_higher_ratio['持仓占比']) >= 10
+                    ]
+                    logger.debug(f"差异大于等于10%的股票:\n{to_buy_candidates2.to_string()}")
+                    
                     # 确保新比例列没有NaN值
                     to_buy_candidates2 = to_buy_candidates2[to_buy_candidates2['新比例%'].notna()]
                 else:
@@ -578,6 +621,13 @@ class CombinationHoldingProcessor:
                 continue
 
             # 计算交易数量：对于买入操作，使用策略中的目标比例
+            # 调试：打印传递给calculate_trade_volume_optimized的参数
+            logger.debug(f"传递给_calculate_trade_volume_optimized的参数: ")
+            logger.debug(f"account_summary_df是否为空: {account_summary_df is None or account_summary_df.empty}")
+            if account_summary_df is not None and not account_summary_df.empty:
+                logger.debug(f"account_summary_df内容: {account_summary_df.to_string()}")
+            logger.debug(f"股票名称: {stock_name}, 新比例: {new_ratio}, 操作: {operation}")
+            
             volume = self._calculate_trade_volume_optimized(
                 account_summary_df, account_holdings_df, strategy_holding,
                 self.strategy_name, stock_name, new_ratio, operation)
@@ -680,14 +730,13 @@ class CombinationHoldingProcessor:
             strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)
 
             # 4. 标准化数据
-            # account_holdings, strategy_holding, excluded_holdings = self._standardize_data(account_holdings_df, strategy_holding)
-            excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+            account_holdings, strategy_holding, excluded_holdings = self._standardize_data(account_holdings_df, strategy_holding)
 
             # 5. 找出需要卖出的标的
-            to_sell = self._identify_sell_operations(account_holdings_df, strategy_holding, excluded_holdings)
+            to_sell = self._identify_sell_operations(account_holdings, strategy_holding, excluded_holdings)
 
             # 6. 找出需要买入的标的
-            to_buy = self._identify_buy_operations(account_holdings_df, strategy_holding, excluded_holdings)
+            to_buy = self._identify_buy_operations(account_holdings, strategy_holding, excluded_holdings)
 
             # # 7. 构建完整差异报告
             # difference_report = {
@@ -699,10 +748,10 @@ class CombinationHoldingProcessor:
             
             # 8. 执行交易：先卖出，再按价格升序依次买入
             # 8.1 执行卖出操作
-            any_trade_executed = self._execute_sell_operations(to_sell, account_summary_df, account_holdings_df, strategy_holding)
+            any_trade_executed = self._execute_sell_operations(to_sell, account_summary_df, account_holdings, strategy_holding)
             
             # 8.2 执行买入操作
-            buy_executed = self._execute_buy_operations(to_buy, account_summary_df, account_holdings_df, strategy_holding)
+            buy_executed = self._execute_buy_operations(to_buy, account_summary_df, account_holdings, strategy_holding)
             any_trade_executed = any_trade_executed or buy_executed
 
             # 9. 处理交易执行结果

@@ -15,6 +15,7 @@ TRADE_QUANTITY = 200
 
 # 信号记录文件
 SIGNAL_RECORD_FILE = os.path.join(BASE_DIR, 'logs', 'signal_records.txt')
+results = os.path.join(BASE_DIR, 'logs')
 
 # 图表保存目录
 CHARTS_DIR = os.path.join(BASE_DIR, 'output', 'charts')

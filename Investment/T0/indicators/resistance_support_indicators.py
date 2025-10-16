@@ -503,7 +503,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 # ---------------------- 5. 主程序（运行示例） ----------------------
 if __name__ == "__main__":
     stock_code = '600030'  #
-    trade_date = '20251015'  # 交易日期
+    trade_date = '20251016'  # 交易日期
 
     # pre = get_prev_close(stock_code, trade_date)
     # print(f"前收盘价: {pre}")

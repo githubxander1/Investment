@@ -84,3 +84,19 @@ Traceback (most recent call last):
     raise AdbError("Can't find any android device/emulator")
 adbutils.errors.AdbError: Can't find any android device/emulator
 [31m2025-10-15 14:57:15 - ERROR - 设备连接失败[0m
+[32m2025-10-16 09:28:19 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 09:28:20 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 09:40:17 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 09:40:17 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 09:55:21 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 09:55:21 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 09:57:04 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 09:57:05 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 09:59:57 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 09:59:57 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 10:04:23 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 10:04:23 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 10:21:14 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 10:21:15 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-16 10:24:03 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-16 10:24:03 - INFO - 启动App成功: com.hexin.plat.android[0m

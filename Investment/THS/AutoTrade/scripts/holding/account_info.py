@@ -872,7 +872,21 @@ class AccountInfo:
             return False
 
         logger.info(f"完成：✅ {account_name} 账户持仓信息已更新，持仓数据:\n{stocks_df}")
-        return header_info_df, stocks_df
+        
+        # 返回账户汇总信息和持仓信息，确保与update_holding_info_all方法保持一致
+        # 创建一个包含账户汇总信息的DataFrame
+        account_summary_data = {
+            '账户名': [account_name],
+            '仓位': [header_info_df.iloc[0].get('仓位', 'None') if not header_info_df.empty else 'None'],
+            '总资产': [header_info_df.iloc[0].get('总资产', 'None') if not header_info_df.empty else 'None'],
+            '总市值': [header_info_df.iloc[0].get('总市值', 'None') if not header_info_df.empty else 'None'],
+            '浮动盈亏': [header_info_df.iloc[0].get('浮动盈亏', 'None') if not header_info_df.empty else 'None'],
+            '可用': [header_info_df.iloc[0].get('可用', 'None') if not header_info_df.empty else 'None'],
+            '可取': [header_info_df.iloc[0].get('可取', 'None') if not header_info_df.empty else 'None']
+        }
+        account_summary_df = pd.DataFrame(account_summary_data)
+        
+        return account_summary_df, stocks_df
 
 
 if __name__ == '__main__':
