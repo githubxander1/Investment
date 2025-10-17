@@ -455,3 +455,31 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [33m2025-10-16 14:55:03 - WARNING - 无可用数量: available_shares=0[0m
 [33m2025-10-16 14:55:57 - WARNING - 无可用数量: available_shares=0[0m
 [33m2025-10-16 14:56:51 - WARNING - 无可用数量: available_shares=0[0m
+[32m2025-10-17 09:36:49 - INFO - 全部卖出[0m
+[32m2025-10-17 09:37:11 - INFO - 卖出 美的集团 100股 False 最新:[0m
+[32m2025-10-17 10:21:54 - INFO - 全部卖出[0m
+[32m2025-10-17 10:22:07 - INFO - 卖出 华友钴业 300股 False 最新:[0m
+[32m2025-10-17 10:22:07 - INFO - 目标投资金额: 75962.08 * 33.0% = 25067.4864[0m
+[32m2025-10-17 10:22:07 - INFO - 计算股数: 25067.4864 / 45.94 = 545[0m
+[32m2025-10-17 10:22:07 - INFO - 计算买入股数: 500[0m
+[32m2025-10-17 10:22:24 - INFO - 买入 卧龙电驱 500股 False 最新:[0m
+[32m2025-10-17 10:23:06 - INFO - 目标投资金额: 75940.95 * 33.0% = 25060.5135[0m
+[32m2025-10-17 10:23:06 - INFO - 计算股数: 25060.5135 / 45.96 = 545[0m
+[32m2025-10-17 10:23:06 - INFO - 计算买入股数: 500[0m
+[31m2025-10-17 10:23:30 - ERROR - 买入 卧龙电驱 500 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 261, in operate_stock
+    self.trading_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 209, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[32m2025-10-17 15:13:39 - INFO - 卖出 000333 100股 False 最新:[0m
+[32m2025-10-17 15:13:52 - INFO - 卖出 000333 100股 False 最新:[0m
+[32m2025-10-17 15:14:06 - INFO - 卖出 000333 100股 False 最新:[0m

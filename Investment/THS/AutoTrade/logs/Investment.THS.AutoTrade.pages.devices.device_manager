@@ -100,3 +100,9 @@ adbutils.errors.AdbError: Can't find any android device/emulator
 [32m2025-10-16 10:21:15 - INFO - 启动App成功: com.hexin.plat.android[0m
 [32m2025-10-16 10:24:03 - INFO - 连接设备: emulator-5554[0m
 [32m2025-10-16 10:24:03 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-17 09:36:35 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-17 09:36:37 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-17 10:21:41 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-17 10:21:41 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-17 13:41:02 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-17 13:41:03 - INFO - 启动App成功: com.hexin.plat.android[0m

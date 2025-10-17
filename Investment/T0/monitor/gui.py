@@ -235,12 +235,25 @@ class T0MonitorGUI:
         self.axes[0].axhline(y=support, color='green', linestyle='--', linewidth=1, label='支撑线')
         self.axes[0].axhline(y=prev_close, color='gray', linestyle='--', linewidth=1, label='昨收价')
         
+        # 检测并绘制买入信号（红三角）
+        resistance_support_signals = self.detector.detect_resistance_support_signals(df, prev_close)
+        if resistance_support_signals and resistance_support_signals['buy']:
+            # 在最后一个数据点绘制买入信号
+            self.axes[0].scatter(len(x_values)-1, df_filtered['收盘'].iloc[-1] * 0.995, 
+                                marker='^', color='red', s=100, zorder=5, label='买入信号')
+        
+        # 检测并绘制卖出信号（绿三角）
+        if resistance_support_signals and resistance_support_signals['sell']:
+            # 在最后一个数据点绘制卖出信号
+            self.axes[0].scatter(len(x_values)-1, df_filtered['收盘'].iloc[-1] * 1.005, 
+                                marker='v', color='green', s=100, zorder=5, label='卖出信号')
+        
         self.axes[0].set_title("阻力支撑指标")
         self.axes[0].set_ylabel("价格")
         self.axes[0].legend()
         self.axes[0].grid(True, linestyle='--', alpha=0.7)
         
-        # 2. 扩展指标图 (简化为移动平均线)
+        # 2. 扩展指标图
         if len(df_filtered) > 20:
             df_filtered['MA10'] = df_filtered['收盘'].rolling(window=10).mean()
             df_filtered['MA20'] = df_filtered['收盘'].rolling(window=20).mean()
@@ -248,6 +261,16 @@ class T0MonitorGUI:
             self.axes[1].plot(x_values, df_filtered['收盘'], color='blue', linewidth=1.5, label='收盘价')
             self.axes[1].plot(x_values, df_filtered['MA10'], color='orange', linewidth=1.5, label='MA10')
             self.axes[1].plot(x_values, df_filtered['MA20'], color='purple', linewidth=1.5, label='MA20')
+            
+            # 检测并绘制扩展指标信号
+            extended_signals = self.detector.detect_extended_signals(df, prev_close)
+            if extended_signals:
+                if extended_signals['buy']:
+                    self.axes[1].scatter(len(x_values)-1, df_filtered['收盘'].iloc[-1] * 0.995, 
+                                        marker='^', color='red', s=100, zorder=5, label='买入信号')
+                if extended_signals['sell']:
+                    self.axes[1].scatter(len(x_values)-1, df_filtered['收盘'].iloc[-1] * 1.005, 
+                                        marker='v', color='green', s=100, zorder=5, label='卖出信号')
             
         self.axes[1].set_title("扩展指标")
         self.axes[1].set_ylabel("价格")
@@ -262,6 +285,16 @@ class T0MonitorGUI:
             ax2 = self.axes[2].twinx()
             ax2.bar(x_values, df_filtered['成交量'], alpha=0.3, color='gray', label='成交量')
             ax2.set_ylabel("成交量")
+        
+        # 检测并绘制量价指标信号
+        volume_price_signals = self.detector.detect_volume_price_signals(df, prev_close)
+        if volume_price_signals:
+            if volume_price_signals['buy']:
+                self.axes[2].scatter(len(x_values)-1, df_filtered['收盘'].iloc[-1] * 0.995, 
+                                    marker='^', color='red', s=100, zorder=5, label='买入信号')
+            if volume_price_signals['sell']:
+                self.axes[2].scatter(len(x_values)-1, df_filtered['收盘'].iloc[-1] * 1.005, 
+                                    marker='v', color='green', s=100, zorder=5, label='卖出信号')
         
         self.axes[2].set_title("量价指标")
         self.axes[2].set_ylabel("价格")

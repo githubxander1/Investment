@@ -5,7 +5,7 @@
 ## 回测系统
 
 系统还包含一个完整的回测框架，用于测试和评估各种T0交易策略。详细信息请查看 [回测系统说明](backtest/README_backtest.md)。
-有关回测系统的开发过程和实现细节，请查看 [回测开发文档](BACKTEST_DEVELOPMENT.md)。
+有关回测系统的开发过程和实现细节，请查看 [回测开发文档](backtest/BACKTEST_DEVELOPMENT.md)。
 
 ## 项目结构
 

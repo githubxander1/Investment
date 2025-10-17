@@ -1,4 +1,6 @@
 # T0交易系统信号检测模块
+from pprint import pprint
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, time, timedelta
@@ -191,242 +193,7 @@ class SignalDetector:
             except Exception as retry_e:
                 print(f"重试获取股票数据失败: {retry_e}")
             return None
-    
-    def get_prev_close(self, trade_date=None):
-        """获取昨收价"""
-        if trade_date is None:
-            trade_date = datetime.now().strftime('%Y%m%d')
-            
-        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
-        
-        # 尝试多个数据源获取昨收价
-        data_sources = [
-            # 主要数据源
-            lambda: self._get_prev_close_from_akshare_daily(self.stock_code, target_date),
-            # 备用数据源1: 从 akshare 实时行情获取
-            lambda: self._get_prev_close_from_akshare_spot(self.stock_code),
-            # 备用数据源2: 从分时数据获取
-            lambda: self._get_prev_close_from_intraday(self.stock_code, target_date),
-            # 备用数据源3: 从历史数据获取
-            lambda: self._get_prev_close_from_hist(self.stock_code, target_date),
-            # 备用数据源4: 从 tushare 获取（如果可用）
-            lambda: self._get_prev_close_from_tushare(self.stock_code, target_date) if TUSHARE_AVAILABLE else None,
-            # 备用数据源5: 从腾讯接口获取
-            lambda: self._get_prev_close_from_tencent(self.stock_code)
-        ]
-        
-        for i, data_source in enumerate(data_sources):
-            # 跳过不可用的数据源
-            if data_source is None:
-                continue
-                
-            try:
-                prev_close = data_source()
-                if prev_close is not None:
-                    print(f"✅ 成功从数据源 {i+1} 获取昨收价: {prev_close:.2f}")
-                    return prev_close
-            except Exception as e:
-                print(f"数据源 {i+1} 获取昨收价失败: {e}")
-                continue
-                
-        print("❌ 所有数据源均无法获取昨收价")
-        return None
-    
-    def _get_prev_close_from_akshare_daily(self, stock_code, target_date):
-        """从akshare日线数据获取昨收价"""
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                daily_df = ak.stock_zh_a_hist(
-                    symbol=stock_code,
-                    period="daily",
-                    adjust=""
-                )
-                
-                if not daily_df.empty:
-                    # 检查是否存在日期列
-                    if '日期' not in daily_df.columns:
-                        print(f"日线数据中缺少'日期'列，列名包括: {list(daily_df.columns)}")
-                        return None
-                        
-                    daily_df['日期'] = pd.to_datetime(daily_df['日期'])
-                    df_before = daily_df[daily_df['日期'] < target_date]
-                    if not df_before.empty:
-                        # 检查是否存在收盘列
-                        if '收盘' not in df_before.columns:
-                            print(f"日线数据中缺少'收盘'列，列名包括: {list(df_before.columns)}")
-                            return None
-                        return df_before.iloc[-1]['收盘']
-                        
-            except KeyError as e:
-                if attempt < max_retries - 1:  # 不是最后一次尝试
-                    print(f"从日线数据获取昨收价缺少关键列: {e}，正在重试... (第{attempt+1}次)")
-                    import time
-                    time.sleep(3)  # 等待3秒后重试
-                else:
-                    print(f"从日线数据获取昨收价缺少关键列，最后一次尝试出错: {e}")
-            except Exception as e:
-                if attempt < max_retries - 1:  # 不是最后一次尝试
-                    print(f"从日线数据获取昨收价出错: {e}，正在重试... (第{attempt+1}次)")
-                    import time
-                    time.sleep(3)  # 等待3秒后重试
-                else:
-                    print(f"从日线数据获取昨收价失败，最后一次尝试出错: {e}")
-        return None
-    
-    def _get_prev_close_from_akshare_spot(self, stock_code):
-        """从akshare实时行情数据获取昨收价"""
-        try:
-            # 获取所有股票的实时行情数据
-            spot_df = ak.stock_zh_a_spot()
-            if not spot_df.empty:
-                # 检查是否存在代码列
-                if '代码' not in spot_df.columns:
-                    print(f"实时行情数据中缺少'代码'列，列名包括: {list(spot_df.columns)}")
-                    return None
-                    
-                # 查找目标股票
-                target_stock = spot_df[spot_df['代码'] == stock_code]
-                if not target_stock.empty:
-                    # 检查是否存在昨收列
-                    if '昨收' not in target_stock.columns:
-                        print(f"实时行情数据中缺少'昨收'列，列名包括: {list(target_stock.columns)}")
-                        return None
-                    # 返回昨收价
-                    return target_stock.iloc[0]['昨收']
-        except KeyError as e:
-            print(f"从实时行情数据获取昨收价时缺少关键列: {e}")
-        except Exception as e:
-            print(f"从实时行情数据获取昨收价失败: {e}")
-        return None
-    
-    def _get_prev_close_from_intraday(self, stock_code, target_date):
-        """从分时数据获取昨收价"""
-        try:
-            # 获取前一天的日期
-            prev_date = target_date - timedelta(days=1)
-            prev_date_str = prev_date.strftime('%Y%m%d')
-            
-            # 获取前一天的分时数据
-            intraday_df = ak.stock_zh_a_hist_min_em(
-                symbol=stock_code,
-                period="1",
-                start_date=prev_date_str,
-                end_date=prev_date_str,
-                adjust=""
-            )
-            
-            if not intraday_df.empty:
-                # 检查是否存在时间列
-                time_col = None
-                for col in ['时间', 'date', 'datetime', 'timestamp']:
-                    if col in intraday_df.columns:
-                        time_col = col
-                        break
-                        
-                if time_col is None:
-                    print(f"分时数据中缺少时间列，列名包括: {list(intraday_df.columns)}")
-                    return None
-                    
-                # 获取前一天的收盘价
-                intraday_df[time_col] = pd.to_datetime(intraday_df[time_col])
-                # 过滤掉午休时间的数据
-                intraday_df = intraday_df[
-                    ~((intraday_df[time_col].dt.hour == 11) & (intraday_df[time_col].dt.minute >= 30)) & 
-                    ~(intraday_df[time_col].dt.hour == 12)
-                ]
-                
-                if not intraday_df.empty:
-                    # 检查是否存在收盘列
-                    if '收盘' not in intraday_df.columns:
-                        print(f"分时数据中缺少'收盘'列，列名包括: {list(intraday_df.columns)}")
-                        return None
-                    # 获取最后一个有效的收盘价作为昨收价
-                    return intraday_df['收盘'].iloc[-1]
-        except KeyError as e:
-            print(f"从分时数据获取昨收价时缺少关键列: {e}")
-        except Exception as e:
-            print(f"从分时数据获取昨收价失败: {e}")
-        return None
-    
-    def _get_prev_close_from_hist(self, stock_code, target_date):
-        """从历史数据获取昨收价"""
-        try:
-            # 获取最近30天的数据
-            hist_df = ak.stock_zh_a_hist(
-                symbol=stock_code,
-                period="daily",
-                adjust=""
-            )
-            
-            if not hist_df.empty:
-                # 检查是否存在日期列
-                if '日期' not in hist_df.columns:
-                    print(f"历史数据中缺少'日期'列，列名包括: {list(hist_df.columns)}")
-                    return None
-                    
-                hist_df['日期'] = pd.to_datetime(hist_df['日期'])
-                df_before = hist_df[hist_df['日期'] < target_date]
-                if not df_before.empty:
-                    return df_before.iloc[-1]['收盘']
-        except KeyError as e:
-            print(f"从历史数据获取昨收价时缺少关键列: {e}")
-        except Exception as e:
-            print(f"从历史数据获取昨收价失败: {e}")
-        return None
-    
-    def _get_prev_close_from_tushare(self, stock_code, target_date):
-        """从tushare获取昨收价"""
-        try:
-            # 注意：tushare需要token才能使用，这里假设用户已经设置好了
-            # 如果没有token，这个调用会失败
-            # ts.set_token('2e9a7a0827b4c655aa6c267dc00484c6e76ab1022b5717092b44573e')
 
-            df = ts.pro_bar(ts_code=stock_code, adj='qfq', start_date='20251001', end_date=target_date.strftime('%Y%m%d'))
-            if df is not None and not df.empty:
-                # 检查是否存在trade_date列
-                if 'trade_date' not in df.columns:
-                    print(f"tushare数据中缺少'trade_date'列，列名包括: {list(df.columns)}")
-                    return None
-                    
-                df['trade_date'] = pd.to_datetime(df['trade_date'], format='%Y%m%d')
-                df_before = df[df['trade_date'] < target_date]
-                if not df_before.empty:
-                    # 检查是否存在close列
-                    if 'close' not in df_before.columns:
-                        print(f"tushare数据中缺少'close'列，列名包括: {list(df_before.columns)}")
-                        return None
-                    return df_before.iloc[0]['close']
-        except KeyError as e:
-            print(f"从tushare获取昨收价时缺少关键列: {e}")
-        except Exception as e:
-            print(f"从tushare获取昨收价失败: {e}")
-        return None
-    
-    def _get_prev_close_from_tencent(self, stock_code):
-        """从腾讯接口获取昨收价"""
-        try:
-            # 腾讯接口的股票代码格式
-            if stock_code.startswith('6'):
-                tencent_code = 'sh' + stock_code
-            else:
-                tencent_code = 'sz' + stock_code
-                
-            # 使用akshare的腾讯接口
-            df = ak.stock_tencent_daily(symbol=tencent_code)
-            if not df.empty and len(df) > 1:
-                # 检查是否存在close列
-                if 'close' not in df.columns:
-                    print(f"腾讯接口数据中缺少'close'列，列名包括: {list(df.columns)}")
-                    return None
-                # 返回前一天的收盘价
-                return df.iloc[-2]['close']
-        except KeyError as e:
-            print(f"从腾讯接口获取昨收价时缺少关键列: {e}")
-        except Exception as e:
-            print(f"从腾讯接口获取昨收价失败: {e}")
-        return None
-    
     def detect_resistance_support_signals(self, df, prev_close):
         """检测阻力支撑指标信号"""
         if df is None or df.empty or prev_close is None:
@@ -638,9 +405,9 @@ class SignalDetector:
             
         # 检测各指标信号
         resistance_support_signals = self.detect_resistance_support_signals(df, prev_close)
-        extended_signals = self.detect_extended_signals(df, prev_close)
-        volume_price_signals = self.detect_volume_price_signals(df, prev_close)
-        
+        # extended_signals = self.detect_extended_signals(df, prev_close)
+        # volume_price_signals = self.detect_volume_price_signals(df, prev_close)
+
         # 检查是否有新信号
         new_signals = []
         
@@ -668,52 +435,95 @@ class SignalDetector:
             self.prev_signals['resistance_support']['buy'] = resistance_support_signals['buy']
             self.prev_signals['resistance_support']['sell'] = resistance_support_signals['sell']
         
-        # 扩展指标信号
-        if extended_signals:
-            # 检查是否有新的买入信号
-            if extended_signals['buy'] and not self.prev_signals['extended']['buy']:
-                new_signals.append({
-                    'indicator': '扩展指标',
-                    'type': '买入',
-                    'details': extended_signals['buy_details']
-                })
-                log_signal(self.stock_code, '扩展指标', '买入', extended_signals['buy_details'])
-                
-            # 检查是否有新的卖出信号
-            if extended_signals['sell'] and not self.prev_signals['extended']['sell']:
-                new_signals.append({
-                    'indicator': '扩展指标',
-                    'type': '卖出',
-                    'details': extended_signals['sell_details']
-                })
-                log_signal(self.stock_code, '扩展指标', '卖出', extended_signals['sell_details'])
-                
-            # 更新之前的信号状态
-            self.prev_signals['extended']['buy'] = extended_signals['buy']
-            self.prev_signals['extended']['sell'] = extended_signals['sell']
-        
-        # 量价指标信号
-        if volume_price_signals:
-            # 检查是否有新的买入信号
-            if volume_price_signals['buy'] and not self.prev_signals['volume_price']['buy']:
-                new_signals.append({
-                    'indicator': '量价指标',
-                    'type': '买入',
-                    'details': volume_price_signals['buy_details']
-                })
-                log_signal(self.stock_code, '量价指标', '买入', volume_price_signals['buy_details'])
-                
-            # 检查是否有新的卖出信号
-            if volume_price_signals['sell'] and not self.prev_signals['volume_price']['sell']:
-                new_signals.append({
-                    'indicator': '量价指标',
-                    'type': '卖出',
-                    'details': volume_price_signals['sell_details']
-                })
-                log_signal(self.stock_code, '量价指标', '卖出', volume_price_signals['sell_details'])
-                
-            # 更新之前的信号状态
-            self.prev_signals['volume_price']['buy'] = volume_price_signals['buy']
-            self.prev_signals['volume_price']['sell'] = volume_price_signals['sell']
-        
+        # # 扩展指标信号
+        # if extended_signals:
+        #     # 检查是否有新的买入信号
+        #     if extended_signals['buy'] and not self.prev_signals['extended']['buy']:
+        #         new_signals.append({
+        #             'indicator': '扩展指标',
+        #             'type': '买入',
+        #             'details': extended_signals['buy_details']
+        #         })
+        #         log_signal(self.stock_code, '扩展指标', '买入', extended_signals['buy_details'])
+        #
+        #     # 检查是否有新的卖出信号
+        #     if extended_signals['sell'] and not self.prev_signals['extended']['sell']:
+        #         new_signals.append({
+        #             'indicator': '扩展指标',
+        #             'type': '卖出',
+        #             'details': extended_signals['sell_details']
+        #         })
+        #         log_signal(self.stock_code, '扩展指标', '卖出', extended_signals['sell_details'])
+        #
+        #     # 更新之前的信号状态
+        #     self.prev_signals['extended']['buy'] = extended_signals['buy']
+        #     self.prev_signals['extended']['sell'] = extended_signals['sell']
+        #
+        # # 量价指标信号
+        # if volume_price_signals:
+        #     # 检查是否有新的买入信号
+        #     if volume_price_signals['buy'] and not self.prev_signals['volume_price']['buy']:
+        #         new_signals.append({
+        #             'indicator': '量价指标',
+        #             'type': '买入',
+        #             'details': volume_price_signals['buy_details']
+        #         })
+        #         log_signal(self.stock_code, '量价指标', '买入', volume_price_signals['buy_details'])
+        #
+        #     # 检查是否有新的卖出信号
+        #     if volume_price_signals['sell'] and not self.prev_signals['volume_price']['sell']:
+        #         new_signals.append({
+        #             'indicator': '量价指标',
+        #             'type': '卖出',
+        #             'details': volume_price_signals['sell_details']
+        #         })
+        #         log_signal(self.stock_code, '量价指标', '卖出', volume_price_signals['sell_details'])
+        #
+        #     # 更新之前的信号状态
+        #     self.prev_signals['volume_price']['buy'] = volume_price_signals['buy']
+        #     self.prev_signals['volume_price']['sell'] = volume_price_signals['sell']
+
         return new_signals
+
+if __name__ == '__main__':
+    stock_code = '000333'
+    # 日期换成这种格式"1979-09-01 09:32:00"
+    from datetime import datetime, timedelta
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+    print(yesterday)
+    sd = SignalDetector(stock_code)
+
+    #东方财富-分时
+    # prev_date_str = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    # prev_date_str = prev_date_str + " 15:00:00"
+    # intraday_df = ak.stock_zh_a_hist_min_em(
+    #     symbol=stock_code,
+    #     period="1",
+    #     start_date=prev_date_str,
+    #     end_date=prev_date_str,
+    #     adjust=""
+    # )
+    # pprint(intraday_df)
+
+    target_date = yesterday
+    # daily_df = ak.stock_zh_a_hist(
+    #     symbol=stock_code,
+    #     period="daily",
+    #     start_date=target_date,
+    #     end_date=target_date,
+    #     adjust=""
+    # )
+    # print(daily_df)
+    print(sd._get_prev_close_from_akshare_daily(stock_code, yesterday))
+    # print(sd._get_prev_close_from_akshare_spot(stock_code))
+    # print(sd._get_prev_close_from_intraday(stock_code, f'{yesterday} 09:32:00'))
+    print(sd._get_prev_close_from_intraday(stock_code))
+    # hist_df = ak.stock_zh_a_hist(
+    #     symbol=stock_code,
+    #     period="daily",
+    #     start_date=target_date,
+    #     end_date=target_date,
+    #     adjust=""
+    # )
+    # print(hist_df)
+    print(sd._get_prev_close_from_hist(stock_code, target_date))

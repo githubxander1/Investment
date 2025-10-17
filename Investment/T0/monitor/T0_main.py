@@ -46,14 +46,19 @@ class T0Monitor:
         if not signals:
             return
             
-        # 按指标类型分组信号
-        buy_signals = [s for s in signals if s['type'] == '买入']
-        sell_signals = [s for s in signals if s['type'] == '卖出']
+        # 只处理阻力支撑指标的信号
+        resistance_support_signals = [s for s in signals if s['indicator'] == '阻力支撑']
         
-        # 打印所有检测到的信号
-        print(f"\n📊 [{stock_code}] 检测到 {len(signals)} 个信号:")
-        for signal in signals:
-            print(f"  - 指标: {signal['indicator']}, 类型: {signal['type']}, 详情: {signal['details']}")
+        if not resistance_support_signals:
+            return
+            
+        buy_signals = [s for s in resistance_support_signals if s['type'] == '买入']
+        sell_signals = [s for s in resistance_support_signals if s['type'] == '卖出']
+        
+        # 打印阻力支撑指标的信号
+        print(f"\n📊 [{stock_code}] 阻力支撑指标检测到 {len(resistance_support_signals)} 个信号:")
+        for signal in resistance_support_signals:
+            print(f"  - 类型: {signal['type']}, 详情: {signal['details']}")
         
         # 只处理最先发出的买入和卖出信号
         processed_signals = []
@@ -132,13 +137,21 @@ class T0Monitor:
             all_signals = {}
             for stock_code in self.stock_pool:
                 try:
+                    print(f"\n🔍 开始监控股票 [{stock_code}]")
                     signals = self.detectors[stock_code].detect_all_signals()
                     if signals:
-                        logger.info(f"[{stock_code}] 检测到 {len(signals)} 个新信号")
-                        all_signals[stock_code] = signals
+                        # 只处理阻力支撑指标的信号
+                        resistance_support_signals = [s for s in signals if s['indicator'] == '阻力支撑']
+                        if resistance_support_signals:
+                            logger.info(f"[{stock_code}] 阻力支撑指标检测到 {len(resistance_support_signals)} 个新信号")
+                            all_signals[stock_code] = resistance_support_signals
+                            self._print_detailed_signals(stock_code, resistance_support_signals)
+                        else:
+                            logger.debug(f"[{stock_code}] 阻力支撑指标未检测到新信号")
+                            print(f"❌ [{stock_code}] 阻力支撑指标未检测到新信号")
                     else:
                         logger.debug(f"[{stock_code}] 未检测到新信号")
-                        print(f"未检测到 [{stock_code}] 的新信号")
+                        print(f"❌ [{stock_code}] 未检测到新信号")
                 except Exception as e:
                     logger.error(f"[{stock_code}] 检测信号时出错: {e}")
                     print(f"❌ [{stock_code}] 检测信号时出错: {e}")
@@ -148,7 +161,7 @@ class T0Monitor:
                 self.process_all_signals(all_signals)
 
             # 等待下次检测
-            print(f"等待 {MONITOR_INTERVAL} 秒后进行下一次检测...")
+            print(f"\n⏳ 等待 {MONITOR_INTERVAL} 秒后进行下一次检测...")
             time.sleep(MONITOR_INTERVAL)
 
             # 检查是否已收盘
@@ -156,6 +169,21 @@ class T0Monitor:
                 print("今日交易已结束，等待下一个交易日...")
                 logger.info("今日交易已结束，等待下一个交易日...")
                 tools.wait_until_trading_time()
+    
+    def _print_detailed_signals(self, stock_code, signals):
+        """打印详细的信号信息"""
+        print(f"\n📈 股票 [{stock_code}] 阻力支撑指标信号信息:")
+        
+        # 只处理阻力支撑指标信号
+        resistance_support_signals = [s for s in signals if s['indicator'] == '阻力支撑']
+        
+        # 打印阻力支撑指标信号
+        if resistance_support_signals:
+            print(f"  🟦 阻力支撑指标:")
+            for signal in resistance_support_signals:
+                print(f"    类型: {signal['type']}, 详情: {signal['details']}")
+        else:
+            print(f"  🟦 阻力支撑指标: 无信号")
     
     def process_all_signals(self, all_signals):
         """统一处理所有股票的信号，先卖后买，买入按价格排序"""
@@ -166,6 +194,10 @@ class T0Monitor:
         # 收集所有信号
         for stock_code, signals in all_signals.items():
             for signal in signals:
+                # 确保只处理阻力支撑指标
+                if signal['indicator'] != '阻力支撑':
+                    continue
+                    
                 signal_info = {
                     'stock_code': stock_code,
                     'indicator': signal['indicator'],
@@ -240,10 +272,18 @@ class T0Monitor:
         # 检查每个股票的信号（只运行一次用于测试）
         for stock_code in self.stock_pool:
             try:
+                print(f"\n🔍 开始监控股票 [{stock_code}]")
                 signals = self.detectors[stock_code].detect_all_signals()
                 if signals:
-                    logger.info(f"[{stock_code}] 检测到 {len(signals)} 个新信号")
-                    self.process_signals(stock_code, signals)
+                    # 只处理阻力支撑指标的信号
+                    resistance_support_signals = [s for s in signals if s['indicator'] == '阻力支撑']
+                    if resistance_support_signals:
+                        logger.info(f"[{stock_code}] 阻力支撑指标检测到 {len(resistance_support_signals)} 个新信号")
+                        self.process_signals(stock_code, resistance_support_signals)
+                        self._print_detailed_signals(stock_code, resistance_support_signals)
+                    else:
+                        logger.debug(f"[{stock_code}] 阻力支撑指标未检测到新信号")
+                        print(f"❌ [{stock_code}] 阻力支撑指标未检测到任何新信号")
                 else:
                     logger.debug(f"[{stock_code}] 未检测到新信号")
                     print(f"❌ [{stock_code}] 未检测到任何新信号")

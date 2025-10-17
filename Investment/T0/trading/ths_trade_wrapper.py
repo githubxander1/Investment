@@ -300,6 +300,29 @@ class T0THSTradeWrapper:
             Dict: 交易结果字典
         """
         try:
+            # 导入最低持仓配置
+            from Investment.T0.config.settings import MINIMUM_HOLDING
+            
+            # 获取当前持仓信息
+            stock_pos = self.get_stock_position(stock_code)
+            current_holding = stock_pos.get('持仓数量', 0) if stock_pos else 0
+            
+            # 检查是否会低于最低持仓限制
+            if current_holding - quantity < MINIMUM_HOLDING:
+                # 如果会低于最低持仓限制，计算可卖出的最大数量
+                available_sell_quantity = current_holding - MINIMUM_HOLDING
+                if available_sell_quantity <= 0:
+                    logger.warning(f"⚠️ 卖出股票失败: {stock_code} {stock_name}，当前持仓{current_holding}股，已达到或低于最低持仓{MINIMUM_HOLDING}股")
+                    return {
+                        'success': False,
+                        'message': f'当前持仓{current_holding}股，已达到或低于最低持仓{MINIMUM_HOLDING}股，不允许卖出',
+                        'order_no': ''
+                    }
+                
+                # 调整卖出数量，确保不会低于最低持仓
+                logger.warning(f"⚠️ 调整卖出数量: {stock_code} {stock_name}，原计划卖出{quantity}股，调整为卖出{available_sell_quantity}股（确保保留最低持仓{MINIMUM_HOLDING}股）")
+                quantity = available_sell_quantity
+            
             # 模拟模式处理
             if self.is_mock:
                 logger.info(f"🔶 模拟卖出: {stock_code} {stock_name} {quantity}股 @ {price}")

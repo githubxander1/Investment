@@ -30,9 +30,11 @@ class T0Strategy:
         save_charts: 是否保存图表
         notification_enabled: 是否启用通知
         """
-        # 设置股票池
-        # 600900长江电力，601088中国神华
-        self.stock_pool = stock_pool if stock_pool else ['600900','601088']
+        # 导入配置
+        from Investment.T0.config.settings import DEFAULT_STOCK_POOL
+        
+        # 设置股票池 - 使用配置文件中的默认股票池（中信证券和美的集团）
+        self.stock_pool = stock_pool if stock_pool else DEFAULT_STOCK_POOL
         # 设置参数
         self.refresh_interval = refresh_interval
         self.save_charts = save_charts

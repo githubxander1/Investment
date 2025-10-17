@@ -11,7 +11,10 @@ DEFAULT_STOCK_POOL = ['000333', '600030']  # 000333美的集团，600030中信�
 MONITOR_INTERVAL = 60
 
 # 交易数量
-TRADE_QUANTITY = 200
+TRADE_QUANTITY = 100
+
+# 最低持仓数量（股）
+MINIMUM_HOLDING = 100
 
 # 信号记录文件
 SIGNAL_RECORD_FILE = os.path.join(BASE_DIR, 'logs', 'signal_records.txt')

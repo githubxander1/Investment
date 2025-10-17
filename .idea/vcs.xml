@@ -5,8 +5,5 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Investment/THS/10jqka-API" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Investment/THS/ChinaStock_TradeAPI" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Investment/THS/ths_trade" vcs="Git" />
   </component>
 </project>
