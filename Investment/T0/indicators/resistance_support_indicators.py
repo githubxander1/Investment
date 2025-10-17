@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 import os
-import time
+# from Investment.T0.monitor.signal_detector import SignalDetector
 
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
@@ -16,8 +16,7 @@ plt.rcParams.update({
     'axes.unicode_minus': False
 })
 
-
-# ---------------------- 1. 指标计算（严格还原通达信公式） ----------------------
+# ---------------------- 1. 指标计算 ----------------------
 def calculate_tdx_indicators(df, prev_close, threshold=0.005):
     """
     通达信公式还原：
@@ -75,10 +74,19 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
             first_buy_avg_price = df.loc[first_buy_signal, '均价']
             if pd.notna(first_buy_avg_price) and first_buy_avg_price != 0:
                 diff_pct = ((first_buy_price - first_buy_avg_price) / first_buy_avg_price) * 100
+                # 确保 first_buy_signal 是 datetime 对象
+                if isinstance(first_buy_signal, str):
+                    first_buy_signal = pd.to_datetime(first_buy_signal)
                 print(f"阻力支撑：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
+                # 确保 first_buy_signal 是 datetime 对象
+                if isinstance(first_buy_signal, str):
+                    first_buy_signal = pd.to_datetime(first_buy_signal)
                 print(f"阻力支撑：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: N/A")
         else:
+            # 确保 first_buy_signal 是 datetime 对象
+            if isinstance(first_buy_signal, str):
+                first_buy_signal = pd.to_datetime(first_buy_signal)
             print(f"阻力支撑：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}")
     else:
         print("未检测到买入信号")
@@ -92,175 +100,72 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
             first_sell_avg_price = df.loc[first_sell_signal, '均价']
             if pd.notna(first_sell_avg_price) and first_sell_avg_price != 0:
                 diff_pct = ((first_sell_price - first_sell_avg_price) / first_sell_avg_price) * 100
+                # 确保 first_sell_signal 是 datetime 对象
+                if isinstance(first_sell_signal, str):
+                    first_sell_signal = pd.to_datetime(first_sell_signal)
                 print(f"阻力支撑：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
+                # 确保 first_sell_signal 是 datetime 对象
+                if isinstance(first_sell_signal, str):
+                    first_sell_signal = pd.to_datetime(first_sell_signal)
                 print(f"阻力支撑：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: N/A")
         else:
+            # 确保 first_sell_signal 是 datetime 对象
+            if isinstance(first_sell_signal, str):
+                first_sell_signal = pd.to_datetime(first_sell_signal)
             print(f"阻力支撑：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}")
     else:
         print("未检测到卖出信号")
 
     return df
 
-
-# ---------------------- 2. 昨收价获取（严格对应通达信 DYNAINFO(3)） ----------------------
-# def get_prev_close(stock_code, trade_date):
-#     daily_df = ak.stock_zh_a_daily(symbol=stock_code, start_date=trade_date, end_date=trade_date)
-#     # daily_df = ak.stock_sz_a_spot_em()
-#     print(daily_df)
-#     close = daily_df['close'].iloc[-1]
-#     print("close: ", close)
-
-def get_prev_close(stock_code, trade_date):
-    """从日线数据获取前一日收盘价，失败则用分时开盘价替代"""
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
-            
-            # 如果是周末，获取上周五的收盘价
-            weekday = trade_date_dt.weekday()  # 0=Monday, 6=Sunday
-            if weekday == 5:  # Saturday
-                trade_date_dt = trade_date_dt - timedelta(days=1)  # Friday
-            elif weekday == 6:  # Sunday
-                trade_date_dt = trade_date_dt - timedelta(days=2)  # Friday
-            
-            # 获取日线数据
-            daily_df = ak.stock_zh_a_hist(
-                symbol=stock_code,
-                period="daily",
-                adjust=""
-            )
-
-
-            if daily_df.empty:
-                raise ValueError("无法获取日线数据")
-                
-            # 检查是否存在日期列
-            if '日期' not in daily_df.columns:
-                print(f"日线数据中缺少'日期'列，列名包括: {list(daily_df.columns)}")
-                raise ValueError("日线数据格式错误，缺少日期列")
-
-            # 转换日期列为datetime类型
-            daily_df['日期'] = pd.to_datetime(daily_df['日期'])
-
-            # 筛选出在交易日期之前的数据
-            df_before = daily_df[daily_df['日期'] < trade_date_dt]
-
-            if df_before.empty:
-                raise ValueError("没有找到前一日数据")
-
-            # 检查是否存在收盘列
-            if '收盘' not in df_before.columns:
-                print(f"日线数据中缺少'收盘'列，列名包括: {list(df_before.columns)}")
-                raise ValueError("日线数据格式错误，缺少收盘列")
-
-            # 获取最近的收盘价（上一个交易日）
-            prev_close = df_before.iloc[-1]['收盘']
-            return prev_close
-        except Exception as e:
-            if attempt == max_retries - 1:
-                print(f"获取昨收价失败，最后一次尝试出错: {e}")
-                return None
-            else:
-                print(f"获取昨收价时出错: {e}，正在重试... (第{attempt+1}次)")
-                time.sleep(3)  # 等待3秒后重试
-
-
-# ---------------------- 3. 缓存功能 ----------------------
-def get_cached_data(stock_code, trade_date):
-    """从缓存中获取数据"""
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
-    if os.path.exists(cache_file):
-        try:
-            df = pd.read_csv(cache_file)
-
-            # 检查是否包含时间列
-            if '时间' in df.columns:
-                df['时间'] = pd.to_datetime(df['时间'])
-                # 注意：缓存数据不设置时间列为索引，保持与网络获取数据一致的格式
-                return df
-            else:
-                print("缓存文件中未找到时间列")
-        except Exception as e:
-            print(f"读取缓存文件失败: {e}")
-    return None
-
-
-def save_data_to_cache(df, stock_code, trade_date):
-    """保存数据到缓存"""
-    # 确保 stock_data 目录存在
-    os.makedirs("stock_data", exist_ok=True)
-
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
-    try:
-        df_reset = df.reset_index()
-        df_reset.to_csv(cache_file, index=False)
-    except Exception as e:
-        print(f"保存缓存文件失败: {e}")
-
-
 # ---------------------- 4. 绘图函数 ----------------------
 def plot_tdx_intraday(stock_code, trade_date=None):
     try:
         # 1. 时间处理
-        today = datetime.now().strftime('%Y%m%d')
-        trade_date = trade_date or today
+        today = datetime.today().strftime('%Y-%m-%d')
+        start_time = f'{today} 09:30:00'
+        end_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        # 2. 先尝试从缓存获取数据
-        df = get_cached_data(stock_code, trade_date)
+        trade_date = trade_date or datetime.today().strftime('%Y-%m-%d')
 
-        # 3. 如果缓存没有数据，则从网络获取
-        if df is None:
-            df = ak.stock_zh_a_hist_min_em(
-                symbol=stock_code,
-                period="1",
-                start_date=trade_date,
-                end_date=trade_date,
-                adjust=''
-            )
-            if df.empty:
-                print("❌ 无分时数据")
-                return None
+        # start_time = start_time or f'{today} 09:30:00'
+        # end_time = end_time or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # print("开始时间: ", start_time)
+        # print("今天是: ", today)
+        # print("当前时间: ", now)
 
-            # 保存到缓存前确保列名正确
-            if '时间' not in df.columns:
-                # 查找实际的时间列
-                time_col = None
-                for col in df.columns:
-                    if '时间' in col or 'date' in col.lower() or 'time' in col.lower():
-                        time_col = col
-                        break
-                if time_col:
-                    df.rename(columns={time_col: '时间'}, inplace=True)
-
-            # 保存到缓存
-            save_data_to_cache(df.copy(), stock_code, trade_date)
-            data_from_cache = False
-        else:
-            data_from_cache = True
-
-        # 如果数据来自缓存，则时间列已经是索引，否则需要转换时间列
-        if not data_from_cache:
-            # 强制转换为 datetime（AkShare 返回的时间已包含日期）
-            df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
-
-        df = df[df['时间'].notna()]
-
-        # 只保留指定日期的数据，不延伸到今天
-        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
-        df_original = df.copy()  # 保存原始数据
-        df = df[df['时间'].dt.date == target_date.date()]
-
-        # 过滤掉 11:30 到 13:00 之间的数据
-        df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
-        if df.empty:
-            print("❌ 所有时间数据均无效")
+        df_resouce = ak.stock_zh_a_hist_min_em(
+            symbol=stock_code,
+            period="1",
+            start_date=start_time,
+            end_date=end_time,
+            adjust=''
+        )
+        if df_resouce.empty:
+            print("❌ 无分时数据")
             return None
 
+        df_resouce = df_resouce[df_resouce['时间'].notna()]
+
+        # 只保留指定日期的数据，不延伸到今天
+        target_date = pd.to_datetime(trade_date, format='%Y-%m-%d')
+        df = df_resouce.copy()  # 保存原始数据
+        df = df[df['时间'].str.split(' ', expand=True)[0] == target_date.strftime('%Y-%m-%d')]
+        # df = df[df['时间'].dt.date == target_date.date()]
+
+        # # 过滤掉 11:30 到 13:00 之间的数据
+        # df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
+        # if df.empty:
+        #     print("❌ 所有时间数据均无效")
+        #     return None
+
         # 分离上午和下午的数据
-        morning_data = df[df['时间'].dt.hour < 12]
-        afternoon_data = df[df['时间'].dt.hour >= 13]
+        # 修复时间比较逻辑，正确提取小时部分并转换为整数进行比较
+        time_series = df['时间'].str.split(' ', expand=True)[1]
+        hour_parts = time_series.str.split(':', expand=True)[0].astype(int)
+        morning_data = df[hour_parts < 12]
+        afternoon_data = df[hour_parts >= 13]
 
         # 强制校准时间索引（只生成到指定日期的时间索引）
         morning_index = pd.date_range(
@@ -276,15 +181,31 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 合并索引
         full_index = morning_index.union(afternoon_index)
-        df = df.set_index('时间').reindex(full_index)
+        df = df.set_index('时间')
+        # 先前的 reindex 操作可能会引入大量 NaN 值，我们只保留原始数据中的时间点
+        # df = df.reindex(full_index)
         df.index.name = '时间'
 
         # 获取昨收（fallback到开盘价）
-        prev_close = get_prev_close(stock_code, trade_date)
+        try:
+            from Investment.T0.utils.get_pre_close import get_prev_close
+            prev_close = get_prev_close(stock_code, trade_date)
+        except ImportError:
+            # 如果导入失败，尝试另一种导入方式
+            import sys
+            import os
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            try:
+                from utils.get_pre_close import get_prev_close
+                prev_close = get_prev_close(stock_code, trade_date)
+            except ImportError:
+                prev_close = None
+        
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
 
         # 计算指标
+        # 在计算指标前，先确保数据没有被错误地填充为 NaN
         df = df.ffill().bfill()  # 填充缺失值
         df = calculate_tdx_indicators(df, prev_close)
 
@@ -410,6 +331,10 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         # 选择要显示的时间点和对应的索引位置
         selected_indices = list(range(0, total_points, step))
         selected_times = df_filtered.index[selected_indices]
+        
+        # 确保 selected_times 中的时间是 datetime 对象
+        if len(selected_times) > 0 and isinstance(selected_times[0], str):
+            selected_times = [pd.to_datetime(t) for t in selected_times]
 
         # 设置x轴刻度为数据点索引位置，但显示对应的时间标签
         ax_price.set_xticks(selected_indices)
@@ -503,24 +428,41 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 # ---------------------- 5. 主程序（运行示例） ----------------------
 if __name__ == "__main__":
     stock_code = '600030'  #
-    trade_date = '20251016'  # 交易日期
+    trade_date = '2025-10-17'  # 交易日期
 
-    # pre = get_prev_close(stock_code, trade_date)
+    # 1979-09-01 09:32:00
+    # start_time = '2025-10-17 09:32:00'
+    # now = '2025-10-17 09:32:00'
+    today = datetime.today().strftime('%Y-%m-%d')
+    print("今天是: ", today)
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print("当前时间: ", now)
+    start_time = f'{today} 09:30:00'
+    print("开始时间: ", start_time)
+
+    df = ak.stock_zh_a_hist_min_em(
+        symbol=stock_code,
+        period="1",
+        start_date=start_time,
+        end_date=now,
+        adjust=''
+    )
+    print(df)
+    # df['时间'] = df['时间'].str.split(' ', expand=True)[1]
+    # print(df['时间'])
+    #获取时间列的具体时间，以空格分隔
+
+    # df[df['时间'].dt.date
+
+
+    # pre = single_detector.get_prev_close(stock_code)
     # print(f"前收盘价: {pre}")
 
     # 绘制并获取结果
     result_df = plot_tdx_intraday(stock_code, trade_date)
 
-    # 保存结果（可选）
+    # 不再保存CSV文件，只生成图表
     if result_df is not None:
-        csv_file = f'{stock_code}_{trade_date}_通达信分时信号.csv'
-        result_df.to_csv(csv_file, encoding='utf-8-sig')
-        print(f"结果已保存到: {csv_file}")
-
-        # 显示保存的信号统计
-        signal_stats = {
-            'cross_support': result_df['cross_support'].sum(),
-            'longcross_support': result_df['longcross_support'].sum(),
-            'longcross_resistance': result_df['longcross_resistance'].sum()
-        }
-        print(f"信号统计: {signal_stats}")
+        print("图表已保存到output/charts目录")
+    else:
+        print("图表生成失败")
