@@ -1,6 +1,3 @@
-# 1. 删除现有文件夹（请先备份任何重要文件）
-# 2. 重新克隆：
-# git clone https://gitee.com/Xander_1/Investment.git
 from openai import OpenAI
 import subprocess
 import tempfile

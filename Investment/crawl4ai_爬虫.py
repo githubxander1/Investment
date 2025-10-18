@@ -2,31 +2,33 @@ import os
 import json
 import asyncio
 from dotenv import load_dotenv
-import requests
+from openai import OpenAI  # 改用OpenAI库方式调用
 
 # 加载环境变量（通义千问API密钥）
 load_dotenv()
 # QWEN_API_KEY = os.getenv("QWEN_API_KEY")
-QWEN_ENDPOINT = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
-QWEN_API_KEY = "ms-04756442-433d-4c9c-88c3-095de9dc36d3"
-# QWEN_ENDPOINT = "https://api-inference.modelscope.cn/v1'"
 
+# 使用与qwen3_bailian.py相同的配置
+os.environ["OPENAI_API_KEY"] = "sk-5420708cfa8749f0aaf970fcf2da567d"
+os.environ["OPENAI_BASE_URL"] = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+# 初始化OpenAI客户端
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL")
+)
 
 def call_qwen3(prompt):
     """调用通义千问3 API，解析自然语言指令或提取数据"""
-    headers = {
-        "Authorization": f"Bearer {QWEN_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        # "model": "Qwen/Qwen3-Coder-480B-A35B-Instruct",  # 使用通义千问3的免费模型
-        "model": "qwen-turbo",  # 使用通义千问3的免费模型
-        "messages": [{"role": "user", "content": prompt}]
-    }
     try:
-        response = requests.post(QWEN_ENDPOINT, headers=headers, json=payload)
-        response.raise_for_status()  # 检查请求是否成功
-        return response.json()["choices"][0]["message"]["content"]
+        completion = client.chat.completions.create(
+            model="qwen3-coder-480b-a35b-instruct",  # 使用与qwen3_bailian.py相同的模型
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        # 返回模型结果
+        return completion.choices[0].message.content
     except Exception as e:
         return f"API调用失败: {str(e)}"
 
@@ -53,15 +55,20 @@ async def crawl_and_analyze(url, user_query):
             if result.success:
                 # 构造提示词：让AI根据用户需求解析爬取的内容
                 prompt = f"""
-                我爬取了网页内容，需要你帮我提取信息。
-                用户需求：{user_query}
-                网页内容：{result.markdown[:5000]}  # 截取前5000字符避免过长
-                请以JSON格式返回结果，键名用中文（如"电影名称"、"评分"），只返回JSON，不添加其他内容。
-                """
+我爬取了网页内容，需要你帮我提取信息。
+用户需求：{user_query}
+网页内容：{result.markdown[:5000]}  # 截取前5000字符避免过长
+请以JSON格式返回结果，键名用中文（如"电影名称"、"评分"），只返回JSON，不添加其他内容。
+"""
                 # 调用通义千问3解析
                 analysis_result = call_qwen3(prompt)
+                # 打印原始结果用于调试
+                print(f"API返回的原始结果: {analysis_result}")
                 # 尝试解析为JSON（处理可能的格式错误）
                 try:
+                    # 检查返回结果是否以```json开头
+                    if analysis_result.startswith("```json"):
+                        analysis_result = analysis_result[7:-3]  # 去掉```json和```
                     return json.loads(analysis_result)
                 except json.JSONDecodeError:
                     return {"error": "解析失败", "raw_result": analysis_result}
@@ -84,6 +91,9 @@ async def main():
     print("===== 爬取分析结果 =====")
     if "error" in result:
         print(f"错误: {result['error']}")
+        # 如果有原始结果，也打印出来
+        if "raw_result" in result:
+            print(f"原始结果: {result['raw_result']}")
     else:
         for i, movie in enumerate(result, 1):
             print(f"\n第{i}部：")
