@@ -1,24 +1,34 @@
-import akshare as ak
+import os
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from datetime import datetime, timedelta
-import os
+import matplotlib.dates as mdates
+from typing import Optional, Tuple, Dict, Any
+import akshare as ak
 from scipy.signal import argrelextrema
 
-# 设置matplotlib后端，确保图表能正确显示
-import matplotlib
+# 添加项目根目录到系统路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# 设置matplotlib中文字体支持和后端
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC']
+plt.rcParams['axes.unicode_minus'] = False
+import matplotlib
 matplotlib.use('Agg')  # 使用Agg后端，不显示图形界面
-plt.rcParams.update({
-    'font.sans-serif': ['SimHei'],
-    'axes.unicode_minus': False
-})
+
+# 全局变量
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache')
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
+
+# 确保目录存在
+os.makedirs(CACHE_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 # ---------------------- 1. 指标计算（扩展通达信公式） ----------------------
-def calculate_tdx_indicators(df, prev_close, daily_data, threshold=0.01):
+def calculate_tdx_indicators(df: pd.DataFrame, prev_close: float, daily_data: pd.DataFrame, threshold: float = 0.01) -> pd.DataFrame:
     """
     扩展通达信公式实现：
     包含480日最高价、月内天数计算、特殊均线、MACD、量比分析等
@@ -215,7 +225,18 @@ def calculate_tdx_indicators(df, prev_close, daily_data, threshold=0.01):
 
 
 # ---------------------- 2. 数据获取函数 ----------------------
-def get_prev_close(stock_code, trade_date):
+def get_prev_close(stock_code: str, trade_date: str) -> Tuple[Optional[float], pd.DataFrame]:
+    """
+    获取前一日收盘价
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD
+    
+    Returns:
+        前一日收盘价和日线数据，如果获取失败则返回None和空DataFrame
+    """
+
     """从日线数据获取前一日收盘价，失败则用分时开盘价替代"""
     try:
         trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
@@ -254,7 +275,18 @@ def get_prev_close(stock_code, trade_date):
 
 
 # ---------------------- 3. 缓存功能 ----------------------
-def get_cached_data(stock_code, trade_date):
+def get_cached_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+    """
+    从缓存中获取数据
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD
+    
+    Returns:
+        缓存的DataFrame，如果不存在则返回None
+    """
+    cache_file = os.path.join(CACHE_DIR, f"{stock_code}_{trade_date}.csv")
     """从缓存中获取数据"""
     cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
     if os.path.exists(cache_file):
@@ -271,7 +303,16 @@ def get_cached_data(stock_code, trade_date):
             print(f"读取缓存文件失败: {e}")
     return None
 
-def save_data_to_cache(df, stock_code, trade_date):
+def save_data_to_cache(df: pd.DataFrame, stock_code: str, trade_date: str) -> None:
+    """
+    保存数据到缓存
+    
+    Args:
+        df: 要缓存的数据
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD
+    """
+
     """保存数据到缓存"""
     # 确保 stock_data 目录存在
     os.makedirs("stock_data", exist_ok=True)
@@ -285,22 +326,51 @@ def save_data_to_cache(df, stock_code, trade_date):
 
 
 # ---------------------- 4. 绘图函数 ----------------------
-def plot_tdx_intraday(stock_code, trade_date=None):
+def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Optional[str]:
+    """
+    绘制通达信分时指标图
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
+    
+    Returns:
+        图表保存路径，如果失败则返回None
+    """
     try:
         # 1. 时间处理
-        today = datetime.now().strftime('%Y%m%d')
-        trade_date = trade_date or today
+        # 如果没有提供交易日期，则使用昨天的日期
+        if trade_date is None:
+            # 获取昨天的日期（考虑到今天可能是周末或节假日，使用最近的交易日）
+            yesterday = datetime.now() - timedelta(days=1)
+            trade_date = yesterday.strftime('%Y-%m-%d')
+        
+        # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
+        if isinstance(trade_date, str):
+            if '-' in trade_date:
+                trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+            else:
+                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+        else:
+            trade_date_obj = trade_date
+            
+        # 格式化为 akshare 接口需要的日期格式
+        trade_date_str = trade_date_obj.strftime('%Y%m%d')
+        
+        # 构造 akshare 需要的时间格式 (YYYY-MM-DD HH:MM:SS)
+        start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
+        end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
         # 2. 先尝试从缓存获取数据
-        df = get_cached_data(stock_code, trade_date)
+        df = get_cached_data(stock_code, trade_date_str)
 
         # 3. 如果缓存没有数据，则从网络获取
         if df is None:
             df = ak.stock_zh_a_hist_min_em(
                 symbol=stock_code,
                 period="1",
-                start_date=trade_date,
-                end_date=trade_date,
+                start_date=start_time,
+                end_date=end_time,
                 adjust=''
             )
             if df.empty:
@@ -322,7 +392,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                     return None
 
             # 保存到缓存
-            save_data_to_cache(df.copy(), stock_code, trade_date)
+            save_data_to_cache(df.copy(), stock_code, trade_date_str)
             data_from_cache = False
         else:
             data_from_cache = True
@@ -334,7 +404,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         df = df[df['时间'].notna()]
 
         # 只保留指定日期的数据
-        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        target_date = pd.to_datetime(trade_date_obj)
         df_original = df.copy()  # 保存原始数据
         df = df[df['时间'].dt.date == target_date.date()]
 
@@ -346,13 +416,13 @@ def plot_tdx_intraday(stock_code, trade_date=None):
 
         # 强制校准时间索引
         morning_index = pd.date_range(
-            start=f"{trade_date} 09:30:00",
-            end=f"{trade_date} 11:30:00",
+            start=f"{trade_date_obj.strftime('%Y-%m-%d')} 09:30:00",
+            end=f"{trade_date_obj.strftime('%Y-%m-%d')} 11:30:00",
             freq='1min'
         )
         afternoon_index = pd.date_range(
-            start=f"{trade_date} 13:00:00",
-            end=f"{trade_date} 15:00:00",
+            start=f"{trade_date_obj.strftime('%Y-%m-%d')} 13:00:00",
+            end=f"{trade_date_obj.strftime('%Y-%m-%d')} 15:00:00",
             freq='1min'
         )
 
@@ -362,7 +432,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         df.index.name = '时间'
 
         # 获取昨收和日线数据
-        prev_close, daily_data = get_prev_close(stock_code, trade_date)
+        prev_close, daily_data = get_prev_close(stock_code, trade_date_str)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
 
@@ -427,7 +497,7 @@ def plot_tdx_intraday(stock_code, trade_date=None):
                 ax_price.plot(x_values, df_filtered[col_name], marker='', linestyle='-',
                               color=ma_colors[i - 1], linewidth=0.8, alpha=0.7, label=f'MA{i}')
 
-        # 绘制橙色柱状线（CROSS(支撑, 现价)）
+        # 绘制橙色柱状线（CROSS(支撑, 现价））
         cross_support_points = df_filtered[df_filtered['cross_support']]
         for idx in cross_support_points.index:
             x_pos = df_filtered.index.get_loc(idx)
@@ -550,7 +620,17 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         change_pct = (change / prev_close) * 100 if prev_close != 0 else 0
 
         # 合并顶部信息为一个标题
-        fig.suptitle(f'{stock_code} 分时图分析 - {trade_date} | 最新价: {latest_price:.2f} | 涨跌幅: {change:+.2f} ({change_pct:+.2f}%) | 480日最高: {df['XG_480'].iloc[0]:.2f}',
+        # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
+        if isinstance(trade_date, str):
+            if '-' in trade_date:
+                trade_date_formatted = trade_date
+            else:
+                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                trade_date_formatted = trade_date_obj.strftime('%Y-%m-%d')
+        else:
+            trade_date_formatted = trade_date.strftime('%Y-%m-%d')
+            
+        fig.suptitle(f'{stock_code} 分时图分析 - {trade_date_formatted} | 最新价: {latest_price:.2f} | 涨跌幅: {change:+.2f} ({change_pct:+.2f}%) | 480日最高: {df["XG_480"].iloc[0]:.2f}',
                      fontsize=12, y=0.98)
 
         # 获取最后一个有效数据点的买卖盘信息
@@ -580,7 +660,18 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         # 保存图表到output目录
         output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
         os.makedirs(output_dir, exist_ok=True)
-        chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_扩展指标.png')
+        
+        # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
+        if isinstance(trade_date, str):
+            if '-' in trade_date:
+                trade_date_formatted = trade_date
+            else:
+                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                trade_date_formatted = trade_date_obj.strftime('%Y-%m-%d')
+        else:
+            trade_date_formatted = trade_date.strftime('%Y-%m-%d')
+            
+        chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date_formatted}_扩展指标.png')
         
         # 直接保存，覆盖同名文件
         plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
@@ -597,17 +688,172 @@ def plot_tdx_intraday(stock_code, trade_date=None):
         return None
 
 
-# ---------------------- 5. 主程序（运行示例） ----------------------
-if __name__ == "__main__":
-    # 可以替换为其他股票代码
-    stock_code = '000333'  # 美的集团
-    trade_date = '20251017'  # 交易日期
+def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+    """
+    获取股票分时数据
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD
+    
+    Returns:
+        分时数据DataFrame，如果失败则返回None
+    """
+    try:
+        # 尝试从缓存获取数据
+        cached_df = get_cached_data(stock_code, trade_date)
+        if cached_df is not None:
+            print(f"从缓存加载{stock_code}在{trade_date}的分时数据")
+            return cached_df
+        
+        # 构造 akshare 需要的时间格式
+        start_time = f'{trade_date} 09:30:00'
+        end_time = f'{trade_date} 15:00:00'
 
-    # 绘制并获取结果
-    result_df = plot_tdx_intraday(stock_code, trade_date)
+        # 获取数据
+        df = ak.stock_zh_a_hist_min_em(
+            symbol=stock_code,
+            period="1",
+            start_date=start_time,
+            end_date=end_time,
+            adjust=''  # 不复权
+        )
+        
+        if df.empty:
+            print(f"❌ {stock_code}在{trade_date}无分时数据")
+            return None
+        
+        # 处理数据
+        df = df.rename(columns={
+            '时间': '时间',
+            '开盘': '开盘',
+            '收盘': '收盘',
+            '最高': '最高',
+            '最低': '最低',
+            '成交量': '成交量',
+            '成交额': '成交额'
+        })
+        
+        # 转换时间列
+        df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
+        df = df[df['时间'].notna()]
+        
+        # 过滤数据
+        target_date = datetime.strptime(trade_date, '%Y-%m-%d')
+        df = df[df['时间'].dt.date == target_date.date()]
+        df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
+        
+        # 生成完整时间索引
+        morning_index = pd.date_range(start=f"{trade_date} 09:30:00", end=f"{trade_date} 11:30:00", freq='1min')
+        afternoon_index = pd.date_range(start=f"{trade_date} 13:00:00", end=f"{trade_date} 15:00:00", freq='1min')
+        full_index = morning_index.union(afternoon_index)
+        
+        df = df.set_index('时间').reindex(full_index)
+        df.index.name = '时间'
+        df = df.ffill().bfill()
+        
+        # 保存到缓存
+        save_data_to_cache(df, stock_code, trade_date)
+        
+        return df
+    except Exception as e:
+        print(f"获取{stock_code}在{trade_date}的分时数据失败: {e}")
+        return None
 
-    # 不再保存CSV文件，只生成图表
-    if result_df is not None:
-        print(f"图表已保存到output/charts目录")
+def detect_trading_signals(df: pd.DataFrame) -> Dict[str, Any]:
+    """
+    检测交易信号
+    
+    Args:
+        df: 包含指标的DataFrame
+    
+    Returns:
+        包含信号信息的字典
+    """
+    signals = {
+        'cross_support': df[df['cross_support']].index.tolist() if 'cross_support' in df.columns else [],
+        'longcross_support': df[df['longcross_support']].index.tolist() if 'longcross_support' in df.columns else [],
+        'longcross_resistance': df[df['longcross_resistance']].index.tolist() if 'longcross_resistance' in df.columns else [],
+        '主力_拉信号': df[df['主力_拉信号']].index.tolist() if '主力_拉信号' in df.columns else [],
+        '主力_冲信号': df[df['主力_冲信号']].index.tolist() if '主力_冲信号' in df.columns else [],
+        '压力信号': df[df['压力信号']].index.tolist() if '压力信号' in df.columns else []
+    }
+    
+    # 打印信号信息
+    for signal_name, signal_times in signals.items():
+        if signal_times:
+            first_time = signal_times[0]
+            price = df.loc[first_time, '收盘']
+            print(f"扩展指标：第一次{signal_name}时间点: {first_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
+        else:
+            print(f"未检测到{signal_name}")
+    
+    return signals
+
+def analyze_extended_indicators(stock_code: str, trade_date: Optional[str] = None) -> Optional[pd.DataFrame]:
+    """
+    分析扩展指标主函数
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
+    
+    Returns:
+        包含分析结果的DataFrame，如果失败则返回None
+    """
+    # 时间处理
+    if trade_date is None:
+        yesterday = datetime.now() - timedelta(days=1)
+        trade_date = yesterday.strftime('%Y-%m-%d')
+    
+    # 标准化日期格式
+    if isinstance(trade_date, str):
+        if '-' not in trade_date:
+            trade_date = datetime.strptime(trade_date, '%Y%m%d').strftime('%Y-%m-%d')
+    
+    # 获取数据
+    df = fetch_intraday_data(stock_code, trade_date)
+    if df is None:
+        return None
+    
+    # 获取前一日收盘价
+    prev_close, daily_data = get_prev_close(stock_code, trade_date)
+    if prev_close is None:
+        prev_close = df['开盘'].dropna().iloc[0] if not df['开盘'].dropna().empty else 0
+    
+    # 计算指标
+    df = calculate_tdx_indicators(df, prev_close, daily_data)
+    
+    # 检测信号
+    detect_trading_signals(df)
+    
+    return df
+
+def main(stock_code: str = '000333', trade_date: Optional[str] = None) -> None:
+    """
+    主函数，用于独立运行生成扩展指标图表
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
+    """
+    print(f"开始分析{stock_code}在{trade_date}的扩展指标")
+    
+    # 绘制并保存图表
+    chart_path = plot_tdx_intraday(stock_code, trade_date)
+    
+    if chart_path:
+        print(f"图表已保存至: {chart_path}")
     else:
         print("图表生成失败")
+
+# 主程序入口
+if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='扩展指标分析工具')
+    parser.add_argument('--code', type=str, default='000333', help='股票代码')
+    parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD 或 YYYYMMDD)')
+    
+    args = parser.parse_args()
+    main(stock_code=args.code, trade_date=args.date)

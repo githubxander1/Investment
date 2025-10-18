@@ -1,21 +1,35 @@
+import os
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from datetime import datetime, timedelta
-import os
+import matplotlib.dates as mdates
+from typing import Optional, Tuple, Dict, Any
+import akshare as ak
+
+# 添加项目根目录到系统路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# 设置matplotlib中文字体支持
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC']
+plt.rcParams['axes.unicode_minus'] = False
+
+# 全局变量
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache')
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
+
+# 确保目录存在
+os.makedirs(CACHE_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # 设置matplotlib后端，确保图表能正确显示
 import matplotlib
 
 matplotlib.use('Agg')  # 使用Agg后端，不显示图形界面
-plt.rcParams.update({
-    'font.sans-serif': ['SimHei'],
-    'axes.unicode_minus': False
-})
 
 
-def calculate_volume_price_indicators(df, prev_close):
+def calculate_volume_price_indicators(df, prev_close) -> Tuple[pd.DataFrame, float, float, float]:
     """
     计算量价指标：
     量价:=(VOL/CLOSE)/3;
@@ -62,7 +76,7 @@ def calculate_volume_price_indicators(df, prev_close):
     return df, buy_ratio, sell_ratio, diff_ratio
 
 
-def calculate_support_resistance(df, prev_close):
+def calculate_support_resistance(df, prev_close) -> pd.DataFrame:
     """
     计算支撑和阻力位：
     H1:=MAX(DYNAINFO(3),DYNAINFO(5));
@@ -88,7 +102,7 @@ def calculate_support_resistance(df, prev_close):
     return df
 
 
-def calculate_fund_flow_indicators(df):
+def calculate_fund_flow_indicators(df) -> pd.DataFrame:
     """
     计算资金流向指标：
     XX:=SUM(AMOUNT,BARSCOUNT(CLOSE))/SUM(V*100,BARSCOUNT(CLOSE));
@@ -112,7 +126,7 @@ def calculate_fund_flow_indicators(df):
     return df
 
 
-def calculate_precise_lines(df):
+def calculate_precise_lines(df) -> pd.DataFrame:
     """
     计算精准线：
     N01:=3;L00:=0.00;L01:=ABS(L-REF(L,1))<=L00;L02:=ABS(L-REF(L,2))<=L00;
@@ -157,7 +171,7 @@ def calculate_precise_lines(df):
     return df
 
 
-def detect_signals(df):
+def detect_signals(df) -> pd.DataFrame:
     """
     检测买卖信号
     """
@@ -233,9 +247,12 @@ def detect_signals(df):
     return df
 
 
-def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio):
+def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio) -> str:
     """
-    绘制量价指标图
+    绘图量价指标图并返回图表保存路径
+    """
+    """
+    绘图量价指标图
     """
     # 创建图形和子图
     fig = plt.figure(figsize=(16, 10))
@@ -318,7 +335,17 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     ax_price.grid(True, linestyle='--', alpha=0.7)
     
     # 设置标题
-    fig.suptitle(f'{stock_code} 量价指标 - {trade_date}', fontsize=14, y=0.98)
+    # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
+    if isinstance(trade_date, str):
+        if '-' in trade_date:
+            trade_date_formatted = trade_date
+        else:
+            trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+            trade_date_formatted = trade_date_obj.strftime('%Y-%m-%d')
+    else:
+        trade_date_formatted = trade_date.strftime('%Y-%m-%d')
+        
+    fig.suptitle(f'{stock_code} 量价指标 - {trade_date_formatted}', fontsize=14, y=0.98)
     
     # 添加图例
     ax_price.legend(loc='upper left', fontsize=10)
@@ -347,7 +374,18 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     # 保存图表到output目录
     output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
     os.makedirs(output_dir, exist_ok=True)
-    chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date}_量价指标.png')
+    
+    # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
+    if isinstance(trade_date, str):
+        if '-' in trade_date:
+            trade_date_formatted = trade_date
+        else:
+            trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+            trade_date_formatted = trade_date_obj.strftime('%Y-%m-%d')
+    else:
+        trade_date_formatted = trade_date.strftime('%Y-%m-%d')
+        
+    chart_filename = os.path.join(output_dir, f'{stock_code}_{trade_date_formatted}_量价指标.png')
     
     # 直接保存，覆盖同名文件
     plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
@@ -359,7 +397,9 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
 
 
 # ---------------------- 3. 缓存功能 ----------------------
-def get_cached_data(stock_code, trade_date):
+def get_cached_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+    """从缓存中获取数据"""
+    cache_file = os.path.join(CACHE_DIR, f"{stock_code}_{trade_date}.csv")
     """从缓存中获取数据"""
     cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
     if os.path.exists(cache_file):
@@ -376,7 +416,8 @@ def get_cached_data(stock_code, trade_date):
             print(f"读取缓存文件失败: {e}")
     return None
 
-def save_data_to_cache(df, stock_code, trade_date):
+def save_data_to_cache(df: pd.DataFrame, stock_code: str, trade_date: str) -> None:
+    """保存数据到缓存"""
     """保存数据到缓存"""
     # 确保 stock_data 目录存在
     os.makedirs("stock_data", exist_ok=True)
@@ -388,8 +429,17 @@ def save_data_to_cache(df, stock_code, trade_date):
     except Exception as e:
         print(f"保存缓存文件失败: {e}")
 
-
-def analyze_volume_price(stock_code, trade_date=None):
+def analyze_volume_price(stock_code: str, trade_date: Optional[str] = None) -> Optional[pd.DataFrame]:
+    """
+    分析量价关系主函数
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
+    
+    Returns:
+        包含分析结果的DataFrame，如果失败则返回None
+    """
     """
     分析量价关系主函数
     """
@@ -397,15 +447,34 @@ def analyze_volume_price(stock_code, trade_date=None):
         import akshare as ak
         
         # 1. 时间处理
-        today = datetime.now().strftime('%Y%m%d')
-        trade_date = trade_date or today
+        # 如果没有提供交易日期，则使用昨天的日期
+        if trade_date is None:
+            # 获取昨天的日期（考虑到今天可能是周末或节假日，使用最近的交易日）
+            yesterday = datetime.now() - timedelta(days=1)
+            trade_date = yesterday.strftime('%Y-%m-%d')
         
+        # 确保 trade_date 是正确的格式
+        if isinstance(trade_date, str):
+            if '-' in trade_date:
+                trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+            else:
+                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+        else:
+            trade_date_obj = trade_date
+            
+        # 格式化为 akshare 接口需要的日期格式
+        trade_date_str = trade_date_obj.strftime('%Y%m%d')
+        
+        # 构造 akshare 需要的时间格式 (YYYY-MM-DD HH:MM:SS)
+        start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
+        end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
+
         # 2. 获取数据
         df = ak.stock_zh_a_hist_min_em(
             symbol=stock_code,
             period="1",
-            start_date=trade_date,
-            end_date=trade_date,
+            start_date=start_time,
+            end_date=end_time,
             adjust=''
         )
         
@@ -429,7 +498,7 @@ def analyze_volume_price(stock_code, trade_date=None):
         df = df[df['时间'].notna()]
         
         # 只保留指定日期的数据
-        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        target_date = pd.to_datetime(trade_date_obj)
         df_original = df.copy()  # 保存原始数据
         df = df[df['时间'].dt.date == target_date.date()]
         
@@ -446,13 +515,13 @@ def analyze_volume_price(stock_code, trade_date=None):
         
         # 强制校准时间索引
         morning_index = pd.date_range(
-            start=f"{trade_date} 09:30:00",
-            end=f"{trade_date} 11:30:00",
+            start=f"{trade_date_obj.strftime('%Y-%m-%d')} 09:30:00",
+            end=f"{trade_date_obj.strftime('%Y-%m-%d')} 11:30:00",
             freq='1min'
         )
         afternoon_index = pd.date_range(
-            start=f"{trade_date} 13:00:00",
-            end=f"{trade_date} 15:00:00",
+            start=f"{trade_date_obj.strftime('%Y-%m-%d')} 13:00:00",
+            end=f"{trade_date_obj.strftime('%Y-%m-%d')} 15:00:00",
             freq='1min'
         )
         
@@ -503,16 +572,182 @@ def analyze_volume_price(stock_code, trade_date=None):
         return None
 
 
-# 主程序
-if __name__ == "__main__":
-    stock_code = '000333'  # 中信证券
-    trade_date = '20251016'  # 交易日期
+def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+    """
+    获取股票分时数据
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD
+    
+    Returns:
+        分时数据DataFrame，如果失败则返回None
+    """
+    try:
+        # 尝试从缓存获取数据
+        cached_df = get_cached_data(stock_code, trade_date)
+        if cached_df is not None:
+            print(f"从缓存加载{stock_code}在{trade_date}的分时数据")
+            return cached_df
+        
+        # 构造 akshare 需要的时间格式
+        trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+        start_time = f'{trade_date} 09:30:00'
+        end_time = f'{trade_date} 15:00:00'
+
+        # 获取数据
+        df = ak.stock_zh_a_hist_min_em(
+            symbol=stock_code,
+            period="1",
+            start_date=start_time,
+            end_date=end_time,
+            adjust=''  # 不复权
+        )
+        
+        if df.empty:
+            print(f"❌ {stock_code}在{trade_date}无分时数据")
+            return None
+        
+        # 处理数据
+        df = df.rename(columns={
+            '时间': '时间',
+            '开盘': '开盘',
+            '收盘': '收盘',
+            '最高': '最高',
+            '最低': '最低',
+            '成交量': '成交量',
+            '成交额': '成交额'
+        })
+        
+        # 转换时间列
+        df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
+        df = df[df['时间'].notna()]
+        
+        # 过滤数据
+        df = df[df['时间'].dt.date == trade_date_obj.date()]
+        df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
+        
+        # 生成完整时间索引
+        morning_index = pd.date_range(start=f"{trade_date} 09:30:00", end=f"{trade_date} 11:30:00", freq='1min')
+        afternoon_index = pd.date_range(start=f"{trade_date} 13:00:00", end=f"{trade_date} 15:00:00", freq='1min')
+        full_index = morning_index.union(afternoon_index)
+        
+        df = df.set_index('时间').reindex(full_index)
+        df.index.name = '时间'
+        df = df.ffill().bfill()
+        
+        # 保存到缓存
+        save_data_to_cache(df, stock_code, trade_date)
+        
+        return df
+    except Exception as e:
+        print(f"获取{stock_code}在{trade_date}的分时数据失败: {e}")
+        return None
+
+def get_prev_close(stock_code: str, trade_date: str) -> float:
+    """
+    获取前一日收盘价
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD
+    
+    Returns:
+        前一日收盘价，如果获取失败则返回当日开盘价
+    """
+    try:
+        # 尝试获取日线数据
+        daily_df = ak.stock_zh_a_hist(
+            symbol=stock_code,
+            period="daily",
+            adjust=""
+        )
+        
+        if not daily_df.empty:
+            daily_df['日期'] = pd.to_datetime(daily_df['日期'])
+            target_date = datetime.strptime(trade_date, '%Y-%m-%d')
+            df_before = daily_df[daily_df['日期'] < target_date]
+            if not df_before.empty:
+                return df_before.iloc[-1]['收盘']
+        
+        # 如果无法获取前一日收盘价，尝试获取当日数据的开盘价作为备选
+        df = fetch_intraday_data(stock_code, trade_date)
+        if df is not None and not df['开盘'].dropna().empty:
+            return df['开盘'].dropna().iloc[0]
+            
+        return 0.0
+    except Exception as e:
+        print(f"获取{stock_code}的前一日收盘价失败: {e}")
+        return 0.0
+
+def detect_trading_signals(df: pd.DataFrame) -> Dict[str, Any]:
+    """
+    检测交易信号
+    
+    Args:
+        df: 包含指标的DataFrame
+    
+    Returns:
+        包含信号信息的字典
+    """
+    signals = {
+        'buy_signals': df[df['买入信号']].index.tolist() if '买入信号' in df.columns else [],
+        'sell_signals': df[df['卖出信号']].index.tolist() if '卖出信号' in df.columns else [],
+        'fund_signals': df[df['主力资金流入']].index.tolist() if '主力资金流入' in df.columns else []
+    }
+    
+    # 打印信号信息
+    if signals['buy_signals']:
+        first_buy = signals['buy_signals'][0]
+        price = df.loc[first_buy, '收盘']
+        print(f"量价指标：第一次买入信号时间点: {first_buy.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
+    else:
+        print("未检测到买入信号")
+    
+    if signals['sell_signals']:
+        first_sell = signals['sell_signals'][0]
+        price = df.loc[first_sell, '收盘']
+        print(f"量价指标：第一次卖出信号时间点: {first_sell.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
+    else:
+        print("未检测到卖出信号")
+    
+    return signals
+
+def main(stock_code: str = '000333', trade_date: Optional[str] = None) -> None:
+    """
+    主函数，用于独立运行生成量价指标图表
+    
+    Args:
+        stock_code: 股票代码
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
+    """
+    # 时间处理
+    if trade_date is None:
+        yesterday = datetime.now() - timedelta(days=1)
+        trade_date = yesterday.strftime('%Y-%m-%d')
+    
+    # 标准化日期格式
+    if isinstance(trade_date, str):
+        if '-' not in trade_date:
+            trade_date = datetime.strptime(trade_date, '%Y%m%d').strftime('%Y-%m-%d')
+    
+    print(f"开始分析{stock_code}在{trade_date}的量价指标")
     
     # 分析并绘图
     result_df = analyze_volume_price(stock_code, trade_date)
     
-    # 不再保存CSV文件，只生成图表
     if result_df is not None:
-        print("图表已保存到output/charts目录")
+        print(f"图表已保存到{OUTPUT_DIR}目录")
     else:
         print("图表生成失败")
+
+# 主程序入口
+if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='量价指标分析工具')
+    parser.add_argument('--code', type=str, default='000333', help='股票代码')
+    parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD 或 YYYYMMDD)')
+    
+    args = parser.parse_args()
+    main(stock_code=args.code, trade_date=args.date)

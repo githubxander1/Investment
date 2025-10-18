@@ -143,7 +143,7 @@ def get_prev_close(stock_code, trade_date=None):
 #     return None
 # stock_code = '000001'
 # trade_date = '2025-10-17'
-print(get_prev_close('000001', '2025-10-17'))
+# print(get_prev_close('000001', '2025-10-17'))
 # print(get_prev_close_from_hist('000001', '2025-10-17'))
 # print(get_prev_close_from_intraday('000001', '2025-10-17'))
 # hist_df = ak.stock_zh_a_hist(

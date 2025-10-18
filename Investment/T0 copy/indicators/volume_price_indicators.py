@@ -506,7 +506,7 @@ def analyze_volume_price(stock_code, trade_date=None):
 # 主程序
 if __name__ == "__main__":
     stock_code = '000333'  # 中信证券
-    trade_date = '20251016'  # 交易日期
+    trade_date = '20251017'  # 交易日期
     
     # 分析并绘图
     result_df = analyze_volume_price(stock_code, trade_date)

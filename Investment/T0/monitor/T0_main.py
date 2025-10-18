@@ -31,12 +31,13 @@ class T0Monitor:
         current_date = date.today()
         if self.last_trade_date != current_date:
             self.executor.reset_daily_signals()
-            # 重置所有检测器的信号状态
+            # 重置所有检测器的信号状态（只保留阻力支撑指标）
             for detector in self.detectors.values():
                 detector.prev_signals = {
-                    'resistance_support': {'buy': False, 'sell': False},
-                    'extended': {'buy': False, 'sell': False},
-                    'volume_price': {'buy': False, 'sell': False}
+                    'resistance_support': {'buy': False, 'sell': False}
+                    # 注释掉其他指标
+                    # 'extended': {'buy': False, 'sell': False},
+                    # 'volume_price': {'buy': False, 'sell': False}
                 }
             self.last_trade_date = current_date
             logger.info(f"开始新交易日: {current_date}")
