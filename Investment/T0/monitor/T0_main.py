@@ -3,6 +3,7 @@ import time
 import sys
 import os
 from datetime import datetime, date
+import threading
 
 # 添加项目根目录到路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,6 +26,8 @@ class T0Monitor:
         self.detectors = {stock_code: SignalDetector(stock_code) for stock_code in self.stock_pool}  # 为每只股票创建独立的检测器
         self.executor = TradeExecutor()
         self.last_trade_date = None
+        self.is_running = False
+        self._lock = threading.Lock()  # 添加线程锁以确保线程安全
         
     def check_and_reset_daily_signals(self):
         """检查并重置每日信号"""
@@ -120,10 +123,13 @@ class T0Monitor:
 
     def run(self):
         """运行主监控循环"""
+        with self._lock:
+            self.is_running = True
+            
         logger.info(f"开始监控T0交易信号，股票池: {self.stock_pool}")
         print(f"开始监控T0交易信号，股票池: {self.stock_pool}")
         
-        while True:
+        while self.is_running:
             # 检查是否为交易时间
             if not tools.is_trading_time():
                 print("当前非交易时间，等待交易时间开始...")
@@ -297,6 +303,8 @@ class T0Monitor:
     def close(self):
         """关闭监控器，释放资源"""
         logger.info("开始关闭T0监控器资源")
+        with self._lock:
+            self.is_running = False
         
         # 关闭交易执行器
         if self.executor and hasattr(self.executor, 'close'):
