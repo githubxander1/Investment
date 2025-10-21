@@ -32,13 +32,7 @@ class SignalDetector:
             # 'extended': {'buy': False, 'sell': False},
             # 'volume_price': {'buy': False, 'sell': False}
         }
-        # 移除 tushare 相关的代码
-        # # 如果tushare可用，设置token（如果用户有token的话）
-        # if TUSHARE_AVAILABLE:
-        #     # 可以在这里设置tushare token，如果用户有的话
-        #     # ts.set_token('your_token_here')
-        #     pass
-    
+
     def is_trading_time(self):
         """判断是否为交易时间"""
         now = datetime.now().time()
@@ -238,13 +232,75 @@ class SignalDetector:
         except Exception as e:
             print(f"保存阻力支撑指标图表时出错: {e}")
 
+    def get_prev_close(self, stock_code=None, trade_date=None):
+        """
+        获取股票前收盘价的方法，尝试多种方式
+        
+        Args:
+            stock_code: 股票代码，默认为self.stock_code
+            trade_date: 交易日期，默认为当天
+            
+        Returns:
+            float: 前收盘价，如果获取失败则返回None
+        """
+        if stock_code is None:
+            stock_code = self.stock_code
+            
+        if trade_date is None:
+            # 使用当天日期
+            from datetime import datetime, timedelta
+            # 尝试获取昨天的日期作为前一交易日
+            yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+            trade_date = yesterday
+            
+        try:
+            # 方法1：尝试从akshare的daily数据获取前收盘价
+            try:
+                import akshare as ak
+                df = ak.stock_zh_a_hist(
+                    symbol=stock_code,
+                    period="daily",
+                    start_date=trade_date,
+                    end_date=trade_date,
+                    adjust=""
+                )
+                if not df.empty and '收盘' in df.columns:
+                    return df['收盘'].iloc[0]
+            except Exception as e:
+                print(f"方法1获取前收盘价失败: {e}")
+                
+            # 方法2：尝试从akshare的实时行情获取前收盘价
+            try:
+                df = ak.stock_zh_a_spot_em()
+                stock_data = df[df['代码'] == stock_code]
+                if not stock_data.empty and '昨收' in stock_data.columns:
+                    return stock_data['昨收'].iloc[0]
+            except Exception as e:
+                print(f"方法2获取前收盘价失败: {e}")
+                
+            # 方法3：尝试从分时数据中推断
+            try:
+                from datetime import datetime
+                df = self.get_stock_data()
+                if df is not None and not df.empty and '开盘' in df.columns:
+                    # 使用今日开盘价作为备选
+                    return df['开盘'].dropna().iloc[0] if not df['开盘'].dropna().empty else None
+            except Exception as e:
+                print(f"方法3获取前收盘价失败: {e}")
+                
+        except Exception as e:
+            print(f"获取前收盘价时发生异常: {e}")
+            
+        return None
+    
     def detect_all_signals(self):
         """检测所有指标的信号"""
         # 获取数据
         df = self.get_stock_data()
         if df is None or df.empty:
             return None
-            
+
+        # 使用类方法获取前收盘价
         prev_close = self.get_prev_close()
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0] if not df['开盘'].dropna().empty else 0

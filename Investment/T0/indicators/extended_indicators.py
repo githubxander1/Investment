@@ -223,108 +223,6 @@ def calculate_tdx_indicators(df: pd.DataFrame, prev_close: float, daily_data: pd
 
     return df
 
-
-# ---------------------- 2. 数据获取函数 ----------------------
-def get_prev_close(stock_code: str, trade_date: str) -> Tuple[Optional[float], pd.DataFrame]:
-    """
-    获取前一日收盘价
-    
-    Args:
-        stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD
-    
-    Returns:
-        前一日收盘价和日线数据，如果获取失败则返回None和空DataFrame
-    """
-
-    """从日线数据获取前一日收盘价，失败则用分时开盘价替代"""
-    try:
-        trade_date_dt = datetime.strptime(trade_date, '%Y%m%d')
-
-        # 如果是周末，获取上周五的收盘价
-        weekday = trade_date_dt.weekday()  # 0=Monday, 6=Sunday
-        if weekday == 5:  # Saturday
-            trade_date_dt = trade_date_dt - timedelta(days=1)  # Friday
-        elif weekday == 6:  # Sunday
-            trade_date_dt = trade_date_dt - timedelta(days=2)  # Friday
-
-        # 获取日线数据
-        daily_df = ak.stock_zh_a_hist(
-            symbol=stock_code,
-            period="daily",
-            adjust=""
-        )
-
-        if daily_df.empty:
-            raise ValueError("无法获取日线数据")
-
-        # 转换日期列为datetime类型
-        daily_df['日期'] = pd.to_datetime(daily_df['日期'])
-
-        # 筛选出在交易日期之前的数据
-        df_before = daily_df[daily_df['日期'] < trade_date_dt]
-
-        if df_before.empty:
-            raise ValueError("没有找到前一日数据")
-
-        # 获取最近的收盘价（上一个交易日）
-        prev_close = df_before.iloc[-1]['收盘']
-        return prev_close, daily_df
-    except Exception as e:
-        return None, pd.DataFrame()
-
-
-# ---------------------- 3. 缓存功能 ----------------------
-def get_cached_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
-    """
-    从缓存中获取数据
-    
-    Args:
-        stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD
-    
-    Returns:
-        缓存的DataFrame，如果不存在则返回None
-    """
-    cache_file = os.path.join(CACHE_DIR, f"{stock_code}_{trade_date}.csv")
-    """从缓存中获取数据"""
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
-    if os.path.exists(cache_file):
-        try:
-            df = pd.read_csv(cache_file)
-
-            # 检查是否包含时间列
-            if '时间' in df.columns:
-                df['时间'] = pd.to_datetime(df['时间'])
-                return df
-            else:
-                print("缓存文件中未找到时间列")
-        except Exception as e:
-            print(f"读取缓存文件失败: {e}")
-    return None
-
-def save_data_to_cache(df: pd.DataFrame, stock_code: str, trade_date: str) -> None:
-    """
-    保存数据到缓存
-    
-    Args:
-        df: 要缓存的数据
-        stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD
-    """
-
-    """保存数据到缓存"""
-    # 确保 stock_data 目录存在
-    os.makedirs("stock_data", exist_ok=True)
-
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
-    try:
-        df_reset = df.reset_index()
-        df_reset.to_csv(cache_file, index=False)
-    except Exception as e:
-        print(f"保存缓存文件失败: {e}")
-
-
 # ---------------------- 4. 绘图函数 ----------------------
 def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Optional[str]:
     """
@@ -344,7 +242,10 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Opti
             # 获取昨天的日期（考虑到今天可能是周末或节假日，使用最近的交易日）
             yesterday = datetime.now() - timedelta(days=1)
             trade_date = yesterday.strftime('%Y-%m-%d')
-        
+        else:
+            # trade_date = trade_date
+            trade_date = datetime.now().strftime('%Y-%m-%d')
+
         # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
         if isinstance(trade_date, str):
             if '-' in trade_date:
@@ -361,45 +262,17 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Opti
         start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
         end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
-        # 2. 先尝试从缓存获取数据
-        df = get_cached_data(stock_code, trade_date_str)
-
-        # 3. 如果缓存没有数据，则从网络获取
-        if df is None:
-            df = ak.stock_zh_a_hist_min_em(
-                symbol=stock_code,
-                period="1",
-                start_date=start_time,
-                end_date=end_time,
-                adjust=''
-            )
-            if df.empty:
-                print("❌ 无分时数据")
-                return None
-
-            # 保存到缓存前确保列名正确
-            if '时间' not in df.columns:
-                # 查找实际的时间列
-                time_col = None
-                for col in df.columns:
-                    if '时间' in col or 'date' in col.lower() or 'time' in col.lower():
-                        time_col = col
-                        break
-                if time_col:
-                    df.rename(columns={time_col: '时间'}, inplace=True)
-                else:
-                    print("❌ 未找到时间列")
-                    return None
-
-            # 保存到缓存
-            save_data_to_cache(df.copy(), stock_code, trade_date_str)
-            data_from_cache = False
-        else:
-            data_from_cache = True
-
-        # 处理时间列
-        if not data_from_cache:
-            df['时间'] = pd.to_datetime(df['时间'], errors='coerce')
+        # 3. 从网络获取
+        df = ak.stock_zh_a_hist_min_em(
+            symbol=stock_code,
+            period="1",
+            start_date=start_time,
+            end_date=end_time,
+            adjust=''
+        )
+        if df.empty:
+            print("❌ 无分时数据")
+            return None
 
         df = df[df['时间'].notna()]
 
@@ -432,7 +305,8 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Opti
         df.index.name = '时间'
 
         # 获取昨收和日线数据
-        prev_close, daily_data = get_prev_close(stock_code, trade_date_str)
+        from Investment.T0.utils.get_pre_close import get_prev_close
+        prev_close = get_prev_close(stock_code, trade_date)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
 
@@ -817,6 +691,7 @@ def analyze_extended_indicators(stock_code: str, trade_date: Optional[str] = Non
         return None
     
     # 获取前一日收盘价
+    from Investment.T0.utils.get_pre_close import get_prev_close
     prev_close, daily_data = get_prev_close(stock_code, trade_date)
     if prev_close is None:
         prev_close = df['开盘'].dropna().iloc[0] if not df['开盘'].dropna().empty else 0

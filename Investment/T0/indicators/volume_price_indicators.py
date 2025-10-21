@@ -396,39 +396,6 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     return fig
 
 
-# ---------------------- 3. 缓存功能 ----------------------
-def get_cached_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
-    """从缓存中获取数据"""
-    cache_file = os.path.join(CACHE_DIR, f"{stock_code}_{trade_date}.csv")
-    """从缓存中获取数据"""
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
-    if os.path.exists(cache_file):
-        try:
-            df = pd.read_csv(cache_file)
-
-            # 检查是否包含时间列
-            if '时间' in df.columns:
-                df['时间'] = pd.to_datetime(df['时间'])
-                return df
-            else:
-                print("缓存文件中未找到时间列")
-        except Exception as e:
-            print(f"读取缓存文件失败: {e}")
-    return None
-
-def save_data_to_cache(df: pd.DataFrame, stock_code: str, trade_date: str) -> None:
-    """保存数据到缓存"""
-    """保存数据到缓存"""
-    # 确保 stock_data 目录存在
-    os.makedirs("stock_data", exist_ok=True)
-
-    cache_file = f"stock_data/{stock_code}_{trade_date}.csv"
-    try:
-        df_reset = df.reset_index()
-        df_reset.to_csv(cache_file, index=False)
-    except Exception as e:
-        print(f"保存缓存文件失败: {e}")
-
 def analyze_volume_price(stock_code: str, trade_date: Optional[str] = None) -> Optional[pd.DataFrame]:
     """
     分析量价关系主函数
@@ -530,23 +497,9 @@ def analyze_volume_price(stock_code: str, trade_date: Optional[str] = None) -> O
         df = df.set_index('时间').reindex(full_index)
         df.index.name = '时间'
         
-        # 获取昨收（fallback到开盘价）
         try:
-            daily_df = ak.stock_zh_a_hist(
-                symbol=stock_code,
-                period="daily",
-                adjust=""
-            )
-            
-            if not daily_df.empty:
-                daily_df['日期'] = pd.to_datetime(daily_df['日期'])
-                df_before = daily_df[daily_df['日期'] < target_date]
-                if not df_before.empty:
-                    prev_close = df_before.iloc[-1]['收盘']
-                else:
-                    prev_close = df['开盘'].dropna().iloc[0]
-            else:
-                prev_close = df['开盘'].dropna().iloc[0]
+            from Investment.T0.utils.get_pre_close import get_prev_close
+            prev_close = get_prev_close(stock_code, trade_date)
         except:
             prev_close = df['开盘'].dropna().iloc[0]
         
@@ -584,12 +537,6 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         分时数据DataFrame，如果失败则返回None
     """
     try:
-        # 尝试从缓存获取数据
-        cached_df = get_cached_data(stock_code, trade_date)
-        if cached_df is not None:
-            print(f"从缓存加载{stock_code}在{trade_date}的分时数据")
-            return cached_df
-        
         # 构造 akshare 需要的时间格式
         trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
         start_time = f'{trade_date} 09:30:00'
@@ -636,49 +583,10 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         df.index.name = '时间'
         df = df.ffill().bfill()
         
-        # 保存到缓存
-        save_data_to_cache(df, stock_code, trade_date)
-        
         return df
     except Exception as e:
         print(f"获取{stock_code}在{trade_date}的分时数据失败: {e}")
         return None
-
-def get_prev_close(stock_code: str, trade_date: str) -> float:
-    """
-    获取前一日收盘价
-    
-    Args:
-        stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD
-    
-    Returns:
-        前一日收盘价，如果获取失败则返回当日开盘价
-    """
-    try:
-        # 尝试获取日线数据
-        daily_df = ak.stock_zh_a_hist(
-            symbol=stock_code,
-            period="daily",
-            adjust=""
-        )
-        
-        if not daily_df.empty:
-            daily_df['日期'] = pd.to_datetime(daily_df['日期'])
-            target_date = datetime.strptime(trade_date, '%Y-%m-%d')
-            df_before = daily_df[daily_df['日期'] < target_date]
-            if not df_before.empty:
-                return df_before.iloc[-1]['收盘']
-        
-        # 如果无法获取前一日收盘价，尝试获取当日数据的开盘价作为备选
-        df = fetch_intraday_data(stock_code, trade_date)
-        if df is not None and not df['开盘'].dropna().empty:
-            return df['开盘'].dropna().iloc[0]
-            
-        return 0.0
-    except Exception as e:
-        print(f"获取{stock_code}的前一日收盘价失败: {e}")
-        return 0.0
 
 def detect_trading_signals(df: pd.DataFrame) -> Dict[str, Any]:
     """
@@ -722,10 +630,10 @@ def main(stock_code: str = '000333', trade_date: Optional[str] = None) -> None:
         trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
     """
     # 时间处理
-    if trade_date is None:
-        yesterday = datetime.now() - timedelta(days=1)
-        trade_date = yesterday.strftime('%Y-%m-%d')
-    
+    # if trade_date is None:
+    #     yesterday = datetime.now() - timedelta(days=1)
+    #     trade_date = yesterday.strftime('%Y-%m-%d')
+    trade_date = datetime.now().strftime('%Y-%m-%d')
     # 标准化日期格式
     if isinstance(trade_date, str):
         if '-' not in trade_date:

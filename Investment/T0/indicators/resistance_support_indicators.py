@@ -130,93 +130,6 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
 
     return df
 
-# ---------------------- 2. 缓存管理函数 ----------------------
-def get_cached_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
-    """
-    从缓存中获取数据
-    """
-    try:
-        cache_file = os.path.join(CACHE_DIR, f'{stock_code}_{trade_date}_intraday.csv')
-        if os.path.exists(cache_file):
-            print(f"📁 从缓存加载数据: {cache_file}")
-            return pd.read_csv(cache_file)
-        return None
-    except Exception as e:
-        print(f"❌ 读取缓存失败: {e}")
-        return None
-
-def save_data_to_cache(df: pd.DataFrame, stock_code: str, trade_date: str) -> bool:
-    """
-    保存数据到缓存
-    """
-    try:
-        cache_file = os.path.join(CACHE_DIR, f'{stock_code}_{trade_date}_intraday.csv')
-        df.to_csv(cache_file, index=False)
-        print(f"💾 数据已缓存到: {cache_file}")
-        return True
-    except Exception as e:
-        print(f"❌ 保存缓存失败: {e}")
-        return False
-
-def get_prev_close(stock_code: str, trade_date: str) -> Optional[float]:
-    """
-    获取前一日收盘价
-    """
-    try:
-        # 转换交易日期格式
-        if isinstance(trade_date, str):
-            if '-' in trade_date:
-                date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
-            else:
-                date_obj = datetime.strptime(trade_date, '%Y%m%d')
-        else:
-            date_obj = trade_date
-        
-        # 计算前一日
-        prev_date = date_obj - timedelta(days=1)
-        prev_date_str = prev_date.strftime('%Y%m%d')
-        
-        # 尝试从缓存获取日线数据
-        cache_file = os.path.join(CACHE_DIR, f'{stock_code}_{prev_date_str}_daily.csv')
-        
-        if os.path.exists(cache_file):
-            daily_df = pd.read_csv(cache_file)
-            if not daily_df.empty:
-                return daily_df['close'].iloc[0]
-        
-        # 从网络获取日线数据
-        # 使用akshare的日线接口
-        daily_df = ak.stock_zh_a_daily(
-            symbol=stock_code,
-            start_date=prev_date_str,
-            end_date=prev_date_str,
-            adjust='qfq'
-        )
-        
-        if not daily_df.empty:
-            # 保存到缓存
-            daily_df.to_csv(cache_file, index=False)
-            return daily_df['close'].iloc[0]
-        
-        # 如果仍然没有数据，尝试获取更广泛的数据
-        # 使用akshare的历史数据接口
-        wide_daily_df = ak.stock_zh_a_hist(
-            symbol=stock_code,
-            period="daily",
-            start_date=prev_date_str,
-            end_date=prev_date_str,
-            adjust="qfq"
-        )
-        
-        if not wide_daily_df.empty:
-            # 保存到缓存
-            wide_daily_df.to_csv(cache_file, index=False)
-            return wide_daily_df['收盘'].iloc[0]
-        
-        return None
-    except Exception as e:
-        print(f"❌ 获取前一日收盘价失败: {e}")
-        return None
 
 # ---------------------- 3. 数据获取函数 ----------------------
 def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
@@ -240,26 +153,19 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
         end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
-        # 先尝试从缓存获取数据
-        df = get_cached_data(stock_code, trade_date_str)
-        
         # 如果缓存没有数据，则从网络获取
-        if df is None:
-            df = ak.stock_zh_a_hist_min_em(
-                symbol=stock_code,
-                period="1",
-                start_date=start_time,
-                end_date=end_time,
-                adjust=''
-            )
+        df = ak.stock_zh_a_hist_min_em(
+            symbol=stock_code,
+            period="1",
+            start_date=start_time,
+            end_date=end_time,
+            adjust=''
+        )
+
+        if df.empty:
+            print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
+            return None
             
-            if df.empty:
-                print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
-                return None
-            
-            # 保存到缓存
-            save_data_to_cache(df.copy(), stock_code, trade_date_str)
-        
         return df
     except Exception as e:
         print(f"❌ 获取分时数据失败: {e}")
@@ -309,11 +215,12 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
     """
     try:
         # 时间处理
-        if trade_date is None:
+        # if trade_date is None:
             # 获取昨天的日期
-            yesterday = datetime.now() - timedelta(days=1)
-            trade_date = yesterday.strftime('%Y-%m-%d')
-        
+            # yesterday = datetime.now() - timedelta(days=1)
+            # trade_date = yesterday.strftime('%Y-%m-%d')
+
+        trade_date = datetime.now().strftime('%Y-%m-%d')
         # 获取分时数据
         df = fetch_intraday_data(stock_code, trade_date)
         if df is None:
@@ -336,6 +243,7 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
         df.index.name = '时间'
         
         # 获取昨收
+        from Investment.T0.utils.get_pre_close import get_prev_close
         prev_close = get_prev_close(stock_code, trade_date)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
@@ -724,7 +632,9 @@ def main():
     parser = argparse.ArgumentParser(description='阻力支撑指标分析工具')
     parser.add_argument('--stock', type=str, default='000333', help='股票代码')
     parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD)')
-    
+    # parser.add_argument('--stock', type=str, default='600030', help='股票代码')
+    # parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD)')
+
     args = parser.parse_args()
     
     # 分析并绘图

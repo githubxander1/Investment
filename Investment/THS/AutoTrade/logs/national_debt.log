@@ -173,3 +173,5 @@ Traceback (most recent call last):
     raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
 uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
 [32m2025-10-17 14:58:39 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[32m2025-10-20 14:57:03 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-10-20 14:57:05 - ERROR - 进入国债逆回购入口失败[0m

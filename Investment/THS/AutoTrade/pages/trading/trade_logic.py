@@ -212,31 +212,165 @@ class TradeLogic:
         Returns:
             tuple: (账户总资产, 账户余额, 股票可用数量, 股票持仓比例, 股票价格)
         """
-        account_balance_data = pd.read_excel(account_file, sheet_name='账户汇总')
-        account_holding_data = pd.read_excel(account_file, sheet_name=account_name)
-        pd.set_option('display.max_columns', None)
-        pd.set_option('display.max_colwidth', None)
-        pd.set_option('display.width', None)
-
-        print(account_holding_data)
-        print(account_balance_data)
-
-        # 修复列名不匹配问题：使用'账户名'而不是'账户名称'
-        # 修复数据类型转换问题：处理包含逗号的数值
-        account_row = account_balance_data[account_balance_data['账户名'] == account_name]
-        account_balance = float(str(account_row['可用'].values[0]).replace(',', ''))
-        account_asset = float(str(account_row['总资产'].values[0]).replace(',', ''))
-        stock_data = account_holding_data[account_holding_data['股票名称'] == stock_name]
-
-        if not stock_data.empty:
-            stock_available = stock_data['可用'].values[0]
-            stock_ratio = stock_data['持仓占比'].values[0]
-            stock_price = stock_data['当前价'].values[0]
-        else:
-            logger.warning(f"未找到{account_name}的账户 {stock_name}")
+        try:
+            # 检查文件是否存在
+            if not os.path.exists(account_file):
+                logger.error(f"账户文件不存在: {account_file}")
+                return 0.0, 0.0, 0, 0, 0
+                
+            # 初始化返回值
+            account_asset = 0.0
+            account_balance = 0.0
             stock_available = 0
             stock_ratio = 0
             stock_price = 0
+            
+            # 读取工作表
+            with pd.ExcelFile(account_file, engine='openpyxl') as xls:
+                sheets = xls.sheet_names
+                logger.info(f"账户文件中的工作表列表: {sheets}")
+                
+                # 尝试读取账户汇总数据
+                if '账户汇总' in sheets:
+                    try:
+                        account_balance_data = pd.read_excel(xls, sheet_name='账户汇总')
+                        logger.info(f"账户汇总数据形状: {account_balance_data.shape}")
+                        logger.info(f"账户汇总列名: {account_balance_data.columns.tolist()}")
+                        
+                        # 尝试查找账户名
+                        # 检查可能的列名变体
+                        account_col = None
+                        for col in ['账户名', '账户名称']:
+                            if col in account_balance_data.columns:
+                                account_col = col
+                                break
+                        
+                        if account_col:
+                            # 查找匹配的账户行
+                            matching_rows = account_balance_data[account_balance_data[account_col].str.contains(account_name, na=False)]
+                            if not matching_rows.empty:
+                                account_row = matching_rows.iloc[0]
+                                logger.info(f"找到匹配的账户行: {account_row.to_dict()}")
+                                
+                                # 尝试获取总资产
+                                for asset_col in ['总资产', '资产', '资产总值']:
+                                    if asset_col in account_row:
+                                        try:
+                                            account_asset = float(str(account_row[asset_col]).replace(',', ''))
+                                            logger.info(f"从'{asset_col}'列获取总资产: {account_asset}")
+                                            break
+                                        except (ValueError, TypeError):
+                                            logger.warning(f"无法转换'{asset_col}'的值为数字: {account_row[asset_col]}")
+                                
+                                # 尝试获取可用资金
+                                for balance_col in ['可用', '可用资金', '余额']:
+                                    if balance_col in account_row:
+                                        try:
+                                            account_balance = float(str(account_row[balance_col]).replace(',', ''))
+                                            logger.info(f"从'{balance_col}'列获取可用资金: {account_balance}")
+                                            break
+                                        except (ValueError, TypeError):
+                                            logger.warning(f"无法转换'{balance_col}'的值为数字: {account_row[balance_col]}")
+                            else:
+                                logger.warning(f"未在汇总表中找到账户 '{account_name}'")
+                        else:
+                            logger.warning("账户汇总表中没有找到有效的账户名列")
+                    except Exception as e:
+                        logger.error(f"读取账户汇总数据时出错: {e}")
+                else:
+                    logger.warning("账户文件中没有'账户汇总'工作表")
+                
+                # 尝试直接从账户工作表获取资产信息（备用方案）
+                if account_asset <= 0 and account_name in sheets:
+                    try:
+                        account_sheet_data = pd.read_excel(xls, sheet_name=account_name)
+                        logger.info(f"直接读取账户工作表 {account_name} 的数据形状: {account_sheet_data.shape}")
+                        logger.info(f"账户工作表列名: {account_sheet_data.columns.tolist()}")
+                        
+                        # 如果工作表有表头行，尝试从中获取资产信息
+                        if not account_sheet_data.empty:
+                            # 检查第一行是否包含总资产信息
+                            first_row = account_sheet_data.iloc[0].dropna()
+                            logger.info(f"账户工作表第一行数据: {first_row.to_dict()}")
+                            
+                            # 尝试识别并提取总资产
+                            for idx, value in first_row.items():
+                                if '总资产' in str(idx) or '资产' in str(idx):
+                                    try:
+                                        # 从字符串中提取数字
+                                        import re
+                                        numbers = re.findall(r'\d+(?:\.\d+)?', str(value))
+                                        if numbers:
+                                            account_asset = float(numbers[0])
+                                            logger.info(f"从账户工作表中提取总资产: {account_asset}")
+                                            break
+                                    except (ValueError, TypeError):
+                                        logger.warning(f"无法从值 '{value}' 中提取数字")
+                    except Exception as e:
+                        logger.error(f"从账户工作表获取资产信息时出错: {e}")
+                
+                # 读取股票持仓信息
+                if account_name in sheets:
+                    try:
+                        account_holding_data = pd.read_excel(xls, sheet_name=account_name)
+                        logger.info(f"持仓数据形状: {account_holding_data.shape}")
+                        logger.info(f"持仓数据列名: {account_holding_data.columns.tolist()}")
+                        
+                        # 查找股票名称列
+                        name_column = None
+                        for col in ['股票名称', '标的名称']:
+                            if col in account_holding_data.columns:
+                                name_column = col
+                                break
+                        
+                        if name_column:
+                            # 查找匹配的股票
+                            matching_stocks = account_holding_data[account_holding_data[name_column].str.contains(stock_name, na=False)]
+                            if not matching_stocks.empty:
+                                stock_data = matching_stocks.iloc[0]
+                                logger.info(f"找到匹配的股票数据: {stock_data.to_dict()}")
+                                
+                                # 提取股票信息
+                                for avail_col in ['可用', '可用数量']:
+                                    if avail_col in stock_data:
+                                        try:
+                                            stock_available = int(stock_data[avail_col])
+                                            break
+                                        except (ValueError, TypeError):
+                                            logger.warning(f"无法转换可用数量: {stock_data[avail_col]}")
+                                
+                                for ratio_col in ['持仓占比', '占比']:
+                                    if ratio_col in stock_data:
+                                        try:
+                                            stock_ratio = float(stock_data[ratio_col])
+                                            break
+                                        except (ValueError, TypeError):
+                                            logger.warning(f"无法转换持仓占比: {stock_data[ratio_col]}")
+                                
+                                for price_col in ['当前价', '价格']:
+                                    if price_col in stock_data:
+                                        try:
+                                            stock_price = float(str(stock_data[price_col]).replace(',', ''))
+                                            break
+                                        except (ValueError, TypeError):
+                                            logger.warning(f"无法转换价格: {stock_data[price_col]}")
+                            else:
+                                logger.warning(f"未在账户 {account_name} 中找到股票 {stock_name}")
+                        else:
+                            logger.warning("持仓数据中没有找到有效的股票名称列")
+                    except Exception as e:
+                        logger.error(f"读取持仓数据时出错: {e}")
+                else:
+                    logger.warning(f"账户文件中没有 {account_name} 工作表")
+        
+        except Exception as e:
+            logger.error(f"获取账户信息时发生异常: {e}", exc_info=True)
+            account_asset = 0.0
+            account_balance = 0.0
+            stock_available = 0
+            stock_ratio = 0
+            stock_price = 0
+            
         logger.info(f"获取到 {account_name} 总资产: {account_asset} 余额: {account_balance}, {stock_name} 当前价 {stock_price} 可用 {stock_available} 持仓占比 {stock_ratio}")
         return account_asset, account_balance, stock_available, stock_ratio, stock_price
 

@@ -382,3 +382,19 @@
 2025-10-17 16:17:07,145 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
 2025-10-18 11:00:38,570 - trade_executor - ERROR - 初始化AutoTrade交易逻辑失败: Can't find any android device/emulator
 2025-10-18 14:44:46,616 - trade_executor - ERROR - 初始化AutoTrade交易逻辑失败: Can't find any android device/emulator
+2025-10-20 09:47:24,251 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-20 09:47:24,324 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
+2025-10-20 09:59:04,341 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-20 09:59:04,362 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
+2025-10-20 10:06:09,170 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-20 10:06:09,189 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
+2025-10-20 10:15:30,115 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-20 10:15:30,135 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
+2025-10-20 10:15:31,657 - trade_executor - INFO - [000333] 执行卖出交易: 股票=000333, 指标=阻力支撑, 数量=100, 价格=None
+2025-10-20 10:15:31,657 - trade_executor - INFO - [000333] 切换到账户: 中泰证券
+2025-10-20 10:15:51,394 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-20 10:15:51,417 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
+2025-10-20 10:15:52,590 - trade_executor - INFO - [000333] 执行卖出交易: 股票=000333, 指标=阻力支撑, 数量=100, 价格=None
+2025-10-20 10:15:52,590 - trade_executor - INFO - [000333] 切换到账户: 中泰证券
+2025-10-20 10:16:17,133 - trade_executor - ERROR - [000333] 执行卖出交易时发生异常: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+2025-10-20 11:44:59,162 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑

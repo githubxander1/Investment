@@ -493,15 +493,28 @@ def get_difference_holding():
         try:
             with pd.ExcelFile(Account_holding_file, engine='openpyxl') as xls:
                 account_sheets = xls.sheet_names
+                logger.info(f"可用工作表列表: {account_sheets}")
 
+                # 从所有账户工作表中读取持仓数据（不只是以_持仓数据结尾的）
                 for sheet in account_sheets:
-                    if sheet.endswith('_持仓数据'):  # 只读取持仓数据表
+                    # 跳过汇总表，只处理账户持仓表
+                    if sheet != '账户汇总':
                         try:
                             df = pd.read_excel(xls, sheet_name=sheet)
-                            if not df.empty and '标的名称' in df.columns:
+                            logger.info(f"工作表 {sheet} 的列: {df.columns.tolist()}")
+                            # 查找正确的股票名称列（可能是'标的名称'或'股票名称'）
+                            name_column = None
+                            if '标的名称' in df.columns:
+                                name_column = '标的名称'
+                            elif '股票名称' in df.columns:
+                                name_column = '股票名称'
+                                logger.info(f"使用'股票名称'列替代'标的名称'")
+                            
+                            if not df.empty and name_column:
                                 # 只保留标的名称列，并添加账户标识
-                                df_filtered = df[['标的名称']].copy()
-                                df_filtered['账户'] = sheet.replace('_持仓数据', '')
+                                df_filtered = df[[name_column]].copy()
+                                df_filtered.rename(columns={name_column: '标的名称'}, inplace=True)
+                                df_filtered['账户'] = sheet  # 直接使用工作表名称作为账户标识
                                 account_dfs.append(df_filtered)
                                 logger.info(f"✅ 成功读取账户 {sheet} 的持仓数据，共 {len(df_filtered)} 条记录")
                         except Exception as e:
