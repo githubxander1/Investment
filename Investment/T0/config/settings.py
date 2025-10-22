@@ -58,7 +58,16 @@ INDICATOR_PARAMS = {
     'bb_std_dev': 2.0,
     'ma_periods': [5, 10, 20, 60],
     'support_resistance_period': 20,
-    'signal_threshold': 0.01
+    'signal_threshold': 0.01,
+    # 价格均线偏离策略参数
+    'price_ma_deviation_period': 5,
+    'price_ma_deviation_threshold': 0.3,
+    # 波动率策略参数
+    'volatility_window': 20,
+    'volatility_multiplier': 2.0,
+    # 动量反转策略参数
+    'momentum_window': 10,
+    'reversal_threshold': 0.5
 }
 
 # 日志配置

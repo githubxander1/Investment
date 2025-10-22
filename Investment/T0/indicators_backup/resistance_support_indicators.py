@@ -76,75 +76,57 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
                                   (df['收盘'] > df['阻力'])) & \
                                  (abs(df['收盘'] - df['阻力']) > threshold)
 
-    # 改进：增加趋势确认机制，避免虚假信号
-    # 计算短期均线和长期均线
-    df['short_ma'] = df['收盘'].rolling(window=5, min_periods=1).mean()
-    df['long_ma'] = df['收盘'].rolling(window=20, min_periods=1).mean()
-    
-    # 增加趋势过滤条件：买入信号需要短期均线上穿长期均线或处于上升趋势
-    df['trend_filter_buy'] = (df['short_ma'] > df['long_ma']) | (df['short_ma'] > df['short_ma'].shift(1))
-    
-    # 增加趋势过滤条件：卖出信号需要短期均线下穿长期均线或处于下降趋势
-    df['trend_filter_sell'] = (df['short_ma'] < df['long_ma']) | (df['short_ma'] < df['short_ma'].shift(1))
-    
-    # 应用趋势过滤器到买卖信号
-    df['longcross_support_filtered'] = df['longcross_support'] & df['trend_filter_buy']
-    df['longcross_resistance_filtered'] = df['longcross_resistance'] & df['trend_filter_sell']
-
-    # 改进：收集所有信号而非仅第一次信号
-    buy_signals = df[df['longcross_support_filtered']]
-    sell_signals = df[df['longcross_resistance_filtered']]
-    
-    print(f"阻力支撑：共检测到 {len(buy_signals)} 个买入信号和 {len(sell_signals)} 个卖出信号")
-    
-    for idx, row in buy_signals.iterrows():
-        buy_time = idx
-        buy_price = row['收盘']
+    # 打印第一次买入信号的时间点
+    first_buy_signal = df[df['longcross_support']].first_valid_index()
+    if first_buy_signal is not None:
+        first_buy_price = df.loc[first_buy_signal, '收盘']
         # 计算相对均线的涨跌幅
         if '均价' in df.columns:
-            buy_avg_price = row['均价']
-            if pd.notna(buy_avg_price) and buy_avg_price != 0:
-                diff_pct = ((buy_price - buy_avg_price) / buy_avg_price) * 100
-                # 确保 idx 是 datetime 对象
-                if isinstance(idx, str):
-                    buy_time = pd.to_datetime(idx)
-                print(f"阻力支撑：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            first_buy_avg_price = df.loc[first_buy_signal, '均价']
+            if pd.notna(first_buy_avg_price) and first_buy_avg_price != 0:
+                diff_pct = ((first_buy_price - first_buy_avg_price) / first_buy_avg_price) * 100
+                # 确保 first_buy_signal 是 datetime 对象
+                if isinstance(first_buy_signal, str):
+                    first_buy_signal = pd.to_datetime(first_buy_signal)
+                print(f"阻力支撑：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
-                # 确保 idx 是 datetime 对象
-                if isinstance(idx, str):
-                    buy_time = pd.to_datetime(idx)
-                print(f"阻力支撑：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}, 相对均线涨跌幅: N/A")
+                # 确保 first_buy_signal 是 datetime 对象
+                if isinstance(first_buy_signal, str):
+                    first_buy_signal = pd.to_datetime(first_buy_signal)
+                print(f"阻力支撑：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: N/A")
         else:
-            # 确保 idx 是 datetime 对象
-            if isinstance(idx, str):
-                buy_time = pd.to_datetime(idx)
-            print(f"阻力支撑：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}")
+            # 确保 first_buy_signal 是 datetime 对象
+            if isinstance(first_buy_signal, str):
+                first_buy_signal = pd.to_datetime(first_buy_signal)
+            print(f"阻力支撑：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}")
+    else:
+        print("未检测到买入信号")
     
-    for idx, row in sell_signals.iterrows():
-        sell_time = idx
-        sell_price = row['收盘']
+    # 打印第一次卖出信号的时间点
+    first_sell_signal = df[df['longcross_resistance']].first_valid_index()
+    if first_sell_signal is not None:
+        first_sell_price = df.loc[first_sell_signal, '收盘']
         # 计算相对均线的涨跌幅
         if '均价' in df.columns:
-            sell_avg_price = row['均价']
-            if pd.notna(sell_avg_price) and sell_avg_price != 0:
-                diff_pct = ((sell_price - sell_avg_price) / sell_avg_price) * 100
-                # 确保 idx 是 datetime 对象
-                if isinstance(idx, str):
-                    sell_time = pd.to_datetime(idx)
-                print(f"阻力支撑：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            first_sell_avg_price = df.loc[first_sell_signal, '均价']
+            if pd.notna(first_sell_avg_price) and first_sell_avg_price != 0:
+                diff_pct = ((first_sell_price - first_sell_avg_price) / first_sell_avg_price) * 100
+                # 确保 first_sell_signal 是 datetime 对象
+                if isinstance(first_sell_signal, str):
+                    first_sell_signal = pd.to_datetime(first_sell_signal)
+                print(f"阻力支撑：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
-                # 确保 idx 是 datetime 对象
-                if isinstance(idx, str):
-                    sell_time = pd.to_datetime(idx)
-                print(f"阻力支撑：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}, 相对均线涨跌幅: N/A")
+                # 确保 first_sell_signal 是 datetime 对象
+                if isinstance(first_sell_signal, str):
+                    first_sell_signal = pd.to_datetime(first_sell_signal)
+                print(f"阻力支撑：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: N/A")
         else:
-            # 确保 idx 是 datetime 对象
-            if isinstance(idx, str):
-                sell_time = pd.to_datetime(idx)
-            print(f"阻力支撑：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}")
-
-    if len(buy_signals) == 0 and len(sell_signals) == 0:
-        print("未检测到任何信号")
+            # 确保 first_sell_signal 是 datetime 对象
+            if isinstance(first_sell_signal, str):
+                first_sell_signal = pd.to_datetime(first_sell_signal)
+            print(f"阻力支撑：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}")
+    else:
+        print("未检测到卖出信号")
 
     return df
 
@@ -199,8 +181,8 @@ def detect_trading_signals(df: pd.DataFrame) -> Dict[str, List[Tuple[datetime, f
         'sell_signals': []
     }
     
-    # 检测买入信号（使用过滤后的信号）
-    buy_signals = df[df['longcross_support_filtered']]
+    # 检测买入信号
+    buy_signals = df[df['longcross_support']]
     for idx, row in buy_signals.iterrows():
         if isinstance(idx, str):
             signal_time = pd.to_datetime(idx)
@@ -208,8 +190,8 @@ def detect_trading_signals(df: pd.DataFrame) -> Dict[str, List[Tuple[datetime, f
             signal_time = idx
         signals['buy_signals'].append((signal_time, row['收盘']))
     
-    # 检测卖出信号（使用过滤后的信号）
-    sell_signals = df[df['longcross_resistance_filtered']]
+    # 检测卖出信号
+    sell_signals = df[df['longcross_resistance']]
     for idx, row in sell_signals.iterrows():
         if isinstance(idx, str):
             signal_time = pd.to_datetime(idx)
@@ -226,18 +208,19 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
     
     Args:
         stock_code: 股票代码
-        trade_date: 交易日期，默认为今天
+        trade_date: 交易日期，默认为昨天
     
     Returns:
         (数据框, 信号字典) 或 None
     """
     try:
         # 时间处理
-        if trade_date is None:
-            # 获取今天的日期
-            today = datetime.now()
-            trade_date = today.strftime('%Y-%m-%d')
+        # if trade_date is None:
+            # 获取昨天的日期
+            # yesterday = datetime.now() - timedelta(days=1)
+            # trade_date = yesterday.strftime('%Y-%m-%d')
 
+        trade_date = datetime.now().strftime('%Y-%m-%d')
         # 获取分时数据
         df = fetch_intraday_data(stock_code, trade_date)
         if df is None:
@@ -641,7 +624,7 @@ def main():
     
     parser = argparse.ArgumentParser(description='阻力支撑指标分析工具')
     parser.add_argument('--stock', type=str, default='000333', help='股票代码')
-    parser.add_argument('--date', type=str, default=datetime.now().strftime('%Y-%m-%d'), help='交易日期 (YYYY-MM-DD)')
+    parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD)')
     # parser.add_argument('--stock', type=str, default='600030', help='股票代码')
     # parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD)')
 
@@ -652,9 +635,7 @@ def main():
     
     if result is not None:
         # 获取交易日期
-        # trade_date = args.date if args.date else (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-        # 今天的 日期
-        trade_date = datetime.now().strftime('%Y-%m-%d')
+        trade_date = args.date if args.date else (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
         if isinstance(trade_date, str):
             if '-' in trade_date:
                 trade_date_formatted = trade_date

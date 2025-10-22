@@ -187,57 +187,39 @@ def calculate_tdx_indicators(df: pd.DataFrame, prev_close: float, daily_data: pd
     # 添加压信号
     df['压力信号'] = ((df['收盘'] > df['阻力']) & (df['收盘'].shift(1) <= df['阻力']))
     
-    # 改进：增加趋势确认机制，避免虚假信号
-    # 计算短期均线和长期均线
-    df['short_ma'] = df['收盘'].rolling(window=5, min_periods=1).mean()
-    df['long_ma'] = df['收盘'].rolling(window=20, min_periods=1).mean()
-    
-    # 增加趋势过滤条件：买入信号需要短期均线上穿长期均线或处于上升趋势
-    df['trend_filter_buy'] = (df['short_ma'] > df['long_ma']) | (df['short_ma'] > df['short_ma'].shift(1))
-    
-    # 增加趋势过滤条件：卖出信号需要短期均线下穿长期均线或处于下降趋势
-    df['trend_filter_sell'] = (df['short_ma'] < df['long_ma']) | (df['short_ma'] < df['short_ma'].shift(1))
-    
-    # 应用趋势过滤器到买卖信号
-    df['longcross_support_filtered'] = df['longcross_support'] & df['trend_filter_buy']
-    df['longcross_resistance_filtered'] = df['longcross_resistance'] & df['trend_filter_sell']
-    
-    # 改进：收集所有信号而非仅第一次信号
-    buy_signals = df[df['longcross_support_filtered']]
-    sell_signals = df[df['longcross_resistance_filtered']]
-    
-    print(f"扩展指标：共检测到 {len(buy_signals)} 个买入信号和 {len(sell_signals)} 个卖出信号")
-    
-    for idx, row in buy_signals.iterrows():
-        buy_time = idx
-        buy_price = row['收盘']
+    # 打印第一次买入信号的时间点
+    first_buy_signal = df[df['longcross_support']].first_valid_index()
+    if first_buy_signal is not None:
+        first_buy_price = df.loc[first_buy_signal, '收盘']
         # 计算相对均线的涨跌幅
         if '均线' in df.columns:
-            buy_avg_price = row['均线']
-            if pd.notna(buy_avg_price) and buy_avg_price != 0:
-                diff_pct = ((buy_price - buy_avg_price) / buy_avg_price) * 100
-                print(f"扩展指标：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            first_buy_avg_price = df.loc[first_buy_signal, '均线']
+            if pd.notna(first_buy_avg_price) and first_buy_avg_price != 0:
+                diff_pct = ((first_buy_price - first_buy_avg_price) / first_buy_avg_price) * 100
+                print(f"扩展指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
-                print(f"扩展指标：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}, 相对均线涨跌幅: N/A")
+                print(f"扩展指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: N/A")
         else:
-            print(f"扩展指标：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}")
+            print(f"扩展指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}")
+    else:
+        print("未检测到买入信号")
     
-    for idx, row in sell_signals.iterrows():
-        sell_time = idx
-        sell_price = row['收盘']
+    # 打印第一次卖出信号的时间点
+    first_sell_signal = df[df['longcross_resistance']].first_valid_index()
+    if first_sell_signal is not None:
+        first_sell_price = df.loc[first_sell_signal, '收盘']
         # 计算相对均线的涨跌幅
         if '均线' in df.columns:
-            sell_avg_price = row['均线']
-            if pd.notna(sell_avg_price) and sell_avg_price != 0:
-                diff_pct = ((sell_price - sell_avg_price) / sell_avg_price) * 100
-                print(f"扩展指标：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            first_sell_avg_price = df.loc[first_sell_signal, '均线']
+            if pd.notna(first_sell_avg_price) and first_sell_avg_price != 0:
+                diff_pct = ((first_sell_price - first_sell_avg_price) / first_sell_avg_price) * 100
+                print(f"扩展指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
-                print(f"扩展指标：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}, 相对均线涨跌幅: N/A")
+                print(f"扩展指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: N/A")
         else:
-            print(f"扩展指标：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}")
-
-    if len(buy_signals) == 0 and len(sell_signals) == 0:
-        print("未检测到任何信号")
+            print(f"扩展指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}")
+    else:
+        print("未检测到卖出信号")
 
     return df
 
@@ -664,19 +646,19 @@ def detect_trading_signals(df: pd.DataFrame) -> Dict[str, Any]:
     """
     signals = {
         'cross_support': df[df['cross_support']].index.tolist() if 'cross_support' in df.columns else [],
-        'longcross_support': df[df['longcross_support_filtered']].index.tolist() if 'longcross_support_filtered' in df.columns else [],
-        'longcross_resistance': df[df['longcross_resistance_filtered']].index.tolist() if 'longcross_resistance_filtered' in df.columns else [],
+        'longcross_support': df[df['longcross_support']].index.tolist() if 'longcross_support' in df.columns else [],
+        'longcross_resistance': df[df['longcross_resistance']].index.tolist() if 'longcross_resistance' in df.columns else [],
         '主力_拉信号': df[df['主力_拉信号']].index.tolist() if '主力_拉信号' in df.columns else [],
         '主力_冲信号': df[df['主力_冲信号']].index.tolist() if '主力_冲信号' in df.columns else [],
         '压力信号': df[df['压力信号']].index.tolist() if '压力信号' in df.columns else []
     }
     
-    # 打印所有信号信息
+    # 打印信号信息
     for signal_name, signal_times in signals.items():
         if signal_times:
-            for signal_time in signal_times:
-                price = df.loc[signal_time, '收盘']
-                print(f"扩展指标：{signal_name}时间点: {signal_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
+            first_time = signal_times[0]
+            price = df.loc[first_time, '收盘']
+            print(f"扩展指标：第一次{signal_name}时间点: {first_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
         else:
             print(f"未检测到{signal_name}")
     
@@ -688,15 +670,15 @@ def analyze_extended_indicators(stock_code: str, trade_date: Optional[str] = Non
     
     Args:
         stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为今天
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
     
     Returns:
         包含分析结果的DataFrame，如果失败则返回None
     """
     # 时间处理
     if trade_date is None:
-        today = datetime.now()
-        trade_date = today.strftime('%Y-%m-%d')
+        yesterday = datetime.now() - timedelta(days=1)
+        trade_date = yesterday.strftime('%Y-%m-%d')
     
     # 标准化日期格式
     if isinstance(trade_date, str):
@@ -728,14 +710,9 @@ def main(stock_code: str = '000333', trade_date: Optional[str] = None) -> None:
     
     Args:
         stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为今天
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
     """
     print(f"开始分析{stock_code}在{trade_date}的扩展指标")
-    
-    # 时间处理
-    if trade_date is None:
-        today = datetime.now()
-        trade_date = today.strftime('%Y-%m-%d')
     
     # 绘制并保存图表
     chart_path = plot_tdx_intraday(stock_code, trade_date)

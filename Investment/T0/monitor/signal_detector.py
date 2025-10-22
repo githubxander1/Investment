@@ -27,10 +27,14 @@ class SignalDetector:
         self.stock_code = stock_code
         # 只保留阻力支撑指标的信号状态
         self.prev_signals = {
-            'resistance_support': {'buy': False, 'sell': False}
+            'resistance_support': {'buy': False, 'sell': False},
             # 注释掉其他指标的信号状态
             # 'extended': {'buy': False, 'sell': False},
-            # 'volume_price': {'buy': False, 'sell': False}
+            # 'volume_price': {'buy': False, 'sell': False},
+            # 新增策略信号状态
+            'price_ma_deviation': {'buy': False, 'sell': False},
+            'volatility': {'buy': False, 'sell': False},
+            'momentum_reversal': {'buy': False, 'sell': False}
         }
 
     def is_trading_time(self):
@@ -336,6 +340,99 @@ class SignalDetector:
             # 更新之前的信号状态
             self.prev_signals['resistance_support']['buy'] = resistance_support_signals['buy']
             self.prev_signals['resistance_support']['sell'] = resistance_support_signals['sell']
+        
+        # 检测新策略信号
+        from Investment.T0.core.new_strategy_interface import StrategyFactory
+        
+        # 价格均线偏离策略
+        price_ma_strategy = StrategyFactory.create_strategy('price_ma_deviation')
+        if price_ma_strategy:
+            result = price_ma_strategy.analyze(self.stock_code)
+            if result:
+                df_indicators, signals = result
+                # 检查买入信号
+                if signals['buy_signals'] and not self.prev_signals['price_ma_deviation']['buy']:
+                    new_signals.append({
+                        'indicator': '价格均线偏离',
+                        'type': '买入',
+                        'details': f"价格均线偏离策略触发买入信号"
+                    })
+                    log_signal(self.stock_code, '价格均线偏离', '买入', '价格均线偏离策略触发买入信号')
+                    self.prev_signals['price_ma_deviation']['buy'] = True
+                elif not signals['buy_signals']:
+                    self.prev_signals['price_ma_deviation']['buy'] = False
+                
+                # 检查卖出信号
+                if signals['sell_signals'] and not self.prev_signals['price_ma_deviation']['sell']:
+                    new_signals.append({
+                        'indicator': '价格均线偏离',
+                        'type': '卖出',
+                        'details': f"价格均线偏离策略触发卖出信号"
+                    })
+                    log_signal(self.stock_code, '价格均线偏离', '卖出', '价格均线偏离策略触发卖出信号')
+                    self.prev_signals['price_ma_deviation']['sell'] = True
+                elif not signals['sell_signals']:
+                    self.prev_signals['price_ma_deviation']['sell'] = False
+        
+        # 波动率策略
+        volatility_strategy = StrategyFactory.create_strategy('volatility')
+        if volatility_strategy:
+            result = volatility_strategy.analyze(self.stock_code)
+            if result:
+                df_indicators, signals = result
+                # 检查买入信号
+                if signals['buy_signals'] and not self.prev_signals['volatility']['buy']:
+                    new_signals.append({
+                        'indicator': '波动率',
+                        'type': '买入',
+                        'details': f"波动率策略触发买入信号"
+                    })
+                    log_signal(self.stock_code, '波动率', '买入', '波动率策略触发买入信号')
+                    self.prev_signals['volatility']['buy'] = True
+                elif not signals['buy_signals']:
+                    self.prev_signals['volatility']['buy'] = False
+                
+                # 检查卖出信号
+                if signals['sell_signals'] and not self.prev_signals['volatility']['sell']:
+                    new_signals.append({
+                        'indicator': '波动率',
+                        'type': '卖出',
+                        'details': f"波动率策略触发卖出信号"
+                    })
+                    log_signal(self.stock_code, '波动率', '卖出', '波动率策略触发卖出信号')
+                    self.prev_signals['volatility']['sell'] = True
+                elif not signals['sell_signals']:
+                    self.prev_signals['volatility']['sell'] = False
+        
+        # 动量反转策略
+        momentum_strategy = StrategyFactory.create_strategy('momentum_reversal')
+        if momentum_strategy:
+            result = momentum_strategy.analyze(self.stock_code)
+            if result:
+                df_indicators, signals = result
+                # 检查买入信号
+                if signals['buy_signals'] and not self.prev_signals['momentum_reversal']['buy']:
+                    new_signals.append({
+                        'indicator': '动量反转',
+                        'type': '买入',
+                        'details': f"动量反转策略触发买入信号"
+                    })
+                    log_signal(self.stock_code, '动量反转', '买入', '动量反转策略触发买入信号')
+                    self.prev_signals['momentum_reversal']['buy'] = True
+                elif not signals['buy_signals']:
+                    self.prev_signals['momentum_reversal']['buy'] = False
+                
+                # 检查卖出信号
+                if signals['sell_signals'] and not self.prev_signals['momentum_reversal']['sell']:
+                    new_signals.append({
+                        'indicator': '动量反转',
+                        'type': '卖出',
+                        'details': f"动量反转策略触发卖出信号"
+                    })
+                    log_signal(self.stock_code, '动量反转', '卖出', '动量反转策略触发卖出信号')
+                    self.prev_signals['momentum_reversal']['sell'] = True
+                elif not signals['sell_signals']:
+                    self.prev_signals['momentum_reversal']['sell'] = False
         
         return new_signals
 

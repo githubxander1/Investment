@@ -208,58 +208,42 @@ def detect_signals(df) -> pd.DataFrame:
         df['主力=HHV30'] & df['CROSS主力1.003']
     )
     
-    # 改进：增加趋势确认机制，避免虚假信号
-    # 计算短期均线和长期均线
-    df['short_ma'] = df['收盘'].rolling(window=5, min_periods=1).mean()
-    df['long_ma'] = df['收盘'].rolling(window=20, min_periods=1).mean()
-    
-    # 增加趋势过滤条件：买入信号需要短期均线上穿长期均线或处于上升趋势
-    df['trend_filter_buy'] = (df['short_ma'] > df['long_ma']) | (df['short_ma'] > df['short_ma'].shift(1))
-    
-    # 增加趋势过滤条件：卖出信号需要短期均线下穿长期均线或处于下降趋势
-    df['trend_filter_sell'] = (df['short_ma'] < df['long_ma']) | (df['short_ma'] < df['short_ma'].shift(1))
-    
-    # 应用趋势过滤器到买卖信号
-    df['买入信号_filtered'] = df['买入信号'] & df['trend_filter_buy']
-    df['卖出信号_filtered'] = df['卖出信号'] & df['trend_filter_sell']
-    
-    # 改进：收集所有信号而非仅第一次信号
-    buy_signals = df[df['买入信号_filtered']]
-    sell_signals = df[df['卖出信号_filtered']]
-    
-    print(f"量价指标：共检测到 {len(buy_signals)} 个买入信号和 {len(sell_signals)} 个卖出信号")
-    
-    for idx, row in buy_signals.iterrows():
-        buy_time = idx
-        buy_price = row['收盘']
+    # 打印第一次买入信号的时间点
+    first_buy_signal = df[df['买入信号']].first_valid_index()
+    if first_buy_signal is not None:
+        first_buy_price = df.loc[first_buy_signal, '收盘']
         # 计算相对均线的涨跌幅
         if '均价' in df.columns:
-            buy_avg_price = row['均价']
-            if pd.notna(buy_avg_price) and buy_avg_price != 0:
-                diff_pct = ((buy_price - buy_avg_price) / buy_avg_price) * 100
-                print(f"量价指标：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            first_buy_avg_price = df.loc[first_buy_signal, '均价']
+            if pd.notna(first_buy_avg_price) and first_buy_avg_price != 0:
+                diff_pct = ((first_buy_price - first_buy_avg_price) / first_buy_avg_price) * 100
+                print(f"量价指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
-                print(f"量价指标：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}, 相对均线涨跌幅: N/A")
+                print(f"量价指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}, 相对均线涨跌幅: N/A")
         else:
-            print(f"量价指标：买入信号时间点: {buy_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {buy_price:.2f}")
+            print(f"量价指标：第一次买入信号时间点: {first_buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_buy_price:.2f}")
+    else:
+        print("未检测到买入信号")
     
-    for idx, row in sell_signals.iterrows():
-        sell_time = idx
-        sell_price = row['收盘']
+    # 打印第一次卖出信号的时间点
+    first_sell_signal = df[df['卖出信号']].first_valid_index()
+    if first_sell_signal is not None:
+        first_sell_price = df.loc[first_sell_signal, '收盘']
         # 计算相对均线的涨跌幅
         if '均价' in df.columns:
-            sell_avg_price = row['均价']
-            if pd.notna(sell_avg_price) and sell_avg_price != 0:
-                diff_pct = ((sell_price - sell_avg_price) / sell_avg_price) * 100
-                print(f"量价指标：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
+            first_sell_avg_price = df.loc[first_sell_signal, '均价']
+            if pd.notna(first_sell_avg_price) and first_sell_avg_price != 0:
+                diff_pct = ((first_sell_price - first_sell_avg_price) / first_sell_avg_price) * 100
+                print(f"量价指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: {diff_pct:+.2f}%")
             else:
-                print(f"量价指标：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}, 相对均线涨跌幅: N/A")
+                print(f"量价指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}, 相对均线涨跌幅: N/A")
         else:
-            print(f"量价指标：卖出信号时间点: {sell_time.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {sell_price:.2f}")
+            print(f"量价指标：第一次卖出信号时间点: {first_sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {first_sell_price:.2f}")
+    else:
+        print("未检测到卖出信号")
 
-    if len(buy_signals) == 0 and len(sell_signals) == 0:
-        print("未检测到任何信号")
-
+    # plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_ratio)
+    
     return df
 
 
@@ -418,20 +402,23 @@ def analyze_volume_price(stock_code: str, trade_date: Optional[str] = None) -> O
     
     Args:
         stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为今天
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
     
     Returns:
         包含分析结果的DataFrame，如果失败则返回None
+    """
+    """
+    分析量价关系主函数
     """
     try:
         import akshare as ak
         
         # 1. 时间处理
-        # 如果没有提供交易日期，则使用今天的日期
+        # 如果没有提供交易日期，则使用昨天的日期
         if trade_date is None:
-            # 获取今天的日期
-            today = datetime.now()
-            trade_date = today.strftime('%Y-%m-%d')
+            # 获取昨天的日期（考虑到今天可能是周末或节假日，使用最近的交易日）
+            yesterday = datetime.now() - timedelta(days=1)
+            trade_date = yesterday.strftime('%Y-%m-%d')
         
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
@@ -612,23 +599,23 @@ def detect_trading_signals(df: pd.DataFrame) -> Dict[str, Any]:
         包含信号信息的字典
     """
     signals = {
-        'buy_signals': df[df['买入信号_filtered']].index.tolist() if '买入信号_filtered' in df.columns else [],
-        'sell_signals': df[df['卖出信号_filtered']].index.tolist() if '卖出信号_filtered' in df.columns else [],
+        'buy_signals': df[df['买入信号']].index.tolist() if '买入信号' in df.columns else [],
+        'sell_signals': df[df['卖出信号']].index.tolist() if '卖出信号' in df.columns else [],
         'fund_signals': df[df['主力资金流入']].index.tolist() if '主力资金流入' in df.columns else []
     }
     
-    # 打印所有信号信息
+    # 打印信号信息
     if signals['buy_signals']:
-        for buy_signal in signals['buy_signals']:
-            price = df.loc[buy_signal, '收盘']
-            print(f"量价指标：买入信号时间点: {buy_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
+        first_buy = signals['buy_signals'][0]
+        price = df.loc[first_buy, '收盘']
+        print(f"量价指标：第一次买入信号时间点: {first_buy.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
     else:
         print("未检测到买入信号")
     
     if signals['sell_signals']:
-        for sell_signal in signals['sell_signals']:
-            price = df.loc[sell_signal, '收盘']
-            print(f"量价指标：卖出信号时间点: {sell_signal.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
+        first_sell = signals['sell_signals'][0]
+        price = df.loc[first_sell, '收盘']
+        print(f"量价指标：第一次卖出信号时间点: {first_sell.strftime('%Y-%m-%d %H:%M:%S')}, 价格: {price:.2f}")
     else:
         print("未检测到卖出信号")
     
@@ -640,13 +627,13 @@ def main(stock_code: str = '000333', trade_date: Optional[str] = None) -> None:
     
     Args:
         stock_code: 股票代码
-        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为今天
+        trade_date: 交易日期，格式为YYYY-MM-DD或YYYYMMDD，默认为昨天
     """
     # 时间处理
-    if trade_date is None:
-        today = datetime.now()
-        trade_date = today.strftime('%Y-%m-%d')
-    
+    # if trade_date is None:
+    #     yesterday = datetime.now() - timedelta(days=1)
+    #     trade_date = yesterday.strftime('%Y-%m-%d')
+    trade_date = datetime.now().strftime('%Y-%m-%d')
     # 标准化日期格式
     if isinstance(trade_date, str):
         if '-' not in trade_date:
