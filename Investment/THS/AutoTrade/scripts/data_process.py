@@ -7,16 +7,16 @@ import pandas
 import pandas as pd
 
 # from Investment.AutoPublic.jrtt.jrtt import send_notification
-from config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
+from Investment.THS.AutoTrade.config.settings import trade_operations_log_file, OPERATION_HISTORY_FILE, \
     Account_holding_file, Strategy_holding_file, \
     Combination_holding_file, Combination_portfolio_today_file, Lhw_portfolio_today_file, \
     Robot_holding_file
-from pages.base.page_common import CommonPage
-from pages.trading.trade_logic import TradeLogic
-from scripts.holding.account_info import AccountInfo
-from utils.format_data import normalize_time
-from utils.logger import setup_logger
-from utils.notification import send_notification
+from Investment.THS.AutoTrade.pages.base.page_common import CommonPage
+from Investment.THS.AutoTrade.pages.trading.trade_logic import TradeLogic
+from Investment.THS.AutoTrade.scripts.holding.account_info import AccountInfo
+from Investment.THS.AutoTrade.utils.format_data import normalize_time
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger(trade_operations_log_file)
 common_page = CommonPage()

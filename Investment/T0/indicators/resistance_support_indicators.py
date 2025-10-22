@@ -293,7 +293,7 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
             if result is None:
                 return None
             df, _ = result
-        
+
         # 获取交易日期
         if trade_date is None:
             yesterday = datetime.now() - timedelta(days=1)
@@ -308,7 +308,7 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
                 trade_date_formatted = trade_date_obj.strftime('%Y-%m-%d')
         else:
             trade_date_formatted = trade_date.strftime('%Y-%m-%d')
-        
+
         # 获取昨收
         from Investment.T0.utils.get_pre_close import get_prev_close
         prev_close = get_prev_close(stock_code, trade_date_formatted)
@@ -321,7 +321,7 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
             # 获取昨天的日期（考虑到今天是周六，昨天是周五）
             yesterday = datetime.now() - timedelta(days=1)
             trade_date = yesterday.strftime('%Y-%m-%d')
-        
+
         # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
         if isinstance(trade_date, str):
             trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
@@ -352,13 +352,6 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
         target_date = pd.to_datetime(trade_date, format='%Y-%m-%d')
         df = df_resouce.copy()  # 保存原始数据
         df = df[df['时间'].str.split(' ', expand=True)[0] == target_date.strftime('%Y-%m-%d')]
-        # df = df[df['时间'].dt.date == target_date.date()]
-
-        # # 过滤掉 11:30 到 13:00 之间的数据
-        # df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
-        # if df.empty:
-        #     print("❌ 所有时间数据均无效")
-        #     return None
 
         # 分离上午和下午的数据
         # 修复时间比较逻辑，正确提取小时部分并转换为整数进行比较
@@ -638,9 +631,21 @@ def main():
     args = parser.parse_args()
     
     # 分析并绘图
-    chart_path = plot_tdx_intraday(args.stock, args.date)
+    result = plot_tdx_intraday(args.stock, args.date)
     
-    if chart_path:
+    if result is not None:
+        # 获取交易日期
+        trade_date = args.date if args.date else (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        if isinstance(trade_date, str):
+            if '-' in trade_date:
+                trade_date_formatted = trade_date
+            else:
+                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                trade_date_formatted = trade_date_obj.strftime('%Y-%m-%d')
+        else:
+            trade_date_formatted = trade_date.strftime('%Y-%m-%d')
+            
+        chart_path = os.path.join(CHART_OUTPUT_DIR, f'{args.stock}_{trade_date_formatted}_阻力支撑指标.png')
         print(f"🎉 阻力支撑指标分析完成！图表已保存到: {chart_path}")
     else:
         print("❌ 分析失败！")

@@ -8,11 +8,11 @@ d = uiautomator2.connect()
 
 print(d.info)
 # 打印dump信息
-xml = d.dump_hierarchy()
-print(xml)
+# xml = d.dump_hierarchy()
+# print(xml)
 # 保存到 文件
-with open('dump.xml', 'w', encoding='utf-8') as f:
-    f.write(xml)
+# with open('dump.xml', 'w', encoding='utf-8') as f:
+#     f.write(xml)
 
 def send_instruction_to_autoglm(instruction):
     """将指令发送到AutoGLM输入框"""
@@ -101,16 +101,16 @@ if __name__ == "__main__":
     listen_for_trade_instructions()
     
     # 示例交易操作（如果需要手动测试）
-    # sample_operations = [
-    #     {"account": "中泰证券", "operation": "买入", "stock": "格力电器", "volume": 100},
-    #     {"account": "中泰证券", "operation": "卖出", "stock": "美的集团", "volume": 200}
-    # ]
-    # 
-    # # 将交易操作发送给AutoGLM执行
-    # for op in sample_operations:
-    #     execute_trade_via_autoglm(
-    #         op["account"], 
-    #         op["operation"], 
-    #         op["stock"], 
-    #         op["volume"]
-    #     )
+    sample_operations = [
+        # {"account": "中泰证券", "operation": "买入", "stock": "格力电器", "volume": 100},
+        {"account": "中泰证券", "operation": "卖出", "stock": "美的集团", "volume": 200}
+    ]
+    
+    # 将交易操作发送给AutoGLM执行
+    for op in sample_operations:
+        execute_trade_via_autoglm(
+            op["account"], 
+            op["operation"], 
+            op["stock"], 
+            op["volume"]
+        )

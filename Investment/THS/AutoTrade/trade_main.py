@@ -4,13 +4,13 @@ import datetime
 from datetime import time as dt_time
 import threading
 
-from pages.trading import TradeLogic, NationalDebtPage
-from pages.devices import DeviceManager
-from scripts.processor.CombinationHoldingProcessor_glm import CombinationHoldingProcessor
-from scripts.monitor_20day import check_morning_signals
-from utils.notification import send_notification
-from utils.logger import setup_logger
-from config.settings import (
+from Investment.THS.AutoTrade.pages.trading import TradeLogic, NationalDebtPage
+from Investment.THS.AutoTrade.pages.devices import DeviceManager
+from Investment.THS.AutoTrade.scripts.processor.CombinationHoldingProcessor_glm import CombinationHoldingProcessor
+from Investment.THS.AutoTrade.scripts.monitor_20day import check_morning_signals
+from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.config.settings import (
     MIN_DELAY,
     MAX_DELAY,
     MAX_RUN_TIME)

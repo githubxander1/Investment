@@ -253,7 +253,9 @@ class CombinationHoldingProcessor:
         # 检查是否获取到任何数据
         if not strategy_holdings:
             logger.warning("未获取到任何组合持仓数据")
-            return None
+            # 即使没有获取到策略持仓数据，也要返回一个空的DataFrame而不是None
+            # 这样可以确保在策略无持仓时也能继续执行账户持仓的清理操作
+            return pd.DataFrame()
 
         # 策略持仓汇总
         strategy_holdings_df = pd.concat(strategy_holdings, ignore_index=True)
