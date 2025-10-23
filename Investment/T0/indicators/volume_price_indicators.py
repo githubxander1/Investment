@@ -1,3 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+量价指标模块 (volume_price_indicators.py)
+
+该模块实现了基于量价关系的技术分析指标和策略，包括：
+1. 量价关系计算与分析
+2. 买卖盘力量对比
+3. 成交量异常检测
+4. 量价配合度评估
+5. 交易信号生成与可视化
+
+使用方法：
+    可以调用calculate_volume_price_indicators计算基础量价指标，或使用其他高级分析函数进行完整分析
+
+作者: 
+创建日期: 
+版本: 1.0
+"""
+
 import os
 import sys
 import pandas as pd
@@ -29,16 +49,29 @@ import matplotlib
 matplotlib.use('Agg')  # 使用Agg后端，不显示图形界面
 
 
-def calculate_volume_price_indicators(df, prev_close) -> Tuple[pd.DataFrame, float, float, float]:
+def calculate_volume_price_indicators(df: pd.DataFrame, prev_close: float) -> Tuple[pd.DataFrame, float, float, float]:
     """
-    计算量价指标：
-    量价:=(VOL/CLOSE)/3;
-    A2:=SUM((IF(((量价>0.20) AND (CLOSE>(REF(CLOSE,1)))),量价,0)),0);
-    A3:=SUM((IF(((量价>0.20) AND (CLOSE< (REF(CLOSE,1)))),量价,0)),0);
-    A6:=A2+A3;DD1:=1;
-    比:=A2/A3;AAA1:=STRCAT(STRCAT('买: ',CON2STR((100*A2)/A6,0)),'%');
-    AAA2:=STRCAT(STRCAT('卖: ',CON2STR((100*A3)/A6,0)),'%');
-    AAA3:=STRCAT(STRCAT('差: ',CON2STR((100*(A2-A3))/A6,0)),'%');
+    计算量价指标
+    
+    功能：分析价格与成交量的关系，计算买卖盘力量对比及量价配合度
+    
+    参数：
+        df: 包含价格和成交量数据的DataFrame，需包含'成交量'和'收盘'列
+        prev_close: 前收盘价，用于价格参考
+    
+    返回值：
+        元组 (df, 买方占比, 卖方占比, 买卖差占比)
+        - df: 添加了量价指标的DataFrame
+        - 买方占比: 买方力量占总力量的百分比
+        - 卖方占比: 卖方力量占总力量的百分比
+        - 买卖差占比: 买卖力量差额占总力量的百分比
+    
+    计算逻辑：
+    1. 计算量价指标 = (成交量/收盘价)/3
+    2. 计算买方力量(A2)：当日收盘价高于前一日收盘价且量价>0.20的量价之和
+    3. 计算卖方力量(A3)：当日收盘价低于前一日收盘价且量价>0.20的量价之和
+    4. 计算总力量(A6) = A2 + A3
+    5. 计算买卖力量占比和差额占比
     """
     # 计算量价指标
     df['量价'] = (df['成交量'] / df['收盘']) / 3

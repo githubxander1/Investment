@@ -1,312 +1,277 @@
 # T0交易系统主监控程序
-import time
-import sys
 import os
-from datetime import datetime, date
-import threading
+import sys
+import time
+import logging
+from datetime import datetime, time as dt_time, timedelta
 
 # 添加项目根目录到路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from Investment.T0.config.settings import DEFAULT_STOCK_POOL, MONITOR_INTERVAL
 from Investment.T0.monitor.signal_detector import SignalDetector
 from Investment.T0.monitor.trade_executor import TradeExecutor
-from Investment.T0.utils.logger import setup_logger
-from Investment.T0.utils import tools
-from Investment.THS.AutoTrade.utils.notification import send_notification
-NOTIFICATION_AVAILABLE = True
 
-logger = setup_logger('t0_main')
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    filename='t0_trading.log'
+)
+logger = logging.getLogger('T0Monitor')
 
 class T0Monitor:
-    """T0主监控程序"""
+    """T0交易监控器"""
     
-    def __init__(self, stock_pool=None):
-        self.stock_pool = stock_pool if stock_pool else DEFAULT_STOCK_POOL
-        self.detectors = {stock_code: SignalDetector(stock_code) for stock_code in self.stock_pool}  # 为每只股票创建独立的检测器
+    def __init__(self, stock_codes=None):
+        # 默认监控中信证券和海康威视
+        if stock_codes is None:
+            self.stock_codes = ['600030', '002415']  # 中信证券和海康威视
+        else:
+            self.stock_codes = stock_codes
+            
+        # 为每只股票创建信号检测器
+        self.signal_detectors = {}
+        for stock_code in self.stock_codes:
+            self.signal_detectors[stock_code] = SignalDetector(stock_code)
+            
+        # 创建交易执行器
         self.executor = TradeExecutor()
-        self.last_trade_date = None
-        self.is_running = False
-        self._lock = threading.Lock()  # 添加线程锁以确保线程安全
         
-    def check_and_reset_daily_signals(self):
-        """检查并重置每日信号"""
-        current_date = date.today()
-        if self.last_trade_date != current_date:
-            self.executor.reset_daily_signals()
-            # 重置所有检测器的信号状态（只保留阻力支撑指标）
-            for detector in self.detectors.values():
-                detector.prev_signals = {
-                    'resistance_support': {'buy': False, 'sell': False}
-                    # 注释掉其他指标
-                    # 'extended': {'buy': False, 'sell': False},
-                    # 'volume_price': {'buy': False, 'sell': False}
-                }
-            self.last_trade_date = current_date
-            logger.info(f"开始新交易日: {current_date}")
+        # 初始化每日重置标记
+        self.reset_daily_flag = True
+        self.last_trading_date = None
+        
+        # 初始化信号队列（按重要性排序）
+        self.signal_queue = []
+        
+        # 买入和卖出信号分别存储，用于实现先卖后买原则
+        self.buy_signals = []
+        self.sell_signals = []
+        
+        # 当日已执行的交易记录
+        self.executed_trades = []
+        
+    def is_trading_time(self):
+        """判断是否为交易时间"""
+        now = datetime.now()
+        # 判断是否为工作日（周一到周五）
+        if now.weekday() >= 5:
+            return False
+            
+        # 判断是否在交易时间段内
+        current_time = now.time()
+        morning_trading = dt_time(9, 30) <= current_time <= dt_time(11, 30)
+        afternoon_trading = dt_time(13, 0) <= current_time <= dt_time(15, 0)
+        
+        return morning_trading or afternoon_trading
     
-    def process_signals(self, stock_code, signals):
-        """处理检测到的信号"""
-        if not signals:
-            return
+    def reset_daily_state(self):
+        """重置每日状态"""
+        now = datetime.now()
+        current_date = now.date()
+        
+        # 如果日期变更，重置状态
+        if self.last_trading_date != current_date:
+            self.reset_daily_flag = True
+            self.last_trading_date = current_date
+        
+        # 执行每日重置
+        if self.reset_daily_flag:
+            logger.info(f"执行每日重置，日期: {current_date}")
             
-        # 处理所有类型的信号
-        buy_signals = [s for s in signals if s['type'] == '买入']
-        sell_signals = [s for s in signals if s['type'] == '卖出']
-        
-        # 打印所有信号
-        print(f"\n📊 [{stock_code}] 检测到 {len(signals)} 个信号:")
-        for signal in signals:
-            print(f"  - 指标: {signal['indicator']}, 类型: {signal['type']}, 详情: {signal['details']}")
-        
-        # 处理买入信号
-        if buy_signals:
-            first_buy_signal = buy_signals[0]  # 取第一个买入信号
-            indicator = first_buy_signal['indicator']
-            details = first_buy_signal['details']
-
-            # 发送通知
-            title = f"T0交易信号 - {stock_code}"
-            content = f"股票代码: {stock_code}\n指标: {indicator}\n类型: 买入\n详情: {details}\n时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            try:
-                send_notification(content)  # 注意：这里只传一个参数
-                logger.info(f"[{stock_code}] 已发送通知: {title}")
-            except Exception as e:
-                logger.error(f"[{stock_code}] 发送通知失败: {e}")
+            # 清空信号队列和已执行交易记录
+            self.signal_queue.clear()
+            self.buy_signals.clear()
+            self.sell_signals.clear()
+            self.executed_trades.clear()
             
-            # 执行交易
-            try:
-                self.executor.execute_buy(stock_code, indicator)
-                logger.info(f"[{stock_code}] 已执行买入交易: {stock_code} - {indicator}")
-                print(f"✅ [{stock_code}] 已执行买入交易: {stock_code} - {indicator}")
-            except Exception as e:
-                logger.error(f"[{stock_code}] 执行买入交易失败: {e}")
-                print(f"❌ [{stock_code}] 执行买入交易失败: {e}")
-        
-        # 处理卖出信号
-        if sell_signals:
-            first_sell_signal = sell_signals[0]  # 取第一个卖出信号
-            indicator = first_sell_signal['indicator']
-            details = first_sell_signal['details']
-
-            # 发送通知
-            title = f"T0交易信号 - {stock_code}"
-            content = f"股票代码: {stock_code}\n指标: {indicator}\n类型: 卖出\n详情: {details}\n时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            try:
-                send_notification(content)  # 注意：这里只传一个参数
-                logger.info(f"[{stock_code}] 已发送通知: {title}")
-            except Exception as e:
-                logger.error(f"[{stock_code}] 发送通知失败: {e}")
-            
-            # 执行交易
-            try:
-                self.executor.execute_sell(stock_code, indicator)
-                logger.info(f"[{stock_code}] 已执行卖出交易: {stock_code} - {indicator}")
-                print(f"✅ [{stock_code}] 已执行卖出交易: {stock_code} - {indicator}")
-            except Exception as e:
-                logger.error(f"[{stock_code}] 执行卖出交易失败: {e}")
-                print(f"❌ [{stock_code}] 执行卖出交易失败: {e}")
-
-    def run(self):
-        """运行主监控循环"""
-        with self._lock:
-            self.is_running = True
-            
-        logger.info(f"开始监控T0交易信号，股票池: {self.stock_pool}")
-        print(f"开始监控T0交易信号，股票池: {self.stock_pool}")
-        
-        while self.is_running:
-            # 检查是否为交易时间
-            if not tools.is_trading_time():
-                print("当前非交易时间，等待交易时间开始...")
-                logger.info("当前非交易时间，等待交易时间开始...")
-                tools.wait_until_trading_time()
-                continue
-
-            # 检查并重置每日信号
-            self.check_and_reset_daily_signals()
-
-            # 收集所有股票的信号
-            all_signals = {}
-            for stock_code in self.stock_pool:
-                try:
-                    print(f"\n🔍 开始监控股票 [{stock_code}]")
-                    signals = self.detectors[stock_code].detect_all_signals()
-                    if signals:
-                        logger.info(f"[{stock_code}] 检测到 {len(signals)} 个新信号")
-                        all_signals[stock_code] = signals
-                        self._print_detailed_signals(stock_code, signals)
-                    else:
-                        logger.debug(f"[{stock_code}] 未检测到新信号")
-                        print(f"❌ [{stock_code}] 未检测到新信号")
-                except Exception as e:
-                    logger.error(f"[{stock_code}] 检测信号时出错: {e}")
-                    print(f"❌ [{stock_code}] 检测信号时出错: {e}")
-
-            # 统一处理所有信号
-            if all_signals:
-                self.process_all_signals(all_signals)
-
-            # 等待下次检测
-            print(f"\n⏳ 等待 {MONITOR_INTERVAL} 秒后进行下一次检测...")
-            time.sleep(MONITOR_INTERVAL)
-
-            # 检查是否已收盘
-            if tools.is_market_closed():
-                print("今日交易已结束，等待下一个交易日...")
-                logger.info("今日交易已结束，等待下一个交易日...")
-                tools.wait_until_trading_time()
-    
-    def _print_detailed_signals(self, stock_code, signals):
-        """打印详细的信号信息"""
-        print(f"\n📈 股票 [{stock_code}] 检测到的信号:")
-        
-        # 按指标类型分组显示信号
-        indicators = {}
-        for signal in signals:
-            indicator_name = signal['indicator']
-            if indicator_name not in indicators:
-                indicators[indicator_name] = []
-            indicators[indicator_name].append(signal)
-        
-        # 打印各指标信号
-        for indicator_name, indicator_signals in indicators.items():
-            print(f"  🟦 {indicator_name}:")
-            for signal in indicator_signals:
-                print(f"    类型: {signal['type']}, 详情: {signal['details']}")
-    
-    def process_all_signals(self, all_signals):
-        """统一处理所有股票的信号，先卖后买，买入按价格排序"""
-        # 分离买入和卖出信号
-        buy_signals = []
-        sell_signals = []
-        
-        # 收集所有信号
-        for stock_code, signals in all_signals.items():
-            for signal in signals:
-                signal_info = {
-                    'stock_code': stock_code,
-                    'indicator': signal['indicator'],
-                    'type': signal['type'],
-                    'details': signal['details']
-                }
-                
-                if signal['type'] == '买入':
-                    # 获取股票当前价格用于排序
-                    try:
-                        detector = self.detectors[stock_code]
-                        df = detector.get_stock_data()
-                        if df is not None and not df.empty:
-                            current_price = df['收盘'].iloc[-1]
-                            signal_info['price'] = current_price
-                        else:
-                            signal_info['price'] = 0  # 如果无法获取价格，设为0
-                    except:
-                        signal_info['price'] = 0  # 如果出错，设为0
+            # 重置信号检测器的状态
+            for stock_code, detector in self.signal_detectors.items():
+                if hasattr(detector, 'prev_signals'):
+                    # 重置综合T+0策略的持仓状态
+                    if 'comprehensive_t0' in detector.prev_signals:
+                        detector.prev_signals['comprehensive_t0']['has_open_position'] = False
+                    logger.info(f"重置股票 {stock_code} 的信号检测器状态")
                     
-                    buy_signals.append(signal_info)
-                elif signal['type'] == '卖出':
-                    sell_signals.append(signal_info)
+            self.reset_daily_flag = False
+    
+    def process_signals(self):
+        """处理检测到的信号"""
+        # 清空现有信号队列
+        self.buy_signals.clear()
+        self.sell_signals.clear()
         
-        # 先执行所有卖出信号
-        for signal in sell_signals:
-            self._execute_single_signal(signal)
+        # 检测所有股票的信号
+        for stock_code, detector in self.signal_detectors.items():
+            signals = detector.detect_all_signals()
+            
+            if signals:
+                logger.info(f"股票 {stock_code} 检测到新信号: {signals}")
+                
+                # 分类信号（买入/卖出）
+                for signal in signals:
+                    signal_info = {
+                        'stock_code': stock_code,
+                        'indicator': signal['indicator'],
+                        'type': signal['type'],
+                        'details': signal['details'],
+                        'timestamp': datetime.now()
+                    }
+                    
+                    # 根据信号类型分类
+                    if signal['type'] == '买入':
+                        self.buy_signals.append(signal_info)
+                    elif signal['type'] == '卖出':
+                        self.sell_signals.append(signal_info)
         
-        # 再执行买入信号，按价格从低到高排序
-        buy_signals.sort(key=lambda x: x.get('price', 0))
-        for signal in buy_signals:
+        # 按时间戳排序
+        self.buy_signals.sort(key=lambda x: x['timestamp'])
+        self.sell_signals.sort(key=lambda x: x['timestamp'])
+        
+        # 按照先卖后买原则构建最终信号队列
+        self.signal_queue = self.sell_signals + self.buy_signals
+        
+        # 执行信号
+        for signal in self.signal_queue:
             self._execute_single_signal(signal)
     
     def _execute_single_signal(self, signal):
         """执行单个信号"""
         stock_code = signal['stock_code']
-        indicator = signal['indicator']
         signal_type = signal['type']
+        indicator = signal['indicator']
+        details = signal['details']
         
-        # 发送通知
-        title = f"T0交易信号 - {stock_code}"
-        content = f"股票代码: {stock_code}\n指标: {indicator}\n类型: {signal_type}\n详情: {signal['details']}\n时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         try:
-            send_notification(content)
-            logger.info(f"[{stock_code}] 已发送通知: {title}")
-        except Exception as e:
-            logger.error(f"[{stock_code}] 发送通知失败: {e}")
-        
-        # 执行交易
-        try:
+            # 构建通知消息
+            notification_msg = f"股票代码: {stock_code}\n"
+            notification_msg += f"信号类型: {signal_type}\n"
+            notification_msg += f"指标来源: {indicator}\n"
+            notification_msg += f"详细信息: {details}\n"
+            notification_msg += f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            
+            # 发送通知
+            self._send_notification(notification_msg)
+            
+            # 执行交易
             if signal_type == '买入':
-                self.executor.execute_buy(stock_code, indicator)
-                logger.info(f"[{stock_code}] 已执行买入交易: {stock_code} - {indicator}")
-                print(f"✅ [{stock_code}] 已执行买入交易: {stock_code} - {indicator}")
-            elif signal_type == '卖出':
-                self.executor.execute_sell(stock_code, indicator)
-                logger.info(f"[{stock_code}] 已执行卖出交易: {stock_code} - {indicator}")
-                print(f"✅ [{stock_code}] 已执行卖出交易: {stock_code} - {indicator}")
+                # 执行买入操作
+                trade_result = self.executor.execute_buy(stock_code, indicator)
+            else:
+                # 执行卖出操作
+                trade_result = self.executor.execute_sell(stock_code, indicator)
+            
+            # 记录交易
+            if trade_result and trade_result.get('success'):
+                trade_record = {
+                    'stock_code': stock_code,
+                    'signal_type': signal_type,
+                    'indicator': indicator,
+                    'details': details,
+                    'executed_at': datetime.now(),
+                    'trade_info': trade_result
+                }
+                self.executed_trades.append(trade_record)
+                logger.info(f"交易执行成功: {trade_record}")
+            
         except Exception as e:
-            logger.error(f"[{stock_code}] 执行{signal_type}交易失败: {e}")
-            print(f"❌ [{stock_code}] 执行{signal_type}交易失败: {e}")
+            logger.error(f"执行信号时出错: {e}", exc_info=True)
+    
+    def _send_notification(self, message):
+        """发送通知"""
+        try:
+            # 在这里实现通知发送逻辑（例如通过邮件、短信、微信等）
+            # 这里仅打印到控制台作为示例
+            print("=" * 50)
+            print("交易信号通知")
+            print("=" * 50)
+            print(message)
+            print("=" * 50)
+            
+            # 记录到日志
+            logger.info(f"发送通知: {message}")
+            
+        except Exception as e:
+            logger.error(f"发送通知时出错: {e}")
+    
+    def run_monitor(self):
+        """运行监控器"""
+        logger.info(f"启动T0交易监控器，监控股票: {', '.join(self.stock_codes)}")
+        
+        try:
+            while True:
+                # 重置每日状态
+                self.reset_daily_state()
+                
+                # 检查是否为交易时间
+                if not self.is_trading_time():
+                    # 非交易时间，每分钟检查一次
+                    time.sleep(60)
+                    continue
+                
+                # 处理信号
+                self.process_signals()
+                
+                # 交易时间内，每30秒检查一次信号
+                # 注意：这里可以根据实际需要调整检查频率
+                time.sleep(30)
+                
+        except KeyboardInterrupt:
+            logger.info("监控器被用户中断")
+        except Exception as e:
+            logger.error(f"监控器运行出错: {e}", exc_info=True)
+        finally:
+            self.close()
     
     def run_once(self):
-        """运行一次检测（用于测试）"""
-        logger.info(f"开始单次检测T0交易信号，股票池: {self.stock_pool}")
-        logger.info("移除交易时间限制，直接运行一次信号检测...")
-        print(f"开始单次检测T0交易信号，股票池: {self.stock_pool}")
-
-        # 检查并重置每日信号
-        self.check_and_reset_daily_signals()
+        """单次运行模式，用于测试"""
+        logger.info(f"单次运行模式，检查股票: {', '.join(self.stock_codes)}")
         
-        # 检查每个股票的信号（只运行一次用于测试）
-        for stock_code in self.stock_pool:
-            try:
-                print(f"\n🔍 开始监控股票 [{stock_code}]")
-                signals = self.detectors[stock_code].detect_all_signals()
-                if signals:
-                    logger.info(f"[{stock_code}] 检测到 {len(signals)} 个新信号")
-                    self.process_signals(stock_code, signals)
-                    self._print_detailed_signals(stock_code, signals)
-                else:
-                    logger.debug(f"[{stock_code}] 未检测到新信号")
-                    print(f"❌ [{stock_code}] 未检测到任何新信号")
-            except Exception as e:
-                logger.error(f"[{stock_code}] 检测信号时出错: {e}")
-                print(f"❌ [{stock_code}] 检测信号时出错: {e}")
-        
-        print("\n=== T0交易系统测试完成 ===")
+        try:
+            # 重置每日状态
+            self.reset_daily_state()
+            
+            # 处理信号
+            self.process_signals()
+            
+            logger.info("单次运行完成")
+        except Exception as e:
+            logger.error(f"单次运行出错: {e}", exc_info=True)
     
     def close(self):
         """关闭监控器，释放资源"""
-        logger.info("开始关闭T0监控器资源")
-        with self._lock:
-            self.is_running = False
+        logger.info("关闭T0交易监控器")
         
-        # 关闭交易执行器
-        if self.executor and hasattr(self.executor, 'close'):
+        # 释放资源
+        if hasattr(self, 'executor'):
             try:
                 self.executor.close()
-                logger.info("交易执行器已关闭")
-            except Exception as e:
-                logger.error(f"关闭交易执行器时出错: {e}")
-        
-        # 清理检测器
-        self.detectors.clear()
-        
-        logger.info("T0监控器资源已全部释放")
+            except:
+                pass
 
-
-def main(stock_pool=None):
+def main():
     """主函数"""
-    # 检查是否有测试参数
-    if len(sys.argv) > 1 and sys.argv[1] == '--test':
-        monitor = T0Monitor(stock_pool)
+    import argparse
+    
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description='T0交易系统主监控程序')
+    parser.add_argument('--stocks', nargs='+', help='要监控的股票代码列表，默认监控中信证券(600030)和海康威视(002415)')
+    parser.add_argument('--test', action='store_true', help='测试模式，仅运行一次')
+    
+    args = parser.parse_args()
+    
+    # 创建监控器实例
+    if args.stocks:
+        monitor = T0Monitor(args.stocks)
+    else:
+        # 默认监控中信证券和海康威视
+        monitor = T0Monitor(['600030', '002415'])
+    
+    # 运行监控器
+    if args.test:
         monitor.run_once()
     else:
-        monitor = T0Monitor(stock_pool)
-        monitor.run()
+        monitor.run_monitor()
 
-if __name__ == "__main__":
-    # 可以通过命令行参数指定股票代码
-    stock_pool = sys.argv[1:] if len(sys.argv) > 1 else None
-    # 如果第一个参数是--test，则移除它
-    if stock_pool and stock_pool[0] == '--test':
-        stock_pool = stock_pool[1:] if len(stock_pool) > 1 else None
-    main(stock_pool)
+if __name__ == '__main__':
+    main()

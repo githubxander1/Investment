@@ -13,6 +13,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Investment.T0.utils.logger import log_signal
 from Investment.T0.indicators.resistance_support_indicators import calculate_tdx_indicators as calc_resistance_support, plot_tdx_intraday
+# 导入综合T+0策略
+from Investment.T0.indicators.comprehensive_t0_strategy import analyze_comprehensive_t0
 # 注释掉其他指标的导入
 # from Investment.T0.indicators.extended_indicators import calculate_tdx_indicators as calc_extended
 # from Investment.T0.indicators.volume_price_indicators import (calculate_volume_price_indicators,
@@ -25,16 +27,11 @@ class SignalDetector:
     
     def __init__(self, stock_code):
         self.stock_code = stock_code
-        # 只保留阻力支撑指标的信号状态
+        # 只保留阻力支撑指标的信号状态和综合T+0策略
         self.prev_signals = {
             'resistance_support': {'buy': False, 'sell': False},
-            # 注释掉其他指标的信号状态
-            # 'extended': {'buy': False, 'sell': False},
-            # 'volume_price': {'buy': False, 'sell': False},
-            # 新增策略信号状态
-            'price_ma_deviation': {'buy': False, 'sell': False},
-            'volatility': {'buy': False, 'sell': False},
-            'momentum_reversal': {'buy': False, 'sell': False}
+            # 新增综合T+0策略信号状态
+            'comprehensive_t0': {'buy': False, 'sell': False, 'has_open_position': False}
         }
 
     def is_trading_time(self):
@@ -232,7 +229,7 @@ class SignalDetector:
 
             # 直接调用绘图方法
             plot_tdx_intraday(stock_code, trade_date)
-                               
+                                
         except Exception as e:
             print(f"保存阻力支撑指标图表时出错: {e}")
 
@@ -297,6 +294,48 @@ class SignalDetector:
             
         return None
     
+    def detect_comprehensive_t0_signals(self):
+        """检测综合T+0策略信号"""
+        try:
+            # 获取是否有未完成的T操作
+            has_open_position = self.prev_signals['comprehensive_t0']['has_open_position']
+            
+            # 执行综合T+0策略分析
+            result = analyze_comprehensive_t0(
+                self.stock_code, 
+                trade_date=None,  # 使用默认日期（今天）
+                has_open_position=has_open_position
+            )
+            
+            if result is None:
+                return None
+            
+            df, trades = result
+            
+            # 获取最新的信号
+            latest_buy_signal = df['Buy_Signal'].iloc[-1] if len(df) > 0 else False
+            latest_sell_signal = df['Sell_Signal'].iloc[-1] if len(df) > 0 else False
+            
+            # 更新持仓状态
+            if latest_buy_signal and not has_open_position:
+                # 买入信号且当前无持仓，设置为有持仓
+                self.prev_signals['comprehensive_t0']['has_open_position'] = True
+            elif latest_sell_signal and has_open_position:
+                # 卖出信号且当前有持仓，设置为无持仓
+                self.prev_signals['comprehensive_t0']['has_open_position'] = False
+            
+            return {
+                'buy': latest_buy_signal,
+                'sell': latest_sell_signal,
+                'has_open_position': self.prev_signals['comprehensive_t0']['has_open_position'],
+                'buy_details': f"综合T+0策略买入信号，买入评分: {df['buy_score'].iloc[-1]:.1f}" if latest_buy_signal else '',
+                'sell_details': f"综合T+0策略卖出信号，卖出评分: {df['sell_score'].iloc[-1]:.1f}" if latest_sell_signal else ''
+            }
+            
+        except Exception as e:
+            print(f"检测综合T+0策略信号时出错: {e}")
+            return None
+
     def detect_all_signals(self):
         """检测所有指标的信号"""
         # 获取数据
@@ -311,8 +350,9 @@ class SignalDetector:
             
         # 检测各指标信号
         resistance_support_signals = self.detect_resistance_support_signals(df, prev_close)
-        # extended_signals = self.detect_extended_signals(df, prev_close)
-        # volume_price_signals = self.detect_volume_price_signals(df, prev_close)
+        
+        # 检测综合T+0策略信号（新添加）
+        comprehensive_t0_signals = self.detect_comprehensive_t0_signals()
 
         # 检查是否有新信号
         new_signals = []
@@ -341,98 +381,29 @@ class SignalDetector:
             self.prev_signals['resistance_support']['buy'] = resistance_support_signals['buy']
             self.prev_signals['resistance_support']['sell'] = resistance_support_signals['sell']
         
-        # 检测新策略信号
-        from Investment.T0.core.new_strategy_interface import StrategyFactory
-        
-        # 价格均线偏离策略
-        price_ma_strategy = StrategyFactory.create_strategy('price_ma_deviation')
-        if price_ma_strategy:
-            result = price_ma_strategy.analyze(self.stock_code)
-            if result:
-                df_indicators, signals = result
-                # 检查买入信号
-                if signals['buy_signals'] and not self.prev_signals['price_ma_deviation']['buy']:
-                    new_signals.append({
-                        'indicator': '价格均线偏离',
-                        'type': '买入',
-                        'details': f"价格均线偏离策略触发买入信号"
-                    })
-                    log_signal(self.stock_code, '价格均线偏离', '买入', '价格均线偏离策略触发买入信号')
-                    self.prev_signals['price_ma_deviation']['buy'] = True
-                elif not signals['buy_signals']:
-                    self.prev_signals['price_ma_deviation']['buy'] = False
+        # 综合T+0策略信号（新添加）
+        if comprehensive_t0_signals:
+            # 检查是否有新的买入信号
+            if comprehensive_t0_signals['buy'] and not self.prev_signals['comprehensive_t0']['buy']:
+                new_signals.append({
+                    'indicator': '综合T+0',
+                    'type': '买入',
+                    'details': comprehensive_t0_signals['buy_details']
+                })
+                log_signal(self.stock_code, '综合T+0', '买入', comprehensive_t0_signals['buy_details'])
                 
-                # 检查卖出信号
-                if signals['sell_signals'] and not self.prev_signals['price_ma_deviation']['sell']:
-                    new_signals.append({
-                        'indicator': '价格均线偏离',
-                        'type': '卖出',
-                        'details': f"价格均线偏离策略触发卖出信号"
-                    })
-                    log_signal(self.stock_code, '价格均线偏离', '卖出', '价格均线偏离策略触发卖出信号')
-                    self.prev_signals['price_ma_deviation']['sell'] = True
-                elif not signals['sell_signals']:
-                    self.prev_signals['price_ma_deviation']['sell'] = False
-        
-        # 波动率策略
-        volatility_strategy = StrategyFactory.create_strategy('volatility')
-        if volatility_strategy:
-            result = volatility_strategy.analyze(self.stock_code)
-            if result:
-                df_indicators, signals = result
-                # 检查买入信号
-                if signals['buy_signals'] and not self.prev_signals['volatility']['buy']:
-                    new_signals.append({
-                        'indicator': '波动率',
-                        'type': '买入',
-                        'details': f"波动率策略触发买入信号"
-                    })
-                    log_signal(self.stock_code, '波动率', '买入', '波动率策略触发买入信号')
-                    self.prev_signals['volatility']['buy'] = True
-                elif not signals['buy_signals']:
-                    self.prev_signals['volatility']['buy'] = False
+            # 检查是否有新的卖出信号
+            if comprehensive_t0_signals['sell'] and not self.prev_signals['comprehensive_t0']['sell']:
+                new_signals.append({
+                    'indicator': '综合T+0',
+                    'type': '卖出',
+                    'details': comprehensive_t0_signals['sell_details']
+                })
+                log_signal(self.stock_code, '综合T+0', '卖出', comprehensive_t0_signals['sell_details'])
                 
-                # 检查卖出信号
-                if signals['sell_signals'] and not self.prev_signals['volatility']['sell']:
-                    new_signals.append({
-                        'indicator': '波动率',
-                        'type': '卖出',
-                        'details': f"波动率策略触发卖出信号"
-                    })
-                    log_signal(self.stock_code, '波动率', '卖出', '波动率策略触发卖出信号')
-                    self.prev_signals['volatility']['sell'] = True
-                elif not signals['sell_signals']:
-                    self.prev_signals['volatility']['sell'] = False
-        
-        # 动量反转策略
-        momentum_strategy = StrategyFactory.create_strategy('momentum_reversal')
-        if momentum_strategy:
-            result = momentum_strategy.analyze(self.stock_code)
-            if result:
-                df_indicators, signals = result
-                # 检查买入信号
-                if signals['buy_signals'] and not self.prev_signals['momentum_reversal']['buy']:
-                    new_signals.append({
-                        'indicator': '动量反转',
-                        'type': '买入',
-                        'details': f"动量反转策略触发买入信号"
-                    })
-                    log_signal(self.stock_code, '动量反转', '买入', '动量反转策略触发买入信号')
-                    self.prev_signals['momentum_reversal']['buy'] = True
-                elif not signals['buy_signals']:
-                    self.prev_signals['momentum_reversal']['buy'] = False
-                
-                # 检查卖出信号
-                if signals['sell_signals'] and not self.prev_signals['momentum_reversal']['sell']:
-                    new_signals.append({
-                        'indicator': '动量反转',
-                        'type': '卖出',
-                        'details': f"动量反转策略触发卖出信号"
-                    })
-                    log_signal(self.stock_code, '动量反转', '卖出', '动量反转策略触发卖出信号')
-                    self.prev_signals['momentum_reversal']['sell'] = True
-                elif not signals['sell_signals']:
-                    self.prev_signals['momentum_reversal']['sell'] = False
+            # 更新之前的信号状态
+            self.prev_signals['comprehensive_t0']['buy'] = comprehensive_t0_signals['buy']
+            self.prev_signals['comprehensive_t0']['sell'] = comprehensive_t0_signals['sell']
         
         return new_signals
 

@@ -1,3 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+扩展指标模块 (extended_indicators.py)
+
+该模块实现了一系列扩展的技术分析指标和策略，包括：
+1. 扩展通达信公式实现（如480日最高价、月内天数计算等）
+2. 特殊均线、MACD和量比分析
+3. 技术指标的组合应用
+4. 交易信号生成与过滤
+5. 数据可视化展示
+
+使用方法：
+    可以调用calculate_tdx_indicators计算基础指标，或使用其他高级分析函数进行完整分析
+
+作者: 
+创建日期: 
+版本: 1.0
+"""
+
 import os
 import sys
 import pandas as pd
@@ -30,8 +50,21 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # ---------------------- 1. 指标计算（扩展通达信公式） ----------------------
 def calculate_tdx_indicators(df: pd.DataFrame, prev_close: float, daily_data: pd.DataFrame, threshold: float = 0.01) -> pd.DataFrame:
     """
-    扩展通达信公式实现：
-    包含480日最高价、月内天数计算、特殊均线、MACD、量比分析等
+    扩展通达信公式实现
+    
+    功能：计算扩展的通达信技术指标，包括长期高低点、时间周期、均线和量价分析等
+    
+    参数：
+        df: 包含价格数据的DataFrame，需包含'最高'、'最低'等列
+        prev_close: 前收盘价，用于计算涨跌幅
+        daily_data: 日K线数据DataFrame
+        threshold: 阈值参数，默认为0.01
+    
+    返回值：
+        添加了各种通达信指标的DataFrame，包括：
+        - 'XG_480': 480日最高价
+        - 'XG': 分时图中显示的480日最高价
+        以及其他通达信公式相关指标
     """
     # 获取当日最高价和最低价
     daily_high = df['最高'].max()

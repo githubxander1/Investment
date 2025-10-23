@@ -1,3 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+动量反转策略指标模块 (momentum_reversal.py)
+
+该模块实现了基于动量反转理论的交易策略指标计算与分析功能，包括：
+1. 价格动量计算（价格变化率）
+2. 动态阈值设置与突破检测
+3. 超买超卖信号生成
+4. 策略回测与绩效分析
+5. 可视化展示
+
+使用方法：
+    可以调用calculate_momentum_reversal计算指标，或使用其他分析函数进行完整策略应用
+
+作者: 
+创建日期: 
+版本: 1.0
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,8 +25,13 @@ from datetime import datetime, timedelta
 from typing import Optional, Tuple, Dict, List
 import akshare as ak
 import matplotlib.font_manager as fm
+import os
+import sys
 
-from Investment.T0.utils.logger import setup_logger
+# 添加项目根目录到Python路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from T0.utils.logger import setup_logger
 
 logger = setup_logger('momentum_reversal')
 
@@ -19,18 +44,28 @@ def calculate_momentum_reversal(df: pd.DataFrame, momentum_window: int = 10, rev
     """
     计算动量反转策略指标
     
-    策略逻辑：
-    1. 计算短期动量（价格变化率）
-    2. 当动量过大时，预期会发生反转
-    3. 正动量过大时卖出，负动量过大时买入
+    功能：基于动量反转理论计算交易信号，识别超买超卖状态并预测价格可能的反转点
     
-    Args:
-        df: 包含价格数据的DataFrame
-        momentum_window: 动量计算窗口
-        reversal_threshold: 反转阈值（百分比）
+    策略原理：
+    1. 计算价格变化率作为动量指标
+    2. 使用滚动窗口计算动量的均值和标准差
+    3. 设置动态上下阈值，捕捉动量极端情况
+    4. 当动量超过上阈值时卖出（超买）
+    5. 当动量低于下阈值时买入（超卖）
     
-    Returns:
-        添加了策略指标的DataFrame
+    参数：
+        df: 包含价格数据的DataFrame，需包含'收盘'列
+        momentum_window: 动量计算窗口，默认为10
+        reversal_threshold: 反转阈值（百分比），默认为0.5
+    
+    返回值：
+        添加了策略指标的DataFrame，新增列包括：
+        - 'Price_Change': 价格变化率（动量指标）
+        - 'Momentum_Mean': 动量平均值
+        - 'Momentum_Std': 动量标准差
+        - 'Upper_Threshold': 上阈值（超买线）
+        - 'Lower_Threshold': 下阈值（超卖线）
+        - 'Buy_Signal': 买入信号
     """
     df = df.copy()
     

@@ -1,3 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+波动率策略指标模块 (volatility_strategy.py)
+
+该模块实现了基于价格波动率的交易策略指标计算与分析功能，包括：
+1. 价格波动率计算（使用标准差）
+2. 基于波动率的买卖信号生成
+3. 策略回测与绩效分析
+4. 可视化展示
+
+使用方法：
+    可以调用calculate_volatility_strategy计算指标，或使用analyze_volatility_strategy进行完整策略分析
+
+作者: 
+创建日期: 
+版本: 1.0
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,8 +24,13 @@ from datetime import datetime, timedelta
 from typing import Optional, Tuple, Dict, List
 import akshare as ak
 import matplotlib.font_manager as fm
+import os
+import sys
 
-from Investment.T0.utils.logger import setup_logger
+# 添加项目根目录到Python路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from T0.utils.logger import setup_logger
 
 logger = setup_logger('volatility_strategy')
 
@@ -19,18 +43,26 @@ def calculate_volatility_strategy(df: pd.DataFrame, window: int = 20, multiplier
     """
     计算基于波动率的交易策略指标
     
-    策略逻辑：
-    1. 计算价格的标准差作为波动率指标
-    2. 当价格突然大幅上涨时卖出（认为会回调）
-    3. 当价格突然大幅下跌时买入（认为会反弹）
+    功能：计算股票价格波动率，并基于波动率生成买卖信号
     
-    Args:
-        df: 包含价格数据的DataFrame
-        window: 波动率计算窗口
-        multiplier: 波动率倍数阈值
+    策略原理：
+    1. 计算价格收益率的标准差作为波动率指标
+    2. 使用波动率构建上下轨阈值
+    3. 当价格突然大幅上涨超过上轨时卖出（认为会回调）
+    4. 当价格突然大幅下跌超过下轨时买入（认为会反弹）
     
-    Returns:
-        添加了策略指标的DataFrame
+    参数：
+        df: 包含价格数据的DataFrame，需包含'收盘'列
+        window: 波动率计算窗口，默认为20
+        multiplier: 波动率倍数阈值，默认为2.0
+    
+    返回值：
+        添加了策略指标的DataFrame，新增列包括：
+        - 'Return': 日收益率
+        - 'Volatility': 价格波动率（标准差）
+        - 'Avg_Return': 平均收益率
+        - 'Buy_Threshold': 买入阈值
+        - 'Sell_Threshold': 卖出阈值
     """
     df = df.copy()
     

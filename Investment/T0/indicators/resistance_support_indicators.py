@@ -1,3 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+阻力支撑指标模块 (resistance_support_indicators.py)
+
+该模块实现了基于通达信公式的阻力支撑指标计算与分析功能，包括：
+1. 阻力支撑位的计算（基于昨收价、日内高低点）
+2. 买卖信号的生成与过滤（基于支撑上穿现价、现价上穿阻力等条件）
+3. 分时数据的获取与处理
+4. 交易信号的检测与可视化
+5. 指标分析结果的图表展示
+
+使用方法：
+    可以直接调用analyze_resistance_support函数进行指标分析，或使用plot_tdx_intraday函数绘制指标图表
+
+作者: 
+创建日期: 
+版本: 1.0
+"""
+
 import akshare as ak
 import pandas as pd
 import numpy as np
@@ -9,6 +29,8 @@ import sys
 from typing import Dict, List, Tuple, Optional, Any
 
 # 添加项目根目录到Python路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# 确保可以导入T0模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 设置matplotlib后端，确保图表能正确显示
@@ -28,17 +50,37 @@ os.makedirs(CHART_OUTPUT_DIR, exist_ok=True)
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 # ---------------------- 1. 指标计算 ----------------------
-def calculate_tdx_indicators(df, prev_close, threshold=0.005):
+def calculate_tdx_indicators(df: pd.DataFrame, prev_close: float, threshold: float = 0.005) -> pd.DataFrame:
     """
-    通达信公式还原：
+    计算通达信阻力支撑指标
+    
+    功能：基于通达信公式还原阻力支撑位计算及信号生成
+    
+    公式原理：
     H1:=MAX(昨收, 当日最高价);
     L1:=MIN(昨收, 当日最低价);
     P1:=H1-L1;
     阻力:L1+P1*7/8;
     支撑:L1+P1*0.5/8;
-    CROSS(支撑,现价) → 支撑上穿现价（画黄色柱）
-    LONGCROSS(支撑,现价,2) → 买信号（红三角）
-    LONGCROSS(现价,阻力,2) → 卖信号（绿三角）
+    
+    参数：
+        df: 包含股票价格数据的DataFrame，需包含'最高'、'最低'、'收盘'列
+        prev_close: 昨收价
+        threshold: 价格差异阈值，用于过滤微小信号
+    
+    返回值：
+        添加了阻力支撑指标和交易信号的DataFrame
+    
+    输出指标：
+        - H1: 昨收价与日内最高价的较大值
+        - L1: 昨收价与日内最低价的较小值
+        - P1: H1与L1的差值
+        - 支撑: 支撑位价格
+        - 阻力: 阻力位价格
+        - cross_support: 支撑上穿现价信号
+        - longcross_support: 连续2周期支撑小于现价，当前支撑大于现价（买入信号）
+        - longcross_resistance: 连续2周期现价小于阻力，当前现价大于阻力（卖出信号）
+        - 趋势过滤后的信号
     """
     # 获取当日最高价和最低价（不是累积最大值/最小值）
     daily_high = df['最高'].max()
@@ -152,7 +194,17 @@ def calculate_tdx_indicators(df, prev_close, threshold=0.005):
 # ---------------------- 3. 数据获取函数 ----------------------
 def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
     """
-    获取分时数据
+    获取股票分时数据
+    
+    功能：从akshare获取指定股票在指定日期的分钟级别交易数据
+    
+    参数：
+        stock_code: 股票代码
+        trade_date: 交易日期，支持'%Y-%m-%d'或'%Y%m%d'格式字符串
+    
+    返回值：
+        包含分时数据的DataFrame，失败返回None
+        DataFrame包含'时间'、'开盘'、'最高'、'最低'、'收盘'、'成交量'等列
     """
     try:
         # 确保 trade_date 是正确的格式
@@ -193,6 +245,16 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
 def detect_trading_signals(df: pd.DataFrame) -> Dict[str, List[Tuple[datetime, float]]]:
     """
     检测交易信号
+    
+    功能：从计算好的指标数据中提取买入和卖出信号
+    
+    参数：
+        df: 已计算阻力支撑指标的DataFrame
+    
+    返回值：
+        字典，包含：
+        - 'buy_signals': 买入信号列表，每个元素为(时间, 价格)元组
+        - 'sell_signals': 卖出信号列表，每个元素为(时间, 价格)元组
     """
     signals = {
         'buy_signals': [],
@@ -224,12 +286,16 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
     """
     阻力支撑指标分析主函数
     
-    Args:
-        stock_code: 股票代码
-        trade_date: 交易日期，默认为今天
+    功能：整合数据获取、指标计算和信号检测的完整分析流程
     
-    Returns:
-        (数据框, 信号字典) 或 None
+    参数：
+        stock_code: 股票代码
+        trade_date: 交易日期，默认为今天（'%Y-%m-%d'格式）
+    
+    返回值：
+        成功时返回(数据框, 信号字典)元组，失败返回None
+        - 数据框：包含原始价格数据和计算的指标
+        - 信号字典：包含买入和卖出信号列表
     """
     try:
         # 时间处理
@@ -246,7 +312,7 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
         df = df[df['时间'].notna()]
         
         # 只保留指定日期的数据
-        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
+        target_date = pd.to_datetime(trade_date, format='%Y-%m-%d')
         df = df[df['时间'].str.split(' ', expand=True)[0] == target_date.strftime('%Y-%m-%d')]
         
         # 分离上午和下午的数据
@@ -260,7 +326,7 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
         df.index.name = '时间'
         
         # 获取昨收
-        from Investment.T0.utils.get_pre_close import get_prev_close
+        from T0.utils.get_pre_close import get_prev_close
         prev_close = get_prev_close(stock_code, trade_date)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
@@ -269,8 +335,12 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
         df = df.ffill().bfill()
         df = calculate_tdx_indicators(df, prev_close)
         
-        # 计算均价
-        df['均价'] = df['收盘'].expanding().mean()
+        # 使用接口返回的均价，不重新计算
+        # 如果接口返回的数据中没有均价列，才进行计算
+        if '均价' not in df.columns:
+            print("警告: 接口返回的数据中没有均价列，使用成交额/成交量计算")
+            df['均价'] = df['成交额'] / df['成交量']
+            df['均价'] = df['均价'].fillna(method='ffill').fillna(method='bfill')
         
         # 数据校验
         required_cols = ['开盘', '收盘', '最高', '最低', '支撑', '阻力']
@@ -327,7 +397,7 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
             trade_date_formatted = trade_date.strftime('%Y-%m-%d')
 
         # 获取昨收
-        from Investment.T0.utils.get_pre_close import get_prev_close
+        from T0.utils.get_pre_close import get_prev_close
         prev_close = get_prev_close(stock_code, trade_date_formatted)
         if prev_close is None:
             prev_close = df['开盘'].dropna().iloc[0]
@@ -426,8 +496,12 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
         df = df.ffill().bfill()  # 填充缺失值
         df = calculate_tdx_indicators(df, prev_close)
 
-        # 计算均价
-        df['均价'] = df['收盘'].expanding().mean()
+        # 使用接口返回的均价，不重新计算
+        # 如果接口返回的数据中没有均价列，才进行计算
+        if '均价' not in df.columns:
+            print("警告: 接口返回的数据中没有均价列，使用成交额/成交量计算")
+            df['均价'] = df['成交额'] / df['成交量']
+            df['均价'] = df['均价'].fillna(method='ffill').fillna(method='bfill')
 
         # 数据校验
         required_cols = ['开盘', '收盘', '最高', '最低', '支撑', '阻力']
@@ -478,7 +552,7 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
 
         # 绘制均价线
         if '均价' in df_filtered.columns and not df_filtered['均价'].isna().all():
-            ax_price.plot(x_values, df_filtered['均价'], marker='', linestyle='-', color='yellow', linewidth=1.5,
+            ax_price.plot(x_values, df_filtered['均价'], marker='', linestyle='-', color='purple', linewidth=1.5,
                           label='均价线')
 
         # 绘制支撑线和阻力线
@@ -681,3 +755,18 @@ def main():
 # ---------------------- 8. 主程序入口 ----------------------
 if __name__ == "__main__":
     main()
+
+    # 修复测试代码
+    # from datetime import datetime
+    # today = datetime.now()
+    # start_time = f'{today.strftime("%Y-%m-%d")} 09:30:00'
+    # end_time = f'{today.strftime("%Y-%m-%d")} 15:00:00'
+    #
+    # df = ak.stock_zh_a_hist_min_em(
+    #     symbol='600030',
+    #     period="1",
+    #     start_date=start_time,
+    #     end_date=end_time,
+    #     adjust=''
+    # )
+    # print(df)

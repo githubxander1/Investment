@@ -1,3 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+价格均线偏离指标模块 (price_ma_deviation.py)
+
+该模块实现了基于价格与均线偏离度的交易策略指标计算与分析功能，包括：
+1. 价格与均线的偏离度计算（差值和百分比）
+2. 基于偏离度的买卖信号生成
+3. 策略回测与绩效分析
+4. 可视化展示
+
+使用方法：
+    可以调用calculate_price_ma_deviation计算指标，或使用analyze_deviation_strategy进行完整策略分析
+
+作者: 
+创建日期: 
+版本: 1.0
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,8 +24,13 @@ from datetime import datetime, timedelta
 from typing import Optional, Tuple, Dict, List
 import akshare as ak
 import matplotlib.font_manager as fm
+import os
+import sys
 
-from Investment.T0.utils.logger import setup_logger
+# 添加项目根目录到Python路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from T0.utils.logger import setup_logger
 
 logger = setup_logger('price_ma_deviation')
 
@@ -19,34 +43,51 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     """
     计算价格与均线的偏离策略指标
     
-    策略逻辑：
+    功能：计算股票价格与指定周期均线之间的偏离度，并生成相应的买卖信号
+    
+    策略原理：
     1. 计算价格与均线的差值和比率
     2. 当价格低于均线一定比例时买入
     3. 当价格高于均线一定比例时卖出
     
-    Args:
-        df: 包含价格数据的DataFrame
-        ma_period: 均线周期
+    参数：
+        df: 包含价格数据的DataFrame，需包含'收盘'列
+        ma_period: 均线周期，默认为5（5日均线）
     
-    Returns:
-        添加了策略指标的DataFrame
+    返回值：
+        添加了策略指标的DataFrame，新增列包括：
+        - 'MA': 指定周期的移动平均线
+        - 'Price_MA_Diff': 价格与均线的差值
+        - 'Price_MA_Ratio': 价格与均线的偏离百分比
+        - 'Buy_Signal': 买入信号（布尔值）
+        - 'Sell_Signal': 卖出信号（布尔值）
     """
     df = df.copy()
     
-    # 计算均线
+    # 使用接口返回的均价，不重新计算
+    # 如果接口返回的数据中没有均价列，才进行计算
+    if '均价' not in df.columns:
+        print("警告: 接口返回的数据中没有均价列，使用成交额/成交量计算")
+        df['均价'] = df['成交额'] / df['成交量']
+        df['均价'] = df['均价'].fillna(method='ffill').fillna(method='bfill')
+    
+    # 计算指定周期的移动平均线
     df['MA'] = df['收盘'].rolling(window=ma_period, min_periods=1).mean()
     
-    # 计算价格与均线的差值和比率
-    df['Price_MA_Diff'] = df['收盘'] - df['MA']
-    df['Price_MA_Ratio'] = (df['收盘'] / df['MA'] - 1) * 100  # 转换为百分比
+    # 计算价格与均价的差值和比率（使用接口返回的均价数据）
+    df['Price_MA_Diff'] = df['收盘'] - df['均价']
+    df['Price_MA_Ratio'] = (df['收盘'] / df['均价'] - 1) * 100  # 转换为百分比
     
     # 策略参数
     buy_threshold = -0.3  # 低于均线0.3%时买入
     sell_threshold = 0.3  # 高于均线0.3%时卖出
     
     # 生成买卖信号
-    df['Buy_Signal'] = (df['Price_MA_Ratio'] <= buy_threshold) & (df['Price_MA_Ratio'].shift(1) > buy_threshold)
-    df['Sell_Signal'] = (df['Price_MA_Ratio'] >= sell_threshold) & (df['Price_MA_Ratio'].shift(1) < sell_threshold)
+    base_buy_signal = (df['Price_MA_Ratio'] <= buy_threshold) & (df['Price_MA_Ratio'].shift(1) > buy_threshold)
+    base_sell_signal = (df['Price_MA_Ratio'] >= sell_threshold) & (df['Price_MA_Ratio'].shift(1) < sell_threshold)
+    
+    df['Buy_Signal'] = base_buy_signal
+    df['Sell_Signal'] = base_sell_signal
     
     # 记录所有信号
     buy_signals = df[df['Buy_Signal']]
@@ -104,7 +145,7 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
         end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
-        # 如果缓存没有数据，则从网络获取
+        # 从akshare获取数据
         df = ak.stock_zh_a_hist_min_em(
             symbol=stock_code,
             period="1",
@@ -116,7 +157,7 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         if df.empty:
             print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
             return None
-            
+        
         return df
     except Exception as e:
         print(f"❌ 获取分时数据失败: {e}")
@@ -157,7 +198,7 @@ def detect_trading_signals(df: pd.DataFrame) -> Dict[str, List[Tuple[datetime, f
     
     return signals
 
-def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Optional[str]:
+def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Optional[pd.DataFrame] = None) -> Optional[str]:
     """
     绘制价格均线偏离策略图表
     
@@ -179,6 +220,12 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Opti
         if df is None or df.empty:
             return None
         
+        # 设置时间索引（与resistance_support_indicators.py保持一致）
+        df = df.copy()
+        if '时间' in df.columns:
+            df['时间'] = pd.to_datetime(df['时间'])
+            df = df.set_index('时间')
+        
         # 计算指标
         df_with_indicators = calculate_price_ma_deviation(df)
         
@@ -189,32 +236,32 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Opti
         # 过滤掉无效数据
         df_filtered = df_with_indicators.dropna(subset=['收盘'])
         
-        # 绘制价格和均线
-        ax1.plot(df_filtered.index, df_filtered['收盘'], label='收盘价', color='black', linewidth=1)
-        ax1.plot(df_filtered.index, df_filtered['MA'], label='均线', color='blue', linewidth=1)
+        # 绘制价格和均价（使用接口返回的均价数据）
+        ax1.plot(range(len(df_filtered)), df_filtered['收盘'], label='收盘价', color='black', linewidth=1)
+        ax1.plot(range(len(df_filtered)), df_filtered['均价'], label='均价', color='blue', linewidth=1)
         
         # 绘制买入信号
         buy_signals = df_filtered[df_filtered['Buy_Signal']].dropna()
-        for idx, row in buy_signals.iterrows():
-            x_pos = df_filtered.index.get_loc(idx)
-            ax1.scatter(x_pos, row['收盘'] * 0.995, marker='^', color='red', s=100, zorder=5)
-            ax1.text(x_pos, row['收盘'] * 0.99, '买',
-                     color='red', fontsize=12, ha='center', va='top', fontweight='bold')
+        for i, (idx, row) in enumerate(df_filtered.iterrows()):
+            if row.get('Buy_Signal', False):
+                ax1.scatter(i, row['收盘'] * 0.995, marker='^', color='red', s=100, zorder=5)
+                ax1.text(i, row['收盘'] * 0.99, '买',
+                         color='red', fontsize=12, ha='center', va='top', fontweight='bold')
         
         # 绘制卖出信号
         sell_signals = df_filtered[df_filtered['Sell_Signal']].dropna()
-        for idx, row in sell_signals.iterrows():
-            x_pos = df_filtered.index.get_loc(idx)
-            ax1.scatter(x_pos, row['收盘'] * 1.005, marker='v', color='green', s=100, zorder=5)
-            ax1.text(x_pos, row['收盘'] * 1.01, '卖',
-                     color='green', fontsize=12, ha='center', va='bottom', fontweight='bold')
+        for i, (idx, row) in enumerate(df_filtered.iterrows()):
+            if row.get('Sell_Signal', False):
+                ax1.scatter(i, row['收盘'] * 1.005, marker='v', color='green', s=100, zorder=5)
+                ax1.text(i, row['收盘'] * 1.01, '卖',
+                         color='green', fontsize=12, ha='center', va='bottom', fontweight='bold')
         
         ax1.set_ylabel('价格', fontsize=12)
         ax1.grid(True, linestyle='--', alpha=0.7)
         ax1.legend()
         
         # 绘制价格与均线的比率
-        ax2.plot(df_filtered.index, df_filtered['Price_MA_Ratio'], label='价格与均线偏离比率(%)', color='purple', linewidth=1)
+        ax2.plot(range(len(df_filtered)), df_filtered['Price_MA_Ratio'], label='价格与均线偏离比率(%)', color='purple', linewidth=1)
         ax2.axhline(y=0, color='black', linestyle='-', alpha=0.5)
         ax2.axhline(y=0.3, color='green', linestyle='--', alpha=0.7, label='卖出阈值')
         ax2.axhline(y=-0.3, color='red', linestyle='--', alpha=0.7, label='买入阈值')
@@ -223,8 +270,12 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None) -> Opti
         ax2.grid(True, linestyle='--', alpha=0.7)
         ax2.legend()
         
-        # 自动旋转时间标签
-        plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
+        # 设置x轴标签为时间
+        time_labels = df_filtered.index.strftime('%H:%M') if hasattr(df_filtered.index, 'strftime') else df_filtered.index
+        # 只显示部分时间标签，避免拥挤
+        step = max(1, len(time_labels) // 15)
+        ax2.set_xticks(range(0, len(time_labels), step))
+        ax2.set_xticklabels(time_labels[::step], rotation=45)
         
         # 调整布局
         plt.tight_layout()
@@ -268,6 +319,12 @@ def analyze_price_ma_deviation(stock_code: str, trade_date: Optional[str] = None
         if df is None or df.empty:
             return None
         
+        # 设置时间索引（与resistance_support_indicators.py保持一致）
+        df = df.copy()
+        if '时间' in df.columns:
+            df['时间'] = pd.to_datetime(df['时间'])
+            df = df.set_index('时间')
+        
         # 计算指标
         df_with_indicators = calculate_price_ma_deviation(df)
         
@@ -284,8 +341,8 @@ def analyze_price_ma_deviation(stock_code: str, trade_date: Optional[str] = None
 
 if __name__ == "__main__":
     # 测试代码
-    # stock_code = "000333"  # 美的集团
-    stock_code = "600030"  # 中信证券
+    stock_code = "000333"  # 美的集团
+    # stock_code = "600030"  # 中信证券
     trade_date = datetime.now().strftime('%Y-%m-%d')
     
     result = analyze_price_ma_deviation(stock_code, trade_date)
