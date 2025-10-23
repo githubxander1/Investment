@@ -262,96 +262,15 @@ class CombinationHoldingProcessor:
         logger.info(f"策略持仓数据:{len(strategy_holdings_df)}\n{strategy_holdings_df}")
         return strategy_holdings_df
 
-    # def _update_account_holdings(self):
-    #     """
-    #     更新账户持仓数据
-    #     """
-    #     account_holdings_df = pd.DataFrame()
-    #     account_summary_df = pd.DataFrame()
-    #
-    #     # 判断是否需要更新账户数据
-    #     # if account_update_needed:
-    #     logger.info("🔄 开始更新账户数据...")
-    #     account_info = AccountInfo()
-    #     update_success = True
-    #
-    #     # 更新指定账户
-    #     logger.info(f"正在更新账户 {self.account_name} 的数据...")
-    #     header_info_df, stocks_df = account_info.update_holding_info_for_account(self.account_name)
-    #     if header_info_df is None or stocks_df is None:
-    #         logger.warning(f"⚠️ 账户 {self.account_name} 数据更新失败")
-    #         update_success = False
-    #
-    #     # 处理更新结果
-    #     logger.info("✅ 所需账户数据更新完成")
-    #     # 重置更新标志
-    #     account_update_needed = False
-    #     # 从文件中读取更新后的数据
-    #     try:
-    #         if os.path.exists(Account_holding_file):
-    #             account_holdings_df = pd.read_excel(Account_holding_file, sheet_name=self.account_name)
-    #             # 修复：正确读取账户汇总信息
-    #             # 原代码中读取的是整个账户汇总表，但我们需要筛选出特定账户的数据
-    #             full_account_summary_df = pd.read_excel(Account_holding_file, sheet_name='账户汇总')
-    #             logger.debug(f"完整账户汇总数据:\n{full_account_summary_df}")
-    #             # 确保账户名字段存在并且匹配
-    #             if '账户名' in full_account_summary_df.columns:
-    #                 account_summary_df = full_account_summary_df[full_account_summary_df['账户名'] == self.account_name]
-    #             else:
-    #                 # 如果没有账户名列，尝试使用第一列
-    #                 first_col = full_account_summary_df.columns[0]
-    #                 account_summary_df = full_account_summary_df[full_account_summary_df[first_col] == self.account_name]
-    #
-    #             # 检查是否成功获取到账户汇总数据
-    #             if account_summary_df.empty:
-    #                 logger.warning(f"未能从账户汇总数据中找到账户 {self.account_name} 的信息")
-    #                 # 尝试从账户表头数据中获取
-    #                 try:
-    #                     header_sheet_name = f"{self.account_name}_表头"
-    #                     if header_sheet_name in pd.ExcelFile(Account_holding_file).sheet_names:
-    #                         header_df = pd.read_excel(Account_holding_file, sheet_name=header_sheet_name)
-    #                         if not header_df.empty:
-    #                             # 创建一个模拟的账户汇总数据
-    #                             account_summary_data = {
-    #                                 '账户名': [self.account_name],
-    #                                 '总资产': [header_df.iloc[0]['总资产'] if '总资产' in header_df.columns else '0'],
-    #                                 '可用': [header_df.iloc[0]['可用'] if '可用' in header_df.columns else '0']
-    #                             }
-    #                             account_summary_df = pd.DataFrame(account_summary_data)
-    #                             logger.info(f"从 {header_sheet_name} 创建了账户汇总数据")
-    #                 except Exception as e:
-    #                     logger.error(f"尝试从表头数据创建账户汇总数据失败: {e}")
-    #             else:
-    #                 logger.info(f"成功获取账户 {self.account_name} 的汇总信息")
-    #                 logger.debug(f"账户汇总数据:\n{account_summary_df}")
-    #         else:
-    #             logger.warning("账户持仓文件不存在")
-    #             account_holdings_df = pd.DataFrame()
-    #             account_summary_df = pd.DataFrame()
-    #     except Exception as e:
-    #         logger.error(f"读取账户持仓数据失败: {e}")
-    #         import traceback
-    #         logger.error(f"详细错误信息: {traceback.format_exc()}")
-    #         account_holdings_df = pd.DataFrame()
-    #         account_summary_df = pd.DataFrame()
-    #     # else:
-    #     #     logger.warning("⚠️ 账户数据更新失败，将继续使用现有数据执行交易")
-    #     return None, None
-    #
-    #     # 添加额外的调试信息
-    #     logger.info(f"返回的账户持仓数据框形状: {account_holdings_df.shape}")
-    #     logger.info(f"返回的账户汇总数据框形状: {account_summary_df.shape}")
-    #     if not account_summary_df.empty:
-    #         logger.debug(f"账户汇总数据内容:\n{account_summary_df.to_string()}")
-    #     else:
-    #         logger.warning("账户汇总数据框为空")
-    #
-    #     return account_summary_df, account_holdings_df
-
     def _extract_strategy_holdings(self, strategy_holdings_df):
         """
         筛选出指定策略的股票持仓信息
         """
+        # 检查strategy_holdings_df是否为空
+        if strategy_holdings_df.empty:
+            logger.info(f"策略持仓数据为空，返回空的策略持仓DataFrame")
+            return pd.DataFrame()
+        
         strategy_holdings_extracted_df = strategy_holdings_df[strategy_holdings_df['策略名称'] == self.strategy_name] if '策略名称' in strategy_holdings_df.columns else strategy_holdings_df
         
         if not strategy_holdings_extracted_df.empty and ('股票名称' in strategy_holdings_extracted_df.columns or '标的名称' in strategy_holdings_extracted_df.columns):
@@ -437,6 +356,7 @@ class CombinationHoldingProcessor:
             to_sell = to_sell[~to_sell['股票名称'].isin(excluded_holdings)].copy()
         elif not account_holdings.empty:
             # 如果策略持仓为空，则所有证券账户持仓都是需要卖出的（除去排除项）
+            # 修改：即使策略持仓为空，也要处理账户持仓
             to_sell = account_holdings[~account_holdings['股票名称'].isin(excluded_holdings)].copy()
         else:
             to_sell = pd.DataFrame(columns=account_holdings.columns) if not account_holdings.empty else pd.DataFrame()
@@ -683,8 +603,9 @@ class CombinationHoldingProcessor:
         try:
             # 1. 更新策略持仓
             strategy_holdings_df = self._update_strategy_holdings()
-            if strategy_holdings_df is None:
-                return False
+            # 修改：不再检查strategy_holdings_df是否为None，而是检查是否为空DataFrame
+            # if strategy_holdings_df is None:
+            #     return False
 
             # 2. 更新账户持仓
             logger.info(f"正在更新账户 {self.account_name} 的数据...")
@@ -700,6 +621,10 @@ class CombinationHoldingProcessor:
                 account_summary_df = pd.DataFrame()
                 account_holdings_df = result if isinstance(result, pd.DataFrame) else pd.DataFrame()
 
+            # 添加日志以确认账户数据是否正确获取
+            logger.info(f"账户汇总数据形状: {account_summary_df.shape}")
+            logger.info(f"账户持仓数据形状: {account_holdings_df.shape}")
+            
             # 3. 筛选出指定策略的股票持仓信息
             strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)
 

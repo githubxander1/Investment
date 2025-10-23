@@ -17,7 +17,7 @@ class DeviceManager:
             uiautomator2.Device: 设备连接对象，失败时返回None
         """
         try:
-            self.device = u2.connect()
+            self.device = u2.connect('emulator-5554')
             logger.info(f"连接设备: {self.device.serial}")
             return self.device
         except Exception as e:

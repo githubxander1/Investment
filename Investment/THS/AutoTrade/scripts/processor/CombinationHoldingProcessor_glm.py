@@ -457,6 +457,55 @@ class CombinationHoldingProcessor:
             
         return account_holdings, strategy_holding, excluded_holdings
 
+    def _stock_names_match(self, name1, name2):
+        """
+        基于关键词匹配股票名称
+        例如："浙江荣泰" 和 "浙江荣泰股份" 应该匹配
+        
+        :param name1: 第一个股票名称
+        :param name2: 第二个股票名称
+        :return: 是否匹配
+        """
+        # 完全相同直接返回True
+        if name1 == name2:
+            return True
+        
+        # 基于关键词匹配 - 检查一个名称是否包含另一个名称的核心部分
+        # 移除常见的后缀
+        suffixes = ['股份', '集团', '有限公司', '公司', '企业', '控股']
+        
+        # 清理名称，移除常见后缀
+        def clean_name(name):
+            for suffix in suffixes:
+                if name.endswith(suffix):
+                    name = name[:-len(suffix)]
+            return name.strip()
+        
+        # 清理两个名称
+        clean_name1 = clean_name(name1)
+        clean_name2 = clean_name(name2)
+        
+        # 检查一个清理后的名称是否包含另一个
+        return clean_name1 in clean_name2 or clean_name2 in clean_name1
+    
+    def _find_matching_stocks(self, account_stocks, strategy_stocks):
+        """
+        查找账户持仓和策略持仓中匹配的股票
+        
+        :param account_stocks: 账户持仓股票名称列表
+        :param strategy_stocks: 策略持仓股票名称列表
+        :return: 匹配的股票名称字典 {账户股票名称: 策略股票名称}
+        """
+        matches = {}
+        
+        for acc_name in account_stocks:
+            for strat_name in strategy_stocks:
+                if self._stock_names_match(acc_name, strat_name):
+                    matches[acc_name] = strat_name
+                    break
+        
+        return matches
+    
     def _identify_sell_operations(self, account_holdings, strategy_holding, excluded_holdings):
         """
         找出需要卖出的标的
@@ -464,18 +513,39 @@ class CombinationHoldingProcessor:
         # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
         to_sell = pd.DataFrame()
         if not account_holdings.empty and not strategy_holding.empty:
-            # 在证券账户中存在，但在策略中不存在的股票（需要全部卖出）
+            # 使用基于关键词的匹配方法
+            account_stocks = account_holdings['股票名称'].tolist()
+            strategy_stocks = strategy_holding['股票名称'].tolist()
+            
+            # 找出匹配的股票
+            matching_stocks = self._find_matching_stocks(account_stocks, strategy_stocks)
+            
+            # 在证券账户中存在，但在策略中不存在或不匹配的股票（需要全部卖出）
             to_sell_candidates = account_holdings[
-                ~account_holdings['股票名称'].isin(strategy_holding['股票名称'])]
+                ~account_holdings['股票名称'].isin(matching_stocks.keys())]
 
             # 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'小的股票（需要部分卖出）
-            # 先找出共同持有的股票
-            common_stocks = account_holdings[
-                account_holdings['股票名称'].isin(strategy_holding['股票名称'])]
-
-            # 合并策略数据以便比较
-            merged_data = pd.merge(common_stocks, strategy_holding[['股票名称', '新比例%']], on='股票名称',
-                                   how='left')
+            # 先找出共同持有的股票（使用匹配函数）
+            if matching_stocks:
+                # 准备合并数据
+                merged_data_list = []
+                
+                for acc_name, strat_name in matching_stocks.items():
+                    # 获取账户持仓数据
+                    acc_data = account_holdings[account_holdings['股票名称'] == acc_name].iloc[0].copy()
+                    # 获取策略持仓数据
+                    strat_data = strategy_holding[strategy_holding['股票名称'] == strat_name].iloc[0].copy()
+                    # 合并数据
+                    merged_row = acc_data.copy()
+                    merged_row['新比例%'] = strat_data['新比例%']
+                    merged_data_list.append(merged_row)
+                
+                if merged_data_list:
+                    merged_data = pd.DataFrame(merged_data_list)
+                else:
+                    merged_data = pd.DataFrame()
+            else:
+                merged_data = pd.DataFrame()
 
             # 找出策略持仓比例小于账户持仓比例的股票（需要卖出到目标比例）
             # 优化：只有当差异大于等于10%时才考虑卖出，避免小幅度调整触发交易
@@ -517,19 +587,40 @@ class CombinationHoldingProcessor:
         to_buy = pd.DataFrame()
         if not strategy_holding.empty:
             if not account_holdings.empty:
-                # 在策略中存在，但在证券账户中不存在的股票（需要买入到目标比例）
+                # 使用基于关键词的匹配方法
+                account_stocks = account_holdings['股票名称'].tolist()
+                strategy_stocks = strategy_holding['股票名称'].tolist()
+                
+                # 找出匹配的股票（反向匹配）
+                matching_stocks = {v: k for k, v in self._find_matching_stocks(account_stocks, strategy_stocks).items()}
+                
+                # 在策略中存在，但在证券账户中不存在或不匹配的股票（需要买入到目标比例）
                 to_buy_candidates = strategy_holding[
-                    ~strategy_holding['股票名称'].isin(account_holdings['股票名称'])]
+                    ~strategy_holding['股票名称'].isin(matching_stocks.keys())]
 
                 # 证券账户和策略持仓都存在，但是策略持仓里的'新比例%'的值比证券账户的'持仓占比'大的股票（需要买入到目标比例）
-                # 找出共同持有的股票
-                common_stocks_buy = strategy_holding[
-                    strategy_holding['股票名称'].isin(account_holdings['股票名称'])]
-
-                # 合并账户数据以便比较
-                merged_data_buy = pd.merge(common_stocks_buy, account_holdings[['股票名称', '持仓占比']],
-                                           on='股票名称',
-                                           how='left') if '持仓占比' in account_holdings.columns else pd.DataFrame()
+                # 先找出共同持有的股票（使用匹配函数）
+                if matching_stocks:
+                    # 准备合并数据
+                    merged_data_buy_list = []
+                    
+                    for strat_name, acc_name in matching_stocks.items():
+                        # 获取策略持仓数据
+                        strat_data = strategy_holding[strategy_holding['股票名称'] == strat_name].iloc[0].copy()
+                        # 获取账户持仓数据
+                        acc_data = account_holdings[account_holdings['股票名称'] == acc_name].iloc[0].copy()
+                        # 合并数据
+                        merged_row = strat_data.copy()
+                        if '持仓占比' in acc_data.index:
+                            merged_row['持仓占比'] = acc_data['持仓占比']
+                        merged_data_buy_list.append(merged_row)
+                    
+                    if merged_data_buy_list:
+                        merged_data_buy = pd.DataFrame(merged_data_buy_list)
+                    else:
+                        merged_data_buy = pd.DataFrame()
+                else:
+                    merged_data_buy = pd.DataFrame()
 
                 # 找出策略持仓比例大于账户持仓比例的股票（需要买入到目标比例）
                 # 优化：只有当差异大于等于10%时才考虑买入，避免小幅度调整触发交易
@@ -695,9 +786,7 @@ class CombinationHoldingProcessor:
         try:
             # 1. 更新策略持仓
             strategy_holdings_df = self._update_strategy_holdings()
-            if strategy_holdings_df is None:
-                return False
-
+            
             # 2. 更新账户持仓
             account_summary_df, account_holdings_df = self._update_account_holdings()
             # 修复：正确检查返回值
@@ -705,7 +794,12 @@ class CombinationHoldingProcessor:
                 return False
 
             # 3. 筛选出指定策略的股票持仓信息
-            strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)
+            # 即使策略持仓为空，也要继续处理账户持仓
+            if strategy_holdings_df is None:
+                logger.info("策略持仓为空，将检查账户持仓并卖出所有持仓")
+                strategy_holding = pd.DataFrame()
+            else:
+                strategy_holding = self._extract_strategy_holdings(strategy_holdings_df)
 
             # 4. 标准化数据
             account_holdings, strategy_holding, excluded_holdings = self._standardize_data(account_holdings_df, strategy_holding)

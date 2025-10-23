@@ -85,10 +85,15 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
     try:
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
-            if '-' in trade_date:
+            try:
+                # 尝试使用 YYYY-MM-DD 格式解析
                 trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
-            else:
-                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+            except ValueError:
+                try:
+                    # 如果失败，尝试使用 YYYYMMDD 格式解析
+                    trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                except ValueError:
+                    raise ValueError(f"无法解析日期格式: {trade_date}")
         else:
             trade_date_obj = trade_date
             
@@ -253,10 +258,10 @@ def analyze_price_ma_deviation(stock_code: str, trade_date: Optional[str] = None
         (数据框, 信号字典) 或 None
     """
     try:
-        # 时间处理
+        # 时间处理 - 与系统其他部分保持一致，使用'%Y%m%d'格式
         if trade_date is None:
             yesterday = datetime.now() - timedelta(days=1)
-            trade_date = yesterday.strftime('%Y-%m-%d')
+            trade_date = yesterday.strftime('%Y%m%d')
         
         # 获取数据
         df = fetch_intraday_data(stock_code, trade_date)

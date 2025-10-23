@@ -179,7 +179,16 @@ async def main():
                     # if not portfolio_updates_executed:
                     logger.warning("---------------------组合更新任务开始---------------------")
                     combination_processor = CombinationHoldingProcessor()
-                    combination_processor.operate_strategy_with_account()
+                    try:
+                        success = combination_processor.operate_strategy_with_account()
+                        if success:
+                            logger.info("✅ 组合策略调仓任务成功完成")
+                        else:
+                            logger.error("❌ 组合策略调仓任务失败")
+                    except Exception as e:
+                        logger.error(f"执行组合策略调仓任务时发生异常: {e}")
+                        import traceback
+                        logger.error(f"详细错误信息: {traceback.format_exc()}")
                     logger.warning("---------------------组合更新任务结束---------------------")
                     # portfolio_updates_executed = True
                     # else:

@@ -246,7 +246,7 @@ def analyze_resistance_support(stock_code: str, trade_date: Optional[str] = None
         df = df[df['时间'].notna()]
         
         # 只保留指定日期的数据
-        target_date = pd.to_datetime(trade_date, format='%Y-%m-%d')
+        target_date = pd.to_datetime(trade_date, format='%Y%m%d')
         df = df[df['时间'].str.split(' ', expand=True)[0] == target_date.strftime('%Y-%m-%d')]
         
         # 分离上午和下午的数据
@@ -339,9 +339,17 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
             yesterday = datetime.now() - timedelta(days=1)
             trade_date = yesterday.strftime('%Y-%m-%d')
 
-        # 确保 trade_date 是正确的格式 (YYYY-MM-DD)
+        # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
-            trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+            try:
+                # 尝试使用 YYYY-MM-DD 格式解析
+                trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+            except ValueError:
+                try:
+                    # 如果失败，尝试使用 YYYYMMDD 格式解析
+                    trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                except ValueError:
+                    raise ValueError(f"无法解析日期格式: {trade_date}")
         else:
             trade_date_obj = trade_date
             
@@ -639,8 +647,8 @@ def main():
     """
     import argparse
     
-    parser = argparse.ArgumentParser(description='阻力支撑指标分析工具')
-    parser.add_argument('--stock', type=str, default='000333', help='股票代码')
+    parser = argparse.ArgumentParser(description='阻力支撑指标分析工具')#000333
+    parser.add_argument('--stock', type=str, default='600030', help='股票代码')
     parser.add_argument('--date', type=str, default=datetime.now().strftime('%Y-%m-%d'), help='交易日期 (YYYY-MM-DD)')
     # parser.add_argument('--stock', type=str, default='600030', help='股票代码')
     # parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD)')
