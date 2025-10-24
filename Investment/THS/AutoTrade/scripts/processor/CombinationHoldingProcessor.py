@@ -203,6 +203,17 @@ class CombinationHoldingProcessor:
                     # 计算需要增加的比例
                     ratio_diff = target_ratio - current_ratio
                     volume = self.trader.calculate_buy_volume(account_asset, stock_price, ratio_diff)
+                    
+                    # 优化：当十位数大于7时，向上取整到百位
+                    if volume and isinstance(volume, int) and volume >= 70:
+                        # 获取十位数
+                        tens_digit = (volume // 10) % 10
+                        if tens_digit > 7:
+                            # 向上凑整到百位
+                            rounded_volume = ((volume // 100) + 1) * 100
+                            logger.info(f"买入 {stock_name}，原始股数: {volume}，凑整后股数: {rounded_volume}")
+                            return rounded_volume
+                    
                     logger.info(f"买入 {stock_name}，股数: {volume}")
                     return volume
                 else:

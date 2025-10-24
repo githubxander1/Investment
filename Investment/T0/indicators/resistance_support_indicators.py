@@ -196,7 +196,7 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
     """
     获取股票分时数据
     
-    功能：从akshare获取指定股票在指定日期的分钟级别交易数据
+    功能：从东方财富获取指定股票在指定日期的分钟级别交易数据
     
     参数：
         stock_code: 股票代码
@@ -207,6 +207,28 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         DataFrame包含'时间'、'开盘'、'最高'、'最低'、'收盘'、'成交量'等列
     """
     try:
+        # 导入代理配置
+        try:
+            from T0.config.settings import PROXY_SETTINGS
+        except ImportError:
+            # 兼容旧的导入路径
+            import sys
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from config.settings import PROXY_SETTINGS
+        
+        # 尝试使用新的东方财富接口
+        try:
+            from T0.data2dfcf import get_eastmoney_fenshi_by_date
+            df = get_eastmoney_fenshi_by_date(stock_code, trade_date)
+            if not df.empty:
+                print(f"使用东方财富接口成功获取 {stock_code} 的分时数据")
+                return df
+        except Exception as e:
+            print(f"使用东方财富接口获取数据失败: {e}")
+
+        # 如果东方财富接口失败，则回退到akshare
+        print("回退到akshare接口获取数据")
+        
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
             if '-' in trade_date:
@@ -223,20 +245,49 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
         end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
-        # 如果缓存没有数据，则从网络获取
-        df = ak.stock_zh_a_hist_min_em(
-            symbol=stock_code,
-            period="1",
-            start_date=start_time,
-            end_date=end_time,
-            adjust=''
-        )
+        # 设置代理
+        proxies = None
+        if PROXY_SETTINGS.get('enable_proxy', False):
+            proxies = {
+                'http': PROXY_SETTINGS.get('http_proxy', 'http://127.0.0.1:10809'),
+                'https': PROXY_SETTINGS.get('https_proxy', 'http://127.0.0.1:10809')
+            }
+            print(f"使用代理: {proxies}")
+        
+        # 首先尝试不使用代理
+        try:
+            df = ak.stock_zh_a_hist_min_em(
+                symbol=stock_code,
+                period="1",
+                start_date=start_time,
+                end_date=end_time,
+                adjust=''
+            )
+            if not df.empty:
+                return df
+        except Exception as e:
+            print(f"不使用代理获取数据失败: {e}")
 
-        if df.empty:
-            print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
-            return None
+        # 如果不使用代理失败，且配置了代理，则尝试使用代理
+        if proxies:
+            try:
+                df = ak.stock_zh_a_hist_min_em(
+                    symbol=stock_code,
+                    period="1",
+                    start_date=start_time,
+                    end_date=end_time,
+                    adjust='',
+                    proxies=proxies  # akshare支持proxies参数
+                )
+                if not df.empty:
+                    print("使用代理成功获取数据")
+                    return df
+            except Exception as e:
+                print(f"使用代理获取数据也失败: {e}")
             
-        return df
+        print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
+        return None
+            
     except Exception as e:
         print(f"❌ 获取分时数据失败: {e}")
         return None
@@ -374,6 +425,15 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
         图表文件路径或 None
     """
     try:
+        # 导入代理配置
+        try:
+            from T0.config.settings import PROXY_SETTINGS
+        except ImportError:
+            # 兼容旧的导入路径
+            import sys
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from config.settings import PROXY_SETTINGS
+            
         # 如果没有提供数据框，执行完整分析
         if df is None:
             result = analyze_resistance_support(stock_code, trade_date)
@@ -430,14 +490,45 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
         start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
         end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
-        df_resouce = ak.stock_zh_a_hist_min_em(
-            symbol=stock_code,
-            period="1",
-            start_date=start_time,
-            end_date=end_time,
-            adjust=''
-        )
-        if df_resouce.empty:
+        # 设置代理
+        proxies = None
+        if PROXY_SETTINGS.get('enable_proxy', False):
+            proxies = {
+                'http': PROXY_SETTINGS.get('http_proxy', 'http://127.0.0.1:10809'),
+                'https': PROXY_SETTINGS.get('https_proxy', 'http://127.0.0.1:10809')
+            }
+            print(f"使用代理: {proxies}")
+
+        # 首先尝试不使用代理
+        df_resouce = None
+        try:
+            df_resouce = ak.stock_zh_a_hist_min_em(
+                symbol=stock_code,
+                period="1",
+                start_date=start_time,
+                end_date=end_time,
+                adjust=''
+            )
+        except Exception as e:
+            print(f"不使用代理获取数据失败: {e}")
+
+        # 如果不使用代理失败，且配置了代理，则尝试使用代理
+        if (df_resouce is None or df_resouce.empty) and proxies:
+            try:
+                df_resouce = ak.stock_zh_a_hist_min_em(
+                    symbol=stock_code,
+                    period="1",
+                    start_date=start_time,
+                    end_date=end_time,
+                    adjust='',
+                    proxies=proxies  # akshare支持proxies参数
+                )
+                if not df_resouce.empty:
+                    print("使用代理成功获取数据")
+            except Exception as e:
+                print(f"使用代理获取数据也失败: {e}")
+        
+        if df_resouce is None or df_resouce.empty:
             print("❌ 无分时数据")
             return None
 
@@ -721,11 +812,9 @@ def main():
     """
     import argparse
     
-    parser = argparse.ArgumentParser(description='阻力支撑指标分析工具')#000333
+    parser = argparse.ArgumentParser(description='阻力支撑指标分析工具')
     parser.add_argument('--stock', type=str, default='600030', help='股票代码')
     parser.add_argument('--date', type=str, default=datetime.now().strftime('%Y-%m-%d'), help='交易日期 (YYYY-MM-DD)')
-    # parser.add_argument('--stock', type=str, default='600030', help='股票代码')
-    # parser.add_argument('--date', type=str, default=None, help='交易日期 (YYYY-MM-DD)')
 
     args = parser.parse_args()
     
@@ -734,9 +823,7 @@ def main():
     
     if result is not None:
         # 获取交易日期
-        # trade_date = args.date if args.date else (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-        # 今天的 日期
-        trade_date = datetime.now().strftime('%Y-%m-%d')
+        trade_date = args.date if args.date else datetime.now().strftime('%Y-%m-%d')
         if isinstance(trade_date, str):
             if '-' in trade_date:
                 trade_date_formatted = trade_date
@@ -756,14 +843,16 @@ def main():
 if __name__ == "__main__":
     main()
 
+
     # 修复测试代码
     # from datetime import datetime
     # today = datetime.now()
+    # # today = '2025-10-13'
     # start_time = f'{today.strftime("%Y-%m-%d")} 09:30:00'
     # end_time = f'{today.strftime("%Y-%m-%d")} 15:00:00'
     #
     # df = ak.stock_zh_a_hist_min_em(
-    #     symbol='600030',
+    #     symbol='000333',
     #     period="1",
     #     start_date=start_time,
     #     end_date=end_time,

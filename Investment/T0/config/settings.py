@@ -13,6 +13,13 @@ PLOTS_DIR = os.path.join(PROJECT_ROOT, 'plots')
 CHARTS_DIR = os.path.join(PROJECT_ROOT, 'output', 'charts')  # 兼容旧代码
 CACHE_DIR = os.path.join(PROJECT_ROOT, 'cache')
 
+# 代理设置
+PROXY_SETTINGS = {
+    'enable_proxy': False,  # 是否启用代理
+    'http_proxy': 'http://127.0.0.1:10809',  # HTTP代理地址
+    'https_proxy': 'http://127.0.0.1:10809',  # HTTPS代理地址
+}
+
 # 确保目录存在
 for dir_path in [DATA_DIR, LOGS_DIR, PLOTS_DIR, CHARTS_DIR, CACHE_DIR]:
     if not os.path.exists(dir_path):
@@ -177,6 +184,7 @@ __all__ = [
     'PLOTS_DIR',
     'CHARTS_DIR',  # 兼容旧代码
     'CACHE_DIR',
+    'PROXY_SETTINGS',  # 代理设置
     'DEFAULT_STOCK_POOL',
     'TRADE_QUANTITY',
     'MINIMUM_HOLDING',

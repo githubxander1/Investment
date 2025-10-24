@@ -828,6 +828,16 @@ class AccountInfo:
             logger.error(f"❌ 保存持仓信息失败: {e}", exc_info=True)
             return False
 
+    def get_weituo_info(self, account_name: str):
+        """
+        获取委托信息
+        """
+        try:
+            self.common_page.change_account(account_name)
+            return self.common_page.get_weituo_info()
+        except Exception as e:
+            logger.error(f"获取委托信息失败: {e}")
+
 if __name__ == '__main__':
     account = AccountInfo()
     account.update_holding_info_for_account("中山证券")

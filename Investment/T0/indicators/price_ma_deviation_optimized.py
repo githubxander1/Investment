@@ -22,22 +22,35 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from typing import Optional, Tuple, Dict, List
+from typing import Optional, Tuple, Dict, List, Any
 import akshare as ak
 import matplotlib.font_manager as fm
 import os
 import sys
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from T0.utils.logger import setup_logger
+# 导入我们优化的东方财富接口
+from T0.data2dfcf import stock_zh_a_hist_min_em as eastmoney_fenshi
+from T0.data2dfcf import random_delay
 
-logger = setup_logger('price_ma_deviation_optimized')
+# 代理配置（可根据需要修改）
+DEFAULT_PROXY = None  # 默认不使用代理
+# DEFAULT_PROXY = {'http': 'http://127.0.0.1:7890', 'https': 'http://127.0.0.1:7890'}  # 如需代理可启用此行
 
 # 设置中文字体支持
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
+
+# 输出目录设置
+CHART_OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
+os.makedirs(CHART_OUTPUT_DIR, exist_ok=True)
 
 def calculate_volatility(df: pd.DataFrame, window: int = 30) -> float:
     """
@@ -66,32 +79,37 @@ def get_adaptive_parameters(volatility: float) -> Dict:
     Returns:
         自适应参数字典
     """
+    logger.info(f"股票波动率: {volatility:.2f}%")
+    
     # 低波动股 (< 0.3%)
     if volatility < 0.3:
+        # 调整为更容易触发信号
         return {
-            'buy_threshold': -0.4,  # 更宽松的买入阈值
-            'sell_threshold': 0.4,  # 更宽松的卖出阈值
-            'min_time_interval': 25,  # 更长的时间间隔
-            'volume_threshold': 0.8,  # 更低的成交量要求
-            'max_holding_time': 90  # 最大持有时间90分钟
+            'buy_threshold': -0.4,      # 降低阈值使信号更容易触发
+            'sell_threshold': 0.4,
+            'min_time_interval': 25,    # 缩短时间间隔
+            'volume_threshold': 0.6,    # 降低成交量要求
+            'max_holding_time': 110
         }
     # 中波动股 (0.3% - 0.8%)
     elif 0.3 <= volatility < 0.8:
+        # 这是大多数股票的情况，包括美的集团，需要更合理的参数
         return {
-            'buy_threshold': -0.3,
-            'sell_threshold': 0.3,
-            'min_time_interval': 20,
-            'volume_threshold': 0.9,
-            'max_holding_time': 90
+            'buy_threshold': -0.35,     # 降低阈值
+            'sell_threshold': 0.35,
+            'min_time_interval': 20,    # 缩短时间间隔
+            'volume_threshold': 0.7,    # 降低成交量要求
+            'max_holding_time': 95
         }
     # 高波动股 (>= 0.8%)
     else:
+        # 保持较敏感的参数
         return {
-            'buy_threshold': -0.2,  # 更严格的买入阈值
-            'sell_threshold': 0.2,  # 更严格的卖出阈值
-            'min_time_interval': 15,  # 更短的时间间隔
-            'volume_threshold': 1.0,  # 更高的成交量要求
-            'max_holding_time': 60  # 更短的最大持有时间
+            'buy_threshold': -0.3,
+            'sell_threshold': 0.3,
+            'min_time_interval': 15,
+            'volume_threshold': 0.9,    # 稍微降低成交量要求
+            'max_holding_time': 70
         }
 
 def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.DataFrame:
@@ -163,66 +181,103 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     df['Buy_Signal'] = base_buy_signal
     df['Sell_Signal'] = base_sell_signal
     
+    # 添加偏离率的绝对值列用于调试
+    df['Abs_Deviation'] = abs(df['Price_MA_Ratio'])
+    
+    # 打印最大偏离情况，便于调试
+    if not df.empty:
+        max_dev_idx = df['Abs_Deviation'].idxmax()
+        logger.debug(f"最大偏离率: {df.loc[max_dev_idx, 'Abs_Deviation']:.2f}% 在 {max_dev_idx}")
+    
     # 初始化优化后的信号列
     df['Optimized_Buy_Signal'] = False
     df['Optimized_Sell_Signal'] = False
     
-    # 获取基础信号的索引
-    buy_indices = df[base_buy_signal].index
-    sell_indices = df[base_sell_signal].index
+    # 设置信号阈值 - 降低阈值使信号更容易触发
+    buy_threshold = adaptive_params['buy_threshold'] * 0.8  # 降低20%
+    sell_threshold = adaptive_params['sell_threshold'] * 0.8  # 降低20%
+    min_time_interval = adaptive_params['min_time_interval']
+    volume_threshold = adaptive_params['volume_threshold'] * 0.7  # 降低成交量要求
+    max_holding_time = adaptive_params['max_holding_time']
+    
+    logger.info(f"使用的实际阈值 - 买入: {buy_threshold}, 卖出: {sell_threshold}, 成交量: {volume_threshold}")
+    
+    # 重新计算基础信号，使用调整后的阈值
+    adjusted_buy_signal = (df['Price_MA_Ratio'] <= buy_threshold) & \
+                         (df['Price_MA_Ratio'].shift(1) > buy_threshold)
+    adjusted_sell_signal = (df['Price_MA_Ratio'] >= sell_threshold) & \
+                          (df['Price_MA_Ratio'].shift(1) < sell_threshold)
+    
+    # 获取调整后信号的索引
+    buy_indices = df[adjusted_buy_signal].index
+    sell_indices = df[adjusted_sell_signal].index
+    
+    # 打印候选信号数量，便于调试
+    logger.info(f"找到 {len(buy_indices)} 个买入候选信号和 {len(sell_indices)} 个卖出候选信号")
     
     # 优化买入信号
     last_signal_time = None
     for idx in buy_indices:
-        # 检查是否在有效时间范围内（避免收盘附近的不稳定信号）
+        # 检查是否在有效时间范围内 - 放宽开盘时间限制
         if hasattr(idx, 'hour'):
             hour, minute = idx.hour, idx.minute
-            # 避开14:40-15:00收盘波动，更早停止信号生成
+            # 稍微放宽限制
             if hour == 14 and minute >= 40:
                 continue
-            # 避免早盘15分钟的剧烈波动
-            elif hour == 9 and minute <= 45:
+            # 放宽早盘过滤，从原来的<=45改为<=32
+            elif hour == 9 and minute <= 32:
                 continue
         
         # 时间间隔过滤
         if last_signal_time is not None:
             if isinstance(idx, pd.Timestamp):
                 time_diff = (idx - last_signal_time).total_seconds() / 60
-                if time_diff < adaptive_params['min_time_interval']:
+                if time_diff < min_time_interval:
                     continue
         
-        # 成交量过滤 - 确保成交量高于均量
-        if df.loc[idx, '成交量'] < adaptive_params['volume_threshold'] * df.loc[idx, 'Volume_MA']:
-            continue
+        # 成交量过滤 - 降低要求
+        if df.loc[idx, '成交量'] < volume_threshold * df.loc[idx, 'Volume_MA']:
+            # 对于中等波动股，在价格严重偏离时可以适当降低成交量要求
+            if df.loc[idx, 'Price_MA_Ratio'] > buy_threshold * 1.2:  # 偏离不够严重
+                continue
         
         # 通过所有过滤条件，设置优化后的买入信号
         df.loc[idx, 'Optimized_Buy_Signal'] = True
+        logger.debug(f"生成买入信号: {idx}, 偏离率: {df.loc[idx, 'Price_MA_Ratio']:.2f}%")
         last_signal_time = idx
     
     # 优化卖出信号
     last_signal_time = None
     for idx in sell_indices:
-        # 检查是否在有效时间范围内
+        # 检查是否在有效时间范围内 - 稍微放宽限制
         if hasattr(idx, 'hour'):
             hour, minute = idx.hour, idx.minute
-            # 避开收盘前的不稳定波动
-            if hour == 14 and minute >= 40:
+            # 稍微放宽尾盘过滤，从原来的>=40改为>=57
+            if hour == 14 and minute >= 57:
                 continue
         
         # 时间间隔过滤
         if last_signal_time is not None:
             if isinstance(idx, pd.Timestamp):
                 time_diff = (idx - last_signal_time).total_seconds() / 60
-                if time_diff < adaptive_params['min_time_interval']:
+                if time_diff < min_time_interval:
                     continue
         
-        # 成交量过滤 - 确保成交量高于均量
-        if df.loc[idx, '成交量'] < adaptive_params['volume_threshold'] * df.loc[idx, 'Volume_MA']:
-            continue
+        # 成交量过滤 - 降低要求
+        if df.loc[idx, '成交量'] < volume_threshold * df.loc[idx, 'Volume_MA']:
+            # 对于中等波动股，在价格严重偏离时可以适当降低成交量要求
+            if df.loc[idx, 'Price_MA_Ratio'] < sell_threshold * 1.2:  # 偏离不够严重
+                continue
         
         # 通过所有过滤条件，设置优化后的卖出信号
         df.loc[idx, 'Optimized_Sell_Signal'] = True
+        logger.debug(f"生成卖出信号: {idx}, 偏离率: {df.loc[idx, 'Price_MA_Ratio']:.2f}%")
         last_signal_time = idx
+    
+    # 打印最终信号数量
+    buy_signals_count = df['Optimized_Buy_Signal'].sum()
+    sell_signals_count = df['Optimized_Sell_Signal'].sum()
+    logger.info(f"最终生成 {buy_signals_count} 个买入信号和 {sell_signals_count} 个卖出信号")
     
     # 记录优化后的信号
     optimized_buy_signals = df[df['Optimized_Buy_Signal']]
@@ -311,55 +366,123 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     
     return df
 
-def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[str, str]] = None) -> Optional[pd.DataFrame]:
     """
-    获取分时数据
+    获取分时数据，优先使用东方财富接口，失败时回退到akshare
     
     Args:
         stock_code: 股票代码
         trade_date: 交易日期
+        proxy: 代理字典，格式如 {'http': 'http://127.0.0.1:7890', 'https': 'http://127.0.0.1:7890'}
     
     Returns:
         分时数据DataFrame
     """
+    # 如果没有提供代理，使用默认代理
+    if proxy is None:
+        proxy = DEFAULT_PROXY
+        
     try:
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
             try:
-                # 尝试使用 YYYY-MM-DD 格式解析
                 trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
             except ValueError:
                 try:
-                    # 如果失败，尝试使用 YYYYMMDD 格式解析
                     trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
                 except ValueError:
                     raise ValueError(f"无法解析日期格式: {trade_date}")
         else:
             trade_date_obj = trade_date
             
-        # 格式化为 akshare 接口需要的日期格式
+        # 格式化为接口需要的日期格式
         trade_date_str = trade_date_obj.strftime('%Y%m%d')
         
-        # 构造 akshare 需要的时间格式 (YYYY-MM-DD HH:MM:SS)
-        start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
-        end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
-
-        # 从akshare获取数据
-        df = ak.stock_zh_a_hist_min_em(
-            symbol=stock_code,
-            period="1",
-            start_date=start_time,
-            end_date=end_time,
-            adjust=''
-        )
-
-        if df.empty:
-            print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
-            return None
+        # 1. 优先使用我们优化的东方财富接口
+        try:
+            logger.info(f"📡 尝试使用东方财富接口获取 {stock_code} 在 {trade_date} 的分时数据")
+            
+            # 使用东方财富接口
+            df = eastmoney_fenshi(
+                symbol=stock_code,
+                period="1",
+                start_date=trade_date_str,
+                end_date=trade_date_str,
+                adjust='',
+                proxy=proxy
+            )
+            
+            if not df.empty:
+                logger.info(f"✅ 东方财富接口成功获取到 {stock_code} 的分时数据")
+                
+                # 处理数据格式
+                if '时间' in df.columns:
+                    # 确保时间格式正确
+                    try:
+                        # 尝试直接转换
+                        df['时间'] = pd.to_datetime(df['时间'])
+                    except ValueError:
+                        # 如果直接转换失败，尝试添加日期
+                        df['时间'] = pd.to_datetime(df['时间'].apply(lambda x: f"{trade_date_obj.strftime('%Y-%m-%d')} {x}"))
+                    df = df.set_index('时间')
+                
+                # 过滤掉午休时间
+                df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                        ~((df.index.hour == 12))]
+                
+                # 填充缺失值
+                df = df.ffill().bfill()
+                
+                return df
+            else:
+                logger.warning(f"⚠️ 东方财富接口返回空数据，尝试使用akshare")
+        except Exception as e:
+            logger.warning(f"⚠️ 东方财富接口失败: {e}，尝试使用akshare")
         
-        return df
+        # 添加随机延迟避免请求过于频繁
+        random_delay()
+        
+        # 2. 如果东方财富接口失败，回退到akshare
+        try:
+            logger.info(f"📡 尝试使用akshare获取 {stock_code} 在 {trade_date} 的分时数据")
+            
+            # 构造 akshare 需要的时间格式
+            start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
+            end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
+
+            # 从akshare获取数据
+            df = ak.stock_zh_a_hist_min_em(
+                symbol=stock_code,
+                period="1",
+                start_date=start_time,
+                end_date=end_time,
+                adjust=''
+            )
+
+            if df.empty:
+                logger.warning(f"⚠️ {stock_code} 在 {trade_date} 无分时数据")
+                return None
+            
+            # 处理数据
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                df = df.set_index('时间')
+            
+            # 过滤掉午休时间
+            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                    ~((df.index.hour == 12))]
+            
+            # 填充缺失值
+            df = df.ffill().bfill()
+            
+            logger.info(f"✅ akshare成功获取到 {stock_code} 的分时数据")
+            return df
+        except Exception as e:
+            logger.error(f"❌ akshare获取分时数据失败: {e}")
+            return None
+            
     except Exception as e:
-        print(f"❌ 获取分时数据失败: {e}")
+        logger.error(f"❌ 获取分时数据过程中发生错误: {e}")
         return None
 
 def detect_trading_signals(df: pd.DataFrame, use_optimized: bool = True) -> Dict[str, List[Tuple[datetime, float]]]:
@@ -421,7 +544,7 @@ def plot_tdx_intraday(stock_code: str, trade_date: Optional[str] = None, df: Opt
             trade_date = yesterday.strftime('%Y-%m-%d')
         
         # 获取数据
-        df = fetch_intraday_data(stock_code, trade_date)
+        df = fetch_intraday_data(stock_code, trade_date, proxy=DEFAULT_PROXY)
         if df is None or df.empty:
             return None
         
@@ -536,7 +659,7 @@ def analyze_price_ma_deviation(stock_code: str, trade_date: Optional[str] = None
             trade_date = yesterday.strftime('%Y%m%d')
         
         # 获取数据
-        df = fetch_intraday_data(stock_code, trade_date)
+        df = fetch_intraday_data(stock_code, trade_date, proxy=DEFAULT_PROXY)
         if df is None or df.empty:
             return None
         
@@ -573,7 +696,7 @@ def analyze_deviation_strategy(stock_code: str, trade_date: Optional[str] = None
     """
     try:
         # 获取数据
-        df = fetch_intraday_data(stock_code, trade_date)
+        df = fetch_intraday_data(stock_code, trade_date, proxy=DEFAULT_PROXY)
         if df is None or df.empty:
             return None
         
@@ -663,21 +786,22 @@ def main():
     """
     # 使用与综合T+0策略相同的测试股票集
     test_stocks = [
-        '000651',  # 格力电器 - 家电行业龙头
+        # '000651',  # 格力电器 - 家电行业龙头
         '600030',  # 中信证券 - 券商龙头
-        '000002',  # 万科A - 地产龙头
-        '600519',  # 贵州茅台 - 白酒龙头
-        '002415',  # 海康威视 - 安防龙头
-        '300750',  # 宁德时代 - 新能源龙头
-        '601398',  # 工商银行 - 银行龙头
-        '600900',  # 长江电力 - 公用事业龙头
-        '601318',  # 中国平安 - 保险龙头
+        # '000002',  # 万科A - 地产龙头
+        # '600519',  # 贵州茅台 - 白酒龙头
+        # '002415',  # 海康威视 - 安防龙头
+        # '300750',  # 宁德时代 - 新能源龙头
+        # '601398',  # 工商银行 - 银行龙头
+        # '600900',  # 长江电力 - 公用事业龙头
+        # '601318',  # 中国平安 - 保险龙头
         '000333',  # 美的集团 - 家电龙头
     ]
     
     # 使用昨天的日期作为默认交易日期
-    yesterday = datetime.now() - timedelta(days=1)
-    trade_date = yesterday.strftime('%Y-%m-%d')
+    # yesterday = datetime.now() - timedelta(days=1)
+    today = datetime.now()
+    trade_date = today.strftime('%Y-%m-%d')
     
     print(f"\n📊 开始测试价格均线偏离策略 - 优化版\n")
     print(f"测试日期: {trade_date}\n")

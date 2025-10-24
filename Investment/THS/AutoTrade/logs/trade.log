@@ -621,3 +621,49 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [33m2025-10-23 14:54:55 - WARNING - 无可用数量: available_shares=0[0m
 [33m2025-10-23 14:55:54 - WARNING - 无可用数量: available_shares=0[0m
 [33m2025-10-23 14:56:38 - WARNING - 无可用数量: available_shares=0[0m
+[32m2025-10-24 09:36:55 - INFO - 全部卖出[0m
+[32m2025-10-24 09:37:20 - INFO - 卖出 赣锋锂业 300股 False 买入[0m
+[32m2025-10-24 09:37:20 - INFO - 目标投资金额: 61962.8 * 32.0% = 19828.096[0m
+[32m2025-10-24 09:37:20 - INFO - 计算目标股数: 19828.096 / 91.17 = 217[0m
+[32m2025-10-24 09:37:20 - INFO - 计算卖出时，需要持仓股数: 200[0m
+[32m2025-10-24 09:37:20 - INFO - 按比例计算卖出: 当前持有400股, 新比例32.0%, 目标持仓200股, 卖出200股[0m
+[32m2025-10-24 09:59:03 - INFO - 全部卖出[0m
+[32m2025-10-24 09:59:16 - INFO - 卖出 浙江荣泰股份 200股 False 最新:[0m
+[32m2025-10-24 11:04:09 - INFO - 目标投资金额: 62605.96 * 33.0% = 20659.9668[0m
+[32m2025-10-24 11:04:09 - INFO - 计算股数: 20659.9668 / 110.73 = 186[0m
+[32m2025-10-24 11:04:09 - INFO - 计算买入股数: 100[0m
+[32m2025-10-24 11:04:23 - INFO - 买入 中科曙光 100股 False 最新:[0m
+[32m2025-10-24 11:05:23 - INFO - 目标投资金额: 62600.82 * 33.0% = 20658.2706[0m
+[32m2025-10-24 11:05:23 - INFO - 计算股数: 20658.2706 / 110.72 = 186[0m
+[32m2025-10-24 11:05:23 - INFO - 计算买入股数: 100[0m
+[32m2025-10-24 11:05:36 - INFO - 买入 中科曙光 100股 False 最新:[0m
+[32m2025-10-24 11:26:44 - INFO - 目标投资金额: 62792.68 * 33.0% = 20721.5844[0m
+[32m2025-10-24 11:26:44 - INFO - 计算股数: 20721.5844 / 178.19 = 116[0m
+[32m2025-10-24 11:26:44 - INFO - 计算买入股数: 100[0m
+[32m2025-10-24 11:26:58 - INFO - 买入 科达利 100股 False 最新:[0m
+[32m2025-10-24 11:27:58 - INFO - 目标投资金额: 62772.68 * 33.0% = 20714.9844[0m
+[32m2025-10-24 11:27:58 - INFO - 计算股数: 20714.9844 / 178.53 = 116[0m
+[32m2025-10-24 11:27:58 - INFO - 计算买入股数: 100[0m
+[31m2025-10-24 11:28:29 - ERROR - 买入 科达利 100 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 404, in operate_stock
+    self.trading_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 268, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-10-24 11:29:49 - INFO - 目标投资金额: 17686.35 * 33.0% = 5836.495499999999[0m
+[32m2025-10-24 11:29:49 - INFO - 计算股数: 5836.495499999999 / 111.38 = 52[0m
+[33m2025-10-24 11:29:49 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-10-24 11:29:49 - INFO - 目标投资金额: 17686.35 * 33.0% = 5836.495499999999[0m
+[32m2025-10-24 11:29:49 - INFO - 计算股数: 5836.495499999999 / 178.72 = 32[0m
+[33m2025-10-24 11:29:49 - WARNING - 计算出的买入股数不足100股[0m

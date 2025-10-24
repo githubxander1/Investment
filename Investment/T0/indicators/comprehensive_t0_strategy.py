@@ -26,9 +26,22 @@ from typing import Optional, Tuple, Dict, List, Any
 import akshare as ak
 import os
 import sys
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # 添加项目根目录到Python路径
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# 导入我们优化的东方财富接口
+from data2dfcf import stock_zh_a_hist_min_em as eastmoney_fenshi
+from data2dfcf import random_delay
+
+# 代理配置（可根据需要修改）
+DEFAULT_PROXY = None  # 默认不使用代理
+# DEFAULT_PROXY = {'http': 'http://127.0.0.1:7890', 'https': 'http://127.0.0.1:7890'}  # 如需代理可启用此行
 
 # 设置中文字体支持
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']
@@ -536,17 +549,22 @@ def match_trade_pairs(df: pd.DataFrame, max_hold_minutes: int = 90) -> List[Dict
     return trades
 
 
-def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[str, str]] = None) -> Optional[pd.DataFrame]:
     """
-    获取分时数据
+    获取分时数据，优先使用东方财富接口，失败时回退到akshare
     
     Args:
         stock_code: 股票代码
         trade_date: 交易日期
+        proxy: 代理字典，格式如 {'http': 'http://127.0.0.1:7890', 'https': 'http://127.0.0.1:7890'}
     
     Returns:
         分时数据DataFrame
     """
+    # 如果没有提供代理，使用默认代理
+    if proxy is None:
+        proxy = DEFAULT_PROXY
+        
     try:
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
@@ -560,41 +578,94 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         else:
             trade_date_obj = trade_date
             
-        # 格式化为 akshare 接口需要的日期格式
+        # 格式化为接口需要的日期格式
         trade_date_str = trade_date_obj.strftime('%Y%m%d')
         
-        # 构造 akshare 需要的时间格式
-        start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
-        end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
+        # 1. 优先使用我们优化的东方财富接口
+        try:
+            logger.info(f"📡 尝试使用东方财富接口获取 {stock_code} 在 {trade_date} 的分时数据")
+            
+            # 使用东方财富接口
+            df = eastmoney_fenshi(
+                symbol=stock_code,
+                period="1",
+                start_date=trade_date_str,
+                end_date=trade_date_str,
+                adjust='',
+                proxy=proxy
+            )
+            
+            if not df.empty:
+                logger.info(f"✅ 东方财富接口成功获取到 {stock_code} 的分时数据")
+                
+                # 处理数据格式
+                if '时间' in df.columns:
+                    # 确保时间格式正确
+                    try:
+                        # 尝试直接转换
+                        df['时间'] = pd.to_datetime(df['时间'])
+                    except ValueError:
+                        # 如果直接转换失败，尝试添加日期
+                        df['时间'] = pd.to_datetime(df['时间'].apply(lambda x: f"{trade_date_obj.strftime('%Y-%m-%d')} {x}"))
+                    df = df.set_index('时间')
+                
+                # 过滤掉午休时间
+                df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                        ~((df.index.hour == 12))]
+                
+                # 填充缺失值
+                df = df.ffill().bfill()
+                
+                return df
+            else:
+                logger.warning(f"⚠️ 东方财富接口返回空数据，尝试使用akshare")
+        except Exception as e:
+            logger.warning(f"⚠️ 东方财富接口失败: {e}，尝试使用akshare")
+        
+        # 添加随机延迟避免请求过于频繁
+        random_delay()
+        
+        # 2. 如果东方财富接口失败，回退到akshare
+        try:
+            logger.info(f"📡 尝试使用akshare获取 {stock_code} 在 {trade_date} 的分时数据")
+            
+            # 构造 akshare 需要的时间格式
+            start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
+            end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
 
-        # 从akshare获取数据
-        df = ak.stock_zh_a_hist_min_em(
-            symbol=stock_code,
-            period="1",
-            start_date=start_time,
-            end_date=end_time,
-            adjust=''
-        )
+            # 从akshare获取数据
+            df = ak.stock_zh_a_hist_min_em(
+                symbol=stock_code,
+                period="1",
+                start_date=start_time,
+                end_date=end_time,
+                adjust=''
+            )
 
-        if df.empty:
-            print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
+            if df.empty:
+                logger.warning(f"⚠️ {stock_code} 在 {trade_date} 无分时数据")
+                return None
+            
+            # 处理数据
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                df = df.set_index('时间')
+            
+            # 过滤掉午休时间
+            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                    ~((df.index.hour == 12))]
+            
+            # 填充缺失值
+            df = df.ffill().bfill()
+            
+            logger.info(f"✅ akshare成功获取到 {stock_code} 的分时数据")
+            return df
+        except Exception as e:
+            logger.error(f"❌ akshare获取分时数据失败: {e}")
             return None
-        
-        # 处理数据
-        if '时间' in df.columns:
-            df['时间'] = pd.to_datetime(df['时间'])
-            df = df.set_index('时间')
-        
-        # 过滤掉午休时间
-        df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
-                ~((df.index.hour == 12))]
-        
-        # 填充缺失值
-        df = df.ffill().bfill()
-        
-        return df
+            
     except Exception as e:
-        print(f"❌ 获取分时数据失败: {e}")
+        logger.error(f"❌ 获取分时数据过程中发生错误: {e}")
         return None
 
 
@@ -611,7 +682,7 @@ def get_prev_close(stock_code: str, trade_date: str) -> float:
     """
     try:
         # 尝试从当天数据的开盘价推断
-        df = fetch_intraday_data(stock_code, trade_date)
+        df = fetch_intraday_data(stock_code, trade_date, proxy=DEFAULT_PROXY)
         if df is not None and not df.empty:
             # 使用当天第一分钟的开盘价作为昨收价的近似
             return df['开盘'].iloc[0]
@@ -638,11 +709,12 @@ def analyze_comprehensive_t0(stock_code: str, trade_date: Optional[str] = None,
     try:
         # 时间处理
         if trade_date is None:
-            yesterday = datetime.now() - timedelta(days=1)
-            trade_date = yesterday.strftime('%Y-%m-%d')
+            # yesterday = datetime.now() - timedelta(days=1)
+            # trade_date = yesterday.strftime('%Y-%m-%d')
+            trade_date = datetime.now().strftime('%Y-%m-%d')
         
         # 获取数据
-        df = fetch_intraday_data(stock_code, trade_date)
+        df = fetch_intraday_data(stock_code, trade_date, proxy=DEFAULT_PROXY)
         if df is None or df.empty:
             return None
         
@@ -860,14 +932,14 @@ if __name__ == "__main__":
     stock_codes = [
         "000333",  # 美的集团 - 家电龙头
         "600030",  # 中信证券 - 券商龙头
-        "000002",  # 万科A - 地产龙头
-        "600519",  # 贵州茅台 - 白酒龙头
-        "000858",  # 五粮液 - 白酒
+        # "000002",  # 万科A - 地产龙头
+        # "600519",  # 贵州茅台 - 白酒龙头
+        # "000858",  # 五粮液 - 白酒
         "002415",  # 海康威视 - 安防
-        "300750",  # 宁德时代 - 新能源
-        "600000",  # 浦发银行 - 银行
-        "600900",  # 长江电力 - 公用事业
-        "601318"   # 中国平安 - 保险
+        # "300750",  # 宁德时代 - 新能源
+        # "600000",  # 浦发银行 - 银行
+        # "600900",  # 长江电力 - 公用事业
+        # "601318"   # 中国平安 - 保险
     ]
     trade_date = datetime.now().strftime('%Y-%m-%d')
     
