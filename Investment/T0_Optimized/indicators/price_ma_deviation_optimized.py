@@ -266,7 +266,7 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     sorted_buys = sorted(optimized_buy_signals.index)
     sorted_sells = sorted(optimized_sell_signals.index)
     
-    # 分析潜在交易对和收益，考虑最大持有时间
+    # 分析潜在交易对和收益，去除最大持有时间限制
     trades = []
     i, j = 0, 0
     while i < len(sorted_buys) and j < len(sorted_sells):
@@ -279,23 +279,18 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
             # 计算交易时间间隔
             time_diff = (sorted_sells[j] - sorted_buys[i]).total_seconds() / 60
             
-            # 应用最大持有时间限制
-            if time_diff <= adaptive_params['max_holding_time']:
-                trades.append({
-                    'buy_time': sorted_buys[i],
-                    'sell_time': sorted_sells[j],
-                    'buy_price': buy_price,
-                    'sell_price': sell_price,
-                    'profit_pct': profit_pct,
-                    'time_diff_minutes': time_diff
-                })
-                
-                i += 1
-                j += 1
-            else:
-                # 如果超过最大持有时间，尝试寻找更早的卖出信号
-                # 这里简化处理，直接移动到下一个买入信号
-                i += 1
+            # 移除最大持有时间限制，直接添加交易对
+            trades.append({
+                'buy_time': sorted_buys[i],
+                'sell_time': sorted_sells[j],
+                'buy_price': buy_price,
+                'sell_price': sell_price,
+                'profit_pct': profit_pct,
+                'time_diff_minutes': time_diff
+            })
+            
+            i += 1
+            j += 1
         else:
             j += 1
     
@@ -666,24 +661,18 @@ def analyze_deviation_strategy(stock_code: str, trade_date: Optional[str] = None
                 profit_pct = (sell_price / buy_price - 1) * 100
                 time_diff = (sorted_sells[j] - sorted_buys[i]).total_seconds() / 60
                 
-                # 获取自适应参数
-                volatility = df_with_indicators['Volatility'].iloc[0]
-                adaptive_params = get_adaptive_parameters(volatility)
+                # 移除最大持有时间限制，直接添加交易对
+                trades.append({
+                    'buy_time': sorted_buys[i],
+                    'sell_time': sorted_sells[j],
+                    'buy_price': buy_price,
+                    'sell_price': sell_price,
+                    'profit_pct': profit_pct,
+                    'time_diff_minutes': time_diff
+                })
                 
-                if time_diff <= adaptive_params['max_holding_time']:
-                    trades.append({
-                        'buy_time': sorted_buys[i],
-                        'sell_time': sorted_sells[j],
-                        'buy_price': buy_price,
-                        'sell_price': sell_price,
-                        'profit_pct': profit_pct,
-                        'time_diff_minutes': time_diff
-                    })
-                    
-                    i += 1
-                    j += 1
-                else:
-                    i += 1
+                i += 1
+                j += 1
             else:
                 j += 1
         

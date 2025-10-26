@@ -150,18 +150,10 @@ except Exception as e:
     logger.error(f"指标模块导入过程中发生错误: {e}，使用模拟函数")
 
 # 添加项目根目录到路径
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, project_root)
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# 导入数据库管理器
-try:
-    from core.data_manager import DataManager
-    from core.db_manager import DBManager
-    USE_DATABASE = True
-    logger.info("✅ 成功导入数据库管理器")
-except ImportError as e:
-    logger.warning(f"⚠️ 无法导入数据库管理器: {e}")
-    USE_DATABASE = False
+# 导入数据获取模块
+from data2dfcf import get_eastmoney_fenshi_by_date
 
 # 配置中文字体
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'Microsoft YaHei']
@@ -220,10 +212,14 @@ class T0DataVisualizer:
         self._init_data()
 
     def _create_ui(self):
-        """创建用户界面 - 上中下三部分布局"""
-        # ========== 上部: 控制栏 ==========
-        control_frame = ttk.Frame(self.root, padding="10")
-        control_frame.pack(fill=tk.X, side=tk.TOP)
+        """创建用户界面"""
+        # 主框架
+        main_frame = ttk.Frame(self.root, padding="10")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # 顶部控制栏
+        control_frame = ttk.Frame(main_frame, padding="5")
+        control_frame.pack(fill=tk.X, pady=5)
 
         # 股票选择
         ttk.Label(control_frame, text="股票选择:").pack(side=tk.LEFT, padx=5)
@@ -271,78 +267,55 @@ class T0DataVisualizer:
             self.speed_label.config(text=f"{self.play_speed.get():.1f}x")
         speed_scale.bind("<Motion>", update_speed_label)
 
+        # 指标选择框 - 始终显示，即使指标模块导入失败也提供UI
+        indicator_frame = ttk.LabelFrame(main_frame, text="指标显示", padding="5")
+        indicator_frame.pack(fill=tk.X, pady=5)
+
+        # 默认为选中状态，确保指标功能正常显示
+        self.show_comprehensive_t0.set(True)
+        self.show_price_ma_deviation.set(True)
+        self.show_price_ma_deviation_optimized.set(True)
+
+        ttk.Checkbutton(indicator_frame, text="综合T0策略", variable=self.show_comprehensive_t0,
+                       command=lambda: self._update_chart()).pack(side=tk.LEFT, padx=10)
+        ttk.Checkbutton(indicator_frame, text="价格均线偏离(基础)", variable=self.show_price_ma_deviation,
+                       command=lambda: self._update_chart()).pack(side=tk.LEFT, padx=10)
+        ttk.Checkbutton(indicator_frame, text="价格均线偏离(优化)", variable=self.show_price_ma_deviation_optimized,
+                       command=lambda: self._update_chart()).pack(side=tk.LEFT, padx=10)
+
+        # 如果指标模块导入失败，显示提示信息
+        if not INDICATORS_AVAILABLE:
+            ttk.Label(indicator_frame, text="指标模块导入失败，使用模拟指标", foreground="red").pack(side=tk.LEFT, padx=20)
+
         # 状态信息
         self.status_var = tk.StringVar(value="就绪")
         status_bar = ttk.Label(self.root, textvariable=self.status_var, relief=tk.SUNKEN, anchor=tk.W)
         status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
-        # ========== 中部: 主分时图(不带指标) ==========
-        main_chart_frame = ttk.LabelFrame(self.root, text="分时图", padding="5")
-        main_chart_frame.pack(fill=tk.BOTH, expand=False, padx=10, pady=5)
+        # 创建图表框架
+        chart_frame = ttk.LabelFrame(main_frame, text="分时图", padding="5")
+        chart_frame.pack(fill=tk.BOTH, expand=True, pady=5)
 
-        # 创建主图表(不带指标)
-        self.main_fig = Figure(figsize=(12, 4), dpi=100)
-        self.ax_main = self.main_fig.add_subplot(111)
+        # 创建Matplotlib图表
+        self.fig = Figure(figsize=(10, 6), dpi=100)
+        self.ax = self.fig.add_subplot(111)
 
-        # 创建主图画布
-        self.main_canvas = FigureCanvasTkAgg(self.main_fig, master=main_chart_frame)
-        self.main_canvas.draw()
-        self.main_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        # 创建画布
+        self.canvas = FigureCanvasTkAgg(self.fig, master=chart_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         # 添加鼠标悬浮功能
-        self.annotation = self.ax_main.annotate('', xy=(0, 0), xytext=(10, 10), textcoords='offset points',
+        self.annotation = self.ax.annotate('', xy=(0, 0), xytext=(10, 10), textcoords='offset points',
                                        bbox=dict(boxstyle='round', fc='yellow', alpha=0.7),
                                        arrowprops=dict(arrowstyle='->'), fontsize=10)
         self.annotation.set_visible(False)
-        self.main_canvas.mpl_connect('motion_notify_event', self._on_mouse_move)
+        self.canvas.mpl_connect('motion_notify_event', self._on_mouse_move)
 
-        # ========== 下部: 指标显示区域 ==========
-        # 指标选择框
-        indicator_control_frame = ttk.LabelFrame(self.root, text="指标选择", padding="5")
-        indicator_control_frame.pack(fill=tk.X, padx=10, pady=5)
-
-        # 默认为选中状态
-        self.show_comprehensive_t0.set(True)
-        self.show_price_ma_deviation.set(True)
-        self.show_price_ma_deviation_optimized.set(True)
-
-        ttk.Checkbutton(indicator_control_frame, text="综合T0策略", variable=self.show_comprehensive_t0,
-                       command=lambda: self._update_indicator_charts()).pack(side=tk.LEFT, padx=10)
-        ttk.Checkbutton(indicator_control_frame, text="价格均线偏离(基础)", variable=self.show_price_ma_deviation,
-                       command=lambda: self._update_indicator_charts()).pack(side=tk.LEFT, padx=10)
-        ttk.Checkbutton(indicator_control_frame, text="价格均线偏离(优化)", variable=self.show_price_ma_deviation_optimized,
-                       command=lambda: self._update_indicator_charts()).pack(side=tk.LEFT, padx=10)
-
-        # 如果指标模块导入失败，显示提示信息
-        if not INDICATORS_AVAILABLE:
-            ttk.Label(indicator_control_frame, text="指标模块导入失败，使用模拟指标", foreground="red").pack(side=tk.LEFT, padx=20)
-
-        # 指标图表显示区域
-        self.indicator_chart_frame = ttk.LabelFrame(self.root, text="指标分析图", padding="5")
-        self.indicator_chart_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
-
-        # 创建指标图表(可滚动)
-        # 创建 Canvas 和 Scrollbar
-        self.indicator_canvas_widget = tk.Canvas(self.indicator_chart_frame, bg='white')
-        scrollbar = ttk.Scrollbar(self.indicator_chart_frame, orient="vertical", command=self.indicator_canvas_widget.yview)
-        self.indicator_scrollable_frame = ttk.Frame(self.indicator_canvas_widget)
-
-        self.indicator_scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.indicator_canvas_widget.configure(
-                scrollregion=self.indicator_canvas_widget.bbox("all")
-            )
-        )
-
-        self.indicator_canvas_widget.create_window((0, 0), window=self.indicator_scrollable_frame, anchor="nw")
-        self.indicator_canvas_widget.configure(yscrollcommand=scrollbar.set)
-
-        self.indicator_canvas_widget.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # 存储指标图表对象
-        self.indicator_figures = {}
-        self.indicator_canvases = {}
+        # 添加工具栏
+        toolbar_frame = ttk.Frame(chart_frame)
+        toolbar_frame.pack(fill=tk.X)
+        # NavigationToolbar2Tk 已废弃，不再添加
 
     def _on_mouse_move(self, event):
         """鼠标移动事件处理 - 显示价格、时间和相对均线涨跌幅"""
@@ -455,48 +428,38 @@ class T0DataVisualizer:
             logger.info(f"正在加载股票 {STOCKS[stock_code]} 的分时数据，日期：{date}")
             self.status_var.set(f"正在加载股票 {STOCKS[stock_code]} 的分时数据...")
 
-            # 从数据库获取数据
-            if USE_DATABASE:
+            # 使用akshare获取数据（用户确认此方式可用）
+            try:
+                import akshare as ak
+                logger.info(f"使用akshare获取股票 {stock_code} 的分时数据")
+                # 捕获akshare可能抛出的所有异常
                 try:
-                    # 优先使用DBManager（分层数据库）
-                    try:
-                        db_mgr = DBManager()
-                        df = db_mgr.get_minute_data(stock_code, date)
-                        db_mgr.close_all()
-                        
-                        if df is not None and not df.empty:
-                            logger.info(f"✅ 使用DBManager成功读取 {len(df)} 条数据")
-                        else:
-                            raise ValueError("DBManager返回空数据")
-                    except Exception as e:
-                        logger.warning(f"⚠️ DBManager读取失败: {e}，尝试DataManager")
-                        
-                        # 回退到DataManager
-                        dm = DataManager()
-                        df = dm.get_minute_data(stock_code, date)
-                        dm.close()
-                        
-                        if df is not None and not df.empty:
-                            logger.info(f"✅ 使用DataManager成功读取 {len(df)} 条数据")
-                        else:
-                            raise ValueError("DataManager返回空数据")
+                    df = ak.stock_zh_a_hist_min_em(
+                        symbol=stock_code,
+                        period="1",
+                        start_date=date,
+                        end_date=date,
+                        adjust=''  
+                    )
                     
-                    # 验证数据类型
+                    # 严格验证数据类型
                     if not isinstance(df, pd.DataFrame):
-                        logger.error(f"数据库返回的数据类型错误: {type(df).__name__}")
+                        logger.error(f"akshare返回的数据类型错误: {type(df).__name__}")
                         raise TypeError(f"期望DataFrame，但得到{type(df).__name__}")
                     
-                    logger.info(f"成功获取到数据，形状：{df.shape}")
-                    logger.info(f"数据列：{df.columns.tolist()}")
-                    
+                    if df.empty:
+                        logger.warning(f"未获取到股票 {STOCKS[stock_code]} 的数据，尝试使用备用方案")
+                        df = self._generate_mock_data(stock_code, date)
+                    else:
+                        logger.info(f"成功获取到数据，形状：{df.shape}")
+                        logger.info(f"数据列：{df.columns.tolist()}")
                 except Exception as e:
-                    logger.error(f"从数据库获取数据失败: {e}")
+                    logger.error(f"使用akshare获取数据失败: {e}")
                     import traceback
                     traceback.print_exc()
-                    logger.info("使用模拟数据作为备用方案")
                     df = self._generate_mock_data(stock_code, date)
-            else:
-                logger.warning("数据库管理器未加载，使用模拟数据")
+            except Exception as e:
+                logger.error(f"导入或使用akshare失败: {e}")
                 df = self._generate_mock_data(stock_code, date)
 
             # 数据预处理

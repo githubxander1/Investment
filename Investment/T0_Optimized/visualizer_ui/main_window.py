@@ -140,7 +140,7 @@ class T0DataVisualizer:
 
         # ========== 下部: 指标图表展示区域（横向滚动）==========
         self.indicator_chart_frame = ttk.LabelFrame(self.root, text="指标分析图表", padding="5")
-        self.indicator_chart_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        self.indicator_chart_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(5, 10))
 
         # 创建横向+纵向双滚动的容器
         # 水平滚动条
@@ -304,14 +304,30 @@ class T0DataVisualizer:
             traceback.print_exc()
 
     def _create_indicator_chart(self, title, df, stock_code, plot_func):
-        """创建单个指标图表（横向排列）"""
+        """创建单个指标图表（智能布局）"""
         try:
-            # 使用Frame横向排列，而不是纵向堆叠
-            frame = ttk.LabelFrame(self.indicator_scrollable_frame, text=title, padding="5")
-            frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=False, padx=5, pady=5)
+            # 统计当前勾选的指标数量
+            checked_count = sum([
+                self.show_comprehensive_t0.get(),
+                self.show_price_ma_deviation.get(),
+                self.show_price_ma_deviation_optimized.get()
+            ])
             
-            # 直接使用配置的图表尺寸
-            fig = Figure(figsize=INDICATOR_CHART_SIZE, dpi=DPI)
+            # 根据指标数量调整布局
+            if checked_count == 1:
+                # 单个指标：充满整个区域
+                frame = ttk.LabelFrame(self.indicator_scrollable_frame, text=title, padding="5")
+                frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+                
+                # 使用更大的尺寸
+                fig = Figure(figsize=(14, 8), dpi=DPI)
+            else:
+                # 多个指标：横向排列
+                frame = ttk.LabelFrame(self.indicator_scrollable_frame, text=title, padding="5")
+                frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=False, padx=5, pady=5)
+                
+                # 使用配置的图表尺寸
+                fig = Figure(figsize=INDICATOR_CHART_SIZE, dpi=DPI)
             
             # 调用绘图函数
             if plot_func(fig, df, stock_code):
@@ -320,7 +336,7 @@ class T0DataVisualizer:
                 
                 canvas = FigureCanvasTkAgg(fig, master=frame)
                 canvas.draw()
-                canvas.get_tk_widget().pack(fill=tk.BOTH, expand=False)
+                canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
                 
                 self.indicator_figures[title] = fig
                 self.indicator_canvases[title] = canvas
@@ -355,6 +371,77 @@ class T0DataVisualizer:
         self._update_chart()
 
     def _play_simulation(self):
-        """播放模拟（简化版）"""
-        # 播放逻辑保持不变，这里简化处理
-        pass
+        """播放模拟 - 回放勾选的指标图表"""
+        try:
+            stock_code = self.current_stock.get()
+            
+            if stock_code not in self.data_loader.data_cache or self.data_loader.data_cache[stock_code].empty:
+                logger.warning("没有可用的数据进行回放")
+                return
+            
+            df = self.data_loader.data_cache[stock_code].copy()
+            total_rows = len(df)
+            
+            logger.info(f"开始回放，总数据点: {total_rows}")
+            
+            while self.is_playing and self.current_play_index < total_rows:
+                if self.play_stop_event.is_set():
+                    break
+                
+                # 获取当前时间点的数据
+                current_data = df.iloc[:self.current_play_index + 1]
+                
+                # 更新勾选的指标图表
+                self.root.after(0, lambda: self._update_play_charts(current_data))
+                
+                # 根据速度控制延迟
+                speed = self.play_speed.get()
+                delay = 0.1 / speed  # 基础延迟100ms
+                time.sleep(delay)
+                
+                self.current_play_index += 1
+            
+            # 播放完成
+            if self.current_play_index >= total_rows:
+                logger.info("回放完成")
+                self.root.after(0, self._pause_play)
+                self.root.after(0, lambda: self.status_var.set("回放完成"))
+                
+        except Exception as e:
+            logger.error(f"回放过程中出错: {e}")
+            import traceback
+            traceback.print_exc()
+            self.root.after(0, self._pause_play)
+    
+    def _update_play_charts(self, current_data):
+        """更新播放过程中的图表"""
+        try:
+            stock_code = self.current_stock.get()
+            
+            # 清空指标显示区域
+            for widget in self.indicator_scrollable_frame.winfo_children():
+                widget.destroy()
+            
+            self.indicator_figures = {}
+            self.indicator_canvases = {}
+            
+            # 绘制选中的指标
+            if self.show_comprehensive_t0.get():
+                self._create_indicator_chart("综合T0策略", current_data, stock_code, 
+                                            IndicatorPlotters.plot_comprehensive_t0)
+            
+            if self.show_price_ma_deviation.get():
+                self._create_indicator_chart("价格均线偏离(基础)", current_data, stock_code,
+                                            IndicatorPlotters.plot_price_ma_deviation)
+            
+            if self.show_price_ma_deviation_optimized.get():
+                self._create_indicator_chart("价格均线偏离(优化)", current_data, stock_code,
+                                            IndicatorPlotters.plot_price_ma_deviation_optimized)
+            
+            # 更新状态栏
+            current_time = current_data['\u65f6\u95f4'].iloc[-1] if '\u65f6\u95f4' in current_data.columns else ""
+            progress = int((self.current_play_index / len(self.data_loader.data_cache[stock_code])) * 100)
+            self.status_var.set(f"回放中: {current_time} ({progress}%)")
+            
+        except Exception as e:
+            logger.error(f"更新回放图表失败: {e}")

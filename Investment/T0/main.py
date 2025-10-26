@@ -22,7 +22,8 @@ from config.settings import (
     DEBUG_MODE, LOG_CONFIG, validate_config
 )
 from utils.logger import setup_logger
-from core.strategy import T0Strategy
+# 导入综合T+0策略替代原来的T0Strategy
+from indicators.comprehensive_t0_strategy import analyze_comprehensive_t0, plot_comprehensive_t0
 from core.trade_engine import TradeEngine
 
 # 设置日志
@@ -126,20 +127,18 @@ def run_analyze_mode(args):
     stock_pool = args.stocks if args.stocks else DEFAULT_STOCK_POOL
     logger.info(f"分析股票池: {stock_pool}")
     
-    # 创建策略实例
-    strategy = T0Strategy()
-    
     try:
         # 对每个股票进行分析
         for stock_code in stock_pool:
             logger.info(f"开始分析股票: {stock_code}")
             
-            # 运行策略分析
-            result = strategy.analyze_stock(stock_code)
+            # 运行综合T+0策略分析
+            result = analyze_comprehensive_t0(stock_code)
             
             # 保存分析结果
             if result:
-                logger.info(f"股票 {stock_code} 分析完成，信号: {result.get('signal', 'UNKNOWN')}")
+                df, trades = result
+                logger.info(f"股票 {stock_code} 分析完成，匹配交易对数量: {len(trades)}")
                 
             # 避免请求过于频繁
             time.sleep(1)
@@ -164,24 +163,30 @@ def run_single_stock_analysis(args):
     stock_code = args.stock
     logger.info(f"启动T0交易系统 - 单个股票分析: {stock_code}")
     
-    # 创建策略实例
-    strategy = T0Strategy()
-    
     try:
-        # 运行单个股票分析
-        result = strategy.analyze_stock(stock_code, show_chart=True)
+        # 运行单个股票的综合T+0策略分析和图表绘制
+        result = analyze_comprehensive_t0(stock_code)
+        chart_path = plot_comprehensive_t0(stock_code)
         
         # 显示分析结果
         if result:
+            df, trades = result
             logger.info(f"股票 {stock_code} 分析结果:")
-            logger.info(f"  信号: {result.get('signal', 'UNKNOWN')}")
-            logger.info(f"  信号强度: {result.get('signal_strength', 0.0)}")
-            logger.info(f"  当前价格: {result.get('current_price', 0.0)}")
-            logger.info(f"  支撑位: {result.get('support', 0.0)}")
-            logger.info(f"  阻力位: {result.get('resistance', 0.0)}")
+            logger.info(f"  匹配交易对数量: {len(trades)}")
             
-            # 保存分析图表
-            chart_path = strategy.save_chart(stock_code)
+            if trades:
+                total_profit = sum(trade['profit_pct'] for trade in trades)
+                avg_profit = total_profit / len(trades) if trades else 0
+                logger.info(f"  总收益率: {total_profit:.2f}%")
+                logger.info(f"  平均收益率: {avg_profit:.2f}%")
+            
+            # 显示最新信号
+            if not df.empty:
+                latest_buy = df['Buy_Signal'].iloc[-1] if 'Buy_Signal' in df.columns else False
+                latest_sell = df['Sell_Signal'].iloc[-1] if 'Sell_Signal' in df.columns else False
+                logger.info(f"  最新买入信号: {latest_buy}")
+                logger.info(f"  最新卖出信号: {latest_sell}")
+            
             if chart_path:
                 logger.info(f"分析图表已保存至: {chart_path}")
         

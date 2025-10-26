@@ -368,121 +368,86 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
 
 def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[str, str]] = None) -> Optional[pd.DataFrame]:
     """
-    获取分时数据，优先使用东方财富接口，失败时回退到akshare
+    获取分时数据（从缓存文件读取）
     
     Args:
         stock_code: 股票代码
         trade_date: 交易日期
-        proxy: 代理字典，格式如 {'http': 'http://127.0.0.1:7890', 'https': 'http://127.0.0.1:7890'}
+        proxy: 代理字典（已废弃，保留参数仅为兼容性）
     
     Returns:
         分时数据DataFrame
     """
-    # 如果没有提供代理，使用默认代理
-    if proxy is None:
-        proxy = DEFAULT_PROXY
-        
+    logger.info(f"="*60)
+    logger.info(f"开始从缓存加载分时数据")
+    logger.info(f"股票代码: {stock_code}")
+    logger.info(f"交易日期: {trade_date}")
+    
     try:
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
             try:
                 trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+                logger.info(f"日期格式: YYYY-MM-DD")
             except ValueError:
                 try:
                     trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                    logger.info(f"日期格式: YYYYMMDD")
                 except ValueError:
+                    logger.error(f"无法解析日期格式: {trade_date}")
                     raise ValueError(f"无法解析日期格式: {trade_date}")
         else:
             trade_date_obj = trade_date
             
-        # 格式化为接口需要的日期格式
+        # 格式化为缓存文件需要的日期格式 (YYYYMMDD)
         trade_date_str = trade_date_obj.strftime('%Y%m%d')
+        logger.info(f"格式化日期: {trade_date_str}")
         
-        # 1. 优先使用我们优化的东方财富接口
-        try:
-            logger.info(f"📡 尝试使用东方财富接口获取 {stock_code} 在 {trade_date} 的分时数据")
-            
-            # 使用东方财富接口
-            df = eastmoney_fenshi(
-                symbol=stock_code,
-                period="1",
-                start_date=trade_date_str,
-                end_date=trade_date_str,
-                adjust='',
-                proxy=proxy
-            )
-            
-            if not df.empty:
-                logger.info(f"✅ 东方财富接口成功获取到 {stock_code} 的分时数据")
-                
-                # 处理数据格式
-                if '时间' in df.columns:
-                    # 确保时间格式正确
-                    try:
-                        # 尝试直接转换
-                        df['时间'] = pd.to_datetime(df['时间'])
-                    except ValueError:
-                        # 如果直接转换失败，尝试添加日期
-                        df['时间'] = pd.to_datetime(df['时间'].apply(lambda x: f"{trade_date_obj.strftime('%Y-%m-%d')} {x}"))
-                    df = df.set_index('时间')
-                
-                # 过滤掉午休时间
-                df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
-                        ~((df.index.hour == 12))]
-                
-                # 填充缺失值
-                df = df.ffill().bfill()
-                
-                return df
-            else:
-                logger.warning(f"⚠️ 东方财富接口返回空数据，尝试使用akshare")
-        except Exception as e:
-            logger.warning(f"⚠️ 东方财富接口失败: {e}，尝试使用akshare")
+        # 构造缓存文件路径
+        cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache', 'fenshi_data')
+        cache_file = os.path.join(cache_dir, f'{stock_code}_{trade_date_str}_fenshi.csv')
         
-        # 添加随机延迟避免请求过于频繁
-        random_delay()
+        logger.info(f"缓存目录: {cache_dir}")
+        logger.info(f"缓存文件: {cache_file}")
         
-        # 2. 如果东方财富接口失败，回退到akshare
-        try:
-            logger.info(f"📡 尝试使用akshare获取 {stock_code} 在 {trade_date} 的分时数据")
-            
-            # 构造 akshare 需要的时间格式
-            start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
-            end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
-
-            # 从akshare获取数据
-            df = ak.stock_zh_a_hist_min_em(
-                symbol=stock_code,
-                period="1",
-                start_date=start_time,
-                end_date=end_time,
-                adjust=''
-            )
-
-            if df.empty:
-                logger.warning(f"⚠️ {stock_code} 在 {trade_date} 无分时数据")
-                return None
-            
-            # 处理数据
-            if '时间' in df.columns:
-                df['时间'] = pd.to_datetime(df['时间'])
-                df = df.set_index('时间')
-            
-            # 过滤掉午休时间
-            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
-                    ~((df.index.hour == 12))]
-            
-            # 填充缺失值
-            df = df.ffill().bfill()
-            
-            logger.info(f"✅ akshare成功获取到 {stock_code} 的分时数据")
-            return df
-        except Exception as e:
-            logger.error(f"❌ akshare获取分时数据失败: {e}")
+        # 从缓存文件读取数据
+        if not os.path.exists(cache_file):
+            logger.error(f"❌ 缓存文件不存在: {cache_file}")
             return None
+        
+        logger.info(f"✅ 找到缓存文件，开始读取...")
+        df = pd.read_csv(cache_file)
+        logger.info(f"读取到 {len(df)} 行数据")
+        
+        if df.empty:
+            logger.warning(f"❌ {stock_code} 在 {trade_date} 无分时数据")
+            return None
+        
+        # 处理数据格式
+        if '时间' in df.columns:
+            logger.info(f"处理时间列...")
+            df['时间'] = pd.to_datetime(df['时间'])
+            df = df.set_index('时间')
+            logger.info(f"时间范围: {df.index.min()} 到 {df.index.max()}")
+        
+        # 过滤掉午休时间
+        original_len = len(df)
+        df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                ~((df.index.hour == 12))]
+        logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+        
+        # 填充缺失值
+        df = df.ffill().bfill()
+        logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+        logger.info(f"✅ 成功从缓存加载 {stock_code} 的分时数据")
+        logger.info(f"="*60)
+        
+        return df
             
     except Exception as e:
         logger.error(f"❌ 获取分时数据过程中发生错误: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 def detect_trading_signals(df: pd.DataFrame, use_optimized: bool = True) -> Dict[str, List[Tuple[datetime, float]]]:
@@ -798,10 +763,8 @@ def main():
         '000333',  # 美的集团 - 家电龙头
     ]
     
-    # 使用昨天的日期作为默认交易日期
-    # yesterday = datetime.now() - timedelta(days=1)
-    today = datetime.now()
-    trade_date = today.strftime('%Y-%m-%d')
+    # 使用缓存数据的日期（2025-10-24）
+    trade_date = '20251024'
     
     print(f"\n📊 开始测试价格均线偏离策略 - 优化版\n")
     print(f"测试日期: {trade_date}\n")

@@ -68,11 +68,13 @@ class DataLoader:
             logger.error(f"保存数据到缓存失败: {e}")
 
     def load_stock_data(self, stock_code, date):
-        """加载指定股票的数据"""
+        """加载指定股票的数据 - 优先数据库，缺失则从接口获取"""
         try:
             logger.info(f"正在加载股票 {STOCKS[stock_code]} 的分时数据，日期：{date}")
 
-            # 从数据库获取数据
+            df = None
+            
+            # 第一步：尝试从数据库获取数据
             if USE_DATABASE:
                 try:
                     # 优先使用DBManager（分层数据库）
@@ -83,8 +85,6 @@ class DataLoader:
                         
                         if df is not None and not df.empty:
                             logger.info(f"✅ 使用DBManager成功读取 {len(df)} 条数据")
-                        else:
-                            raise ValueError("DBManager返回空数据")
                     except Exception as e:
                         logger.warning(f"⚠️ DBManager读取失败: {e}，尝试DataManager")
                         
@@ -95,26 +95,24 @@ class DataLoader:
                         
                         if df is not None and not df.empty:
                             logger.info(f"✅ 使用DataManager成功读取 {len(df)} 条数据")
-                        else:
-                            raise ValueError("DataManager返回空数据")
                     
                     # 验证数据类型
-                    if not isinstance(df, pd.DataFrame):
+                    if df is not None and not isinstance(df, pd.DataFrame):
                         logger.error(f"数据库返回的数据类型错误: {type(df).__name__}")
-                        raise TypeError(f"期望DataFrame，但得到{type(df).__name__}")
+                        df = None
                     
-                    logger.info(f"成功获取到数据，形状：{df.shape}")
-                    logger.info(f"数据列：{df.columns.tolist()}")
+                    if df is not None and not df.empty:
+                        logger.info(f"成功从数据库获取到数据，形状：{df.shape}")
+                        logger.info(f"数据列：{df.columns.tolist()}")
                     
                 except Exception as e:
                     logger.error(f"从数据库获取数据失败: {e}")
-                    import traceback
-                    traceback.print_exc()
-                    logger.info("使用模拟数据作为备用方案")
-                    df = self.generate_mock_data(stock_code, date)
-            else:
-                logger.warning("数据库管理器未加载，使用模拟数据")
-                df = self.generate_mock_data(stock_code, date)
+                    df = None
+            
+            # 第二步：如果数据库没有数据，从接口获取
+            if df is None or df.empty:
+                logger.info(f"数据库中没有{date}的数据，尝试从接口获取...")
+                df = self._fetch_from_api_and_save(stock_code, date)
 
             # 数据预处理
             df = self.preprocess_data(df, stock_code, date)
@@ -132,6 +130,46 @@ class DataLoader:
         except Exception as e:
             logger.error(f"加载股票 {STOCKS[stock_code]} 数据失败: {e}")
             raise
+    
+    def _fetch_from_api_and_save(self, stock_code, date):
+        """从接口获取数据并保存到数据库"""
+        try:
+            logger.info(f"开始从接口获取 {stock_code} {date} 的分时数据...")
+            
+            # 尝试导入数据获取模块
+            try:
+                sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'T0'))
+                from data2dfcf import fetch_intraday_data
+                
+                # 获取数据
+                df = fetch_intraday_data(stock_code, date)
+                
+                if df is None or df.empty:
+                    raise ValueError(f"接口返回空数据")
+                
+                logger.info(f"✅ 成功从接口获取 {len(df)} 条数据")
+                
+                # 保存到数据库
+                if USE_DATABASE:
+                    try:
+                        db_mgr = DBManager()
+                        db_mgr.save_minute_data(stock_code, date, df)
+                        db_mgr.close_all()
+                        logger.info(f"✅ 数据已保存到数据库")
+                    except Exception as e:
+                        logger.warning(f"⚠️ 保存到数据库失败: {e}")
+                
+                return df
+                
+            except ImportError as e:
+                logger.error(f"无法导入data2dfcf模块: {e}")
+                raise ValueError("接口模块不可用")
+                
+        except Exception as e:
+            logger.error(f"从接口获取数据失败: {e}")
+            # 如果接口也失败，返回模拟数据
+            logger.warning("接口获取失败，使用模拟数据")
+            return self.generate_mock_data(stock_code, date)
 
     def preprocess_data(self, df, stock_code, date):
         """数据预处理"""

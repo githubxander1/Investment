@@ -101,6 +101,46 @@ class IndicatorPlotters:
     """指标绘图器集合"""
     
     @staticmethod
+    def _add_hover_annotation(fig, ax, x_indices, data_df, time_labels, value_column):
+        """添加鼠标悬浮注释功能"""
+        # 创建注释框
+        annot = ax.annotate("", xy=(0,0), xytext=(10,10),
+                           textcoords="offset points",
+                           bbox=dict(boxstyle="round", fc="yellow", alpha=0.8),
+                           arrowprops=dict(arrowstyle="->"),
+                           fontsize=8,
+                           visible=False)
+        
+        def on_hover(event):
+            """鼠标悬浮事件处理"""
+            if event.inaxes == ax:
+                # 获取鼠标位置
+                x_pos = int(round(event.xdata)) if event.xdata is not None else None
+                
+                if x_pos is not None and 0 <= x_pos < len(data_df):
+                    # 获取对应的数据
+                    time_str = time_labels.iloc[x_pos] if time_labels is not None else f"点{x_pos}"
+                    
+                    # 根据列名获取值
+                    if value_column in data_df.columns:
+                        value = data_df.iloc[x_pos][value_column]
+                        text = f"{time_str}\n{value_column}: {value:.2f}"
+                    else:
+                        text = f"{time_str}"
+                    
+                    # 更新注释
+                    annot.xy = (x_pos, event.ydata)
+                    annot.set_text(text)
+                    annot.set_visible(True)
+                    fig.canvas.draw_idle()
+                else:
+                    annot.set_visible(False)
+                    fig.canvas.draw_idle()
+        
+        # 绑定鼠标移动事件
+        fig.canvas.mpl_connect('motion_notify_event', on_hover)
+    
+    @staticmethod
     def plot_comprehensive_t0(fig, df, stock_code):
         """绘制综合T0策略指标"""
         try:
@@ -126,63 +166,123 @@ class IndicatorPlotters:
                     analyzed_df = None
                 
                 if analyzed_df is not None and not analyzed_df.empty and 'Composite_Score' in analyzed_df.columns:
-                    # 创建3个子图
-                    ax1 = fig.add_subplot(311)  # 带信号的分时图
-                    ax2 = fig.add_subplot(312)  # 复合评分
-                    ax3 = fig.add_subplot(313)  # 其他分析
+                    # 创建4个子图（与comprehensive_t0_strategy.py一致）
+                    ax1 = fig.add_subplot(411)  # 价格与信号
+                    ax2 = fig.add_subplot(412)  # 价格均线偏离
+                    ax3 = fig.add_subplot(413)  # 动量指标
+                    ax4 = fig.add_subplot(414)  # 复合评分
                     
-                    # 子图1：带信号的分时图
-                    x_indices = list(range(len(analyzed_df)))
+                    # 子图1：价格与信号
+                    if '时间' in df.columns:
+                        time_labels = pd.to_datetime(df['时间']).dt.strftime('%H:%M')
+                        x_indices = list(range(len(analyzed_df)))
+                        full_data_length = 241  # 一个交易日的标准分钟数
+                    else:
+                        x_indices = list(range(len(analyzed_df)))
+                        time_labels = None
+                        full_data_length = len(analyzed_df)
                     
-                    # 使用analyzed_df的数据（如果有涨跌幅），否则使用原始df
-                    if '涨跌幅' in analyzed_df.columns:
-                        ax1.plot(x_indices, analyzed_df['涨跌幅'], 'b-', linewidth=1, label='分时线')
-                        price_data = analyzed_df['涨跌幅']
+                    # 绘制价格和均线
+                    if '收盘' in df.columns:
+                        price_line = ax1.plot(x_indices, df['收盘'], 'black', linewidth=1.5, label='价格')
+                        price_data = df['收盘']
                     elif '涨跌幅' in df.columns:
-                        ax1.plot(x_indices, df['涨跌幅'], 'b-', linewidth=1, label='分时线')
+                        price_line = ax1.plot(x_indices, df['涨跌幅'], 'black', linewidth=1.5, label='涨跌幅')
                         price_data = df['涨跌幅']
                     else:
-                        logger.warning("没有找到涨跌幅数据")
+                        logger.warning("没有找到价格数据")
                         price_data = None
                     
-                    if price_data is not None:
-                        if 'Buy_Signal' in analyzed_df.columns:
-                            buy_signals = analyzed_df[analyzed_df['Buy_Signal'] == True]
-                            for idx in buy_signals.index:
-                                x_pos = analyzed_df.index.get_loc(idx)
-                                ax1.scatter(x_pos, price_data.iloc[x_pos], 
-                                          color='red', marker='^', s=80, zorder=5)
-                        
-                        if 'Sell_Signal' in analyzed_df.columns:
-                            sell_signals = analyzed_df[analyzed_df['Sell_Signal'] == True]
-                            for idx in sell_signals.index:
-                                x_pos = analyzed_df.index.get_loc(idx)
-                                ax1.scatter(x_pos, price_data.iloc[x_pos], 
-                                          color='green', marker='v', s=80, zorder=5)
+                    if '均价' in df.columns:
+                        ax1.plot(x_indices, df['均价'], 'blue', linewidth=1.5, label='均价', alpha=0.8)
                     
-                    ax1.set_title(f'{stock_code} - 综合T0策略信号', fontsize=10)
-                    ax1.set_ylabel('涨跌幅 (%)', fontsize=9)
+                    # 绘制支撑阻力线
+                    if '支撑' in analyzed_df.columns:
+                        ax1.plot(x_indices, analyzed_df['支撑'], 'green', linestyle='--', linewidth=1.5, label='支撑')
+                    if '阻力' in analyzed_df.columns:
+                        ax1.plot(x_indices, analyzed_df['阻力'], 'red', linestyle='--', linewidth=1.5, label='阻力')
+                    
+                    # 绘制买卖信号
+                    if 'Buy_Signal' in analyzed_df.columns and price_data is not None:
+                        buy_signals = analyzed_df[analyzed_df['Buy_Signal']]
+                        for idx in buy_signals.index:
+                            x_pos = analyzed_df.index.get_loc(idx)
+                            ax1.scatter(x_pos, price_data.iloc[x_pos], color='red', marker='^', s=100, zorder=5)
+                    
+                    if 'Sell_Signal' in analyzed_df.columns and price_data is not None:
+                        sell_signals = analyzed_df[analyzed_df['Sell_Signal']]
+                        for idx in sell_signals.index:
+                            x_pos = analyzed_df.index.get_loc(idx)
+                            ax1.scatter(x_pos, price_data.iloc[x_pos], color='green', marker='v', s=100, zorder=5)
+                    
+                    ax1.set_title(f'{stock_code} - 价格与信号', fontsize=10)
+                    ax1.set_ylabel('价格', fontsize=9)
                     ax1.grid(True, alpha=0.3)
                     ax1.legend(loc='upper right', fontsize=8)
+                    ax1.set_xlim(-0.5, full_data_length - 0.5)
                     
-                    # 子图2：复合评分
-                    ax2.plot(x_indices, analyzed_df['Composite_Score'], 'b-', linewidth=1, label='复合评分')
-                    ax2.axhline(y=0, color='gray', linestyle='--', alpha=0.3)
-                    ax2.set_ylabel('评分', fontsize=9)
-                    ax2.set_title('复合评分', fontsize=10)
-                    ax2.grid(True, alpha=0.3)
-                    ax2.legend(loc='upper right', fontsize=8)
+                    # 子图2：价格均线偏离
+                    if 'Price_MA_Ratio' in analyzed_df.columns:
+                        ax2.plot(x_indices, analyzed_df['Price_MA_Ratio'], 'purple', linewidth=1.5, label='偏离率')
+                        
+                        # 添加动态阈值线（与comprehensive_t0_strategy.py一致）
+                        volatility = calculate_volatility(df)
+                        params = get_adaptive_parameters(volatility)
+                        threshold = params['price_ma_threshold']
+                        
+                        ax2.axhline(y=threshold, color='green', linestyle='--', alpha=0.7, label=f'卖出阈值 ({threshold}%)')
+                        ax2.axhline(y=-threshold, color='red', linestyle='--', alpha=0.7, label=f'买入阈值 ({-threshold}%)')
+                        ax2.axhline(y=0, color='gray', linestyle='--', alpha=0.3)
+                        
+                        ax2.set_ylabel('偏离率(%)', fontsize=9)
+                        ax2.set_title('价格均线偏离', fontsize=10)
+                        ax2.grid(True, alpha=0.3)
+                        ax2.legend(loc='upper right', fontsize=8)
                     
-                    # 子图3：信号统计
-                    if 'Buy_Signal' in analyzed_df.columns and 'Sell_Signal' in analyzed_df.columns:
-                        buy_count = analyzed_df['Buy_Signal'].sum()
-                        sell_count = analyzed_df['Sell_Signal'].sum()
-                        ax3.text(0.5, 0.5, f'买入信号: {buy_count}\n卖出信号: {sell_count}', 
-                                ha='center', va='center', fontsize=12)
-                    else:
-                        ax3.text(0.5, 0.5, '交易对分析', ha='center', va='center', fontsize=12)
-                    ax3.set_title('交易分析', fontsize=10)
-                    ax3.axis('off')
+                    # 子图3：动量指标
+                    if 'Price_Change' in analyzed_df.columns:
+                        ax3.plot(x_indices, analyzed_df['Price_Change'], 'blue', linewidth=1.5, label='动量')
+                        
+                        # 添加动态阈值线（与comprehensive_t0_strategy.py一致）
+                        if 'Upper_Threshold' in analyzed_df.columns:
+                            ax3.plot(x_indices, analyzed_df['Upper_Threshold'], 'red', linestyle='--', linewidth=1.5, label='超买阈值')
+                        if 'Lower_Threshold' in analyzed_df.columns:
+                            ax3.plot(x_indices, analyzed_df['Lower_Threshold'], 'green', linestyle='--', linewidth=1.5, label='超卖阈值')
+                        
+                        ax3.axhline(y=0, color='black', linestyle='-', alpha=0.5)
+                        ax3.set_ylabel('动量(%)', fontsize=9)
+                        ax3.set_title('动量指标', fontsize=10)
+                        ax3.grid(True, alpha=0.3)
+                        ax3.legend(loc='upper right', fontsize=8)
+                    
+                    # 子图4：复合评分
+                    ax4.plot(x_indices, analyzed_df['Composite_Score'], 'orange', linewidth=1.5, label='复合评分')
+                    ax4.axhline(y=50, color='orange', linestyle='--', alpha=0.7, label='信号阈值')
+                    ax4.axhline(y=80, color='darkorange', linestyle=':', alpha=0.7, label='紧急信号阈值')
+                    ax4.set_ylabel('评分', fontsize=9)
+                    ax4.set_title('复合评分', fontsize=10)
+                    ax4.grid(True, alpha=0.3)
+                    ax4.legend(loc='upper right', fontsize=8)
+                    
+                    # 设置X轴时间标签（仅在最下方子图显示）
+                    if time_labels is not None:
+                        step = max(1, full_data_length // 12)
+                        tick_positions = list(range(0, full_data_length, step))
+                        tick_labels = [time_labels.iloc[i] if i < len(time_labels) else '' for i in tick_positions]
+                        ax4.set_xticks(tick_positions)
+                        ax4.set_xticklabels(tick_labels, rotation=45, fontsize=8)
+                        ax4.set_xlabel('时间', fontsize=9)
+                    
+                    # 同步X轴范围
+                    for ax in [ax1, ax2, ax3, ax4]:
+                        ax.set_xlim(-0.5, full_data_length - 0.5)
+                    
+                    # 添加鼠标悬浮功能
+                    if time_labels is not None:
+                        IndicatorPlotters._add_hover_annotation(fig, ax1, x_indices, df, time_labels, '收盘')
+                        IndicatorPlotters._add_hover_annotation(fig, ax2, x_indices, analyzed_df, time_labels, 'Price_MA_Ratio')
+                        IndicatorPlotters._add_hover_annotation(fig, ax3, x_indices, analyzed_df, time_labels, 'Price_Change')
+                        IndicatorPlotters._add_hover_annotation(fig, ax4, x_indices, analyzed_df, time_labels, 'Composite_Score')
                     
                     fig.tight_layout()
                     return True
@@ -208,6 +308,13 @@ class IndicatorPlotters:
                 ax2 = ax1.twinx()  # 创建共享X轴的第二个Y轴
                 
                 x_indices = list(range(len(result)))
+                full_data_length = 241  # 一个交易日的标准分钟数
+                
+                # 获取时间标签
+                if '时间' in df.columns:
+                    time_labels = pd.to_datetime(df['时间']).dt.strftime('%H:%M')
+                else:
+                    time_labels = None
                 
                 # 左Y轴：价格和均线
                 # 绘制分时线（价格）
@@ -249,9 +356,20 @@ class IndicatorPlotters:
                 
                 # 设置标题和标签
                 ax1.set_title(f'{stock_code} - 价格均线偏离(基础)', fontsize=11, fontweight='bold')
-                ax1.set_xlabel('时间点', fontsize=9)
+                ax1.set_xlabel('时间', fontsize=9)
                 ax1.set_ylabel('价格', fontsize=9)
                 ax2.set_ylabel('偏离率 (%)', fontsize=9)
+                
+                # 固定横轴范围（回放时不变）
+                ax1.set_xlim(-0.5, full_data_length - 0.5)
+                
+                # 设置X轴时间标签
+                if time_labels is not None:
+                    step = max(1, full_data_length // 12)
+                    tick_positions = list(range(0, full_data_length, step))
+                    tick_labels = [time_labels.iloc[i] if i < len(time_labels) else '' for i in tick_positions]
+                    ax1.set_xticks(tick_positions)
+                    ax1.set_xticklabels(tick_labels, rotation=45, fontsize=8)
                 
                 # 网格
                 ax1.grid(True, alpha=0.3)
@@ -269,6 +387,10 @@ class IndicatorPlotters:
                         unique_lines.append(line)
                         unique_labels.append(label)
                 ax1.legend(unique_lines, unique_labels, loc='upper left', fontsize=8)
+                
+                # 添加鼠标悬浮功能
+                if time_labels is not None:
+                    IndicatorPlotters._add_hover_annotation(fig, ax1, x_indices, df, time_labels, '收盘')
                 
                 fig.tight_layout()
                 return True
@@ -293,6 +415,13 @@ class IndicatorPlotters:
                 ax2 = ax1.twinx()  # 创建共享X轴的第二个Y轴
                 
                 x_indices = list(range(len(result)))
+                full_data_length = 241  # 一个交易日的标准分钟数
+                
+                # 获取时间标签
+                if '时间' in df.columns:
+                    time_labels = pd.to_datetime(df['时间']).dt.strftime('%H:%M')
+                else:
+                    time_labels = None
                 
                 buy_col = 'Optimized_Buy_Signal' if 'Optimized_Buy_Signal' in result.columns else 'Buy_Signal'
                 sell_col = 'Optimized_Sell_Signal' if 'Optimized_Sell_Signal' in result.columns else 'Sell_Signal'
@@ -340,9 +469,20 @@ class IndicatorPlotters:
                 
                 # 设置标题和标签
                 ax1.set_title(f'{stock_code} - 价格均线偏离(优化)', fontsize=11, fontweight='bold')
-                ax1.set_xlabel('时间点', fontsize=9)
+                ax1.set_xlabel('时间', fontsize=9)
                 ax1.set_ylabel('价格', fontsize=9)
                 ax2.set_ylabel('偏离率 (%)', fontsize=9)
+                
+                # 固定横轴范围（回放时不变）
+                ax1.set_xlim(-0.5, full_data_length - 0.5)
+                
+                # 设置X轴时间标签
+                if time_labels is not None:
+                    step = max(1, full_data_length // 12)
+                    tick_positions = list(range(0, full_data_length, step))
+                    tick_labels = [time_labels.iloc[i] if i < len(time_labels) else '' for i in tick_positions]
+                    ax1.set_xticks(tick_positions)
+                    ax1.set_xticklabels(tick_labels, rotation=45, fontsize=8)
                 
                 # 网格
                 ax1.grid(True, alpha=0.3)
@@ -360,6 +500,10 @@ class IndicatorPlotters:
                         unique_lines.append(line)
                         unique_labels.append(label)
                 ax1.legend(unique_lines, unique_labels, loc='upper left', fontsize=8)
+                
+                # 添加鼠标悬浮功能
+                if time_labels is not None:
+                    IndicatorPlotters._add_hover_annotation(fig, ax1, x_indices, df, time_labels, '收盘')
                 
                 fig.tight_layout()
                 return True

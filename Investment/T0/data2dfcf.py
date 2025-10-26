@@ -77,16 +77,19 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
     # 1. 构造请求URL（参数含义：fields1=基础字段，fields2=分时字段，mpi=最大数据量）
     timestamp = get_timestamp()
     url = (
-        f'http://16.push2.eastmoney.com/api/qt/stock/details/sse'  
+        f'http://push2.eastmoney.com/api/qt/stock/details/sse'  # 修改URL为更常用的地址
         f'?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54,f55'  # f51=时间，f52=价格等
         f'&mpi=2000&ut=bd1d9ddb04089700cf9c27f6f7426281'  # mpi=最大返回2000条数据
         f'&fltt=2&pos=-0&secid={secid}'  # secid=目标股票标识
         f'&_={timestamp}'  # 添加时间戳防止缓存
     )
+    
+    logger.info(f"正在请求URL: {url}")
 
     # 2. 发送请求并读取响应（支持重试）
     for attempt in range(retry):
         try:
+            logger.info(f"第 {attempt+1} 次尝试获取数据...")
             request = create_request_with_proxy(url, proxy)
             
             # 使用proxy_handler如果提供了代理
@@ -95,17 +98,22 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
                 proxy_handler = urllib.request.ProxyHandler(proxy)
                 opener.add_handler(proxy_handler)
             
-            with opener.open(request, timeout=15) as response:
+            logger.info("正在发送网络请求...")
+            with opener.open(request, timeout=10) as response:  # 减少超时时间
+                logger.info("收到网络响应，正在读取内容...")
                 # 读取响应内容
                 content = response.read()
+                logger.info(f"响应内容大小: {len(content)} 字节")
                 
                 # 尝试解压缩gzip数据
                 try:
                     # 检查是否是gzip压缩数据（gzip魔数：0x1f8b）
                     if content.startswith(b'\x1f\x8b'):
+                        logger.info("检测到gzip压缩数据，正在解压...")
                         buffer = io.BytesIO(content)
                         with gzip.GzipFile(fileobj=buffer, mode='rb') as f:
                             content = f.read()
+                            logger.info(f"gzip解压后内容大小: {len(content)} 字节")
                 except Exception as e:
                     logger.warning(f"尝试解压缩gzip数据失败：{e}，将尝试直接解码")
                 
@@ -116,25 +124,33 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
                 for encoding in encodings:
                     try:
                         data_str = content.decode(encoding)
+                        logger.info(f"使用 {encoding} 编码解码成功，解码后长度: {len(data_str)}")
                         break
                     except UnicodeDecodeError:
+                        logger.warning(f"使用 {encoding} 编码解码失败")
                         continue
                 
                 if data_str is None:
                     logger.error("无法解码响应内容，尝试了多种编码")
                     return pd.DataFrame()
                 
+                logger.info(f"解码后数据前200字符: {repr(data_str[:200])}")
+                
                 # 响应格式为 "data:{...}"，需去除前缀"data:"
-                data_str = data_str.lstrip('data:')
+                if data_str.startswith('data:'):
+                    data_str = data_str[5:]  # 去除"data:"前缀而不是使用lstrip
+                    logger.info("已去除'data:'前缀")
                 
                 if not data_str:
                     logger.warning("响应为空，未获取到数据")
                     return pd.DataFrame()
                 
+                logger.info("正在解析JSON数据...")
                 # 3. 解析数据并转为DataFrame
                 try:
                     # 使用json.loads替代eval，更安全
                     data_dict = json.loads(data_str)
+                    logger.info(f"JSON解析成功: {list(data_dict.keys()) if isinstance(data_dict, dict) else '非字典结构'}")
                     
                     # 检查是否有数据
                     if 'data' not in data_dict or not data_dict['data']:
@@ -143,15 +159,52 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
                     
                     # 获取具体的分时数据（根据实际接口返回调整）
                     # 东方财富接口可能返回details字段，是一个字符串，需要分割
-                    details = data_dict['data'].get('details', '')
+                    data_part = data_dict['data']
+                    logger.info(f"data部分类型: {type(data_part)}")
+                    logger.info(f"data部分内容预览: {str(data_part)[:200] if data_part else 'None'}")
+                    
+                    # 根据实际返回结构调整
+                    details = ""
+                    if isinstance(data_part, dict):
+                        details = data_part.get('details', '')
+                        logger.info(f"从dict中获取details字段: {type(details)}, 长度: {len(details) if hasattr(details, '__len__') else 'N/A'}")
+                    elif isinstance(data_part, str):
+                        details = data_part
+                        logger.info(f"直接使用data_part作为details: {type(details)}, 长度: {len(details)}")
+                    elif isinstance(data_part, list):
+                        details = ";".join([str(item) for item in data_part])
+                        logger.info(f"将list转换为字符串: {type(details)}, 长度: {len(details)}")
+                    else:
+                        details = str(data_part)
+                        logger.info(f"将其他类型转换为字符串: {type(details)}, 长度: {len(details)}")
+                    
                     if not details:
                         logger.warning("details字段为空")
+                        # 尝试其他可能的字段
+                        if isinstance(data_part, dict):
+                            logger.info(f"data中所有键: {list(data_part.keys())}")
+                            # 尝试其他可能包含数据的字段
+                            for key in data_part.keys():
+                                value = data_part[key]
+                                logger.info(f"键 {key}: 类型 {type(value)}, 内容预览: {str(value)[:100] if value else 'None'}")
                         return pd.DataFrame()
+                    
+                    # 如果details不是字符串而是列表或其他类型
+                    if not isinstance(details, str):
+                        logger.info("details不是字符串，尝试转换为字符串")
+                        details = str(details)
                     
                     # 处理details数据（假设是分号分隔的记录，逗号分隔的字段）
                     # 格式示例：'15:00:00,10.23,1000;15:00:03,10.24,1200;...'
                     records = []
-                    for item in details.split(';'):
+                    items = details.split(';')
+                    logger.info(f"分割后的项目数量: {len(items)}")
+                    
+                    # 限制处理的项目数量以避免卡顿
+                    max_items = min(1000, len(items))
+                    logger.info(f"将处理前 {max_items} 个项目")
+                    
+                    for i, item in enumerate(items[:max_items]):
                         if item:
                             try:
                                 parts = item.split(',')
@@ -170,18 +223,24 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
                                         '成交额': amount,
                                         '买卖类型': bs_type
                                     })
+                                else:
+                                    logger.debug(f"项目 {i} 分割后不足5个字段: {item}")
                             except (ValueError, IndexError) as e:
-                                logger.error(f"解析单条数据失败: {item}, 错误: {e}")
+                                logger.debug(f"解析单条数据失败: {item}, 错误: {e}")
                                 continue
                     
+                    logger.info(f"共解析到 {len(records)} 条记录")
                     # 创建DataFrame
                     if records:
                         df = pd.DataFrame(records)
+                        logger.info(f"创建DataFrame完成，形状: {df.shape}")
                         
                         # 添加完整日期（当前日期）
-                        today = datetime.now().strftime('%Y-%m-%d')
-                        df['完整时间'] = df['时间'].apply(lambda x: f"{today} {x}")
+                        # today = datetime.now().strftime('%Y-%m-%d')
+                        yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+                        df['完整时间'] = df['时间'].apply(lambda x: f"{yesterday} {x}")
                         df['完整时间'] = pd.to_datetime(df['完整时间'])
+                        logger.info("时间列处理完成")
                         
                         return df
                     else:
@@ -190,9 +249,12 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
                         
                 except json.JSONDecodeError as e:
                     logger.error(f"数据JSON解析失败：{e}")
+                    logger.error(f"原始数据内容: {data_str[:500]}...")
                     return pd.DataFrame()
                 except Exception as e:
                     logger.error(f"数据处理过程中发生错误：{e}")
+                    import traceback
+                    logger.error(f"详细错误信息：{traceback.format_exc()}")
                     return pd.DataFrame()
                     
         except HTTPError as e:
@@ -202,6 +264,13 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", proxy=None, retry=3):
             random_delay(1, 3)  # 增加重试间隔
         except URLError as e:
             logger.error(f"URL错误或网络问题：{e.reason}，第{attempt+1}次尝试")
+            if attempt == retry - 1:
+                return pd.DataFrame()
+            random_delay(1, 3)  # 增加重试间隔
+        except Exception as e:
+            logger.error(f"未知错误：{e}，第{attempt+1}次尝试")
+            import traceback
+            logger.error(f"详细错误信息：{traceback.format_exc()}")
             if attempt == retry - 1:
                 return pd.DataFrame()
             random_delay(1, 3)  # 增加重试间隔
@@ -223,7 +292,7 @@ def get_eastmoney_fenshi_by_date(stock_code, trade_date=None, proxy=None):
     else:  # 深市股票或基金
         secid = f"0.{stock_code}"
     
-    logger.info(f"开始获取股票 {stock_code} 的分时数据")
+    logger.info(f"开始获取股票 {stock_code} 的分时数据，secid: {secid}")
     
     # 获取分时数据
     df = get_eastmoney_fenshi_with_pandas(secid, proxy)
@@ -296,13 +365,15 @@ if __name__ == "__main__":
     proxy = None  # 不使用代理
     
     # 抓取沪市600030的分时数据
-    df_fenshi = get_eastmoney_fenshi_by_date(stock_code="600030", proxy=proxy)
+    stock_code = "600030"
+    print(f"开始获取股票 {stock_code} 的分时数据...")
+    df_fenshi = get_eastmoney_fenshi_by_date(stock_code=stock_code, proxy=proxy)
     print(f"DataFrame形状：{df_fenshi.shape}")  # 打印数据行数和列数
     if not df_fenshi.empty:
         print("\nDataFrame前5行：")
         print(df_fenshi.head())
         # 可选：导出为Excel或CSV
-        df_fenshi.to_excel("东方财富分时数据.xlsx", index=False)
-        df_fenshi.to_csv("东方财富分时数据.csv", index=False, encoding="utf-8-sig")
+        df_fenshi.to_excel(f"{stock_code}分时数据.xlsx", index=False)
+        df_fenshi.to_csv(f"{stock_code}分时数据.csv", index=False, encoding="utf-8-sig")
     else:
         print("未获取到有效数据")

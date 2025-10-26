@@ -114,7 +114,7 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
 
 def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
     """
-    获取分时数据
+    获取分时数据（从缓存文件读取）
     
     Args:
         stock_code: 股票代码
@@ -123,44 +123,68 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
     Returns:
         分时数据DataFrame
     """
+    print(f"="*60)
+    print(f"开始从缓存加载分时数据")
+    print(f"股票代码: {stock_code}")
+    print(f"交易日期: {trade_date}")
+    
     try:
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
             try:
                 # 尝试使用 YYYY-MM-DD 格式解析
                 trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+                print(f"日期格式: YYYY-MM-DD")
             except ValueError:
                 try:
                     # 如果失败，尝试使用 YYYYMMDD 格式解析
                     trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                    print(f"日期格式: YYYYMMDD")
                 except ValueError:
+                    print(f"❌ 无法解析日期格式: {trade_date}")
                     raise ValueError(f"无法解析日期格式: {trade_date}")
         else:
             trade_date_obj = trade_date
             
-        # 格式化为 akshare 接口需要的日期格式
+        # 格式化为缓存文件需要的日期格式 (YYYYMMDD)
         trade_date_str = trade_date_obj.strftime('%Y%m%d')
+        print(f"格式化日期: {trade_date_str}")
         
-        # 构造 akshare 需要的时间格式 (YYYY-MM-DD HH:MM:SS)
-        start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
-        end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
-
-        # 从akshare获取数据
-        df = ak.stock_zh_a_hist_min_em(
-            symbol=stock_code,
-            period="1",
-            start_date=start_time,
-            end_date=end_time,
-            adjust=''
-        )
-
+        # 构造缓存文件路径
+        cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache', 'fenshi_data')
+        cache_file = os.path.join(cache_dir, f'{stock_code}_{trade_date_str}_fenshi.csv')
+        
+        print(f"缓存目录: {cache_dir}")
+        print(f"缓存文件: {cache_file}")
+        
+        # 从缓存文件读取数据
+        if not os.path.exists(cache_file):
+            print(f"❌ 缓存文件不存在: {cache_file}")
+            return None
+        
+        print(f"✅ 找到缓存文件，开始读取...")
+        df = pd.read_csv(cache_file)
+        print(f"读取到 {len(df)} 行数据")
+        
         if df.empty:
             print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
             return None
         
+        # 处理时间列
+        if '时间' in df.columns:
+            print(f"处理时间列...")
+            df['时间'] = pd.to_datetime(df['时间'])
+            print(f"时间范围: {df['时间'].min()} 到 {df['时间'].max()}")
+        
+        print(f"数据列: {', '.join(df.columns.tolist())}")
+        print(f"✅ 成功从缓存加载 {stock_code} 的分时数据")
+        print(f"="*60)
+        
         return df
     except Exception as e:
         print(f"❌ 获取分时数据失败: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 def detect_trading_signals(df: pd.DataFrame) -> Dict[str, List[Tuple[datetime, float]]]:
@@ -343,7 +367,8 @@ if __name__ == "__main__":
     # 测试代码
     stock_code = "000333"  # 美的集团
     # stock_code = "600030"  # 中信证券
-    trade_date = datetime.now().strftime('%Y-%m-%d')
+    # 使用缓存数据的日期（2025-10-24）
+    trade_date = '20251024'
     
     result = analyze_price_ma_deviation(stock_code, trade_date)
     if result:

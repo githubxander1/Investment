@@ -389,13 +389,8 @@ def generate_trading_signals(df: pd.DataFrame, params: Dict[str, float], has_ope
         if hasattr(idx, 'hour'):
             hour, minute = idx.hour, idx.minute
             
-            # 智能时间过滤：
-            # 1. 紧急信号不考虑时间限制
-            # 2. 有未完成T操作时，尾盘也允许操作
-            # 3. 正常情况下避开尾盘
-            if not is_emergency and not has_open_position:
-                if hour == 14 and minute >= 50:
-                    continue
+            # 移除时间过滤，允许早晚盘信号显示
+            # 现在允许所有时间的信号，不再过滤尾盘时间
         
         # 时间间隔过滤（紧急信号除外）
         if not is_emergency and last_buy_time is not None:
@@ -423,13 +418,8 @@ def generate_trading_signals(df: pd.DataFrame, params: Dict[str, float], has_ope
         if hasattr(idx, 'hour'):
             hour, minute = idx.hour, idx.minute
             
-            # 智能时间过滤：
-            # 1. 紧急信号不考虑时间限制
-            # 2. 有未完成T操作时，尾盘也允许操作
-            # 3. 正常情况下避开尾盘
-            if not is_emergency and not has_open_position:
-                if hour == 14 and minute >= 50:
-                    continue
+            # 移除时间过滤，允许早晚盘信号显示
+            # 现在允许所有时间的信号，不再过滤尾盘时间
         
         # 时间间隔过滤（紧急信号除外）
         if not is_emergency and last_sell_time is not None:
@@ -496,28 +486,24 @@ def match_trade_pairs(df: pd.DataFrame, max_hold_minutes: int = 90) -> List[Dict
             if isinstance(buy_time, pd.Timestamp) and isinstance(sell_time, pd.Timestamp):
                 hold_time_minutes = (sell_time - buy_time).total_seconds() / 60
                 
-                # 检查是否超过最大持有时间
-                if hold_time_minutes <= max_hold_minutes:
-                    buy_price = df.loc[buy_time, '收盘']
-                    sell_price = df.loc[sell_time, '收盘']
-                    profit_pct = (sell_price / buy_price - 1) * 100
-                    
-                    trades.append({
-                        'buy_time': buy_time,
-                        'sell_time': sell_time,
-                        'buy_price': buy_price,
-                        'sell_price': sell_price,
-                        'profit_pct': profit_pct,
-                        'hold_time_minutes': hold_time_minutes,
-                        'buy_score': df.loc[buy_time, 'buy_score'],
-                        'sell_score': df.loc[sell_time, 'sell_score']
-                    })
-                    
-                    i += 1
-                    j += 1
-                else:
-                    # 超过最大持有时间，跳过这个买入信号
-                    i += 1
+                # 移除最大持有时间限制，直接添加交易对
+                buy_price = df.loc[buy_time, '收盘']
+                sell_price = df.loc[sell_time, '收盘']
+                profit_pct = (sell_price / buy_price - 1) * 100
+                
+                trades.append({
+                    'buy_time': buy_time,
+                    'sell_time': sell_time,
+                    'buy_price': buy_price,
+                    'sell_price': sell_price,
+                    'profit_pct': profit_pct,
+                    'hold_time_minutes': hold_time_minutes,
+                    'buy_score': df.loc[buy_time, 'buy_score'],
+                    'sell_score': df.loc[sell_time, 'sell_score']
+                })
+                
+                i += 1
+                j += 1
             else:
                 # 非时间戳索引，简单匹配
                 buy_price = df.loc[buy_time, '收盘']
@@ -910,8 +896,8 @@ def plot_comprehensive_t0(stock_code: str, trade_date: Optional[str] = None,
 if __name__ == "__main__":
     # 测试代码 - 扩展测试更多股票，覆盖不同行业和波动特征
     stock_codes = [
-        "000333",  # 美的集团 - 家电龙头
-        "600030",  # 中信证券 - 券商龙头
+        # "000333",  # 美的集团 - 家电龙头
+        # "600030",  # 中信证券 - 券商龙头
         # "000002",  # 万科A - 地产龙头
         # "600519",  # 贵州茅台 - 白酒龙头
         # "000858",  # 五粮液 - 白酒

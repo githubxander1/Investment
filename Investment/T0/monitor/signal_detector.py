@@ -12,25 +12,16 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Investment.T0.utils.logger import log_signal
-from Investment.T0.indicators.resistance_support_indicators import calculate_tdx_indicators as calc_resistance_support, plot_tdx_intraday
-# 导入综合T+0策略
+# 只导入综合T+0策略，移除其他指标
 from Investment.T0.indicators.comprehensive_t0_strategy import analyze_comprehensive_t0
-# 注释掉其他指标的导入
-# from Investment.T0.indicators.extended_indicators import calculate_tdx_indicators as calc_extended
-# from Investment.T0.indicators.volume_price_indicators import (calculate_volume_price_indicators,
-#                                                calculate_support_resistance,
-#                                                calculate_fund_flow_indicators,
-#                                                detect_signals)
 
 class SignalDetector:
     """信号检测器"""
     
     def __init__(self, stock_code):
         self.stock_code = stock_code
-        # 只保留阻力支撑指标的信号状态和综合T+0策略
+        # 只保留综合T+0策略的信号状态
         self.prev_signals = {
-            'resistance_support': {'buy': False, 'sell': False},
-            # 新增综合T+0策略信号状态
             'comprehensive_t0': {'buy': False, 'sell': False, 'has_open_position': False}
         }
 
@@ -185,54 +176,6 @@ class SignalDetector:
                 print(f"重试获取股票数据失败: {retry_e}")
             return None
 
-    def detect_resistance_support_signals(self, df, prev_close):
-        """检测阻力支撑指标信号"""
-        if df is None or df.empty or prev_close is None:
-            return None
-            
-        try:
-            # 使用完整的指标计算函数
-            df_with_indicators = calc_resistance_support(df.copy(), prev_close)
-            
-            signals = {'buy': False, 'sell': False, 'buy_details': '', 'sell_details': ''}
-            
-            # 检查是否有买入信号（longcross_support）
-            if df_with_indicators['longcross_support'].any():
-                signals['buy'] = True
-                signals['buy_details'] = f"支撑位买入信号触发"
-                
-            # 检查是否有卖出信号（longcross_resistance）
-            if df_with_indicators['longcross_resistance'].any():
-                signals['sell'] = True
-                signals['sell_details'] = f"阻力位卖出信号触发"
-            
-            # 保存图表
-            self._save_resistance_support_chart(df_with_indicators, prev_close)
-            
-            return signals
-            
-        except Exception as e:
-            print(f"检测阻力支撑信号时出错: {e}")
-            return None
-
-    def _save_resistance_support_chart(self, df, prev_close):
-        """保存阻力支撑指标图表"""
-        try:
-            import os
-            from Investment.T0.indicators.resistance_support_indicators import plot_tdx_intraday
-            import pandas as pd
-            from datetime import datetime
-
-            # 调用阻力支撑指标文件中的完整绘图方法
-            stock_code = self.stock_code
-            trade_date = datetime.now().strftime('%Y%m%d')
-
-            # 直接调用绘图方法
-            plot_tdx_intraday(stock_code, trade_date)
-                                
-        except Exception as e:
-            print(f"保存阻力支撑指标图表时出错: {e}")
-
     def get_prev_close(self, stock_code=None, trade_date=None):
         """
         获取股票前收盘价的方法，尝试多种方式
@@ -338,50 +281,13 @@ class SignalDetector:
 
     def detect_all_signals(self):
         """检测所有指标的信号"""
-        # 获取数据
-        df = self.get_stock_data()
-        if df is None or df.empty:
-            return None
-
-        # 使用类方法获取前收盘价
-        prev_close = self.get_prev_close()
-        if prev_close is None:
-            prev_close = df['开盘'].dropna().iloc[0] if not df['开盘'].dropna().empty else 0
-            
-        # 检测各指标信号
-        resistance_support_signals = self.detect_resistance_support_signals(df, prev_close)
-        
-        # 检测综合T+0策略信号（新添加）
+        # 检测综合T+0策略信号（现在是唯一的指标）
         comprehensive_t0_signals = self.detect_comprehensive_t0_signals()
 
         # 检查是否有新信号
         new_signals = []
         
-        # 阻力支撑信号
-        if resistance_support_signals:
-            # 检查是否有新的买入信号
-            if resistance_support_signals['buy'] and not self.prev_signals['resistance_support']['buy']:
-                new_signals.append({
-                    'indicator': '阻力支撑',
-                    'type': '买入',
-                    'details': resistance_support_signals['buy_details']
-                })
-                log_signal(self.stock_code, '阻力支撑', '买入', resistance_support_signals['buy_details'])
-                
-            # 检查是否有新的卖出信号
-            if resistance_support_signals['sell'] and not self.prev_signals['resistance_support']['sell']:
-                new_signals.append({
-                    'indicator': '阻力支撑',
-                    'type': '卖出',
-                    'details': resistance_support_signals['sell_details']
-                })
-                log_signal(self.stock_code, '阻力支撑', '卖出', resistance_support_signals['sell_details'])
-                
-            # 更新之前的信号状态
-            self.prev_signals['resistance_support']['buy'] = resistance_support_signals['buy']
-            self.prev_signals['resistance_support']['sell'] = resistance_support_signals['sell']
-        
-        # 综合T+0策略信号（新添加）
+        # 综合T+0策略信号
         if comprehensive_t0_signals:
             # 检查是否有新的买入信号
             if comprehensive_t0_signals['buy'] and not self.prev_signals['comprehensive_t0']['buy']:
