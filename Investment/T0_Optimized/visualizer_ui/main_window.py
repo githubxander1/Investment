@@ -32,8 +32,11 @@ class T0DataVisualizer:
         # 当前选中的股票
         self.current_stock = tk.StringVar(value='600030')
         
+        # 获取当前日期
+        from datetime import datetime
+        today = datetime.now().strftime('%Y-%m-%d')
         # 当前选择的日期
-        self.current_date = tk.StringVar(value='2025-10-24')
+        self.current_date = tk.StringVar(value=today)
 
         # 数据加载器
         self.data_loader = DataLoader()
@@ -88,10 +91,19 @@ class T0DataVisualizer:
         
         # 日期选择
         ttk.Label(control_frame, text="日期:").pack(side=tk.LEFT, padx=5)
+        # 生成包含今天和最近几天的日期列表
+        from datetime import datetime, timedelta
+        today = datetime.now()
+        dates = [today.strftime('%Y-%m-%d')]
+        # 添加最近4天的日期
+        for i in range(1, 5):
+            past_date = today - timedelta(days=i)
+            dates.append(past_date.strftime('%Y-%m-%d'))
+        
         date_combo = ttk.Combobox(
             control_frame,
             textvariable=self.current_date,
-            values=['2025-10-24', '2025-10-25', '2025-10-23', '2025-10-22'],
+            values=dates,
             width=12
         )
         date_combo.pack(side=tk.LEFT, padx=5)

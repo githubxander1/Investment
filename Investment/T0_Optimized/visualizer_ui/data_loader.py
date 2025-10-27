@@ -139,10 +139,10 @@ class DataLoader:
             # 尝试导入数据获取模块
             try:
                 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'T0'))
-                from data2dfcf import fetch_intraday_data
+                from data2dfcf import get_eastmoney_fenshi_by_date
                 
-                # 获取数据
-                df = fetch_intraday_data(stock_code, date)
+                # 获取数据 - 使用现有的get_eastmoney_fenshi_by_date函数
+                df = get_eastmoney_fenshi_by_date(stock_code, date)
                 
                 if df is None or df.empty:
                     raise ValueError(f"接口返回空数据")
@@ -163,13 +163,13 @@ class DataLoader:
                 
             except ImportError as e:
                 logger.error(f"无法导入data2dfcf模块: {e}")
-                raise ValueError("接口模块不可用")
+                raise ValueError("接口模块不可用，请检查data2dfcf.py文件是否存在且包含get_eastmoney_fenshi_by_date函数")
                 
         except Exception as e:
             logger.error(f"从接口获取数据失败: {e}")
-            # 如果接口也失败，返回模拟数据
-            logger.warning("接口获取失败，使用模拟数据")
-            return self.generate_mock_data(stock_code, date)
+            # 不再使用模拟数据，而是抛出异常
+            raise ValueError(f"无法获取真实数据: {str(e)}")
+            # 移除模拟数据生成逻辑，确保只使用真实数据
 
     def preprocess_data(self, df, stock_code, date):
         """数据预处理"""
@@ -210,39 +210,4 @@ class DataLoader:
         
         return df
 
-    def generate_mock_data(self, stock_code, date):
-        """生成模拟分时数据"""
-        logger.info(f"为股票 {STOCKS[stock_code]} 生成模拟分时数据")
-
-        times = []
-        # 上午时段（9:30-11:30）
-        for hour in [9, 10, 11]:
-            for minute in range(60):
-                if (hour > 9 or minute >= 30) and (hour < 11 or minute <= 30):
-                    times.append(datetime.strptime(f"{date} {hour:02d}:{minute:02d}:00", "%Y-%m-%d %H:%M:%S"))
-
-        # 下午时段（13:00-15:00）
-        for hour in [13, 14]:
-            for minute in range(60):
-                if hour < 14 or minute <= 0:
-                    times.append(datetime.strptime(f"{date} {hour:02d}:{minute:02d}:00", "%Y-%m-%d %H:%M:%S"))
-
-        n = len(times)
-        base_price = 100 + np.random.random() * 50
-
-        trend = np.linspace(0, np.random.uniform(-0.02, 0.02), n)
-        noise = np.cumsum(np.random.normal(0, 0.001, n))
-        price_changes = trend + noise
-
-        df = pd.DataFrame({
-            '时间': times,
-            '开盘': base_price,
-            '收盘': base_price * (1 + price_changes),
-            '成交量': np.random.randint(1000, 100000, size=n)
-        })
-
-        df['涨跌幅'] = (df['收盘'] / base_price - 1) * 100
-        df['成交额'] = df['收盘'] * df['成交量']
-
-        logger.info(f"模拟数据生成完成，共 {len(df)} 条记录")
-        return df
+    # 移除generate_mock_data方法，不再使用模拟数据

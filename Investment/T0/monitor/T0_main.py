@@ -180,8 +180,7 @@ class T0Monitor:
     def _send_notification(self, message):
         """发送通知"""
         try:
-            # 在这里实现通知发送逻辑（例如通过邮件、短信、微信等）
-            # 这里仅打印到控制台作为示例
+            # 首先打印到控制台
             print("=" * 50)
             print("交易信号通知")
             print("=" * 50)
@@ -191,6 +190,67 @@ class T0Monitor:
             # 记录到日志
             logger.info(f"发送通知: {message}")
             
+            # 尝试发送Windows系统通知
+            try:
+                # 尝试导入win10toast库
+                try:
+                    from win10toast import ToastNotifier
+                    
+                    # 创建通知器
+                    toaster = ToastNotifier()
+                    
+                    # 解析消息，提取股票代码和信号类型作为标题
+                    lines = message.strip().split('\n')
+                    title = "T0交易信号"
+                    
+                    # 尝试提取股票代码和信号类型
+                    stock_code = None
+                    signal_type = None
+                    
+                    for line in lines:
+                        if line.startswith("股票代码:"):
+                            stock_code = line.split(":")[1].strip()
+                        elif line.startswith("信号类型:"):
+                            signal_type = line.split(":")[1].strip()
+                    
+                    # 如果找到股票代码和信号类型，构建更具体的标题
+                    if stock_code and signal_type:
+                        title = f"{stock_code} - {signal_type}"
+                    elif stock_code:
+                        title = f"{stock_code} 信号"
+                    
+                    # 发送通知
+                    toaster.show_toast(
+                        title=title,
+                        msg="点击查看详情",
+                        icon_path=None,  # 可以设置自定义图标
+                        duration=10,     # 通知显示10秒
+                        threaded=True    # 非阻塞模式
+                    )
+                    logger.info("✅ Windows系统通知已发送")
+                    
+                except ImportError:
+                    logger.warning("❌ win10toast库未安装，尝试使用其他方式发送通知")
+                    
+                    # 尝试使用Windows内置的通知功能（通过powershell）
+                    try:
+                        import subprocess
+                        
+                        # 清理消息内容，使其适合PowerShell
+                        clean_message = message.replace('"', '\"').replace('`', '``')
+                        
+                        # 构建PowerShell命令
+                        ps_command = f'Add-Type -AssemblyName System.Windows.Forms; $global:balloon = New-Object System.Windows.Forms.NotifyIcon; $path = (Get-Process -id $pid).Path; $balloon.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path); $balloon.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Info; $balloon.BalloonTipText = "{clean_message}"; $balloon.BalloonTipTitle = "T0交易信号"; $balloon.Visible = $true; $balloon.ShowBalloonTip(10000);'
+                        
+                        # 执行PowerShell命令
+                        subprocess.Popen(["powershell", "-Command", ps_command], shell=True)
+                        logger.info("✅ 通过PowerShell发送Windows通知")
+                    except Exception as ps_e:
+                        logger.warning(f"❌ 通过PowerShell发送通知失败: {ps_e}")
+                        
+            except Exception as notify_e:
+                logger.error(f"发送系统通知时出错: {notify_e}")
+                
         except Exception as e:
             logger.error(f"发送通知时出错: {e}")
     

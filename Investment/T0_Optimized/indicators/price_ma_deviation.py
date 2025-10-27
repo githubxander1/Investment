@@ -120,76 +120,213 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     return df
 
 
-def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
+def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[str] = None) -> Optional[pd.DataFrame]:
     """
-    从数据库获取分时数据
+    获取股票的分时数据，支持从数据库、缓存和akshare获取
     
     Args:
         stock_code: 股票代码
         trade_date: 交易日期
+        proxy: 代理设置（可选）
     
     Returns:
         分时数据DataFrame
     """
     logger.info("="*60)
-    logger.info("📈 开始从数据库加载分时数据")
-    logger.info(f"股票代码: {stock_code}")
-    logger.info(f"交易日期: {trade_date}")
+    logger.info(f"📈 开始获取 {stock_code} 在 {trade_date} 的分时数据")
     
-    if not USE_DATABASE:
-        logger.error("⚠️ 数据库管理器未加载，无法读取数据")
-        return None
-    
-    try:
-        # 解析日期格式
-        if isinstance(trade_date, str):
-            if '-' in trade_date:
-                trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
-            else:
-                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+    # 处理日期格式
+    if isinstance(trade_date, str):
+        if '-' in trade_date:
+            trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
         else:
-            trade_date_obj = trade_date
-        
-        trade_date_str = trade_date_obj.strftime('%Y-%m-%d')
-        logger.info(f"格式化日期: {trade_date_str}")
-        
-        # 尝试使用DBManager（推荐）
+            trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+    else:
+        trade_date_obj = trade_date
+    
+    trade_date_str = trade_date_obj.strftime('%Y%m%d')
+    api_date_format = trade_date_obj.strftime('%Y-%m-%d')
+    logger.info(f"格式化日期: {api_date_format}")
+    
+    # 创建缓存目录
+    cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache', 'intraday_data')
+    os.makedirs(cache_dir, exist_ok=True)
+    
+    # 构造缓存文件路径
+    cache_file = os.path.join(cache_dir, f'{stock_code}_{trade_date_str}.csv')
+    
+    # 先检查缓存
+    if os.path.exists(cache_file):
         try:
-            db_mgr = DBManager()
-            df = db_mgr.get_minute_data(stock_code, trade_date_str)
-            db_mgr.close_all()
+            # 尝试从缓存加载数据
+            df = pd.read_csv(cache_file)
+            logger.info(f"✅ 从缓存文件成功加载数据: {cache_file}")
+            logger.info(f"缓存数据行数: {len(df)}")
             
-            if df is not None and not df.empty:
-                logger.info(f"✅ 使用DBManager成功读取 {len(df)} 条数据")
-                logger.info(f"时间范围: {df['时间'].min()} ~ {df['时间'].max()}")
-                logger.info(f"数据列: {', '.join(df.columns.tolist())}")
-                logger.info("="*60)
-                return df
+            # 处理数据格式
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                df = df.set_index('时间')
+            
+            # 过滤掉午休时间
+            original_len = len(df)
+            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                    ~((df.index.hour == 12))]
+            logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+            
+            # 填充缺失值
+            df = df.ffill().bfill()
+            logger.info(f"="*60)
+            return df
         except Exception as e:
-            logger.warning(f"⚠️ DBManager读取失败: {e}")
-        
-        # 回退到DataManager
+            logger.error(f"❌ 从缓存加载数据失败: {e}")
+    
+    # 尝试从数据库获取
+    if USE_DATABASE:
         try:
-            dm = DataManager()
-            df = dm.get_minute_data(stock_code, trade_date_str)
-            dm.close()
+            # 尝试使用DBManager（推荐）
+            try:
+                db_mgr = DBManager()
+                df = db_mgr.get_minute_data(stock_code, api_date_format)
+                db_mgr.close_all()
+                
+                if df is not None and not df.empty:
+                    logger.info(f"✅ 使用DBManager成功读取 {len(df)} 条数据")
+                    logger.info(f"时间范围: {df['时间'].min()} ~ {df['时间'].max()}")
+                    logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+                    
+                    # 保存到缓存
+                    df.to_csv(cache_file, index=False)
+                    logger.info(f"✅ 数据已保存到缓存: {cache_file}")
+                    logger.info("="*60)
+                    return df
+            except Exception as e:
+                logger.warning(f"⚠️ DBManager读取失败: {e}")
             
-            if df is not None and not df.empty:
-                logger.info(f"✅ 使用DataManager成功读取 {len(df)} 条数据")
-                logger.info(f"时间范围: {df['时间'].min()} ~ {df['时间'].max()}")
-                logger.info("="*60)
-                return df
+            # 回退到DataManager
+            try:
+                dm = DataManager()
+                df = dm.get_minute_data(stock_code, api_date_format)
+                dm.close()
+                
+                if df is not None and not df.empty:
+                    logger.info(f"✅ 使用DataManager成功读取 {len(df)} 条数据")
+                    logger.info(f"时间范围: {df['时间'].min()} ~ {df['时间'].max()}")
+                    
+                    # 保存到缓存
+                    df.to_csv(cache_file, index=False)
+                    logger.info(f"✅ 数据已保存到缓存: {cache_file}")
+                    logger.info("="*60)
+                    return df
+            except Exception as e:
+                logger.error(f"❗ DataManager读取失败: {e}")
         except Exception as e:
-            logger.error(f"❗ DataManager读取失败: {e}")
+            logger.error(f"❗ 数据库读取过程中发生错误: {e}")
+    
+    # 尝试使用akshare获取真实数据
+    try:
+        logger.info(f"尝试使用akshare获取真实数据")
         
-        logger.error(f"❗ 无法从数据库读取 {stock_code} 在 {trade_date_str} 的数据")
-        return None
+        # 导入akshare
+        import akshare as ak
         
+        # 根据股票代码添加市场标识
+        if stock_code.startswith('6'):
+            # 上海市场
+            market_stock_code = f'sh{stock_code}'
+        else:
+            # 深圳市场
+            market_stock_code = f'sz{stock_code}'
+        
+        # 使用akshare的stock_zh_a_minute接口获取分时数据
+        df = ak.stock_zh_a_minute(symbol=market_stock_code, period="1", adjust="qfq")
+        
+        # 转换列名以匹配所需格式
+        df.columns = ['时间', '开盘', '收盘', '最高', '最低', '成交量', '成交额']
+        
+        # 过滤指定日期的数据
+        df['时间'] = pd.to_datetime(df['时间'])
+        df = df[df['时间'].dt.date == trade_date_obj.date()]
+        
+        if df is not None and not df.empty:
+            logger.info(f"✅ 成功获取akshare数据，数据行数: {len(df)}")
+            
+            # 确保缓存目录存在
+            os.makedirs(cache_dir, exist_ok=True)
+            
+            # 保存到缓存
+            df.to_csv(cache_file, index=False)
+            logger.info(f"✅ 数据已保存到缓存: {cache_file}")
+            
+            # 处理数据格式
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                df = df.set_index('时间')
+            
+            # 过滤掉午休时间
+            original_len = len(df)
+            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                    ~((df.index.hour == 12))]
+            logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+            
+            # 计算均价（如果没有直接提供）
+            if '均价' not in df.columns and '成交额' in df.columns and '成交量' in df.columns:
+                df['均价'] = df['成交额'] / df['成交量'].replace(0, np.nan)
+            
+            # 填充缺失值
+            df = df.ffill().bfill()
+            
+            logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+            logger.info(f"✅ 成功加载 {stock_code} 的分时数据")
+            logger.info("="*60)
+            return df
     except Exception as e:
-        logger.error(f"❗ 获取分时数据失败: {e}")
-        import traceback
-        traceback.print_exc()
-        return None
+        logger.error(f"使用akshare获取数据失败: {e}")
+    
+    # 尝试备用方法
+    try:
+        logger.info(f"尝试使用备用方法获取数据")
+        # 导入get_fenshi_data函数
+        import sys
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        from Investment.T0.indicators.comprehensive_t0_strategy import get_fenshi_data
+        # 使用备用方法
+        df = get_fenshi_data(stock_code=stock_code, date=api_date_format)
+        
+        if df is not None and not df.empty:
+            logger.info(f"✅ 成功获取数据，数据行数: {len(df)}")
+            
+            # 确保缓存目录存在
+            os.makedirs(cache_dir, exist_ok=True)
+            
+            # 保存到缓存
+            df.to_csv(cache_file, index=False)
+            logger.info(f"✅ 数据已保存到缓存: {cache_file}")
+            
+            # 处理数据格式
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                df = df.set_index('时间')
+            
+            # 过滤掉午休时间
+            original_len = len(df)
+            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                    ~((df.index.hour == 12))]
+            logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+            
+            # 填充缺失值
+            df = df.ffill().bfill()
+            
+            logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+            logger.info(f"✅ 成功加载 {stock_code} 的分时数据")
+            logger.info("="*60)
+            return df
+    except Exception as e:
+        logger.error(f"获取数据失败: {e}")
+    
+    logger.error(f"❗ 无法获取 {stock_code} 在 {api_date_format} 的数据")
+    logger.info("="*60)
+    return None
 
 
 def detect_trading_signals(df: pd.DataFrame) -> Dict[str, List[Tuple[datetime, float]]]:
@@ -370,12 +507,26 @@ def analyze_price_ma_deviation(stock_code: str, trade_date: Optional[str] = None
         traceback.print_exc()
         return None
 
+# 为了兼容visualizer_ui中的导入，添加别名函数
+def analyze_deviation_strategy(stock_code=None, trade_date=None, df=None):
+    """别名函数，兼容visualizer_ui的导入需求"""
+    # 如果直接传入DataFrame，直接计算指标
+    if isinstance(df, pd.DataFrame):
+        # 直接计算指标
+        result_df = calculate_price_ma_deviation(df.copy())
+        # 检测信号
+        signals = detect_trading_signals(result_df)
+        return result_df, signals
+    # 否则使用原有的分析函数
+    return analyze_price_ma_deviation(stock_code, trade_date)
+
+
 if __name__ == "__main__":
     # 测试代码
-    stock_code = "000333"  # 美的集团
-    # stock_code = "600030"  # 中信证券
+    # stock_code = "000333"  # 美的集团
+    stock_code = "600030"  # 中信证券
     # 使用缓存数据的日期（2025-10-24）
-    trade_date = '20251024'
+    trade_date = '20251027'
     
     result = analyze_price_ma_deviation(stock_code, trade_date)
     if result:

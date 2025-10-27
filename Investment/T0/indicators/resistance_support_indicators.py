@@ -18,7 +18,6 @@
 版本: 1.0
 """
 
-import akshare as ak
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -196,7 +195,7 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
     """
     获取股票分时数据
     
-    功能：从东方财富获取指定股票在指定日期的分钟级别交易数据
+    功能：从缓存或其他数据源获取指定股票在指定日期的分钟级别交易数据
     
     参数：
         stock_code: 股票代码
@@ -207,85 +206,45 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         DataFrame包含'时间'、'开盘'、'最高'、'最低'、'收盘'、'成交量'等列
     """
     try:
-        # 导入代理配置
-        try:
-            from T0.config.settings import PROXY_SETTINGS
-        except ImportError:
-            # 兼容旧的导入路径
-            import sys
-            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            from config.settings import PROXY_SETTINGS
-        
-        # 尝试使用新的东方财富接口
-        try:
-            from T0.data2dfcf import get_eastmoney_fenshi_by_date
-            df = get_eastmoney_fenshi_by_date(stock_code, trade_date)
-            if not df.empty:
-                print(f"使用东方财富接口成功获取 {stock_code} 的分时数据")
-                return df
-        except Exception as e:
-            print(f"使用东方财富接口获取数据失败: {e}")
-
-        # 如果东方财富接口失败，则回退到akshare
-        print("回退到akshare接口获取数据")
-        
         # 确保 trade_date 是正确的格式
         if isinstance(trade_date, str):
             if '-' in trade_date:
                 trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+                trade_date_str = trade_date.replace('-', '')
             else:
                 trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                trade_date_str = trade_date
         else:
             trade_date_obj = trade_date
-            
-        # 格式化为 akshare 接口需要的日期格式
-        trade_date_str = trade_date_obj.strftime('%Y%m%d')
+            trade_date_str = trade_date_obj.strftime('%Y%m%d')
         
-        # 构造 akshare 需要的时间格式 (YYYY-MM-DD HH:MM:SS)
-        start_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 09:30:00'
-        end_time = f'{trade_date_obj.strftime("%Y-%m-%d")} 15:00:00'
-
-        # 设置代理
-        proxies = None
-        if PROXY_SETTINGS.get('enable_proxy', False):
-            proxies = {
-                'http': PROXY_SETTINGS.get('http_proxy', 'http://127.0.0.1:10809'),
-                'https': PROXY_SETTINGS.get('https_proxy', 'http://127.0.0.1:10809')
-            }
-            print(f"使用代理: {proxies}")
+        # 尝试从缓存目录获取数据
+        # 首先尝试在T0项目的缓存目录查找
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        cache_dir = os.path.join(project_root, 'cache', 'fenshi_data')
+        cache_file = os.path.join(cache_dir, f'{stock_code}_{trade_date_str}_fenshi.csv')
         
-        # 首先尝试不使用代理
-        try:
-            df = ak.stock_zh_a_hist_min_em(
-                symbol=stock_code,
-                period="1",
-                start_date=start_time,
-                end_date=end_time,
-                adjust=''
-            )
-            if not df.empty:
-                return df
-        except Exception as e:
-            print(f"不使用代理获取数据失败: {e}")
-
-        # 如果不使用代理失败，且配置了代理，则尝试使用代理
-        if proxies:
+        # 如果找不到，也尝试在T0_Optimized项目的缓存目录查找
+        if not os.path.exists(cache_file):
+            optimized_cache_dir = os.path.join(os.path.dirname(project_root), 'T0_Optimized', 'cache', 'fenshi_data')
+            cache_file = os.path.join(optimized_cache_dir, f'{stock_code}_{trade_date_str}_fenshi.csv')
+        
+        if os.path.exists(cache_file):
             try:
-                df = ak.stock_zh_a_hist_min_em(
-                    symbol=stock_code,
-                    period="1",
-                    start_date=start_time,
-                    end_date=end_time,
-                    adjust='',
-                    proxies=proxies  # akshare支持proxies参数
-                )
-                if not df.empty:
-                    print("使用代理成功获取数据")
-                    return df
+                print(f"尝试从缓存文件读取: {cache_file}")
+                df = pd.read_csv(cache_file)
+                
+                # 确保数据格式正确
+                if '时间' in df.columns:
+                    df['时间'] = pd.to_datetime(df['时间'])
+                    df = df.set_index('时间')
+                
+                print(f"成功从缓存读取 {len(df)} 条数据")
+                return df
             except Exception as e:
-                print(f"使用代理获取数据也失败: {e}")
-            
-        print(f"❌ {stock_code} 在 {trade_date} 无分时数据")
+                print(f"读取缓存文件失败: {e}")
+        
+        print(f"{stock_code} 在 {trade_date} 的缓存数据不存在")
         return None
             
     except Exception as e:

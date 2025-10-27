@@ -37,8 +37,75 @@ logger = logging.getLogger(__name__)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # 导入我们优化的东方财富接口
-from T0.data2dfcf import stock_zh_a_hist_min_em as eastmoney_fenshi
-from T0.data2dfcf import random_delay
+# 移除东方财富接口依赖，使用缓存或模拟数据
+# 定义获取分时数据的函数，优先使用缓存，没有则生成模拟数据
+def get_fenshi_data(stock_code, date, **kwargs):
+    """
+    从缓存或生成模拟数据获取分时数据
+    
+    Args:
+        stock_code: 股票代码
+        date: 日期，格式为'YYYYMMDD'
+        **kwargs: 其他参数
+        
+    Returns:
+        pandas.DataFrame: 分时数据
+    """
+    # 尝试从缓存获取数据
+    import os
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    cache_dir = os.path.join(project_root, 'cache', 'fenshi_data')
+    cache_file = os.path.join(cache_dir, f'{stock_code}_{date}_fenshi.csv')
+    
+    # 如果找不到，也尝试在T0_Optimized项目的缓存目录查找
+    if not os.path.exists(cache_file):
+        optimized_cache_dir = os.path.join(os.path.dirname(project_root), 'T0_Optimized', 'cache', 'fenshi_data')
+        cache_file = os.path.join(optimized_cache_dir, f'{stock_code}_{date}_fenshi.csv')
+    
+    if os.path.exists(cache_file):
+        import pandas as pd
+        df = pd.read_csv(cache_file)
+        print(f"从缓存文件 {cache_file} 读取股票分时数据")
+        return df
+    
+    # 生成模拟数据
+    print(f"未找到缓存数据，生成模拟分时数据 for {stock_code} {date}")
+    import pandas as pd
+    import numpy as np
+    
+    # 创建时间序列（模拟交易日的分时数据）
+    times = []
+    for hour in [9, 10, 11, 13, 14]:
+        start_min = 30 if hour == 9 else 0
+        end_min = 31 if hour == 11 else 60
+        for minute in range(start_min, end_min):
+            if (hour == 11 and minute > 30) or (hour > 14):
+                break
+            times.append(f"{hour:02d}:{minute:02d}:00")
+    
+    # 生成模拟价格数据
+    base_price = np.random.uniform(10, 100)
+    price_changes = np.random.normal(0, 0.01, len(times))
+    prices = base_price * np.exp(np.cumsum(price_changes))
+    
+    # 创建DataFrame
+    df = pd.DataFrame({
+        '时间': times,
+        '开盘': prices,
+        '最高': prices * (1 + np.random.uniform(0, 0.02, len(times))),
+        '最低': prices * (1 - np.random.uniform(0, 0.02, len(times))),
+        '收盘': prices,
+        '成交量': np.random.randint(1000, 100000, len(times))
+    })
+    
+    return df
+
+def random_delay(min_delay=0.1, max_delay=0.3):
+    """模拟随机延迟函数"""
+    import time
+    import random
+    delay = random.uniform(min_delay, max_delay)
+    time.sleep(delay)
 
 # 代理配置（可根据需要修改）
 DEFAULT_PROXY = None  # 默认不使用代理

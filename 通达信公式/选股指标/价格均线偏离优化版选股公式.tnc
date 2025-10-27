@@ -1,0 +1,24 @@
+N1 := 5;
+N2 := 30;
+N3 := 20;
+N4 := 30;
+
+MA_N1 := MA(CLOSE, N1);
+MA_VOL := MA(VOL, N3);
+
+P_MA_Ratio := MAX(MIN(((CLOSE / MA_N1) - 1) * 100, 20), -20);
+
+pct_chg := (CLOSE / REF(CLOSE, 1) - 1) * 100;
+volatility := STD(pct_chg, N4);
+
+base_thr := -0.30;
+low_vol_factor := (volatility < 0.3) * (-0.10);
+mid_vol_factor := (volatility >= 0.3 AND volatility < 0.8) * (-0.05);
+buy_thr := base_thr + low_vol_factor + mid_vol_factor;
+
+Buy_Signal := (P_MA_Ratio <= buy_thr) && (REF(P_MA_Ratio, 1) > buy_thr);
+
+vol_cond := VOL >= 0.7 * MA_VOL;
+
+Final_Buy_Signal := Buy_Signal && vol_cond;
+Final_Buy_Signal;

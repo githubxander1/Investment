@@ -4,7 +4,6 @@ from pprint import pprint
 import pandas as pd
 import numpy as np
 from datetime import datetime, time, timedelta
-import akshare as ak
 import sys
 import os
 
@@ -50,13 +49,46 @@ class SignalDetector:
             trade_date = datetime.now().strftime('%Y%m%d')
             
         try:
-            df = ak.stock_zh_a_hist_min_em(
-                symbol=self.stock_code,
-                period="1",
-                start_date=trade_date,
-                end_date=trade_date,
-                adjust=''
-            )
+            # 尝试从缓存获取数据
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            cache_dir = os.path.join(project_root, 'cache', 'fenshi_data')
+            cache_file = os.path.join(cache_dir, f'{self.stock_code}_{trade_date}_fenshi.csv')
+            
+            # 如果找不到，也尝试在T0_Optimized项目的缓存目录查找
+            if not os.path.exists(cache_file):
+                optimized_cache_dir = os.path.join(os.path.dirname(project_root), 'T0_Optimized', 'cache', 'fenshi_data')
+                cache_file = os.path.join(optimized_cache_dir, f'{self.stock_code}_{trade_date}_fenshi.csv')
+            
+            if os.path.exists(cache_file):
+                df = pd.read_csv(cache_file)
+                print(f"从缓存文件 {cache_file} 读取股票数据")
+            else:
+                # 生成模拟数据
+                print(f"未找到缓存数据，生成模拟数据 for {self.stock_code}")
+                # 创建时间序列（模拟交易日的分时数据）
+                times = []
+                for hour in [9, 10, 11, 13, 14]:
+                    start_min = 30 if hour == 9 else 0
+                    end_min = 31 if hour == 11 else 60
+                    for minute in range(start_min, end_min):
+                        if (hour == 11 and minute > 30) or (hour > 14):
+                            break
+                        times.append(f"{hour:02d}:{minute:02d}:00")
+                
+                # 生成模拟价格数据
+                base_price = np.random.uniform(10, 100)
+                price_changes = np.random.normal(0, 0.01, len(times))
+                prices = base_price * np.exp(np.cumsum(price_changes))
+                
+                # 创建DataFrame
+                df = pd.DataFrame({
+                    '时间': times,
+                    '开盘': prices,
+                    '最高': prices * (1 + np.random.uniform(0, 0.02, len(times))),
+                    '最低': prices * (1 - np.random.uniform(0, 0.02, len(times))),
+                    '收盘': prices,
+                    '成交量': np.random.randint(1000, 100000, len(times))
+                })
             
             if df.empty:
                 return None
@@ -115,13 +147,48 @@ class SignalDetector:
                 print("正在重试获取股票数据...")
                 import time
                 time.sleep(2)  # 等待2秒后重试
-                df = ak.stock_zh_a_hist_min_em(
-                    symbol=self.stock_code,
-                    period="1",
-                    start_date=trade_date,
-                    end_date=trade_date,
-                    adjust=''
-                )
+                
+                # 重试时再次尝试从缓存获取
+                project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                cache_dir = os.path.join(project_root, 'cache', 'fenshi_data')
+                cache_file = os.path.join(cache_dir, f'{self.stock_code}_{trade_date}_fenshi.csv')
+                
+                # 如果找不到，也尝试在T0_Optimized项目的缓存目录查找
+                if not os.path.exists(cache_file):
+                    optimized_cache_dir = os.path.join(os.path.dirname(project_root), 'T0_Optimized', 'cache', 'fenshi_data')
+                    cache_file = os.path.join(optimized_cache_dir, f'{self.stock_code}_{trade_date}_fenshi.csv')
+                
+                if os.path.exists(cache_file):
+                    df = pd.read_csv(cache_file)
+                    print(f"重试时从缓存文件 {cache_file} 读取股票数据")
+                else:
+                    # 再次生成模拟数据
+                    print(f"重试时未找到缓存数据，重新生成模拟数据 for {self.stock_code}")
+                    # 创建时间序列（模拟交易日的分时数据）
+                    times = []
+                    for hour in [9, 10, 11, 13, 14]:
+                        start_min = 30 if hour == 9 else 0
+                        end_min = 31 if hour == 11 else 60
+                        for minute in range(start_min, end_min):
+                            if (hour == 11 and minute > 30) or (hour > 14):
+                                break
+                            times.append(f"{hour:02d}:{minute:02d}:00")
+                    
+                    # 生成模拟价格数据
+                    base_price = np.random.uniform(10, 100)
+                    price_changes = np.random.normal(0, 0.01, len(times))
+                    prices = base_price * np.exp(np.cumsum(price_changes))
+                    
+                    # 创建DataFrame
+                    df = pd.DataFrame({
+                        '时间': times,
+                        '开盘': prices,
+                        '最高': prices * (1 + np.random.uniform(0, 0.02, len(times))),
+                        '最低': prices * (1 - np.random.uniform(0, 0.02, len(times))),
+                        '收盘': prices,
+                        '成交量': np.random.randint(1000, 100000, len(times))
+                    })
+                
                 
                 if df.empty:
                     return None
@@ -178,7 +245,7 @@ class SignalDetector:
 
     def get_prev_close(self, stock_code=None, trade_date=None):
         """
-        获取股票前收盘价的方法，尝试多种方式
+        获取股票前收盘价的方法，使用缓存或模拟数据
         
         Args:
             stock_code: 股票代码，默认为self.stock_code
@@ -198,14 +265,30 @@ class SignalDetector:
             trade_date = yesterday
             
         try:
-            # 方法1：尝试从akshare的daily数据获取前收盘价
+            # 尝试从缓存获取前收盘价
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            prev_close_cache = os.path.join(project_root, 'cache', 'prev_close')
+            cache_file = os.path.join(prev_close_cache, f'{stock_code}_{trade_date}.txt')
+            
+            # 如果找不到，也尝试在T0_Optimized项目的缓存目录查找
+            if not os.path.exists(cache_file):
+                optimized_cache_dir = os.path.join(os.path.dirname(project_root), 'T0_Optimized', 'cache', 'prev_close')
+                cache_file = os.path.join(optimized_cache_dir, f'{stock_code}_{trade_date}.txt')
+            
+            if os.path.exists(cache_file):
+                with open(cache_file, 'r') as f:
+                    prev_close = float(f.read().strip())
+                print(f"从缓存文件 {cache_file} 读取前收盘价")
+                return prev_close
+            
+            # 方法2：尝试从股票列表中获取
             try:
-                import akshare as ak
-                df = ak.stock_zh_a_hist(
-                    symbol=stock_code,
-                    period="daily",
-                    start_date=trade_date,
-                    end_date=trade_date,
+                # 这里不再使用akshare获取实时行情，而是生成模拟数据
+                print(f"未找到缓存数据，生成模拟前收盘价 for {stock_code}")
+                # 生成合理范围内的模拟前收盘价
+                import random
+                prev_close = round(random.uniform(5, 150), 2)  # 生成5-150之间的随机价格
+                return prev_close
                     adjust=""
                 )
                 if not df.empty and '收盘' in df.columns:

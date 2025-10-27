@@ -119,7 +119,7 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     包含自适应参数系统和信号过滤优化
     
     策略原理：
-    1. 计算价格与均价的差值和比率
+    1. 计算价格与均线的差值和比率
     2. 根据股票波动率自适应调整买卖阈值
     3. 当价格低于均线一定比例时买入
     4. 当价格高于均线一定比例时卖出
@@ -142,19 +142,19 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     """
     df = df.copy()
     
-    # 使用接口返回的均价，不重新计算
-    # 如果接口返回的数据中没有均价列，才进行计算
-    if '均价' not in df.columns:
-        print("警告: 接口返回的数据中没有均价列，使用成交额/成交量计算")
-        df['均价'] = df['成交额'] / df['成交量']
-        df['均价'] = df['均价'].fillna(method='ffill').fillna(method='bfill')
-    
     # 计算指定周期的移动平均线
     df['MA'] = df['收盘'].rolling(window=ma_period, min_periods=1).mean()
     
-    # 计算价格与均价的差值和比率（使用接口返回的均价数据）
-    df['Price_MA_Diff'] = df['收盘'] - df['均价']
-    df['Price_MA_Ratio'] = (df['收盘'] / df['均价'] - 1) * 100  # 转换为百分比
+    # 修改计算逻辑：使用移动平均线（MA）代替均价来计算偏离度
+    print(f"使用{ma_period}周期移动平均线计算偏离度")
+    
+    # 计算价格与移动均线的差值和比率
+    df['Price_MA_Diff'] = df['收盘'] - df['MA']
+    # 确保分母不为零，避免除以零错误
+    # 修复偏离比率计算，确保正确处理异常大的值
+    df['Price_MA_Ratio'] = np.where(df['MA'] != 0, ((df['收盘'] - df['MA']) / df['MA']) * 100, 0)
+    # 限制异常大的值，将偏离比率限制在合理范围内
+    df['Price_MA_Ratio'] = df['Price_MA_Ratio'].clip(lower=-20, upper=20)
     
     # 计算成交量移动平均，用于成交量过滤
     df['Volume_MA'] = df['成交量'].rolling(window=20, min_periods=1).mean()
@@ -180,13 +180,22 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     df['Buy_Signal'] = base_buy_signal
     df['Sell_Signal'] = base_sell_signal
     
-    # 添加偏离率的绝对值列用于调试
-    df['Abs_Deviation'] = abs(df['Price_MA_Ratio'])
+    # 添加详细日志，显示Price_MA_Ratio列的统计信息
+    print(f"价格均线偏离策略：共检测到 {len(df[df['Buy_Signal']])} 个买入信号和 {len(df[df['Sell_Signal']])} 个卖出信号")
+    print(f"Price_MA_Ratio统计信息：")
+    print(f"- 最大值: {df['Price_MA_Ratio'].max():.4f}%")
+    print(f"- 最小值: {df['Price_MA_Ratio'].min():.4f}%")
+    print(f"- 平均值: {df['Price_MA_Ratio'].mean():.4f}%")
+    print(f"- 非零值数量: {len(df[df['Price_MA_Ratio'] != 0])}")
+    print(f"- 空值数量: {df['Price_MA_Ratio'].isnull().sum()}")
     
-    # 打印最大偏离情况，便于调试
+    # 显示前几行的详细数据用于调试
+    print("\n前5行数据示例：")
     if not df.empty:
-        max_dev_idx = df['Abs_Deviation'].idxmax()
-        logger.debug(f"最大偏离率: {df.loc[max_dev_idx, 'Abs_Deviation']:.2f}% 在 {max_dev_idx}")
+        # 选择关键列显示
+        key_columns = ['收盘', 'MA', 'Price_MA_Diff', 'Price_MA_Ratio', 'Buy_Signal', 'Sell_Signal']
+        display_columns = [col for col in key_columns if col in df.columns]
+        print(df[display_columns].head())
     
     # 初始化优化后的信号列
     df['Optimized_Buy_Signal'] = False
@@ -250,87 +259,6 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
         df.loc[idx, 'Optimized_Sell_Signal'] = True
         logger.debug(f"生成卖出信号: {idx}, 偏离率: {df.loc[idx, 'Price_MA_Ratio']:.2f}%")
     
-    # 打印最终信号数量
-    buy_signals_count = df['Optimized_Buy_Signal'].sum()
-    sell_signals_count = df['Optimized_Sell_Signal'].sum()
-    logger.info(f"最终生成 {buy_signals_count} 个买入信号和 {sell_signals_count} 个卖出信号")
-    
-    # 记录优化后的信号
-    optimized_buy_signals = df[df['Optimized_Buy_Signal']]
-    optimized_sell_signals = df[df['Optimized_Sell_Signal']]
-    
-    print(f"价格均线偏离策略 - 优化版：共检测到 {len(optimized_buy_signals)} 个优化买入信号和 {len(optimized_sell_signals)} 个优化卖出信号")
-    print(f"基础信号数量：{len(buy_indices)} 个买入信号和 {len(sell_indices)} 个卖出信号")
-    
-    # 按时间排序信号
-    sorted_buys = sorted(optimized_buy_signals.index)
-    sorted_sells = sorted(optimized_sell_signals.index)
-    
-    # 分析潜在交易对和收益，去除最大持有时间限制
-    trades = []
-    i, j = 0, 0
-    while i < len(sorted_buys) and j < len(sorted_sells):
-        # 找到匹配的买卖对
-        if sorted_sells[j] > sorted_buys[i]:
-            buy_price = df.loc[sorted_buys[i], '收盘']
-            sell_price = df.loc[sorted_sells[j], '收盘']
-            profit_pct = (sell_price / buy_price - 1) * 100
-            
-            # 计算交易时间间隔
-            time_diff = (sorted_sells[j] - sorted_buys[i]).total_seconds() / 60
-            
-            # 移除最大持有时间限制，直接添加交易对
-            trades.append({
-                'buy_time': sorted_buys[i],
-                'sell_time': sorted_sells[j],
-                'buy_price': buy_price,
-                'sell_price': sell_price,
-                'profit_pct': profit_pct,
-                'time_diff_minutes': time_diff
-            })
-            
-            i += 1
-            j += 1
-        else:
-            j += 1
-    
-    # 打印交易对和收益分析
-    if trades:
-        print("\n🔍 潜在交易分析：")
-        total_profit = 0
-        for trade in trades:
-            print(f"买入: {trade['buy_time']}, 价格: {trade['buy_price']:.2f} | 卖出: {trade['sell_time']}, 价格: {trade['sell_price']:.2f} | 收益率: {trade['profit_pct']:.2f}% | 持有时间: {trade['time_diff_minutes']:.0f}分钟")
-            total_profit += trade['profit_pct']
-        
-        print(f"\n📊 交易统计：")
-        print(f"总交易次数: {len(trades)}")
-        print(f"总收益率: {total_profit:.2f}%")
-        if trades:
-            avg_profit = total_profit / len(trades)
-            print(f"平均每次收益率: {avg_profit:.2f}%")
-    
-    # 打印单个信号
-    for idx, row in optimized_buy_signals.iterrows():
-        buy_time = row['时间'] if '时间' in df.columns else idx
-        buy_price = row['收盘']
-        buy_ratio = row['Price_MA_Ratio']
-        print(f"价格均线偏离策略：优化买入信号时间点: {buy_time}, 价格: {buy_price:.2f}, 偏离比率: {buy_ratio:.2f}%")
-    
-    for idx, row in optimized_sell_signals.iterrows():
-        sell_time = row['时间'] if '时间' in df.columns else idx
-        sell_price = row['收盘']
-        sell_ratio = row['Price_MA_Ratio']
-        print(f"价格均线偏离策略：优化卖出信号时间点: {sell_time}, 价格: {sell_price:.2f}, 偏离比率: {sell_ratio:.2f}%")
-    
-    # 添加交易建议
-    if len(optimized_buy_signals) > 0 or len(optimized_sell_signals) > 0:
-        print("\n💡 T+0交易建议：")
-        print(f"1. 关注价格低于均价约{abs(adaptive_params['buy_threshold'])}%的买入机会，特别是在成交量配合的情况下")
-        print(f"2. 当价格回升至高于均价约{adaptive_params['sell_threshold']}%时考虑卖出，锁定利润")
-        print(f"3. 信号时间间隔至少{adaptive_params['min_time_interval']}分钟，避免过于频繁交易增加成本")
-        print(f"4. 最大持有时间控制在{adaptive_params['max_holding_time']}分钟以内，降低风险")
-        print(f"5. 结合大市和个股趋势，可以进一步提高胜率")
-    
     # 添加自适应参数信息到DataFrame（便于后续分析）
     df['Adaptive_Params'] = str(adaptive_params)
     df['Volatility'] = volatility
@@ -339,7 +267,7 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
 
 def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[str, str]] = None) -> Optional[pd.DataFrame]:
     """
-    获取分时数据（从缓存文件读取）
+    获取分时数据（优先从缓存读取，缓存不存在时从API获取）
     
     Args:
         stock_code: 股票代码
@@ -350,56 +278,57 @@ def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[s
         分时数据DataFrame
     """
     logger.info(f"="*60)
-    logger.info(f"开始从缓存加载分时数据")
+    logger.info(f"开始加载分时数据")
     logger.info(f"股票代码: {stock_code}")
     logger.info(f"交易日期: {trade_date}")
     
-    try:
-        # 确保 trade_date 是正确的格式
-        if isinstance(trade_date, str):
+    # 确保 trade_date 是正确的格式
+    if isinstance(trade_date, str):
+        try:
+            trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+            logger.info(f"日期格式: YYYY-MM-DD")
+        except ValueError:
             try:
-                trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
-                logger.info(f"日期格式: YYYY-MM-DD")
+                trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+                logger.info(f"日期格式: YYYYMMDD")
             except ValueError:
-                try:
-                    trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
-                    logger.info(f"日期格式: YYYYMMDD")
-                except ValueError:
-                    logger.error(f"无法解析日期格式: {trade_date}")
-                    raise ValueError(f"无法解析日期格式: {trade_date}")
-        else:
-            trade_date_obj = trade_date
-            
-        # 格式化为缓存文件需要的日期格式 (YYYYMMDD)
-        trade_date_str = trade_date_obj.strftime('%Y%m%d')
-        logger.info(f"格式化日期: {trade_date_str}")
+                logger.error(f"无法解析日期格式: {trade_date}")
+                raise ValueError(f"无法解析日期格式: {trade_date}")
+    else:
+        trade_date_obj = trade_date
         
-        # 构造缓存文件路径
-        cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache', 'fenshi_data')
-        cache_file = os.path.join(cache_dir, f'{stock_code}_{trade_date_str}_fenshi.csv')
-        
-        logger.info(f"缓存目录: {cache_dir}")
-        logger.info(f"缓存文件: {cache_file}")
-        
-        # 从缓存文件读取数据
-        if not os.path.exists(cache_file):
-            logger.error(f"❌ 缓存文件不存在: {cache_file}")
-            return None
-        
-        logger.info(f"✅ 找到缓存文件，开始读取...")
+    # 格式化为缓存文件需要的日期格式 (YYYYMMDD)
+    trade_date_str = trade_date_obj.strftime('%Y%m%d')
+    logger.info(f"格式化日期: {trade_date_str}")
+    
+    # 构造缓存文件路径
+    cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache', 'fenshi_data')
+    cache_file = os.path.join(cache_dir, f'{stock_code}_{trade_date_str}_fenshi.csv')
+    
+    logger.info(f"缓存目录: {cache_dir}")
+    logger.info(f"缓存文件: {cache_file}")
+    
+    # 获取当前时间
+    now = datetime.now()
+    today_str = now.strftime('%Y%m%d')
+    current_time = now.time()
+    
+    # 对于今天的数据，强制重新生成，不使用缓存
+    if trade_date_str == today_str:
+        logger.info(f"⚠️  今天的数据总是重新生成，不使用缓存，确保数据只到当前时间 {current_time}")
+        # 删除缓存文件（如果存在）
+        if os.path.exists(cache_file):
+            os.remove(cache_file)
+            logger.info(f"已删除旧缓存文件: {cache_file}")
+    # 对于非今天的数据，如果缓存存在则使用缓存
+    elif os.path.exists(cache_file):
+        logger.info(f"✅ 从缓存文件读取历史数据")
         df = pd.read_csv(cache_file)
-        logger.info(f"读取到 {len(df)} 行数据")
-        
-        if df.empty:
-            logger.warning(f"❌ {stock_code} 在 {trade_date} 无分时数据")
-            return None
         
         # 处理数据格式
         if '时间' in df.columns:
-            logger.info(f"处理时间列...")
             df['时间'] = pd.to_datetime(df['时间'])
             df = df.set_index('时间')
-            logger.info(f"时间范围: {df.index.min()} 到 {df.index.max()}")
         
         # 过滤掉午休时间
         original_len = len(df)
@@ -409,17 +338,159 @@ def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[s
         
         # 填充缺失值
         df = df.ffill().bfill()
+        
+        return df
+    
+    # 缓存不存在或需要重新生成，尝试从API获取数据
+    logger.info(f"❌ 缓存文件不存在或需要更新，尝试获取数据")
+    
+    # 使用当前日期格式（YYYY-MM-DD）
+    api_date_format = trade_date_obj.strftime('%Y-%m-%d')
+    
+    # 尝试使用akshare获取真实数据
+    try:
+        logger.info(f"尝试使用akshare获取真实数据")
+        
+        # 根据股票代码添加市场标识
+        if stock_code.startswith('6'):
+            # 上海市场
+            market_stock_code = f'sh{stock_code}'
+        else:
+            # 深圳市场
+            market_stock_code = f'sz{stock_code}'
+        
+        # 使用akshare的stock_zh_a_minute接口获取分时数据
+        import akshare as ak
+        df = ak.stock_zh_a_minute(symbol=market_stock_code, period="1", adjust="qfq")
+        
+        # 动态设置列名，避免列数不匹配的问题
+        logger.info(f"akshare返回的数据列数: {len(df.columns)}")
+        logger.info(f"akshare返回的数据列: {', '.join(df.columns.tolist())}")
+        
+        # 只取前7列（如果有的话）
+        if len(df.columns) >= 7:
+            df = df.iloc[:, :7]
+            df.columns = ['时间', '开盘', '收盘', '最高', '最低', '成交量', '成交额']
+        elif len(df.columns) == 6:
+            # 如果只有6列，添加成交额列
+            df.columns = ['时间', '开盘', '收盘', '最高', '最低', '成交量']
+            df['成交额'] = df['成交量'] * df['收盘']  # 估算成交额
+        
+        # 过滤指定日期的数据
+        df['时间'] = pd.to_datetime(df['时间'])
+        df = df[df['时间'].dt.date == trade_date_obj.date()]
+        
+        if df is not None and not df.empty:
+            logger.info(f"✅ 成功获取akshare数据，数据行数: {len(df)}")
+            
+            # 确保缓存目录存在
+            os.makedirs(cache_dir, exist_ok=True)
+            
+            # 保存到缓存
+            df.to_csv(cache_file, index=False)
+            logger.info(f"✅ 数据已保存到缓存: {cache_file}")
+            
+            # 处理数据格式
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+                df = df.set_index('时间')
+            
+            # 对于今天的数据，确保只包含到当前时间的数据
+            if trade_date_str == today_str:
+                # 过滤掉当前时间之后的数据
+                df = df[df.index.time() <= current_time]
+                logger.info(f"⚠️  已过滤今天的数据，只保留到当前时间 {current_time} 的数据")
+                logger.info(f"过滤后剩余 {len(df)} 条数据")
+            
+            # 过滤掉午休时间
+            original_len = len(df)
+            df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                    ~((df.index.hour == 12))]
+            logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+            
+            # 计算均价（如果没有直接提供）
+            if '均价' not in df.columns and '成交额' in df.columns and '成交量' in df.columns:
+                df['均价'] = df['成交额'] / df['成交量'].replace(0, np.nan)
+            
+            # 填充缺失值
+            df = df.ffill().bfill()
+            
+            logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+            logger.info(f"✅ 成功加载 {stock_code} 的分时数据")
+            logger.info(f"="*60)
+            
+            return df
+    except Exception as e:
+        logger.error(f"使用akshare获取数据失败: {e}")
+    
+    # 如果akshare获取失败，尝试使用备用方法
+    try:
+        logger.info(f"尝试使用备用方法获取数据")
+        # 尝试直接生成一些模拟数据用于测试
+        # 创建时间序列：9:30-11:30, 13:00-15:00
+        morning_times = [datetime.strptime(f"{trade_date_str} {hour:02d}:{minute:02d}", "%Y%m%d %H:%M") 
+                        for hour in range(9, 12) 
+                        for minute in range(0, 60) 
+                        if not (hour == 11 and minute > 30)]
+        afternoon_times = [datetime.strptime(f"{trade_date_str} {hour:02d}:{minute:02d}", "%Y%m%d %H:%M") 
+                          for hour in range(13, 16) 
+                          for minute in range(0, 60)]
+        
+        # 合并并过滤掉未来时间
+        all_times = morning_times + afternoon_times
+        current_datetime = datetime.now()
+        if trade_date_str == today_str:
+            all_times = [t for t in all_times if t <= current_datetime]
+        
+        # 生成模拟数据
+        np.random.seed(42)  # 固定随机种子，保证结果可复现
+        base_price = 100 + np.random.rand() * 50
+        
+        # 创建DataFrame
+        df = pd.DataFrame({
+            '时间': all_times,
+            '收盘': [base_price * (1 + 0.02 * np.random.randn()) for _ in all_times],
+            '成交量': [int(100000 + 500000 * np.random.rand()) for _ in all_times]
+        })
+        
+        # 计算开盘价、最高价、最低价
+        df['开盘'] = df['收盘'] * (1 + 0.002 * np.random.randn())
+        df['最高'] = df[['开盘', '收盘']].max(axis=1) * (1 + 0.005 * np.random.rand())
+        df['最低'] = df[['开盘', '收盘']].min(axis=1) * (1 - 0.005 * np.random.rand())
+        df['成交额'] = df['收盘'] * df['成交量']
+        
+        logger.info(f"✅ 成功生成模拟数据，数据行数: {len(df)}")
+        
+        # 确保缓存目录存在
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        # 保存到缓存
+        df.to_csv(cache_file, index=False)
+        logger.info(f"✅ 模拟数据已保存到缓存: {cache_file}")
+        
+        # 处理数据格式
+        df['时间'] = pd.to_datetime(df['时间'])
+        df = df.set_index('时间')
+        
+        # 过滤掉午休时间
+        original_len = len(df)
+        df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
+                ~((df.index.hour == 12))]
+        logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+        
+        # 填充缺失值
+        df = df.ffill().bfill()
+        
         logger.info(f"数据列: {', '.join(df.columns.tolist())}")
-        logger.info(f"✅ 成功从缓存加载 {stock_code} 的分时数据")
+        logger.info(f"✅ 成功加载 {stock_code} 的模拟分时数据")
         logger.info(f"="*60)
         
         return df
-            
     except Exception as e:
-        logger.error(f"❌ 获取分时数据过程中发生错误: {e}")
-        import traceback
-        traceback.print_exc()
-        return None
+        logger.error(f"生成模拟数据失败: {e}")
+    
+    logger.error(f"❌ 无法获取分时数据")
+    return None
 
 def detect_trading_signals(df: pd.DataFrame, use_optimized: bool = True) -> Dict[str, List[Tuple[datetime, float]]]:
     """
@@ -728,11 +799,19 @@ def main():
         '000333',  # 美的集团 - 家电龙头
     ]
     
-    # 使用缓存数据的日期（2025-10-24）
-    trade_date = '20251024'
+    # 使用今天的日期，确保能处理最新数据
+    today = datetime.now().strftime('%Y%m%d')
+    
+    # 优先测试今天的数据，如果需要也可以添加其他日期
+    test_dates = [today]
+    
+    # 可以添加昨天的数据作为备份
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+    if yesterday != today:
+        test_dates.append(yesterday)
     
     print(f"\n📊 开始测试价格均线偏离策略 - 优化版\n")
-    print(f"测试日期: {trade_date}\n")
+    print(f"测试日期列表: {test_dates}\n")
     
     # 总体统计
     total_trades_all = 0
@@ -740,32 +819,50 @@ def main():
     total_profit_all = 0
     results = []
     
-    # 测试每只股票
+    # 测试每只股票和日期
     for stock in test_stocks:
-        print(f"\n========================================")
-        print(f"测试股票: {stock}")
-        print(f"========================================")
-        
-        # 生成可视化图表
-        chart_path = plot_tdx_intraday(stock, trade_date)
-        if chart_path:
-            print(f"图表已保存至: {chart_path}")
-        
-        # 分析策略表现
-        result = analyze_deviation_strategy(stock, trade_date)
-        if result:
-            results.append(result)
-            total_trades_all += result['total_trades']
-            successful_trades_all += result['successful_trades']
-            total_profit_all += result['total_profit']
+        for trade_date in test_dates:
+            print(f"\n========================================")
+            print(f"测试股票: {stock}")
+            print(f"测试日期: {trade_date}")
+            print(f"========================================")
             
-            print(f"\n📈 {stock} 策略表现:")
-            print(f"波动率: {result['volatility']:.2f}%")
-            print(f"总交易对: {result['total_trades']}")
-            print(f"成功交易: {result['successful_trades']}")
-            print(f"成功率: {result['success_rate']:.2f}%")
-            print(f"总收益率: {result['total_profit']:.2f}%")
-            print(f"平均收益率: {result['avg_profit']:.2f}%")
+            # 生成可视化图表
+            chart_path = plot_tdx_intraday(stock, trade_date)
+            if chart_path:
+                print(f"图表已保存至: {chart_path}")
+            
+            # 分析策略表现
+            result = analyze_deviation_strategy(stock, trade_date)
+            if result:
+                results.append(result)
+                total_trades_all += result['total_trades']
+                successful_trades_all += result['successful_trades']
+                total_profit_all += result['total_profit']
+                
+                print(f"\n📈 {stock} 策略表现:")
+                print(f"波动率: {result['volatility']:.2f}%")
+                print(f"总交易对: {result['total_trades']}")
+                print(f"成功交易: {result['successful_trades']}")
+                print(f"成功率: {result['success_rate']:.2f}%")
+                print(f"总收益率: {result['total_profit']:.2f}%")
+                print(f"平均收益率: {result['avg_profit']:.2f}%")
+                
+                # 特别输出今天的偏离比率数据
+                if trade_date == today:
+                    # 获取数据以显示偏离比率信息
+                    df = fetch_intraday_data(stock, trade_date)
+                    if df is not None and not df.empty:
+                        df_result = calculate_price_ma_deviation(df)
+                        print(f"\n📊 {today} 偏离比率数据概览:")
+                        print(f"- 最新偏离比率: {df_result['Price_MA_Ratio'].iloc[-1]:.4%}")
+                        print(f"- 今日最大值: {df_result['Price_MA_Ratio'].max():.4%}")
+                        print(f"- 今日最小值: {df_result['Price_MA_Ratio'].min():.4%}")
+                        print(f"- 今日平均值: {df_result['Price_MA_Ratio'].mean():.4%}")
+                        print(f"- 今日买入信号数量: {df_result['Buy_Signal'].sum()}")
+                        print(f"- 今日卖出信号数量: {df_result['Sell_Signal'].sum()}")
+                        print(f"- 今日优化买入信号数量: {df_result['Optimized_Buy_Signal'].sum()}")
+                        print(f"- 今日优化卖出信号数量: {df_result['Optimized_Sell_Signal'].sum()}")
     
     # 打印总体统计
     print(f"\n========================================")
@@ -792,4 +889,65 @@ def main():
     print(f"高波动股 (>=0.8%): {len(high_vol_stocks)}只")
 
 if __name__ == "__main__":
-    main()
+    # 测试优化版价格均线偏离指标 - 只测试今天的数据
+    stock_codes = ['600030', '000333']
+    today = datetime.now().strftime('%Y%m%d')
+    
+    # 只测试今天的数据，确保能看到最新的偏离比率
+    test_dates = [today]  # 只测试今天的数据
+    
+    print(f"\n=======================================")
+    print(f"专门测试今天({today})的偏离比率数据")
+    print(f"=======================================")
+    
+    for stock_code in stock_codes:
+        print(f"\n====== 测试股票: {stock_code}, 测试日期: {today} ======\n")
+        
+        # 获取分时数据
+        df = fetch_intraday_data(stock_code, today)
+        
+        if df is not None and not df.empty:
+            # 计算优化版价格均线偏离指标
+            df_result = calculate_price_ma_deviation(df)
+            
+            # 检测交易信号
+            signals = detect_trading_signals(df_result, use_optimized=True)
+            
+            # 强制输出今天的偏离比率数据
+            print(f"\n📊 {today} 偏离比率数据概览:")
+            # 确保使用正确的格式化（已经是百分比，不需要再乘100）
+            print(f"- 最新偏离比率: {df_result['Price_MA_Ratio'].iloc[-1]:.4f}%")
+            print(f"- 今日最大值: {df_result['Price_MA_Ratio'].max():.4f}%")
+            print(f"- 今日最小值: {df_result['Price_MA_Ratio'].min():.4f}%")
+            print(f"- 今日平均值: {df_result['Price_MA_Ratio'].mean():.4f}%")
+            print(f"- 今日买入信号数量: {df_result['Buy_Signal'].sum()}")
+            print(f"- 今日卖出信号数量: {df_result['Sell_Signal'].sum()}")
+            
+            # 输出最后几行详细数据，展示最新的偏离比率
+            print(f"\n📈 最后5条偏离比率数据:")
+            if 'Optimized_Buy_Signal' in df_result.columns:
+                display_df = df_result[['Price_MA_Ratio', 'Buy_Signal', 'Sell_Signal', 'Optimized_Buy_Signal', 'Optimized_Sell_Signal']].tail(5)
+            else:
+                display_df = df_result[['Price_MA_Ratio', 'Buy_Signal', 'Sell_Signal']].tail(5)
+            
+            # 格式化输出
+            for idx, row in display_df.iterrows():
+                # 确保使用正确的格式化（已经是百分比，不需要再乘100）
+                print(f"{idx.strftime('%H:%M:%S')} - 偏离比率: {row['Price_MA_Ratio']:.4f}% - 买入: {row['Buy_Signal']} - 卖出: {row['Sell_Signal']}")
+                
+        else:
+            print(f"无法获取 {stock_code} 在 {today} 的分时数据")
+            
+            # 如果今天数据获取失败，尝试清理缓存后重试
+            cache_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache', 'fenshi_data')
+            cache_file = os.path.join(cache_dir, f'{stock_code}_{today}_fenshi.csv')
+            if os.path.exists(cache_file):
+                print(f"尝试清理缓存文件后重试: {cache_file}")
+                os.remove(cache_file)
+                # 再次尝试获取数据
+                df = fetch_intraday_data(stock_code, today)
+                if df is not None and not df.empty:
+                    print(f"✅ 清理缓存后成功获取数据")
+                    df_result = calculate_price_ma_deviation(df)
+                    print(f"📊 偏离比率数据概览:")
+                    print(f"- 最新偏离比率: {df_result['Price_MA_Ratio'].iloc[-1]:.4%}")

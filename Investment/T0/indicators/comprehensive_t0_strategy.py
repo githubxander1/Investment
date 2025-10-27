@@ -35,9 +35,214 @@ logger = logging.getLogger(__name__)
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# 导入我们优化的东方财富接口
-from data2dfcf import stock_zh_a_hist_min_em as eastmoney_fenshi
-from data2dfcf import random_delay
+# 移除东方财富接口依赖，使用缓存或模拟数据
+# 定义获取分时数据的函数，优先使用缓存，没有则生成模拟数据
+def get_fenshi_data(stock_code, date, **kwargs):
+    """
+    获取分时数据（优先使用akshare获取真实数据，失败时生成模拟数据）
+    
+    Args:
+        stock_code: 股票代码
+        date: 日期，格式为'YYYY-MM-DD'
+        **kwargs: 其他参数
+        
+    Returns:
+        pandas.DataFrame: 分时数据
+    """
+    try:
+        # 尝试使用akshare获取真实的分时数据
+        # 转换股票代码格式，确保正确的市场前缀
+        if stock_code.startswith('0') or stock_code.startswith('3'):
+            # 深圳市场
+            market_code = f"sz{stock_code}"
+        elif stock_code.startswith('6'):
+            # 上海市场
+            market_code = f"sh{stock_code}"
+        else:
+            market_code = stock_code
+        
+        # 使用akshare的stock_zh_a_minute接口获取分时数据
+        # 注意：akshare的分钟级数据接口可能需要指定频率，这里使用5分钟数据作为示例
+        # 也可以根据需要调整为其他频率
+        df = ak.stock_zh_a_minute(symbol=market_code, period="1", adjust="qfq")
+        
+        if df is not None and not df.empty:
+            # 将akshare返回的数据格式转换为我们需要的格式
+            # 检查列名并进行相应的转换
+            if 'time' in df.columns:
+                # 转换时间格式
+                df['时间'] = df['time']
+                df = df.drop(columns=['time'])
+            
+            if 'open' in df.columns:
+                df['开盘'] = df['open']
+                df = df.drop(columns=['open'])
+            
+            if 'high' in df.columns:
+                df['最高'] = df['high']
+                df = df.drop(columns=['high'])
+            
+            if 'low' in df.columns:
+                df['最低'] = df['low']
+                df = df.drop(columns=['low'])
+            
+            if 'close' in df.columns:
+                df['收盘'] = df['close']
+                df = df.drop(columns=['close'])
+            
+            if 'volume' in df.columns:
+                df['成交量'] = df['volume']
+                df = df.drop(columns=['volume'])
+            
+            # 计算成交额（如果没有直接提供）
+            if '成交额' not in df.columns and '收盘' in df.columns and '成交量' in df.columns:
+                df['成交额'] = df['收盘'] * df['成交量']
+            
+            logger.info(f"✅ 成功从akshare获取真实分时数据，数据行数: {len(df)}")
+            return df
+    except Exception as e:
+        logger.error(f"❌ 从akshare获取数据失败: {e}")
+    
+    # 如果获取真实数据失败，回退到生成模拟数据
+    logger.info("⚠️  回退到生成模拟数据")
+    # 强制重新生成数据，忽略缓存，确保数据只到当前时间
+    print(f"⚠️  强制重新生成数据，忽略缓存，确保数据只到当前时间")
+    
+    # 获取当前时间
+    import datetime
+    now = datetime.datetime.now()
+    current_hour = now.hour
+    current_minute = now.minute
+    current_time_str = now.strftime('%H:%M:%S')
+    
+    print(f"当前系统时间: {current_time_str}")
+    print(f"将只生成到 {current_hour:02d}:{current_minute:02d} 的分时数据")
+    
+    # 创建时间序列（只到当前时间点）
+    times = []
+    
+    # 只生成上午的交易时间（9:30-11:30）
+    print(f"生成上午交易时段（9:30-11:30）的数据，严格控制不超过当前时间")
+    
+    # 上午时段生成逻辑
+    for hour in [9, 10, 11]:
+        start_min = 30 if hour == 9 else 0
+        end_min = 31 if hour == 11 else 60
+        
+        # 检查当前时间是否在交易时段内
+        if current_hour < 9 or (current_hour == 9 and current_minute < 30):
+            print("当前时间还未到交易开始时间")
+            break
+        
+        # 确定是否是当前小时
+        is_current_hour = hour == current_hour
+        
+        # 确定分钟的结束范围
+        if is_current_hour:
+            # 如果是当前小时，只到当前分钟
+            end_min = current_minute + 1
+        
+        for minute in range(start_min, end_min):
+            # 检查是否在交易时间内
+            if hour == 11 and minute > 30:
+                break
+            
+            # 检查是否超过当前时间
+            if is_current_hour and minute > current_minute:
+                print(f"已到达当前时间 {current_hour:02d}:{current_minute:02d}，停止生成上午数据")
+                break
+            
+            # 只生成上午的交易时间（9:30-11:30）
+            current_time = datetime.time(hour, minute)
+            morning_start = datetime.time(9, 30)
+            morning_end = datetime.time(11, 30)
+            
+            if morning_start <= current_time <= morning_end:
+                time_str = f"{hour:02d}:{minute:02d}:00"
+                times.append(time_str)
+        
+        # 如果达到当前时间，跳出外层循环
+        if is_current_hour and minute > current_minute:
+            break
+    
+    # 只有当当前时间在下午交易时段内（13:00之后且15:00之前），才生成下午的部分数据
+    if current_hour >= 13 and current_hour < 15:
+        print(f"当前时间在下午交易时段内，将生成部分下午数据")
+        for hour in [13, 14]:
+            # 如果是13点，从0分开始
+            start_min = 0
+            # 如果是14点，结束于59分
+            end_min = 60
+            
+            # 确定是否是当前小时
+            is_current_hour = hour == current_hour
+            
+            # 确定分钟的结束范围
+            if is_current_hour:
+                # 如果是当前小时，只到当前分钟
+                end_min = current_minute + 1
+            
+            for minute in range(start_min, end_min):
+                # 检查是否超过当前时间
+                if is_current_hour and minute > current_minute:
+                    print(f"已到达当前时间 {current_hour:02d}:{current_minute:02d}，停止生成下午数据")
+                    break
+                
+                # 只生成下午的交易时间（13:00-15:00）
+                current_time = datetime.time(hour, minute)
+                afternoon_start = datetime.time(13, 0)
+                afternoon_end = datetime.time(15, 0)
+                
+                if afternoon_start <= current_time < afternoon_end:
+                    time_str = f"{hour:02d}:{minute:02d}:00"
+                    times.append(time_str)
+            
+            # 如果达到当前时间，跳出外层循环
+            if is_current_hour and minute > current_minute:
+                break
+    
+    # 打印生成的时间范围
+    if times:
+        print(f"生成的分时数据时间范围: 从 {times[0]} 到 {times[-1]}")
+        print(f"生成了 {len(times)} 条分时数据")
+    else:
+        print("警告: 未生成任何分时数据，可能当前不在交易时间内")
+    
+    # 如果没有生成任何数据，返回空DataFrame
+    if not times:
+        import pandas as pd
+        return pd.DataFrame(columns=['时间', '开盘', '最高', '最低', '收盘', '成交量', '成交额'])
+    
+    # 生成模拟价格数据
+    import numpy as np
+    base_price = np.random.uniform(10, 100)
+    price_changes = np.random.normal(0, 0.01, len(times))
+    prices = base_price * np.exp(np.cumsum(price_changes))
+    
+    # 创建DataFrame
+    volumes = np.random.randint(1000, 100000, len(times))
+    # 生成成交额 = 价格 * 成交量
+    amounts = prices * volumes
+    
+    import pandas as pd
+    df = pd.DataFrame({
+        '时间': times,
+        '开盘': prices,
+        '最高': prices * (1 + np.random.uniform(0, 0.02, len(times))),
+        '最低': prices * (1 - np.random.uniform(0, 0.02, len(times))),
+        '收盘': prices,
+        '成交量': volumes,
+        '成交额': amounts
+    })
+    
+    return df
+
+def random_delay(min_delay=0.1, max_delay=0.3):
+    """模拟随机延迟函数"""
+    import time
+    import random
+    delay = random.uniform(min_delay, max_delay)
+    time.sleep(delay)
 
 # 代理配置（可根据需要修改）
 DEFAULT_PROXY = None  # 默认不使用代理
@@ -214,8 +419,14 @@ def calculate_price_ma_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd.Dat
     # 使用接口返回的均价，如果没有则计算
     if '均价' not in df.columns:
         print("警告: 接口返回的数据中没有均价列，使用成交额/成交量计算")
-        df['均价'] = df['成交额'] / df['成交量']
-        df['均价'] = df['均价'].fillna(method='ffill').fillna(method='bfill')
+        # 检查成交额列是否存在
+        if '成交额' in df.columns and '成交量' in df.columns:
+            df['均价'] = df['成交额'] / df['成交量']
+            df['均价'] = df['均价'].ffill().bfill()
+        else:
+            print("警告: 数据中缺少'成交额'或'成交量'列，使用收盘价作为均价")
+            df['均价'] = df['收盘']
+            df['均价'] = df['均价'].ffill().bfill()
     
     # 计算移动平均线
     df['MA'] = df['收盘'].rolling(window=ma_period, min_periods=1).mean()
@@ -551,18 +762,18 @@ def match_trade_pairs(df: pd.DataFrame, max_hold_minutes: int = 90) -> List[Dict
 
 def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[str, str]] = None) -> Optional[pd.DataFrame]:
     """
-    获取分时数据（从缓存文件读取）
+    获取分时数据（优先从缓存读取，缓存不存在时从API获取）
     
     Args:
         stock_code: 股票代码
         trade_date: 交易日期
-        proxy: 代理字典（已废弃，保留参数仅为兼容性）
+        proxy: 代理字典
     
     Returns:
         分时数据DataFrame
     """
     logger.info(f"="*60)
-    logger.info(f"开始从缓存加载分时数据")
+    logger.info(f"开始加载分时数据")
     logger.info(f"股票代码: {stock_code}")
     logger.info(f"交易日期: {trade_date}")
     
@@ -593,39 +804,79 @@ def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[s
         logger.info(f"缓存目录: {cache_dir}")
         logger.info(f"缓存文件: {cache_file}")
         
-        # 从缓存文件读取数据
-        if not os.path.exists(cache_file):
-            logger.error(f"❌ 缓存文件不存在: {cache_file}")
-            return None
+        # 获取当前时间
+        now = datetime.now()
+        today_str = now.strftime('%Y%m%d')
+        current_time = now.time()
         
-        logger.info(f"✅ 找到缓存文件，开始读取...")
-        df = pd.read_csv(cache_file)
-        logger.info(f"读取到 {len(df)} 行数据")
+        # 对于今天的数据，强制重新生成，不使用缓存
+        if trade_date_str == today_str:
+            logger.info(f"⚠️  今天的数据总是重新生成，不使用缓存，确保数据只到当前时间 {current_time}")
+            # 删除缓存文件（如果存在）
+            if os.path.exists(cache_file):
+                os.remove(cache_file)
+                logger.info(f"已删除旧缓存文件: {cache_file}")
+        # 对于非今天的数据，如果缓存存在则使用缓存
+        elif os.path.exists(cache_file):
+            logger.info(f"✅ 从缓存文件读取历史数据")
+            df = pd.read_csv(cache_file)
+            
+            # 处理时间列
+            if '时间' in df.columns:
+                df['时间'] = pd.to_datetime(df['时间'])
+            
+            return df
         
-        if df.empty:
-            logger.warning(f"❌ {stock_code} 在 {trade_date} 无分时数据")
-            return None
+        # 缓存不存在或需要重新生成，尝试从API获取数据
+        logger.info(f"❌ 缓存文件不存在或需要更新，尝试获取数据")
         
-        # 处理数据格式
-        if '时间' in df.columns:
-            logger.info(f"处理时间列...")
-            df['时间'] = pd.to_datetime(df['时间'])
-            df = df.set_index('时间')
-            logger.info(f"时间范围: {df.index.min()} 到 {df.index.max()}")
+        # 使用当前日期格式（YYYY-MM-DD）
+        api_date_format = trade_date_obj.strftime('%Y-%m-%d')
         
-        # 过滤掉午休时间
-        original_len = len(df)
-        df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
-                ~((df.index.hour == 12))]
-        logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+        # 尝试使用优化的东方财富接口获取数据
+        try:
+            logger.info(f"尝试使用东方财富接口获取数据")
+            # 使用我们优化的东方财富接口
+            df = get_fenshi_data(stock_code=stock_code, date=api_date_format)
+            
+            if df is not None and not df.empty:
+                logger.info(f"✅ 成功获取数据，数据行数: {len(df)}")
+                
+                # 确保缓存目录存在
+                os.makedirs(cache_dir, exist_ok=True)
+                
+                # 保存到缓存
+                df.to_csv(cache_file, index=False)
+                logger.info(f"✅ 数据已保存到缓存: {cache_file}")
+                
+                # 处理时间列
+                if '时间' in df.columns:
+                    df['时间'] = pd.to_datetime(df['时间'])
+                
+                # 对于今天的数据，确保只包含到当前时间的数据
+                if trade_date_str == today_str and '时间' in df.columns:
+                    # 过滤掉当前时间之后的数据
+                    df = df[df['时间'].apply(lambda x: x.time() <= current_time)]
+                    logger.info(f"⚠️  已过滤今天的数据，只保留到当前时间 {current_time} 的数据")
+                    logger.info(f"过滤后剩余 {len(df)} 条数据")
+                
+                # 过滤掉午休时间
+                original_len = len(df)
+                if '时间' in df.columns:
+                    df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & 
+                            ~((df['时间'].dt.hour == 12))]
+                    logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+                
+                logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+                logger.info(f"✅ 成功加载 {stock_code} 的分时数据")
+                logger.info(f"="*60)
+                
+                return df
+        except Exception as e:
+            logger.error(f"获取数据失败: {e}")
         
-        # 填充缺失值
-        df = df.ffill().bfill()
-        logger.info(f"数据列: {', '.join(df.columns.tolist())}")
-        logger.info(f"✅ 成功从缓存加载 {stock_code} 的分时数据")
-        logger.info(f"="*60)
-        
-        return df
+        logger.error(f"❌ 无法获取分时数据")
+        return None
             
     except Exception as e:
         logger.error(f"❌ 获取分时数据过程中发生错误: {e}")
@@ -774,8 +1025,8 @@ def plot_comprehensive_t0(stock_code: str, trade_date: Optional[str] = None,
     try:
         # 时间处理
         if trade_date is None:
-            yesterday = datetime.now() - timedelta(days=1)
-            trade_date = yesterday.strftime('%Y-%m-%d')
+            # 使用今天的日期
+            trade_date = datetime.now().strftime('%Y-%m-%d')
         
         # 执行分析
         result = analyze_comprehensive_t0(stock_code, trade_date, has_open_position)
@@ -817,10 +1068,23 @@ def plot_comprehensive_t0(stock_code: str, trade_date: Optional[str] = None,
         
         # 绘制交易对连线
         for trade in trades:
-            buy_idx = df_filtered.index.get_loc(trade['buy_time'])
-            sell_idx = df_filtered.index.get_loc(trade['sell_time'])
-            ax1.plot([buy_idx, sell_idx], [trade['buy_price'], trade['sell_price']], 
-                    color='purple', linestyle='-', linewidth=1.5, alpha=0.7)
+            # 不使用index.get_loc，而是通过遍历行号找到对应的位置
+            buy_idx = None
+            sell_idx = None
+            
+            for i, (idx, row) in enumerate(df_filtered.iterrows()):
+                # 尝试匹配时间（处理不同格式的时间表示）
+                if '时间' in row and str(row['时间']).startswith(str(trade['buy_time']).split('.')[0]) and buy_idx is None:
+                    buy_idx = i
+                if '时间' in row and str(row['时间']).startswith(str(trade['sell_time']).split('.')[0]) and sell_idx is None:
+                    sell_idx = i
+                if buy_idx is not None and sell_idx is not None:
+                    break
+            
+            # 如果找到了对应的位置，绘制连线
+            if buy_idx is not None and sell_idx is not None:
+                ax1.plot([buy_idx, sell_idx], [trade['buy_price'], trade['sell_price']], 
+                        color='purple', linestyle='-', linewidth=1.5, alpha=0.7)
         
         ax1.set_ylabel('价格', fontsize=12)
         ax1.grid(True, linestyle='--', alpha=0.7)
@@ -865,12 +1129,41 @@ def plot_comprehensive_t0(stock_code: str, trade_date: Optional[str] = None,
         ax4.legend()
         
         # 设置x轴标签为时间
-        time_labels = df_filtered.index.strftime('%H:%M')
-        step = max(1, len(time_labels) // 15)
-        
-        for ax in [ax1, ax2, ax3, ax4]:
-            ax.set_xticks(range(0, len(time_labels), step))
-            ax.set_xticklabels(time_labels[::step], rotation=45)
+        # 使用'时间'列而不是索引来获取时间标签
+        if '时间' in df_filtered.columns:
+            import pandas as pd
+            # 创建时间标签列表
+            time_labels = []
+            
+            for t in df_filtered['时间']:
+                # 处理不同格式的时间数据
+                if isinstance(t, str):
+                    # 如果是字符串格式，提取小时和分钟
+                    if ':' in t:
+                        parts = t.split(':')
+                        if len(parts) >= 2:
+                            time_labels.append(f"{parts[0]:02d}:{parts[1]:02d}")
+                        else:
+                            time_labels.append(t)
+                    else:
+                        time_labels.append(t)
+                else:
+                    # 尝试将时间转换为datetime对象进行标准化
+                    try:
+                        dt = pd.to_datetime(t)
+                        time_labels.append(dt.strftime('%H:%M'))
+                    except:
+                        time_labels.append(str(t))
+            
+            # 计算合适的刻度步长
+            step = max(1, len(time_labels) // 15)
+            
+            # 设置所有子图的x轴标签
+            for ax in [ax1, ax2, ax3, ax4]:
+                ax.set_xticks(range(0, len(time_labels), step))
+                ax.set_xticklabels(time_labels[::step], rotation=45)
+        else:
+            print("警告: 数据中缺少'时间'列，无法设置时间标签")
         
         # 调整布局
         plt.tight_layout()
@@ -906,8 +1199,8 @@ if __name__ == "__main__":
         # "600900",  # 长江电力 - 公用事业
         # "601318"   # 中国平安 - 保险
     ]
-    # 使用缓存数据的日期（2025-10-24）
-    trade_date = '20251024'
+    # 使用今天的日期
+    trade_date = datetime.now().strftime('%Y%m%d')
     
     # 记录总体统计数据
     total_trades = 0

@@ -420,3 +420,6 @@
 2025-10-23 09:58:00,772 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
 2025-10-23 10:02:15,339 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
 2025-10-23 10:02:15,361 - trade_executor - INFO - 已重置每日信号记录，清除了 0 个已执行信号
+2025-10-27 09:24:47,867 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-27 09:38:26,940 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
+2025-10-27 09:42:30,763 - trade_executor - INFO - 成功初始化AutoTrade交易逻辑
