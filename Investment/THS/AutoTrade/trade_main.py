@@ -284,7 +284,13 @@ async def main():
         auto_trade_lock.release()
 
 if __name__ == '__main__':
-    end_time_hour = 15
-    end_time_minute = 30
-
-    asyncio.run(main())
+    # end_time_hour = 15
+    # end_time_minute = 30
+    #
+    # asyncio.run(main())
+    account_name = "川财证券"
+    guozhai = NationalDebtPage()
+    if guozhai.common_page.change_account(account_name):
+        logger.info(f"✅ 成功切换到账户: {account_name}")
+    # asyncio.run(execute_guozhai_trades(d))
+    guozhai.guozhai_operation()

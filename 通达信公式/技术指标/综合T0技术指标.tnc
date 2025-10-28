@@ -1,3 +1,6 @@
+{综合T0技术指标 - 多因子评分系统}
+
+{1. 参数设置}
 N1 := 5;
 N2 := 30;
 N3 := 20;
@@ -6,17 +9,22 @@ N5 := 10;
 N6 := 60;
 N7 := 5;
 
+{2. 基础指标计算}
 MA_N1 := MA(CLOSE, N1);
 MA_N2 := MA(CLOSE, N2);
 MA_VOL := MA(VOL, N3);
 MA_CLOSE_5 := MA(CLOSE, N7);
 MA_CLOSE_60 := MA(CLOSE, N6);
 
+{3. 核心指标：价格均线偏离度}
 P_MA_Ratio := MAX(MIN(((CLOSE / MA_N1) - 1) * 100, 20), -20);
+
+{4. MACD指标计算}
 MACD_DIF := EMA(CLOSE, 12) - EMA(CLOSE, 26);
 MACD_DEA := EMA(MACD_DIF, 9);
 MACD := (MACD_DIF - MACD_DEA) * 2;
 
+{5. 波动率和KDJ指标计算}
 pct_chg := (CLOSE / REF(CLOSE, 1) - 1) * 100;
 volatility := STD(pct_chg, N4);
 RSV := (CLOSE - LLV(LOW, N5)) / (HHV(HIGH, N5) - LLV(LOW, N5)) * 100;
@@ -24,11 +32,13 @@ K := SMA(RSV, 3, 1);
 D := SMA(K, 3, 1);
 J := 3 * K - 2 * D;
 
+{6. 因子信号定义}
 SUP_SIGNAL := LLV(LOW, 3) >= LLV(LOW, 10);
 MMT_BUY := MACD > 0 AND MACD_DIF > MACD_DEA;
 OVERSOLD := J < 20;
 UP_TREND := MA_CLOSE_5 > MA_CLOSE_60;
 
+{7. 多因子评分系统}
 ma_score1 := (P_MA_Ratio <= -0.3) * 40;
 ma_score2 := (P_MA_Ratio <= -0.6) * 10;
 sup_score := SUP_SIGNAL * 20;
@@ -37,14 +47,20 @@ os_score := OVERSOLD * 10;
 trend_score := UP_TREND * 10;
 vol_score := (VOL >= 0.9 * MA_VOL) * 5;
 BUY_SCORE := ma_score1 + ma_score2 + sup_score + mmt_score + os_score + trend_score + vol_score;
+
+{8. 信号生成}
 BUY_SIGNAL := BUY_SCORE >= 60 AND BUY_SCORE <= 115;
 SELL_SIGNAL := P_MA_Ratio >= 0.4;
 
+{9. 文本信息显示}
 DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.01, 0, '综合T0策略'), COLORYELLOW;
-DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.05, 0, '买入分数: ') + NUMTOSTRN(BUY_SCORE, 0), COLORWHITE;
+DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.05, 0, '买入分数:'), COLORWHITE;
+DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.10, 0, NUMTOSTRN(BUY_SCORE, 0)), COLORWHITE;
 
+{10. 信号标记显示}
 DRAWICON(BUY_SIGNAL, LOW, 1);
 DRAWICON(SELL_SIGNAL, HIGH, 2);
 
+{11. 核心指标线显示}
 P_MA_Ratio, COLORCYAN;
 0, COLORGRAY;

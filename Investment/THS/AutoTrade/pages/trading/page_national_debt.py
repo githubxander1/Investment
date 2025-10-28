@@ -52,7 +52,7 @@ class NationalDebtPage(BasePage):
             if target[0].exists():
                 time.sleep(1.5)
                 # 检查元素是否可见和可点击
-                if target[0].info.get('visible', False) and target[0].info.get('clickable', False):
+                if target[0].info.get('enabled', False):
                     target.click()
                     logger.info(f"点击 {target_name} 成功")
                     # 等待点击效果
@@ -130,11 +130,11 @@ class NationalDebtPage(BasePage):
             else:
                 prompt_text = self.prompt_content.get_text()
                 # 检查确认按钮是否可见和可点击
-                if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                if self.confirm_button.info.get('clickable', False):
                     self.confirm_button.click()
-                if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                if self.back_button.info.get('clickable', False):
                     self.back_button.click()
-                if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                if self.back_button.info.get('clickable', False):
                     self.back_button.click()
                 logger.error(f"委托失败: {prompt_text}")
                 return False, prompt_text
@@ -170,7 +170,7 @@ class NationalDebtPage(BasePage):
                 return False, error_msg
             else:
                 # 检查元素是否可见和可点击
-                if self.guozhai_entry_button.info.get('visible', False) and self.guozhai_entry_button.info.get('clickable', False):
+                if self.guozhai_entry_button.info.get('clickable', False):
                     self.guozhai_entry_button.click()
                     logger.info("已进入: 国债逆回购入口")
                     # 等待点击效果
@@ -209,7 +209,7 @@ class NationalDebtPage(BasePage):
                 return False, error_msg
             else:
                 # 检查元素是否可见和可点击
-                if self.borrow_btn.info.get('visible', False) and self.borrow_btn.info.get('clickable', False):
+                if self.borrow_btn.info.get('clickable', False):
                     self.borrow_btn.click()
                     logger.info("已点击: 借出按钮")
                     # 等待点击效果
@@ -293,3 +293,8 @@ class NationalDebtPage(BasePage):
         else:
             logger.warning("账户切换按钮不可点击或不可见")
             return False
+
+if __name__ == '__main__':
+    guozhai = NationalDebtPage(d)
+    guozhai.guozhai_change_account("川财证券")
+    guozhai.guozhai_operation()

@@ -26,12 +26,22 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103"):
             # 响应格式为 "data:{...}"，需去除前缀"data:"
             data_str = response.readline().decode('utf-8').lstrip('data:')
             df = pd.read_json(data_str)
+
+            data = []
             details = df.get('details', [])
             #details:09:15:02,32.86,1901,0,4
 
-            time = details[0][0]
             price = details[0][1]
             volume = details[0][2]
+
+            data.append({
+                "昨收价": df.get('preprice', 0),
+                "时间": details[0][0],
+                "最新价": details[0][1],
+                "涨跌幅(%)": (price - preprice) / preprice * 100,
+                "成交量(手)": details[0][3]
+            })
+
 
 
 

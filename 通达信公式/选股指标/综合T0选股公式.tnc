@@ -1,41 +1,58 @@
-N1 := 5;
-N2 := 30;
-N3 := 20;
-N4 := 30;
-N5 := 10;
-N6 := 60;
-N7 := 5;
+{综合T0选股公式 - 多因子评分系统}
 
-MA_N1 := MA(CLOSE, N1);
-MA_N2 := MA(CLOSE, N2);
-MA_VOL := MA(VOL, N3);
-MA_CLOSE_5 := MA(CLOSE, N7);
-MA_CLOSE_60 := MA(CLOSE, N6);
+{1. 参数设置}
+N1 := 5;  {短期均线周期}
+N2 := 30; {中长期均线周期}
+N3 := 20; {均量线周期}
+N4 := 30; {波动率计算周期}
+N5 := 10; {RSV计算周期}
+N6 := 60; {长期均线周期}
+N7 := 5;  {短期均线周期}
 
-P_MA_Ratio := MAX(MIN(((CLOSE / MA_N1) - 1) * 100, 20), -20);
-MACD_DIF := EMA(CLOSE, 12) - EMA(CLOSE, 26);
-MACD_DEA := EMA(MACD_DIF, 9);
-MACD := (MACD_DIF - MACD_DEA) * 2;
+{2. 基础指标计算}
+MA_N1 := MA(CLOSE, N1);         {5日收盘价均线}
+MA_N2 := MA(CLOSE, N2);         {30日收盘价均线}
+MA_VOL := MA(VOL, N3);          {20日均量线}
+MA_CLOSE_5 := MA(CLOSE, N7);    {5日收盘价均线}
+MA_CLOSE_60 := MA(CLOSE, N6);   {60日收盘价均线}
 
-pct_chg := (CLOSE / REF(CLOSE, 1) - 1) * 100;
-volatility := STD(pct_chg, N4);
+{3. 核心指标：价格均线偏离度}
+P_MA_Ratio := MAX(MIN(((CLOSE / MA_N1) - 1) * 100, 20), -20); {价格均线偏离度，限制在[-20%, 20%]}
+
+{4. MACD指标计算}
+MACD_DIF := EMA(CLOSE, 12) - EMA(CLOSE, 26); {MACD快线}
+MACD_DEA := EMA(MACD_DIF, 9);               {MACD慢线}
+MACD := (MACD_DIF - MACD_DEA) * 2;          {MACD柱状图}
+
+{5. 波动率和KDJ指标计算}
+pct_chg := (CLOSE / REF(CLOSE, 1) - 1) * 100; {日涨跌幅}
+volatility := STD(pct_chg, N4);               {30日波动率}
 RSV := (CLOSE - LLV(LOW, N5)) / (HHV(HIGH, N5) - LLV(LOW, N5)) * 100;
 K := SMA(RSV, 3, 1);
 D := SMA(K, 3, 1);
-J := 3 * K - 2 * D;
+J := 3 * K - 2 * D; {KDJ的J线}
 
-SUP_SIGNAL := LLV(LOW, 3) >= LLV(LOW, 10);
-MMT_BUY := MACD > 0 AND MACD_DIF > MACD_DEA;
-OVERSOLD := J < 20;
-UP_TREND := MA_CLOSE_5 > MA_CLOSE_60;
+{6. 因子信号定义}
+SUP_SIGNAL := LLV(LOW, 3) >= LLV(LOW, 10);    {支撑信号}
+MMT_BUY := MACD > 0 AND MACD_DIF > MACD_DEA;  {MACD买入信号}
+OVERSOLD := J < 20;                           {KDJ超卖信号}
+UP_TREND := MA_CLOSE_5 > MA_CLOSE_60;         {上升趋势信号}
 
-ma_score1 := (P_MA_Ratio <= -0.3) * 40;
-ma_score2 := (P_MA_Ratio <= -0.6) * 10;
-sup_score := SUP_SIGNAL * 20;
-mmt_score := MMT_BUY * 20;
-os_score := OVERSOLD * 10;
-trend_score := UP_TREND * 10;
-vol_score := (VOL >= 0.9 * MA_VOL) * 5;
-BUY_SCORE := ma_score1 + ma_score2 + sup_score + mmt_score + os_score + trend_score + vol_score;
-BUY_SIGNAL := BUY_SCORE >= 60 AND BUY_SCORE <= 115;
-BUY_SIGNAL;
+{7. 多因子评分系统}
+ma_score1 := (P_MA_Ratio <= -0.3) * 40;  {轻度偏离度得分}
+ma_score2 := (P_MA_Ratio <= -0.6) * 10;  {重度偏离度额外得分}
+sup_score := SUP_SIGNAL * 20;            {支撑信号得分}
+mmt_score := MMT_BUY * 20;               {MACD信号得分}
+os_score := OVERSOLD * 10;               {超卖信号得分}
+trend_score := UP_TREND * 10;            {趋势得分}
+vol_score := (VOL >= 0.9 * MA_VOL) * 5;  {成交量得分}
+BUY_SCORE := ma_score1 + ma_score2 + sup_score + mmt_score + os_score + trend_score + vol_score; {总得分}
+
+{8. 买入信号生成}
+BUY_SIGNAL := BUY_SCORE >= 60 AND BUY_SCORE <= 115; {买入信号：综合得分在60-115之间}
+
+{9. 卖出信号生成}
+SELL_SIGNAL := P_MA_Ratio >= 0.4; {卖出信号：价格偏离度大于0.4}
+
+{10. 选股结果输出 - 同时包含买入和卖出信号}
+BUY_SIGNAL OR SELL_SIGNAL;
