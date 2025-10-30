@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Investment\T0\cache\fenshi_data\002415_20251024_fenshi.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\T0\东方财富分时数据.csv">
           <value>
             <Attribute>

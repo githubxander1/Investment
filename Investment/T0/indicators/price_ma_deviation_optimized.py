@@ -68,36 +68,7 @@ def get_fenshi_data(stock_code, date, **kwargs):
         print(f"从缓存文件 {cache_file} 读取股票分时数据")
         return df
     
-    # 生成模拟数据
-    print(f"未找到缓存数据，生成模拟分时数据 for {stock_code} {date}")
-    import pandas as pd
-    import numpy as np
-    
-    # 创建时间序列（模拟交易日的分时数据）
-    times = []
-    for hour in [9, 10, 11, 13, 14]:
-        start_min = 30 if hour == 9 else 0
-        end_min = 31 if hour == 11 else 60
-        for minute in range(start_min, end_min):
-            if (hour == 11 and minute > 30) or (hour > 14):
-                break
-            times.append(f"{hour:02d}:{minute:02d}:00")
-    
-    # 生成模拟价格数据
-    base_price = np.random.uniform(10, 100)
-    price_changes = np.random.normal(0, 0.01, len(times))
-    prices = base_price * np.exp(np.cumsum(price_changes))
-    
-    # 创建DataFrame
-    df = pd.DataFrame({
-        '时间': times,
-        '开盘': prices,
-        '最高': prices * (1 + np.random.uniform(0, 0.02, len(times))),
-        '最低': prices * (1 - np.random.uniform(0, 0.02, len(times))),
-        '收盘': prices,
-        '成交量': np.random.randint(1000, 100000, len(times))
-    })
-    
+
     return df
 
 def random_delay(min_delay=0.1, max_delay=0.3):
@@ -827,11 +798,11 @@ def main():
         # '601398',  # 工商银行 - 银行龙头
         # '600900',  # 长江电力 - 公用事业龙头
         # '601318',  # 中国平安 - 保险龙头
-        '000333',  # 美的集团 - 家电龙头
+        # '000333',  # 美的集团 - 家电龙头
     ]
     
     # 使用缓存数据的日期（2025-10-24）
-    trade_date = '20251024'
+    trade_date = '20251030'
     
     print(f"\n📊 开始测试价格均线偏离策略 - 优化版\n")
     print(f"测试日期: {trade_date}\n")
