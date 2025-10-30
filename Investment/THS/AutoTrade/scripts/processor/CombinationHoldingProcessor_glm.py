@@ -16,6 +16,7 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.notification import send_notification
 
 from Investment.THS.AutoTrade.utils.format_data import standardize_dataframe_stock_names
+from Investment.THS.AutoTrade.utils.enhanced_requests import get
 
 logger = setup_logger("combination_holding_processor.log")
 
@@ -41,15 +42,12 @@ class CombinationHoldingProcessor:
     def get_single_holding_data(self, portfolio_id):
         """获取单个组合的持仓数据"""
         url = f"https://t.10jqka.com.cn/portfolio/relocate/user/getPortfolioHoldingData?id={portfolio_id}"
-        headers = Combination_headers
 
         # 实现重试机制和超时处理
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = requests.get(url, headers=headers, timeout=10)  # 增加超时设置
-                response.raise_for_status()
-
+                response = get(url, headers=Combination_headers, timeout=10)
                 data = response.json()
                 # pprint(data)
 

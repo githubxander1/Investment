@@ -1,66 +1,33 @@
-{综合T0技术指标 - 多因子评分系统}
+{综合T0技术指标 - 分时优化版}
 
-{1. 参数设置}
-N1 := 5;
-N2 := 30;
-N3 := 20;
-N4 := 30;
-N5 := 10;
-N6 := 60;
-N7 := 5;
+{1. 获取系统分时均价 - 修正单位转换问题确保计算准确性}
+均价:SUM(AMOUNT,0)/(SUM(VOL,0)*100);{考虑到VOL单位为手，乘以100转换为股}
+当前价:CLOSE;
 
-{2. 基础指标计算}
-MA_N1 := MA(CLOSE, N1);
-MA_N2 := MA(CLOSE, N2);
-MA_VOL := MA(VOL, N3);
-MA_CLOSE_5 := MA(CLOSE, N7);
-MA_CLOSE_60 := MA(CLOSE, N6);
+{2. 核心功能：偏离度计算}
+偏离度:(C-均价)/均价*100.00;
 
-{3. 核心指标：价格均线偏离度}
-P_MA_Ratio := MAX(MIN(((CLOSE / MA_N1) - 1) * 100, 20), -20);
+{3. 成交量分析 - 添加成交量因素}
+VOLUME_5MA := MA(VOL, 5);
+量比:= VOL / VOLUME_5MA;
+成交量放大:= 量比 > 1.5;
+成交量萎缩:= 量比 < 0.5;
 
-{4. MACD指标计算}
-MACD_DIF := EMA(CLOSE, 12) - EMA(CLOSE, 26);
-MACD_DEA := EMA(MACD_DIF, 9);
-MACD := (MACD_DIF - MACD_DEA) * 2;
+{4. 调整坐标范围以更好地显示小幅度偏离}
+DRAWNULL,COLORRED;{强制系统重新计算坐标范围}
 
-{5. 波动率和KDJ指标计算}
-pct_chg := (CLOSE / REF(CLOSE, 1) - 1) * 100;
-volatility := STD(pct_chg, N4);
-RSV := (CLOSE - LLV(LOW, N5)) / (HHV(HIGH, N5) - LLV(LOW, N5)) * 100;
-K := SMA(RSV, 3, 1);
-D := SMA(K, 3, 1);
-J := 3 * K - 2 * D;
+{5. 为了增强可见性，将偏离度值放大显示}
+偏离度放大:偏离度*50;{将偏离度放大50倍显示，使变化更明显}
+偏离度放大,COLORRED,LINETHICK4;
 
-{6. 因子信号定义}
-SUP_SIGNAL := LLV(LOW, 3) >= LLV(LOW, 10);
-MMT_BUY := MACD > 0 AND MACD_DIF > MACD_DEA;
-OVERSOLD := J < 20;
-UP_TREND := MA_CLOSE_5 > MA_CLOSE_60;
+{6. 信号生成 - 结合价格偏离度和成交量}
+买入信号 := 偏离度 < -0.3 AND 成交量放大;
+卖出信号 := 偏离度 > 0.3 AND (成交量放大 OR CLOSE > 均价);
 
-{7. 多因子评分系统}
-ma_score1 := (P_MA_Ratio <= -0.3) * 40;
-ma_score2 := (P_MA_Ratio <= -0.6) * 10;
-sup_score := SUP_SIGNAL * 20;
-mmt_score := MMT_BUY * 20;
-os_score := OVERSOLD * 10;
-trend_score := UP_TREND * 10;
-vol_score := (VOL >= 0.9 * MA_VOL) * 5;
-BUY_SCORE := ma_score1 + ma_score2 + sup_score + mmt_score + os_score + trend_score + vol_score;
+{7. 信号标记显示}
+DRAWICON(买入信号, 偏离度放大-1, 1);{买入信号标记（1=向上箭头）}
+DRAWICON(卖出信号, 偏离度放大+1, 2);{卖出信号标记（2=向下箭头）}
 
-{8. 信号生成}
-BUY_SIGNAL := BUY_SCORE >= 60 AND BUY_SCORE <= 115;
-SELL_SIGNAL := P_MA_Ratio >= 0.4;
-
-{9. 文本信息显示}
-DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.01, 0, '综合T0策略'), COLORYELLOW;
-DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.05, 0, '买入分数:'), COLORWHITE;
-DRAWTEXT_FIX(ISLASTBAR, 0.01, 0.10, 0, NUMTOSTRN(BUY_SCORE, 0)), COLORWHITE;
-
-{10. 信号标记显示}
-DRAWICON(BUY_SIGNAL, LOW, 1);
-DRAWICON(SELL_SIGNAL, HIGH, 2);
-
-{11. 核心指标线显示}
-P_MA_Ratio, COLORCYAN;
-0, COLORGRAY;
+{8. 显示带名称的指标值（去掉不支持的FONT参数，补充分号）}
+量比1:量比,COLORGREEN,LINETHICK1;{确保句尾有分号}
+涨跌幅:(C-REF(C,1))/REF(C,1)*100,COLORRED,LINETHICK1;{补充涨跌幅};

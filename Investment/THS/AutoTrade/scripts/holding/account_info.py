@@ -13,6 +13,7 @@ import pytesseract
 from Investment.THS.AutoTrade.config.settings import account_xml_file, Account_holding_file
 from Investment.THS.AutoTrade.pages import CommonPage
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 # from config.settings import Account_holding_file, account_xml_file
 # from utils.logger import setup_logger
@@ -31,7 +32,9 @@ class AccountInfo:
         try:
             self.d = u2.connect()
         except Exception as e:
-            logger.error(f"连接设备失败: {e}")
+            error_msg = f"连接设备失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             exit(1)
             
         # 加载股票代码和名称映射
@@ -55,7 +58,9 @@ class AccountInfo:
                             stock_map[name] = short_code
                 logger.info(f"成功加载 {len(stock_map)} 个股票代码名称映射")
             except Exception as e:
-                logger.error(f"加载股票代码名称映射失败: {e}")
+                error_msg = f"加载股票代码名称映射失败: {e}"
+                logger.error(error_msg)
+                send_notification(error_msg)
         else:
             logger.warning(f"未找到股票代码名称映射文件: {ALL_STOCKS_FILE}")
         return stock_map
@@ -101,7 +106,9 @@ class AccountInfo:
             text = pytesseract.image_to_string(binary, lang='chi_sim+eng')
             return text
         except Exception as e:
-            logger.error(f"OCR识别失败: {e}")
+            error_msg = f"OCR识别失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return ""
 
     # 获取xml
@@ -152,7 +159,9 @@ class AccountInfo:
             return stocks, hidden_stocks
 
         except Exception as e:
-            logger.error(f"解析XML文件失败: {e}")
+            error_msg = f"解析XML文件失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return [], []
 
     def _extract_stock_data(self, item):
@@ -229,7 +238,9 @@ class AccountInfo:
                 '当前价': current_price
             }
         except Exception as e:
-            logger.error(f"提取单个股票数据失败: {e}")
+            error_msg = f"提取单个股票数据失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return None
 
     def _clean_number(self, text):
@@ -351,7 +362,9 @@ class AccountInfo:
             return header_info_df
 
         except Exception as e:
-            logger.error(f"结束：获取账户表头信息失败: {e}")
+            error_msg = f"结束：获取账户表头信息失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             logger.info("-" * 50)
             return pd.DataFrame()
 
@@ -424,7 +437,9 @@ class AccountInfo:
             logger.info("-" * 50)
             return buy_available
         except Exception as e:
-            logger.error(f"完成：获取可用资金失败: {e}")
+            error_msg = f"完成：获取可用资金失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             logger.info("-" * 50)
             return None
 
@@ -453,7 +468,9 @@ class AccountInfo:
                     logger.info("-" * 50)
                     return True, available
                 except (ValueError, TypeError) as e:
-                    logger.warning(f"完成：持仓/可用字段格式错误: 持仓={position}, 可用={available}")
+                    error_msg = f"完成：持仓/可用字段格式错误: 持仓={position}, 可用={available}"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
                     logger.info("-" * 50)
                     return False, 0
             else:
@@ -461,7 +478,9 @@ class AccountInfo:
                 logger.info("-" * 50)
                 return False, 0
         except Exception as e:
-            logger.error(f"获取持仓失败: {e}")
+            error_msg = f"获取持仓失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             logger.info("-" * 50)
             return False, 0
             
@@ -507,7 +526,9 @@ class AccountInfo:
             return summary_info
             
         except Exception as e:
-            logger.error(f"获取账户汇总信息失败: {e}")
+            error_msg = f"获取账户汇总信息失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             logger.info("-" * 50)
             return None
             
@@ -530,7 +551,9 @@ class AccountInfo:
         try:
             # 检查文件是否存在
             if not os.path.exists(account_file):
-                logger.error(f"账户持仓文件不存在: {account_file}")
+                error_msg = f"账户持仓文件不存在: {account_file}"
+                logger.error(error_msg)
+                send_notification(error_msg)
                 logger.info("-" * 50)
                 return None, None, None, None, None
             
@@ -589,7 +612,9 @@ class AccountInfo:
             return account_asset, account_balance, stock_available, stock_ratio, stock_price
             
         except Exception as e:
-            logger.error(f"从文件读取账户信息失败: {e}")
+            error_msg = f"从文件读取账户信息失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             logger.info("-" * 50)
             return None, None, None, None, None
             
@@ -611,7 +636,9 @@ class AccountInfo:
 
             # 检查账户切换是否成功
             if not switch_success:
-                logger.warning(f"❌ {account_name} 账户切换失败")
+                error_msg = f"❌ {account_name} 账户切换失败"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
 
             # 提取该账户的数据
@@ -634,7 +661,9 @@ class AccountInfo:
                     else:
                         logger.warning(f"账户 {account_name} 无总资产信息，无法计算持仓占比")
                 except Exception as e:
-                    logger.error(f"计算持仓占比时出错: {e}")
+                    error_msg = f"计算持仓占比时出错: {e}"
+                    logger.error(error_msg)
+                    send_notification(error_msg)
 
             # 如果数据为空，记录警告
             if header_info_df.empty and stocks_df.empty:
@@ -674,12 +703,16 @@ class AccountInfo:
                 return True
 
             except Exception as e:
-                logger.error(f"❌ 保存 {account_name} 账户数据失败: {e}", exc_info=True)
+                error_msg = f"❌ 保存 {account_name} 账户数据失败: {e}"
+                logger.error(error_msg, exc_info=True)
+                send_notification(error_msg)
                 logger.info("-" * 50)
                 return False
 
         except Exception as e:
-            logger.error(f"❌ 获取 {account_name} 账户持仓信息失败: {e}", exc_info=True)
+            error_msg = f"❌ 获取 {account_name} 账户持仓信息失败: {e}"
+            logger.error(error_msg, exc_info=True)
+            send_notification(error_msg)
             logger.info("-" * 50)
             return False
 
@@ -728,7 +761,9 @@ class AccountInfo:
                 
             logger.info(f"已更新 {account_name} 的账户汇总信息")
         except Exception as e:
-            logger.error(f"更新账户汇总信息失败: {e}")
+            error_msg = f"更新账户汇总信息失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
 
     # 更新持仓信息
     def update_holding_info_all(self):
@@ -773,7 +808,9 @@ class AccountInfo:
                         else:
                             logger.warning(f"账户 {account} 无总资产信息，无法计算持仓占比")
                     except Exception as e:
-                        logger.error(f"计算持仓占比时出错: {e}")
+                        error_msg = f"计算持仓占比时出错: {e}"
+                        logger.error(error_msg)
+                        send_notification(error_msg)
 
                 # 如果数据为空，记录警告但继续处理其他账户
                 if header_info_df.empty and stocks_df.empty:
@@ -818,7 +855,9 @@ class AccountInfo:
                 return False
 
         except Exception as e:
-            logger.error(f"❌ 保存持仓信息失败: {e}", exc_info=True)
+            error_msg = f"❌ 保存持仓信息失败: {e}"
+            logger.error(error_msg, exc_info=True)
+            send_notification(error_msg)
             return False
 
     def update_holding_info_for_account(self, account_name):
@@ -838,7 +877,9 @@ class AccountInfo:
 
             # 检查账户切换是否成功
             if not switch_success:
-                logger.warning(f"❌ {account_name} 账户切换失败")
+                error_msg = f"❌ {account_name} 账户切换失败"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
 
             # 提取该账户的数据
@@ -861,14 +902,18 @@ class AccountInfo:
                     else:
                         logger.warning(f"账户 {account_name} 无总资产信息，无法计算持仓占比")
                 except Exception as e:
-                    logger.error(f"计算持仓占比时出错: {e}")
+                    error_msg = f"计算持仓占比时出错: {e}"
+                    logger.error(error_msg)
+                    send_notification(error_msg)
 
             # 如果数据为空，记录警告
             if header_info_df.empty and stocks_df.empty:
                 logger.warning(f"{account_name} 账户数据为空")
                 return False
         except Exception as e:
-            logger.error(f"获取 {account_name} 账户数据时出错: {e}", exc_info=True)
+            error_msg = f"获取 {account_name} 账户数据时出错: {e}"
+            logger.error(error_msg, exc_info=True)
+            send_notification(error_msg)
             return False
 
         logger.info(f"完成：✅ {account_name} 账户持仓信息已更新，持仓数据:\n{stocks_df}")

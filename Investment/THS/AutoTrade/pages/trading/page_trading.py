@@ -3,6 +3,7 @@ import uiautomator2
 from Investment.THS.AutoTrade.pages.base.page_base import BasePage
 from Investment.THS.AutoTrade.pages.base.page_common import CommonPage
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger('page_trading.log')
 
@@ -43,7 +44,9 @@ class TradingPage(BasePage):
             logger.info("点击返回按钮")
             return True
         else:
-            logger.warning("返回按钮未找到")
+            error_msg = "返回按钮未找到"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False
 
     def click_trade_entry(self):
@@ -62,7 +65,9 @@ class TradingPage(BasePage):
                 logger.info("点击交易按钮(外)")
             return True
         else:
-            logger.warning("交易按钮(外)未找到")
+            error_msg = "交易按钮(外)未找到"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False
 
     def click_holding_stock_entry(self):
@@ -81,7 +86,9 @@ class TradingPage(BasePage):
                 logger.info("点击持仓按钮(外)")
             return True
         else:
-            logger.warning("持仓按钮(外)未找到")
+            error_msg = "持仓按钮(外)未找到"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False
 
     def click_operate_entry(self, operation):
@@ -104,7 +111,9 @@ class TradingPage(BasePage):
                 logger.info("点击买入按钮(外)")
                 return True
             else:
-                logger.warning("买入按钮(外)未找到")
+                error_msg = "买入按钮(外)未找到"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
         elif operation == '卖出':
             sale_entry = self.d(resourceId='com.hexin.plat.android:id/menu_sale_text')
@@ -116,10 +125,15 @@ class TradingPage(BasePage):
                     logger.info("点击卖出按钮(外)")
                 return True
             else:
-                logger.warning("卖出按钮(外)未找到")
+                error_msg = "卖出按钮(外)未找到"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
         else:
-            raise ValueError("未知操作")
+            error_msg = "未知操作"
+            logger.error(error_msg)
+            send_notification(error_msg)
+            raise ValueError(error_msg)
 
     def click_holding_stock_button(self):
         """
@@ -163,7 +177,9 @@ class TradingPage(BasePage):
                     logger.info("买入按钮(里)已处于选中状态")
                 return True
             else:
-                logger.warning("买入按钮未找到")
+                error_msg = "买入按钮未找到"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
         elif operation == '卖出':
             sale_button = self.d(className='android.widget.TextView', text='卖出')
@@ -177,10 +193,15 @@ class TradingPage(BasePage):
                     logger.info("卖出按钮(里)已处于选中状态")
                 return True
             else:
-                logger.warning("卖出按钮未找到")
+                error_msg = "卖出按钮未找到"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
         else:
-            raise ValueError("未知操作")
+            error_msg = "未知操作"
+            logger.error(error_msg)
+            send_notification(error_msg)
+            raise ValueError(error_msg)
 
     def click_refresh_button(self):
         """
@@ -195,7 +216,9 @@ class TradingPage(BasePage):
             logger.info("点击刷新按钮")
             return True
         else:
-            logger.warning("刷新按钮未找到")
+            error_msg = "刷新按钮未找到"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False
 
     def search_stock(self, stock_name):
@@ -236,7 +259,9 @@ class TradingPage(BasePage):
                     first_item.click()
                     logger.info("再次点击匹配的第一个股票")
             else:
-                logger.warning("未找到搜索结果列表，尝试使用股票代码搜索")
+                error_msg = "未找到搜索结果列表，尝试使用股票代码搜索"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 # 如果没找到，尝试输入股票代码
                 stock_code = self._get_stock_code(stock_name)  # 自定义方法：通过名称获取股票代码
                 if stock_code:
@@ -248,9 +273,13 @@ class TradingPage(BasePage):
                         first_item.click()
                         logger.info("点击匹配的第一个股票（使用代码搜索）")
                     else:
-                        logger.warning("使用代码搜索仍无法找到匹配项")
+                        error_msg = "使用代码搜索仍无法找到匹配项"
+                        logger.warning(error_msg)
+                        send_notification(error_msg)
                 else:
-                    logger.warning("无法获取股票代码，跳过点击")
+                    error_msg = "无法获取股票代码，跳过点击"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
 
         time.sleep(2)
 
@@ -272,7 +301,9 @@ class TradingPage(BasePage):
             logger.info(f"输入数量:{volume}手")
             return True, volume_text
         else:
-            logger.warning(f"输入数量错误 {volume_text}")
+            error_msg = f"输入数量错误 {volume_text}"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False, volume_text
 
     def click_half_volume(self):
@@ -322,7 +353,10 @@ class TradingPage(BasePage):
         elif operation == '卖出':
             submit_button = self.d(className='android.widget.TextView', textMatches='.*卖 出.*')
         else:
-            raise ValueError("Invalid operation")
+            error_msg = "Invalid operation"
+            logger.error(error_msg)
+            send_notification(error_msg)
+            raise ValueError(error_msg)
 
         # 检查按钮是否存在再点击
         if submit_button.exists:
@@ -330,7 +364,9 @@ class TradingPage(BasePage):
             logger.info(f"点击按钮: {operation} (提交)")
             return True
         else:
-            logger.error(f"提交按钮 {operation} 未找到")
+            error_msg = f"提交按钮 {operation} 未找到"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return False
 
     def _get_real_price(self):
@@ -353,9 +389,14 @@ class TradingPage(BasePage):
                     logger.warning("价格为空，等待刷新...")
                     time.sleep(1)
             except (ValueError, TypeError) as e:
-                logger.warning(f"解析价格失败: {e}")
+                error_msg = f"解析价格失败: {e}"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 time.sleep(1)
-        raise ValueError("无法获取实时价格")
+        error_msg = "无法获取实时价格"
+        logger.error(error_msg)
+        send_notification(error_msg)
+        raise ValueError(error_msg)
 
     def dialog_handle(self):
         """
@@ -450,7 +491,9 @@ class TradingPage(BasePage):
                     confirm_btn.click()
                     logger.info("点击确认按钮")
                 else:
-                    logger.warning("未找到确认按钮")
+                    error_msg = "未找到确认按钮"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
                     # 尝试点击屏幕中央位置
                     self.d.click(0.5, 0.5)
                     logger.info("尝试点击屏幕中央位置")
@@ -495,7 +538,9 @@ class TradingPage(BasePage):
                         confirm_btn.click()
                         logger.info("点击确认按钮")
                     else:
-                        logger.warning("未找到确认按钮")
+                        error_msg = "未找到确认按钮"
+                        logger.warning(error_msg)
+                        send_notification(error_msg)
                         # 尝试点击屏幕中央位置
                         self.d.click(0.5, 0.5)
                         logger.info("尝试点击屏幕中央位置")
@@ -541,12 +586,16 @@ class TradingPage(BasePage):
                     time.sleep(1)
                     confirm_button_to_click.click()
 
-                logger.warning(f"未检测到'委托确认'提示，弹窗内容: {prompt_text}")
+                error_msg = f"未检测到'委托确认'提示，弹窗内容: {prompt_text}"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False, prompt_text
 
         except Exception as e:
-            logger.error(f"处理弹窗时发生异常: {e}")
-            return False, f"处理弹窗时发生异常: {e}"
+            error_msg = f"处理弹窗时发生异常: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
+            return False, error_msg
 
     def _extract_trade_info(self, prompt_text):
         """
@@ -591,5 +640,10 @@ class TradingPage(BasePage):
         self.click_holding_stock_button()
         self.click_refresh_button()
         time.sleep(0.5)
-        account_info.update_holding_info_all()
-        logger.info("更新持仓信息")
+        try:
+            account_info.update_holding_info_all()
+            logger.info("更新持仓信息")
+        except Exception as e:
+            error_msg = f"更新账户数据时发生异常: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)

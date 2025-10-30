@@ -20,9 +20,7 @@ import traceback
 import time  # 添加time模块导入
 from pprint import pprint
 
-import fake_useragent
 import pandas as pd
-import requests
 
 from Investment.THS.AutoTrade.config.settings import (
     Strategy_id_to_name, Strategy_ids, Strategy_holding_file,
@@ -33,9 +31,9 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.format_data import determine_market, normalize_time, get_new_records, standardize_dataframe
 from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.utils.enhanced_requests import get
 
 logger = setup_logger(__name__)
-ua = fake_useragent.UserAgent()
 
 class StrategyHoldingProcessor(CommonHoldingProcessor):
     def __init__(self):
@@ -44,14 +42,12 @@ class StrategyHoldingProcessor(CommonHoldingProcessor):
     def get_latest_position(self, strategy_id):
         """获取单个策略的最新持仓数据"""
         url = f"https://ms.10jqka.com.cn/iwencai/iwc-web-business-center/strategy_unify/strategy_profit?strategyId={strategy_id}"
-        headers = {"User-Agent": ua.random}
 
         # 实现重试机制和超时处理
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = requests.get(url, headers=headers, timeout=10)
-                response.raise_for_status()
+                response = get(url, timeout=10)
                 data = response.json()
 
                 # 检查返回数据格式

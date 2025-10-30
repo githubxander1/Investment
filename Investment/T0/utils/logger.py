@@ -10,11 +10,11 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 def setup_logger(name, log_file=None, level=logging.INFO):
     """设置日志记录器"""
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    
+
     # 创建日志记录器
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    
+
     # 避免重复添加处理器
     if not logger.handlers:
         # 文件处理器
@@ -23,12 +23,15 @@ def setup_logger(name, log_file=None, level=logging.INFO):
         file_handler = logging.FileHandler(os.path.join(LOGS_DIR, log_file), encoding='utf-8')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-        
+
         # 控制台处理器
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
+        # 设置编码为utf-8，避免Windows下GBK编码问题
+        if hasattr(console_handler.stream, 'reconfigure'):
+            console_handler.stream.reconfigure(encoding='utf-8')
         logger.addHandler(console_handler)
-    
+
     return logger
 
 def log_signal(stock_code, indicator, signal_type, details):

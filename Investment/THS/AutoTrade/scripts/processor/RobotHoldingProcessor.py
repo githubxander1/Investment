@@ -13,6 +13,7 @@ from Investment.THS.AutoTrade.utils.logger import setup_logger
 from Investment.THS.AutoTrade.utils.format_data import determine_market, get_new_records, standardize_dataframe, normalize_time
 from Investment.THS.AutoTrade.scripts.data_process import read_today_portfolio_record, save_to_operation_history_excel
 from Investment.THS.AutoTrade.utils.notification import send_notification
+from Investment.THS.AutoTrade.utils.enhanced_requests import post
 
 logger = setup_logger(__name__)
 
@@ -118,8 +119,7 @@ class RobotHoldingProcessor(CommonHoldingProcessor):
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
-                response.raise_for_status()
+                response = post(url, headers=headers, data=json.dumps(payload), timeout=10)
                 response_json = response.json()
                 return response_json
             except requests.RequestException as e:

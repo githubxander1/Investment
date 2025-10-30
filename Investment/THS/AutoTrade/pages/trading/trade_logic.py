@@ -1,5 +1,6 @@
 import pandas as pd
 import uiautomator2 as u2
+import os
 
 from Investment.THS.AutoTrade.pages.trading.page_trading import TradingPage
 from Investment.THS.AutoTrade.utils.logger import setup_logger
@@ -78,7 +79,9 @@ class TradeLogic:
                 return volume if volume > 0 else None
             return volume
         except Exception as e:
-            logger.error(f"买入数量计算失败: {e}")
+            error_msg = f"买入数量计算失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return None
 
     def calculate_sell_volume(self, account_asset, available_shares, stock_price, new_ratio=None):
@@ -149,7 +152,9 @@ class TradeLogic:
 
             return volume
         except Exception as e:
-            logger.error(f"卖出数量计算失败: {e}")
+            error_msg = f"卖出数量计算失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return None
 
     def calculate_batch_buy_volumes(self, stocks_info, total_buying_power):
@@ -197,7 +202,9 @@ class TradeLogic:
 
             return buy_volumes
         except Exception as e:
-            logger.error(f"批量买入数量计算失败: {e}")
+            error_msg = f"批量买入数量计算失败: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return {}
 
     def get_account_info(self, account_file, account_name, stock_name):
@@ -215,7 +222,9 @@ class TradeLogic:
         try:
             # 检查文件是否存在
             if not os.path.exists(account_file):
-                logger.error(f"账户文件不存在: {account_file}")
+                error_msg = f"账户文件不存在: {account_file}"
+                logger.error(error_msg)
+                send_notification(error_msg)
                 return 0.0, 0.0, 0, 0, 0
                 
             # 初始化返回值
@@ -276,7 +285,9 @@ class TradeLogic:
                         else:
                             logger.warning("账户汇总表中没有找到有效的账户名列")
                     except Exception as e:
-                        logger.error(f"读取账户汇总数据时出错: {e}")
+                        error_msg = f"读取账户汇总数据时出错: {e}"
+                        logger.error(error_msg)
+                        send_notification(error_msg)
                 else:
                     logger.warning("账户文件中没有'账户汇总'工作表")
                 
@@ -307,7 +318,9 @@ class TradeLogic:
                                     except (ValueError, TypeError):
                                         logger.warning(f"无法从值 '{value}' 中提取数字")
                     except Exception as e:
-                        logger.error(f"从账户工作表获取资产信息时出错: {e}")
+                        error_msg = f"从账户工作表获取资产信息时出错: {e}"
+                        logger.error(error_msg)
+                        send_notification(error_msg)
                 
                 # 读取股票持仓信息
                 if account_name in sheets:
@@ -359,12 +372,16 @@ class TradeLogic:
                         else:
                             logger.warning("持仓数据中没有找到有效的股票名称列")
                     except Exception as e:
-                        logger.error(f"读取持仓数据时出错: {e}")
+                        error_msg = f"读取持仓数据时出错: {e}"
+                        logger.error(error_msg)
+                        send_notification(error_msg)
                 else:
                     logger.warning(f"账户文件中没有 {account_name} 工作表")
         
         except Exception as e:
-            logger.error(f"获取账户信息时发生异常: {e}", exc_info=True)
+            error_msg = f"获取账户信息时发生异常: {e}"
+            logger.error(error_msg, exc_info=True)
+            send_notification(error_msg)
             account_asset = 0.0
             account_balance = 0.0
             stock_available = 0
@@ -397,8 +414,10 @@ class TradeLogic:
             # 检查交易数量是否有效
             # 修改：允许volume为0的情况
             if volume is None:
-                logger.warning(f"{operation} {stock_name} 交易数量为 None，跳过交易")
-                return False, f"{operation} {stock_name} 交易数量无效，跳过交易"
+                error_msg = f"{operation} {stock_name} 交易数量为 None，跳过交易"
+                logger.warning(error_msg)
+                send_notification(error_msg)
+                return False, error_msg
 
             # 输入交易数量
             self.trading_page.input_volume(int(volume))
@@ -412,5 +431,7 @@ class TradeLogic:
             return success, info
         except Exception as e:
             calculate_volume = volume if volume is not None else "未知"
-            logger.error(f"{operation} {stock_name} {calculate_volume} 股失败: {e}", exc_info=True)
-            return False, f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
+            error_msg = f"{operation} {stock_name} {calculate_volume} 股失败: {e}"
+            logger.error(error_msg, exc_info=True)
+            send_notification(error_msg)
+            return False, error_msg

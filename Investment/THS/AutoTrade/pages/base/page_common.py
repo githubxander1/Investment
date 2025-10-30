@@ -3,6 +3,7 @@ import time
 import uiautomator2
 from Investment.THS.AutoTrade.pages.base.page_base import BasePage
 from Investment.THS.AutoTrade.utils.logger import setup_logger
+from Investment.THS.AutoTrade.utils.notification import send_notification
 
 logger = setup_logger("page_common.log")
 
@@ -113,7 +114,9 @@ class CommonPage(BasePage):
             self.back_button.click()
             self.back_button.click()
         else:
-            logger.error("无法返回账户页")
+            error_msg = "无法返回账户页"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return False
 
         # 再次确认是否已进入账户页
@@ -121,7 +124,9 @@ class CommonPage(BasePage):
             logger.info("✅ 已切换至: 账户页")
             return True
         else:
-            logger.error("❌ 无法返回账户页")
+            error_msg = "❌ 无法返回账户页"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return False
 
     def goto_trade_page(self, max_retry=3):
@@ -153,7 +158,9 @@ class CommonPage(BasePage):
                 self.back_button.click()
             time.sleep(1)
     
-        logger.error("多次尝试后仍无法进入交易页")
+        error_msg = "多次尝试后仍无法进入交易页"
+        logger.error(error_msg)
+        send_notification(error_msg)
         return False
     
     def change_account(self, to_account):
@@ -176,7 +183,9 @@ class CommonPage(BasePage):
         elif self.moni_account.exists():
             self.current_account = self.moni_account.get_text()
         else:
-            logger.info("账户定位失败")
+            error_msg = "账户定位失败"
+            logger.info(error_msg)
+            send_notification(error_msg)
             return False
 
         if self.current_account == to_account:
@@ -243,7 +252,9 @@ class CommonPage(BasePage):
                         # logger.info("点击持仓按钮(入口)")
                         return True
                     else:
-                        logger.error("登录失败")
+                        error_msg = "登录失败"
+                        logger.error(error_msg)
+                        send_notification(error_msg)
                         return False
                 else:
                     logger.warning(f"已切换至 {to_account} 账户已登录")
@@ -254,10 +265,3 @@ class CommonPage(BasePage):
                 _current_account = self.current_account
                 logger.info(f"📌 当前登录账户名称: {self.current_account_trade.get_text()}")
                 return True
-
-if __name__ == '__main__':
-    com = CommonPage()
-    # print(com.where_page())
-    # com.goto_trade_page()
-    # com.goto_account_page()
-    # com.change_account("中泰证券")

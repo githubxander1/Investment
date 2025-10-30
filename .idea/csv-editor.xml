@@ -3,7 +3,28 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\Investment\Proxy\proxy_data\free_proxies_valid_20251030.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\Proxy\proxy_data\proxynova_proxies_valid_20251030.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Investment\T0\600030.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Investment\T0\600030分时.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -25,13 +46,6 @@
           </value>
         </entry>
         <entry key="\Investment\T0\backtest\results\simple_backtest_000333_20250901_20250930.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\indicators\stock_data\000333_20251020.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

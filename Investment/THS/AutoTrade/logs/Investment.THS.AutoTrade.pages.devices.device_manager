@@ -170,3 +170,37 @@ adbutils.errors.AdbError: Can't find any android device/emulator
 [32m2025-10-28 09:36:06 - INFO - 启动App成功: com.hexin.plat.android[0m
 [32m2025-10-28 10:01:30 - INFO - 连接设备: emulator-5554[0m
 [32m2025-10-28 10:01:31 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-29 09:29:07 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-29 09:29:10 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-29 09:50:17 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-29 09:50:19 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-29 11:31:19 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-29 11:31:20 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-30 09:27:06 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-30 09:27:06 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-30 09:28:06 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-30 09:28:07 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-30 09:38:33 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-30 09:38:34 - INFO - 启动App成功: com.hexin.plat.android[0m
+[31m2025-10-30 09:44:23 - ERROR - 连接设备失败: device emulator-5554 not online[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\devices\device_manager.py", line 20, in connect_to_device
+    self.device = u2.connect('emulator-5554')
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 1103, in connect
+    return connect_usb(serial)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 1119, in connect_usb
+    return Device(serial)
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 67, in __init__
+    self._dev = self._wait_for_device()
+                ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\__init__.py", line 106, in _wait_for_device
+    raise ConnectError(f"device {self._serial} not online")
+uiautomator2.exceptions.ConnectError: device emulator-5554 not online
+[31m2025-10-30 09:44:23 - ERROR - 设备连接失败[0m
+[32m2025-10-30 09:45:04 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-30 09:45:05 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-30 09:53:14 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-30 09:53:14 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-10-30 10:24:59 - INFO - 连接设备: emulator-5554[0m
+[32m2025-10-30 10:24:59 - INFO - 启动App成功: com.hexin.plat.android[0m

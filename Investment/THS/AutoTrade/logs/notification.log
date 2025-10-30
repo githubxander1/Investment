@@ -547,3 +547,46 @@
 [33m2025-10-28 17:09:33 - WARNING - 交易通知: 国债逆回购任务失败: 未找到目标产品[0m
 [33m2025-10-28 17:13:40 - WARNING - 交易通知: 国债逆回购任务异常终止: 操作失败: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/title_bar_img'},))[0m
 [33m2025-10-28 17:15:13 - WARNING - 交易通知: 国债逆回购任务完成: False 交易深市国债，借出资金必须为1000的整数倍[0m
+[33m2025-10-29 09:40:49 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: '持仓占比'[0m
+[33m2025-10-29 09:50:48 - WARNING - 交易通知: 卖出 章源钨业 1500股 False 最新:[0m
+[33m2025-10-29 10:08:19 - WARNING - 交易通知: 买入 圣泉集团 700股 False 最新:[0m
+[33m2025-10-29 10:13:50 - WARNING - 交易通知: 买入 圣泉集团 100股 False 最新:[0m
+[33m2025-10-29 10:21:21 - WARNING - 交易通知: 卖出 中航沈飞 300股 False 最新:[0m
+[33m2025-10-29 10:38:03 - WARNING - 交易通知: 买入 蔚蓝锂芯 1100股 False 最新:[0m
+[33m2025-10-29 13:48:10 - WARNING - 交易通知: 买入 中恒电气 700股 False 最新:[0m
+[33m2025-10-29 14:56:33 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
+[33m2025-10-29 14:56:33 - WARNING - 交易通知: 国债逆回购交易执行失败: 进入国债逆回购入口失败[0m
+[33m2025-10-29 14:56:39 - WARNING - 交易通知: 账户已切换至: 中泰证券[0m
+[33m2025-10-29 14:57:06 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: '持仓占比'[0m
+[33m2025-10-29 14:57:08 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
+[33m2025-10-29 14:57:08 - WARNING - 交易通知: 国债逆回购交易执行失败: 进入国债逆回购入口失败[0m
+[33m2025-10-29 14:57:24 - WARNING - 交易通知: 登录失败[0m
+[33m2025-10-29 14:57:39 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 256, 360, 1024, 50), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createExceptionOrNull(Parcel.j...[0m
+[33m2025-10-30 09:27:08 - WARNING - 交易通知: 📈【可转债ETF】(511380) 收盘价上穿20日均线，建议关注买入机会！[0m
+[33m2025-10-30 09:27:08 - WARNING - 交易通知: 📈【沪深300ETF】(510300) 收盘价上穿20日均线，建议关注买入机会！[0m
+[33m2025-10-30 09:27:20 - WARNING - 交易通知: 结束：获取账户表头信息失败: [WinError 10054] 远程主机强迫关闭了一个现有的连接。[0m
+[33m2025-10-30 09:27:37 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: '持仓占比'[0m
+[33m2025-10-30 09:37:52 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 100), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createExceptionOrNull(Parcel....[0m
+[33m2025-10-30 09:38:07 - WARNING - 交易通知: 未检测到'委托确认'提示，弹窗内容: 买入[0m
+[33m2025-10-30 09:38:07 - WARNING - 交易通知: 买入 蔚蓝锂芯 300股 False 买入[0m
+[33m2025-10-30 09:38:16 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 100), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createExceptionOrNull(Parcel....[0m
+[33m2025-10-30 09:38:41 - WARNING - 交易通知: 买入 蔚蓝锂芯 300 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+[33m2025-10-30 09:39:05 - WARNING - 交易通知: 买入 中恒电气 200 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+[33m2025-10-30 09:39:21 - WARNING - 交易通知: 买入 圣泉集团 100股 False 最新:[0m
+[33m2025-10-30 09:43:26 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: [0m
+[33m2025-10-30 09:43:27 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: [0m
+[33m2025-10-30 09:45:05 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 18874368, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/icon', 'instance': 3},))[0m
+[33m2025-10-30 09:45:34 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-10-30 09:53:42 - WARNING - 交易通知: 卖出 蔚蓝锂芯 1100股 False 最新:[0m
+[33m2025-10-30 10:00:13 - WARNING - 交易通知: 卖出 圣泉集团 800股 False 最新:[0m
+[33m2025-10-30 10:06:03 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-10-30 10:24:07 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 100), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createExceptionOrNull(Parcel....[0m
+[33m2025-10-30 10:24:27 - WARNING - 交易通知: 买入 中恒电气 200股 False 最新:[0m
+[33m2025-10-30 10:33:25 - WARNING - 交易通知: 卖出 中恒电气 700股 False 最新:[0m
+[33m2025-10-30 14:57:02 - WARNING - 交易通知: 未找到 1天期，已滑动到底部[0m
+[33m2025-10-30 14:57:03 - WARNING - 交易通知: 国债逆回购任务失败: 未找到目标产品[0m
+[33m2025-10-30 14:57:03 - WARNING - 交易通知: 国债逆回购交易执行失败: 未找到目标产品[0m
+[33m2025-10-30 14:57:13 - WARNING - 交易通知: 登录失败[0m
+[33m2025-10-30 14:57:38 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/tab_a']", 'method': 'wait'}[0m
+[33m2025-10-30 14:58:04 - WARNING - 交易通知: 国债逆回购任务异常终止: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-10-30 14:58:04 - WARNING - 交易通知: 国债逆回购交易执行失败: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m

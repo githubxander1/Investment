@@ -193,8 +193,9 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
                 market_stock_code = f'sz{stock_code}'
             
             # 使用akshare的stock_zh_a_minute接口获取分时数据
-            df = ak.stock_zh_a_minute(symbol=market_stock_code, period="1", adjust="qfq")
-            
+            # df = ak.stock_zh_a_minute(symbol=market_stock_code, period="1", adjust="qfq")
+            df = ak.stock_zh_a_hist_min_em(symbol=market_stock_code, period="1", adjust="qfq")
+
             # 转换列名以匹配所需格式
             df.columns = ['时间', '开盘', '收盘', '最高', '最低', '成交量', '成交额']
             

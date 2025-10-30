@@ -62,7 +62,9 @@ class NationalDebtPage(BasePage):
                     logger.warning(f"{target_name} 不可见或不可点击")
 
             time.sleep(1)
-        logger.warning(f"未找到 {target_name}，已滑动到底部")
+        error_msg = f"未找到 {target_name}，已滑动到底部"
+        logger.warning(error_msg)
+        send_notification(error_msg)
         return False
 
     def assert_on_gc001_page(self):
@@ -78,10 +80,14 @@ class NationalDebtPage(BasePage):
             if element.exists:
                 logger.info("当前页面为 GC001(1天期)")
                 return True
-            logger.error("当前页面不是 GC001(1天期)")
+            error_msg = "当前页面不是 GC001(1天期)"
+            logger.error(error_msg)
+            send_notification(error_msg)
             return False
         except Exception as e:
-            logger.error(f"断言失败: {e}", exc_info=True)
+            error_msg = f"断言失败: {e}"
+            logger.error(error_msg, exc_info=True)
+            send_notification(error_msg)
             return False
 
     def _handle_transaction_confirm(self):
@@ -122,11 +128,15 @@ class NationalDebtPage(BasePage):
                             self.back_button.click()
                         if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
                             self.back_button.click()
-                        logger.warning(f"委托失败: {prompt_text}, 返回账户页")
+                        error_msg = f"委托失败: {prompt_text}, 返回账户页"
+                        logger.warning(error_msg)
+                        send_notification(error_msg)
                         return False, prompt_text
                 else:
-                    logger.warning("确认按钮不可点击或不可见")
-                    return False, "确认按钮不可点击"
+                    error_msg = "确认按钮不可点击或不可见"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
+                    return False, error_msg
             else:
                 prompt_text = self.prompt_content.get_text()
                 # 检查确认按钮是否可见和可点击
@@ -136,10 +146,14 @@ class NationalDebtPage(BasePage):
                     self.back_button.click()
                 if self.back_button.info.get('clickable', False):
                     self.back_button.click()
-                logger.error(f"委托失败: {prompt_text}")
+                error_msg = f"委托失败: {prompt_text}"
+                logger.error(error_msg)
+                send_notification(error_msg)
                 return False, prompt_text
         else:
-            logger.warning("无法找到弹窗标题")
+            error_msg = "无法找到弹窗标题"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False, "委托失败"
 
     def guozhai_operation(self):
@@ -176,8 +190,10 @@ class NationalDebtPage(BasePage):
                     # 等待点击效果
                     time.sleep(0.5)
                 else:
-                    logger.warning("国债逆回购入口按钮不可点击或不可见")
-                    return False, "国债逆回购入口按钮不可点击"
+                    error_msg = "国债逆回购入口按钮不可点击或不可见"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
+                    return False, error_msg
 
             # 3. 查找并点击产品
             if not self._find_and_click_product("1天期"):
@@ -215,8 +231,10 @@ class NationalDebtPage(BasePage):
                     # 等待点击效果
                     time.sleep(0.5)
                 else:
-                    logger.warning("借出按钮不可点击或不可见")
-                    return False, "借出按钮不可点击"
+                    error_msg = "借出按钮不可点击或不可见"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
+                    return False, error_msg
 
             # 6. 处理交易确认
             result = self._handle_transaction_confirm()
@@ -285,13 +303,19 @@ class NationalDebtPage(BasePage):
                     time.sleep(0.5)
                     return True
                 else:
-                    logger.warning(f"账户 {account_name} 按钮不可点击或不可见")
+                    error_msg = f"账户 {account_name} 按钮不可点击或不可见"
+                    logger.warning(error_msg)
+                    send_notification(error_msg)
                     return False
             else:
-                logger.warning(f"无法找到账户: {account_name}")
+                error_msg = f"无法找到账户: {account_name}"
+                logger.warning(error_msg)
+                send_notification(error_msg)
                 return False
         else:
-            logger.warning("账户切换按钮不可点击或不可见")
+            error_msg = "账户切换按钮不可点击或不可见"
+            logger.warning(error_msg)
+            send_notification(error_msg)
             return False
 
 if __name__ == '__main__':

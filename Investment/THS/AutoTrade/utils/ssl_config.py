@@ -2,11 +2,14 @@ import os
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-
+import fake_useragent
 
 # 获取证书文件路径
 CERT_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
                          'reqable-ca.crt')
+
+# 创建fake_useragent实例
+ua = fake_useragent.UserAgent()
 
 # 创建全局会话对象
 def create_global_session():
@@ -66,12 +69,9 @@ def patched_request(method, url, **kwargs):
     if 'headers' not in kwargs:
         kwargs['headers'] = {}
     
-    # 添加默认User-Agent以避免一些常见问题
+    # 添加随机User-Agent以避免一些常见问题
     if 'User-Agent' not in kwargs['headers']:
-        kwargs['headers']['User-Agent'] = (
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-            '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        )
+        kwargs['headers']['User-Agent'] = ua.random
         
     response = session.request(method, url, **kwargs)
     return response

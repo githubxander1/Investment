@@ -13,15 +13,13 @@ T0交易系统分时数据可视化工具
 import os
 import sys
 import time
-import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, messagebox
 from datetime import datetime, timedelta
 import threading
 import logging
@@ -153,7 +151,7 @@ except Exception as e:
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # 导入数据获取模块
-from data2dfcf import get_eastmoney_fenshi_by_date
+from Investment.T0.data_source.data2dfcf import get_eastmoney_fenshi_by_date
 
 # 配置中文字体
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'Microsoft YaHei']
