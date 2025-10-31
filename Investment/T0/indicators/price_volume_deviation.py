@@ -32,8 +32,10 @@ import sys
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from T0.utils.logger import setup_logger
-from T0.utils.tools import notify_signal
+from Investment.T0.utils.logger import setup_logger
+from Investment.T0.utils.tools import notify_signal
+from Investment.T0.utils.get_intrade_data import fetch_intraday_data
+from Investment.T0.utils.detact_signals import detect_trading_signals
 
 logger = setup_logger('price_volume_deviation')
 
@@ -147,7 +149,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     
     # 生成买卖信号
     # 买入信号：偏离度 < 阈值 且 成交量放大
-    df['Buy_Signal'] = (df['Price_MA_Ratio'] < buy_threshold) & (df['Volume_Ratio'] > 1.2)
+    df['Buy_Signal'] = (df['Price_MA_Ratio'] < buy_threshold) & (df['Volume_Ratio'] > 1.5)
     
     # 卖出信号：偏离度 > 阈值 且 (成交量放大 或 收盘价 > 均价)
     df['Sell_Signal'] = (df['Price_MA_Ratio'] > sell_threshold) & (
@@ -188,11 +190,6 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         logger.info(f"\n{df[display_columns].head()}")
     
     return df
-
-
-
-
-
 
 
 def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: Optional[pd.DataFrame] = None) -> Optional[str]:
@@ -262,6 +259,9 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         
         # 移除非交易时间（11:30到13:00）
         # 创建一个布尔索引，排除午间休市时间
+        # 条件1: 排除11:30及以后的数据
+        # 条件2: 排除12:00整的数据
+        # 条件3: 排除13:00前的非11点数据（即12:01-12:59）
         morning_end = pd.Timestamp('11:30').time()
         afternoon_start = pd.Timestamp('13:00').time()
         mask = ~((df_filtered.index.time >= morning_end) & 
@@ -335,30 +335,58 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         annot.set_visible(False)
         
         def on_move(event):
-            if event.inaxes and len(df_filtered) > 0:
+            if event.inaxes and event.inaxes == ax1 and len(df_filtered) > 0:
                 # 获取最近的数据点
                 x_data = df_filtered.index
                 try:
                     # 找到最近的时间点
-                    nearest_index = abs(x_data - pd.Timestamp(event.xdata).to_pydatetime()).argmin()
-                    nearest_time = x_data[nearest_index]
-                    row = df_filtered.loc[nearest_time]
-                    
-                    # 构建显示信息
-                    time_str = nearest_time.strftime('%H:%M')
-                    price_str = f'{row["收盘"]:.2f}'
-                    avg_price_str = f'{row["均价"]:.2f}'
-                    ratio_str = f'{row["Price_MA_Ratio"]:.2f}%'
-                    volume_ratio_str = f'{row["Volume_Ratio"]:.2f}'
-                    
-                    info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}'
-                    
-                    # 更新注释框位置和文本
-                    annot.xy = (pd.Timestamp(nearest_time), row["收盘"])
-                    annot.set_text(info)
-                    annot.set_visible(True)
-                    fig.canvas.draw_idle()
+                    # 修复：正确处理event.xdata为浮点数的情况
+                    x_pos = event.xdata
+                    if isinstance(x_pos, (int, float)):
+                        # 将matplotlib日期浮点数转换为datetime对象
+                        x_datetime = mdates.num2date(x_pos)
+                        
+                        # 找到最近的时间点
+                        time_diff = np.abs(x_data - x_datetime)
+                        nearest_index = time_diff.argmin()
+                        nearest_time = x_data[nearest_index]
+                        
+                        # 确保索引存在
+                        if nearest_time in df_filtered.index:
+                            row = df_filtered.loc[nearest_time]
+                            
+                            # 构建显示信息
+                            time_str = nearest_time.strftime('%H:%M')
+                            price_str = f'{row["收盘"]:.2f}'
+                            avg_price_str = f'{row["均价"]:.2f}'
+                            ratio_str = f'{row["Price_MA_Ratio"]:.2f}%'
+                            volume_ratio_str = f'{row["Volume_Ratio"]:.2f}'
+                            
+                            # 添加信号信息
+                            signal_info = ''
+                            if 'Buy_Signal' in row and row['Buy_Signal']:
+                                signal_info = '买入信号'
+                            elif 'Sell_Signal' in row and row['Sell_Signal']:
+                                signal_info = '卖出信号'
+                            
+                            if signal_info:
+                                info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}\n信号: {signal_info}'
+                            else:
+                                info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}'
+                            
+                            # 更新注释框位置和文本
+                            annot.xy = (mdates.date2num(nearest_time), row["收盘"])
+                            annot.set_text(info)
+                            annot.set_visible(True)
+                            fig.canvas.draw_idle()
+                        else:
+                            annot.set_visible(False)
+                            fig.canvas.draw_idle()
+                    else:
+                        annot.set_visible(False)
+                        fig.canvas.draw_idle()
                 except Exception as e:
+                    print(f"鼠标悬浮错误: {e}")
                     annot.set_visible(False)
                     fig.canvas.draw_idle()
             else:

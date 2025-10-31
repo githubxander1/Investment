@@ -324,6 +324,12 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     df_filtered = df.dropna(subset=['收盘'])
     x_values = list(range(len(df_filtered)))
     
+    # 创建注释框用于鼠标悬浮显示
+    annotation = ax_price.annotate('', xy=(0, 0), xytext=(10, 10), textcoords='offset points',
+                                   bbox=dict(boxstyle='round', fc='yellow', alpha=0.7),
+                                   arrowprops=dict(arrowstyle='->'), fontsize=10)
+    annotation.set_visible(False)
+    
     # 绘制收盘价曲线
     ax_price.plot(x_values, df_filtered['收盘'], marker='', linestyle='-', color='blue', linewidth=2, label='收盘价')
     
@@ -439,6 +445,58 @@ def plot_indicators(df, stock_code, trade_date, buy_ratio, sell_ratio, diff_rati
     # 直接保存，覆盖同名文件
     plt.savefig(chart_filename, dpi=300, bbox_inches='tight', format='png')
     
+    # 鼠标悬浮功能 - 修复_on_mouse_move方法
+    def _on_mouse_move(event):
+        if event.inaxes == ax_price:
+            if event.xdata is not None:
+                # 获取最近的整数索引
+                x_index = int(round(event.xdata))
+                # 确保索引在有效范围内
+                if 0 <= x_index < len(df_filtered):
+                    data_point = df_filtered.iloc[x_index]
+                    time_str = df_filtered.index[x_index].strftime('%H:%M')
+                    price = data_point['收盘']
+                    
+                    # 准备显示的文本内容
+                    text_lines = [f"时间: {time_str}", f"价格: {price:.2f}"]
+                    
+                    # 添加其他可用的指标信息
+                    if '支撑' in data_point and pd.notna(data_point['支撑']):
+                        text_lines.append(f"支撑: {data_point['支撑']:.2f}")
+                    if '阻力' in data_point and pd.notna(data_point['阻力']):
+                        text_lines.append(f"阻力: {data_point['阻力']:.2f}")
+                    if '量价' in data_point and pd.notna(data_point['量价']):
+                        text_lines.append(f"量价: {data_point['量价']:.2f}")
+                    
+                    # 检查是否有信号
+                    signal_text = []
+                    if '买入信号' in data_point and data_point['买入信号']:
+                        signal_text.append('买入信号')
+                    if '卖出信号' in data_point and data_point['卖出信号']:
+                        signal_text.append('卖出信号')
+                    if '主力资金流入' in data_point and data_point['主力资金流入']:
+                        signal_text.append('主力资金流入')
+                    
+                    if signal_text:
+                        text_lines.append(f"信号: {', '.join(signal_text)}")
+                    
+                    # 更新注释框位置和内容
+                    annotation.xy = (x_index, price)
+                    annotation.set_text('\n'.join(text_lines))
+                    annotation.set_visible(True)
+                    fig.canvas.draw_idle()
+                else:
+                    if annotation.get_visible():
+                        annotation.set_visible(False)
+                        fig.canvas.draw_idle()
+        else:
+            if annotation.get_visible():
+                annotation.set_visible(False)
+                fig.canvas.draw_idle()
+    
+    # 连接鼠标移动事件
+    fig.canvas.mpl_connect('motion_notify_event', _on_mouse_move)
+    
     # 关闭图形以避免阻塞
     plt.close(fig)
     
@@ -515,8 +573,15 @@ def analyze_volume_price(stock_code: str, trade_date: Optional[str] = None) -> O
         df_original = df.copy()  # 保存原始数据
         df = df[df['时间'].dt.date == target_date.date()]
         
-        # 过滤掉 11:30 到 13:00 之间的数据
-        df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
+        # 过滤掉 11:30 到 13:00 之间的午休时间数据
+        # 条件1: 排除11点30分及以后的数据
+        # 条件2: 排除12点整的数据
+        # 条件3: 排除13点前但不是11点的数据（即12点1分至12点59分）
+        df = df[~(
+            ((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) | 
+            (df['时间'].dt.hour == 12) |
+            ((df['时间'].dt.hour == 13) & (df['时间'].dt.minute < 0))
+        )]
 
         if df.empty:
             print("❌ 所有时间数据均无效")
@@ -618,7 +683,15 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         
         # 过滤数据
         df = df[df['时间'].dt.date == trade_date_obj.date()]
-        df = df[~((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) & ~((df['时间'].dt.hour == 12))]
+        # 过滤掉 11:30 到 13:00 之间的午休时间数据
+        # 条件1: 排除11点30分及以后的数据
+        # 条件2: 排除12点整的数据
+        # 条件3: 排除13点前但不是11点的数据（即12点1分至12点59分）
+        df = df[~(
+            ((df['时间'].dt.hour == 11) & (df['时间'].dt.minute >= 30)) | 
+            (df['时间'].dt.hour == 12) |
+            ((df['时间'].dt.hour == 13) & (df['时间'].dt.minute < 0))
+        )]
         
         # 生成完整时间索引
         morning_index = pd.date_range(start=f"{trade_date} 09:30:00", end=f"{trade_date} 11:30:00", freq='1min')

@@ -9,6 +9,7 @@ import akshare as ak
 import os
 import sys
 
+from Investment.T0.utils.tools import notify_signal
 from Investment.THS.ths_trade.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
