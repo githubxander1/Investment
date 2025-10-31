@@ -469,10 +469,10 @@ def fetch_intraday_data(stock_code: str, trade_date: str, proxy: Optional[Dict[s
             logger.info(f"时间范围: {df.index.min()} 到 {df.index.max()}")
         
         # 过滤掉午休时间
-        original_len = len(df)
-        df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) & 
-                ~((df.index.hour == 12))]
-        logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
+        # original_len = len(df)
+        # df = df[~((df.index.hour == 11) & (df.index.minute >= 30)) &
+        #         ~((df.index.hour == 12))]
+        # logger.info(f"过滤午休时间后: {len(df)} 行数据 (删除了 {original_len - len(df)} 行)")
         
         # 填充缺失值
         df = df.ffill().bfill()

@@ -21,11 +21,11 @@ trader = TradeLogic()
 device_manager = DeviceManager()
 
 # 定义账户列表 - 只保留中山证券和中泰证券
-ACCOUNTS = ["中山证券", "中泰证券"]
+ACCOUNTS = ["川财证券", "中泰证券"]
 
 # 账户与策略映射关系
 ACCOUNT_STRATEGY_MAP = {
-    "中山证券": "逻辑为王"
+    "川财证券": "逻辑为王"
     # "中泰证券": "一枝梨花"
 }
 

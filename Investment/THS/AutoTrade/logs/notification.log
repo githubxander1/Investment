@@ -590,3 +590,8 @@
 [33m2025-10-30 14:57:38 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/tab_a']", 'method': 'wait'}[0m
 [33m2025-10-30 14:58:04 - WARNING - 交易通知: 国债逆回购任务异常终止: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
 [33m2025-10-30 14:58:04 - WARNING - 交易通知: 国债逆回购交易执行失败: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-10-31 09:38:58 - WARNING - 交易通知: 卖出 中恒电气 200股 False 最新:[0m
+[33m2025-10-31 09:39:14 - WARNING - 交易通知: 买入 恒瑞医药 300股 False 最新:[0m
+[33m2025-10-31 09:57:33 - WARNING - 交易通知: 买入 三七互娱 900股 False 最新:[0m
+[33m2025-10-31 14:57:41 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
+[33m2025-10-31 14:57:42 - WARNING - 交易通知: 国债逆回购交易执行失败: 进入国债逆回购入口失败[0m
