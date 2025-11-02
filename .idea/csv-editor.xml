@@ -17,20 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\T0\600030.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\600030分时.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Investment\T0\backtest\results\backtest_results_20251005_110440.csv">
           <value>
             <Attribute>
@@ -53,13 +39,6 @@
           </value>
         </entry>
         <entry key="\Investment\T0\cache\fenshi_data\002415_20251024_fenshi.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\东方财富分时数据.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

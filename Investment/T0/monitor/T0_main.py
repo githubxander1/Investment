@@ -9,7 +9,11 @@ from datetime import datetime, time as dt_time, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Investment.T0.monitor.signal_detector import SignalDetector
-from Investment.T0.monitor.trade_executor import TradeExecutor
+# 注释掉自动交易执行器的导入
+# from Investment.T0.monitor.trade_executor import TradeExecutor
+
+# 导入价格成交量偏离指标分析函数
+from Investment.T0.indicators.price_volume_deviation import analyze_strategy
 
 # 配置日志
 logging.basicConfig(
@@ -34,8 +38,9 @@ class T0Monitor:
         for stock_code in self.stock_codes:
             self.signal_detectors[stock_code] = SignalDetector(stock_code)
             
+        # 注释掉交易执行器的创建
         # 创建交易执行器
-        self.executor = TradeExecutor()
+        # self.executor = TradeExecutor()
         
         # 初始化每日重置标记
         self.reset_daily_flag = True
@@ -50,6 +55,9 @@ class T0Monitor:
         
         # 当日已执行的交易记录
         self.executed_trades = []
+        
+        # 用于跟踪已发送的通知，避免重复发送
+        self.sent_notifications = set()
         
     def is_trading_time(self):
         """判断是否为交易时间"""
@@ -93,6 +101,9 @@ class T0Monitor:
                         detector.prev_signals['comprehensive_t0']['has_open_position'] = False
                     logger.info(f"重置股票 {stock_code} 的信号检测器状态")
                     
+            # 清空已发送通知记录
+            self.sent_notifications.clear()
+            
             self.reset_daily_flag = False
     
     def process_signals(self):
@@ -101,28 +112,51 @@ class T0Monitor:
         self.buy_signals.clear()
         self.sell_signals.clear()
         
-        # 检测所有股票的信号
-        for stock_code, detector in self.signal_detectors.items():
-            signals = detector.detect_all_signals()
-            
-            if signals:
-                logger.info(f"股票 {stock_code} 检测到新信号: {signals}")
+        # 检测所有股票的信号（使用价格成交量偏离指标）
+        for stock_code in self.stock_codes:
+            try:
+                # 使用价格成交量偏离指标分析
+                result = analyze_strategy(stock_code)
                 
-                # 分类信号（买入/卖出）
-                for signal in signals:
-                    signal_info = {
-                        'stock_code': stock_code,
-                        'indicator': signal['indicator'],
-                        'type': signal['type'],
-                        'details': signal['details'],
-                        'timestamp': datetime.now()
-                    }
+                if result is not None:
+                    df_with_indicators, signals = result
                     
-                    # 根据信号类型分类
-                    if signal['type'] == '买入':
-                        self.buy_signals.append(signal_info)
-                    elif signal['type'] == '卖出':
-                        self.sell_signals.append(signal_info)
+                    # 检查最新信号
+                    if not df_with_indicators.empty:
+                        latest_row = df_with_indicators.iloc[-1]
+                        
+                        # 检查买入信号
+                        if latest_row['Buy_Signal']:
+                            signal_key = f"{stock_code}_buy_{latest_row.name}"
+                            if signal_key not in self.sent_notifications:
+                                signal_info = {
+                                    'stock_code': stock_code,
+                                    'indicator': '价格成交量偏离指标',
+                                    'type': '买入',
+                                    'details': f"价格偏离度: {latest_row['Price_MA_Ratio']:.2f}%, 量比: {latest_row['Volume_Ratio']:.2f}",
+                                    'timestamp': datetime.now()
+                                }
+                                self.buy_signals.append(signal_info)
+                                self.sent_notifications.add(signal_key)
+                                logger.info(f"股票 {stock_code} 检测到买入信号")
+                        
+                        # 检查卖出信号
+                        if latest_row['Sell_Signal']:
+                            signal_key = f"{stock_code}_sell_{latest_row.name}"
+                            if signal_key not in self.sent_notifications:
+                                signal_info = {
+                                    'stock_code': stock_code,
+                                    'indicator': '价格成交量偏离指标',
+                                    'type': '卖出',
+                                    'details': f"价格偏离度: {latest_row['Price_MA_Ratio']:.2f}%, 量比: {latest_row['Volume_Ratio']:.2f}",
+                                    'timestamp': datetime.now()
+                                }
+                                self.sell_signals.append(signal_info)
+                                self.sent_notifications.add(signal_key)
+                                logger.info(f"股票 {stock_code} 检测到卖出信号")
+                
+            except Exception as e:
+                logger.error(f"处理股票 {stock_code} 信号时出错: {e}", exc_info=True)
         
         # 按时间戳排序
         self.buy_signals.sort(key=lambda x: x['timestamp'])
@@ -131,12 +165,12 @@ class T0Monitor:
         # 按照先卖后买原则构建最终信号队列
         self.signal_queue = self.sell_signals + self.buy_signals
         
-        # 执行信号
+        # 发送信号通知（注释掉自动交易执行）
         for signal in self.signal_queue:
-            self._execute_single_signal(signal)
+            self._send_notification_for_signal(signal)
     
-    def _execute_single_signal(self, signal):
-        """执行单个信号"""
+    def _send_notification_for_signal(self, signal):
+        """为信号发送通知"""
         stock_code = signal['stock_code']
         signal_type = signal['type']
         indicator = signal['indicator']
@@ -153,29 +187,8 @@ class T0Monitor:
             # 发送通知
             self._send_notification(notification_msg)
             
-            # 执行交易
-            if signal_type == '买入':
-                # 执行买入操作
-                trade_result = self.executor.execute_buy(stock_code, indicator)
-            else:
-                # 执行卖出操作
-                trade_result = self.executor.execute_sell(stock_code, indicator)
-            
-            # 记录交易
-            if trade_result and trade_result.get('success'):
-                trade_record = {
-                    'stock_code': stock_code,
-                    'signal_type': signal_type,
-                    'indicator': indicator,
-                    'details': details,
-                    'executed_at': datetime.now(),
-                    'trade_info': trade_result
-                }
-                self.executed_trades.append(trade_record)
-                logger.info(f"交易执行成功: {trade_record}")
-            
         except Exception as e:
-            logger.error(f"执行信号时出错: {e}", exc_info=True)
+            logger.error(f"发送信号通知时出错: {e}", exc_info=True)
     
     def _send_notification(self, message):
         """发送通知"""
@@ -251,6 +264,15 @@ class T0Monitor:
             except Exception as notify_e:
                 logger.error(f"发送系统通知时出错: {notify_e}")
                 
+            # 尝试发送钉钉通知
+            try:
+                from Investment.T0.utils.tools import notify_signal
+                # 发送钉钉通知
+                notify_signal(message)
+                logger.info("✅ 钉钉通知已发送")
+            except Exception as ding_e:
+                logger.warning(f"❌ 发送钉钉通知失败: {ding_e}")
+                
         except Exception as e:
             logger.error(f"发送通知时出错: {e}")
     
@@ -303,11 +325,12 @@ class T0Monitor:
         logger.info("关闭T0交易监控器")
         
         # 释放资源
-        if hasattr(self, 'executor'):
-            try:
-                self.executor.close()
-            except:
-                pass
+        # 注释掉交易执行器的关闭
+        # if hasattr(self, 'executor'):
+        #     try:
+        #         self.executor.close()
+        #     except:
+        #         pass
 
 def main():
     """主函数"""

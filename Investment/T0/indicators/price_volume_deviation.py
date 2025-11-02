@@ -52,7 +52,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     
     策略原理：
     1. 计算价格与均价的差值和比率
-    2. 计算成交量的5日均量和量比
+    2. 计算成交量的15分钟均量和量比（关键修改：用ROUND保留2位小数）
     3. 当价格低于均价一定比例且成交量放大时买入
     4. 当价格高于均价一定比例且成交量放大或价格高于均价时卖出
     
@@ -64,8 +64,8 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         添加了策略指标的DataFrame，新增列包括：
         - 'Price_MA_Diff': 价格与均价的差值
         - 'Price_MA_Ratio': 价格与均价的偏离百分比
-        - 'Volume_MA': 成交量5日均量
-        - 'Volume_Ratio': 量比
+        - 'Volume_MA': 成交量15分钟均量
+        - 'Volume_Ratio': 量比（保留2位小数）
         - 'Buy_Signal': 买入信号（布尔值）
         - 'Sell_Signal': 卖出信号（布尔值）
     """
@@ -77,7 +77,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     if '成交额' in df.columns:
         df['成交额'] = pd.to_numeric(df['成交额'], errors='coerce')
     
-    # 确保均价列存在
+    # 确保均价列存在（修正单位转换问题确保计算准确性）
     if '均价' not in df.columns:
         # 如果没有均价列，使用成交额/成交量计算（考虑到VOL单位为手，乘以100转换为股）
         df['均价'] = df['成交额'] / (df['成交量'] * 100)
@@ -91,8 +91,8 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         logger.warning("收盘价和均价数据全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
-        df['Price_MA_Ratio_Amplified'] = np.nan
         df['Price_MA_Ratio'] = np.nan
+        df['Price_MA_Ratio_Amplified'] = np.nan
         df['Volume_MA'] = np.nan
         df['Volume_Ratio'] = np.nan
         df['Volume_Increase'] = False
@@ -111,8 +111,8 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         logger.warning("填充后收盘价和均价数据仍然全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
-        df['Price_MA_Ratio_Amplified'] = np.nan
         df['Price_MA_Ratio'] = np.nan
+        df['Price_MA_Ratio_Amplified'] = np.nan
         df['Volume_MA'] = np.nan
         df['Volume_Ratio'] = np.nan
         df['Volume_Increase'] = False
@@ -125,38 +125,45 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     # 检查是否有无穷大值
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
     
-    # 计算价格与均价的差值和比率（偏离度）
+    # 计算价格与均价的差值和比率（偏离度）{反映当前价与均价的偏离程度}
     df['Price_MA_Diff'] = df['收盘'] - df['均价']
-    # 计算价格与均价的偏离百分比
+    # 偏离度:(CLOSE-均价)/均价*100.00;{结果为百分比，保留2位小数}
     df['Price_MA_Ratio'] = (df['收盘'] / df['均价'] - 1) * 100
-    # 为图表显示创建放大版本（不改变实际数据）
-    df['Price_MA_Ratio_Scaled'] = df['Price_MA_Ratio'] * 10
     
-    # 计算成交量移动平均和量比
-    df['Volume_MA'] = df['成交量'].rolling(window=5, min_periods=1).mean()
-    df['Volume_Ratio'] = df['成交量'] / df['Volume_MA']
+    # 为图表显示创建放大版本（偏离度放大显示 - 增强视觉辨识度）
+    # 偏离度放大:偏离度*50,COLORRED,LINETHICK4;{红色粗线绘制，突出偏离趋势}
+    df['Price_MA_Ratio_Amplified'] = df['Price_MA_Ratio'] * 50
+    
+    # 成交量分析 - 量比改为【数值显示】（关键修改：用ROUND保留2位小数，避免分数）
+    # VOLUME_5MA := MA(VOL, 15);{计算15分钟成交量均线（分时图中即5个时间单位的平均成交量）}
+    df['Volume_MA'] = df['成交量'].rolling(window=15, min_periods=1).mean()
+    # 量比数值 := ROUND((VOL / VOLUME_5MA) * 100) / 100;{核心修改：用ROUND保留2位小数，强制数值显示}
+    df['Volume_Ratio'] = np.round((df['成交量'] / df['Volume_MA']) * 100) / 100
     
     # 处理可能的无穷大值
     df['Volume_Ratio'] = df['Volume_Ratio'].replace([np.inf, -np.inf], np.nan)
     
     # 成交量分析
-    df['Volume_Increase'] = df['Volume_Ratio'] > 1.5  # 成交量放大
-    df['Volume_Decrease'] = df['Volume_Ratio'] < 0.5  # 成交量萎缩
+    # 成交量放大:= 量比数值 > 1.5;{量比大于1.5判定为放量}
+    df['Volume_Increase'] = df['Volume_Ratio'] > 1.5
+    # 成交量萎缩:= 量比数值 < 0.5;{量比小于0.5判定为缩量}
+    df['Volume_Decrease'] = df['Volume_Ratio'] < 0.5
     
-    # 策略参数（调整阈值以便更容易产生信号）
+    # 策略参数
     buy_threshold = -0.3  # 低于均价0.3%时买入
     sell_threshold = 0.3  # 高于均价0.3%时卖出
     
     # 生成买卖信号
-    # 买入信号：偏离度 < 阈值 且 成交量放大
-    df['Buy_Signal'] = (df['Price_MA_Ratio'] < buy_threshold) & (df['Volume_Ratio'] > 1.5)
+    # 买入信号 := 偏离度 < -0.3 AND 成交量放大;{当前价低于均价0.3%+放量，触发买入信号}
+    df['Buy_Signal'] = (df['Price_MA_Ratio'] < buy_threshold) & (df['Volume_Increase'])
     
-    # 卖出信号：偏离度 > 阈值 且 (成交量放大 或 收盘价 > 均价)
+    # 卖出信号 := 偏离度 > 0.3 AND (成交量放大 OR CLOSE > 均价);{当前价高于均价0.3%+放量/价超均价，触发卖出信号}
     df['Sell_Signal'] = (df['Price_MA_Ratio'] > sell_threshold) & (
-        (df['Volume_Ratio'] > 1.2) | (df['收盘'] > df['均价'])
+        (df['Volume_Increase']) | (df['收盘'] > df['均价'])
     )
     
     # 添加涨跌幅计算
+    # 涨跌幅:(CLOSE-REF(CLOSE,1))/REF(CLOSE,1)*100,COLORRED,LINETHICK1;{红色细线显示涨跌幅（百分比）}
     df['Price_Change_Rate'] = df['收盘'].pct_change() * 100
     df['Price_Change_Rate'] = df['Price_Change_Rate'].fillna(0)
     
@@ -240,7 +247,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         df_with_indicators = calculate_price_volume_deviation(df)
         
         # 确保必要列存在且不为空
-        required_columns = ['Price_MA_Ratio', 'Volume_Ratio']
+        required_columns = ['Price_MA_Ratio', 'Volume_Ratio', 'Price_MA_Ratio_Amplified']
         for col in required_columns:
             if col not in df_with_indicators.columns:
                 print(f"警告: 数据中没有{col}列")
@@ -282,6 +289,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         # 绘制买入信号
         buy_signals = df_filtered[df_filtered['Buy_Signal']]
         if not buy_signals.empty:
+            # DRAWICON(买入信号, 偏离度放大-1, 1);{买入信号：红色向上箭头（位置微调，避免遮挡）}
             ax1.scatter(buy_signals.index, buy_signals['收盘'] * 0.995, marker='^', color='red', s=100, zorder=5)
             for idx, row in buy_signals.iterrows():
                 ax1.text(idx, row['收盘'] * 0.99, '买',
@@ -290,6 +298,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         # 绘制卖出信号
         sell_signals = df_filtered[df_filtered['Sell_Signal']]
         if not sell_signals.empty:
+            # DRAWICON(卖出信号, 偏离度放大+1, 2);{卖出信号：绿色向下箭头（位置微调，避免遮挡）}
             ax1.scatter(sell_signals.index, sell_signals['收盘'] * 1.005, marker='v', color='green', s=100, zorder=5)
             for idx, row in sell_signals.iterrows():
                 ax1.text(idx, row['收盘'] * 1.01, '卖',
@@ -300,17 +309,18 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         ax1.legend()
         
         # 绘制价格与均价的比率
-        ax2.plot(df_filtered.index, df_filtered['Price_MA_Ratio'], label='价格与均价偏离比率(%)', color='purple', linewidth=1)
-        ax2.plot(df_filtered.index, df_filtered['Price_MA_Ratio_Scaled'], label='偏离比率(放大10倍显示)', color='orange', linewidth=1)
+        # 偏离度放大:偏离度*50,COLORRED,LINETHICK4;{红色粗线绘制，突出偏离趋势}
+        ax2.plot(df_filtered.index, df_filtered['Price_MA_Ratio_Amplified'], label='偏离度放大(偏离度*50)', color='red', linewidth=2)
         ax2.axhline(y=0, color='black', linestyle='-', alpha=0.5)
-        ax2.axhline(y=0.5, color='green', linestyle='--', alpha=0.7, label='卖出阈值')
-        ax2.axhline(y=-0.5, color='red', linestyle='--', alpha=0.7, label='买入阈值')
-        ax2.set_ylabel('偏离比率(%)', fontsize=12)
+        ax2.axhline(y=15, color='green', linestyle='--', alpha=0.7, label='卖出阈值')
+        ax2.axhline(y=-15, color='red', linestyle='--', alpha=0.7, label='买入阈值')
+        ax2.set_ylabel('偏离度放大值', fontsize=12)
         ax2.grid(True, linestyle='--', alpha=0.7)
         ax2.legend()
         
         # 绘制量比
-        ax3.plot(df_filtered.index, df_filtered['Volume_Ratio'], label='量比', color='brown', linewidth=1)
+        # 量比:量比数值,COLORGREEN,LINETHICK1;{绿色细线显示量比，格式为XX.XX（如1.85、0.42）}
+        ax3.plot(df_filtered.index, df_filtered['Volume_Ratio'], label='量比', color='green', linewidth=1)
         ax3.axhline(y=1.5, color='green', linestyle='--', alpha=0.7, label='放量阈值')
         ax3.axhline(y=0.5, color='red', linestyle='--', alpha=0.7, label='缩量阈值')
         ax3.axhline(y=1.0, color='gray', linestyle='-', alpha=0.5)
