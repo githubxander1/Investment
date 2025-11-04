@@ -215,8 +215,9 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
     try:
         # 时间处理
         if trade_date is None:
-            yesterday = datetime.now() - timedelta(days=1)
-            trade_date = yesterday.strftime('%Y-%m-%d')
+            # yesterday = datetime.now() - timedelta(days=1)
+            # trade_date = yesterday.strftime('%Y-%m-%d')
+            trade_date = datetime.now().strftime('%Y-%m-%d')
         
         # 统一日期格式，确保与其他函数保持一致
         try:
