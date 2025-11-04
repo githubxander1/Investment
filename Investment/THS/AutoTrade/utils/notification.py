@@ -1,7 +1,7 @@
-# notification.py
 import logging
 import os
 import smtplib
+import time
 from datetime import datetime
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -34,6 +34,11 @@ def send_notification(message):
     # 新增钉钉通知
     send_dingtalk_notification(message)
     logger.warning(f'交易通知: {message}')
+    
+    # 如果通知中包含"失败"关键字，则暂停30秒
+    if "失败" in message:
+        logger.info("检测到交易失败通知，暂停30秒...")
+        time.sleep(30)
 
 def send_http_request(url, data):
     response = requests.post(url, json=data)

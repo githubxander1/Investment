@@ -143,19 +143,29 @@ def notify_signal(signal_type, stock_code, price, time_str):
     time_str: 时间字符串
     """
     try:
-        if isinstance(price, str):
-            price = float(price)
-            
-        stock_name = get_stock_name(stock_code)
-        if signal_type.lower() == 'buy':
-            title = f"买入信号 - {stock_name}({stock_code})"
-            content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出买入信号，价格: {price:.2f}"
-        elif signal_type.lower() == 'sell':
-            title = f"卖出信号 - {stock_name}({stock_code})"
-            content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出卖出信号，价格: {price:.2f}"
+        # 处理特殊情况：如果signal_type为"signal"，则time_str是完整的消息内容
+        if signal_type == "signal":
+            # 这种情况下，time_str包含完整的消息内容
+            title = "T0交易信号"
+            content = time_str
         else:
-            title = f"信号通知 - {stock_name}({stock_code})"
-            content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出 {signal_type} 信号，价格: {price:.2f}"
+            if isinstance(price, str):
+                # 尝试将价格转换为浮点数
+                try:
+                    price = float(price)
+                except ValueError:
+                    price = 0.0
+            
+            stock_name = get_stock_name(stock_code)
+            if signal_type.lower() == 'buy':
+                title = f"买入信号 - {stock_name}({stock_code})"
+                content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出买入信号，价格: {price:.2f}"
+            elif signal_type.lower() == 'sell':
+                title = f"卖出信号 - {stock_name}({stock_code})"
+                content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出卖出信号，价格: {price:.2f}"
+            else:
+                title = f"信号通知 - {stock_name}({stock_code})"
+                content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出 {signal_type} 信号，价格: {price:.2f}"
         
         # 发送通知
         send_notification(title, content)

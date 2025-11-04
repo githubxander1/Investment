@@ -595,3 +595,13 @@
 [33m2025-10-31 09:57:33 - WARNING - 交易通知: 买入 三七互娱 900股 False 最新:[0m
 [33m2025-10-31 14:57:41 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
 [33m2025-10-31 14:57:42 - WARNING - 交易通知: 国债逆回购交易执行失败: 进入国债逆回购入口失败[0m
+[33m2025-11-03 09:25:41 - WARNING - 交易通知: 📈【沪深300ETF】(510300) 收盘价上穿20日均线，建议关注买入机会！[0m
+[33m2025-11-03 09:32:39 - WARNING - 交易通知: 多次尝试后仍无法进入交易页[0m
+[33m2025-11-03 09:33:21 - WARNING - 交易通知: 卖出 三七互娱 900 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+[33m2025-11-03 09:34:49 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: ('Unknown RPC error: -32001 java.lang.SecurityException', (360, 1024, 360, 256, 100), 'java.lang.SecurityException: Injecting to another application requires INJECT_EVENTS permission\n\tat android.os.Parcel.createExceptionOrNull(Parcel....[0m
+[33m2025-11-03 13:55:04 - WARNING - 交易通知: 买入 恒立液压 200股 False 最新:[0m
+[33m2025-11-03 14:02:06 - WARNING - 交易通知: 卖出 恒瑞医药 300股 False 最新:[0m
+[33m2025-11-03 14:57:20 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
+[32m2025-11-03 14:57:20 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-03 14:57:51 - WARNING - 交易通知: 国债逆回购交易执行失败: 进入国债逆回购入口失败[0m
+[32m2025-11-03 14:57:51 - INFO - 检测到交易失败通知，暂停30秒...[0m

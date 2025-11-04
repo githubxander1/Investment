@@ -32,10 +32,11 @@ import sys
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from Investment.T0.utils.logger import setup_logger
-from Investment.T0.utils.tools import notify_signal
-from Investment.T0.utils.get_intrade_data import fetch_intraday_data
-from Investment.T0.utils.detact_signals import detect_trading_signals
+# 调整导入路径
+from T0.utils.logger import setup_logger
+from T0.utils.tools import notify_signal
+from T0.utils.get_intrade_data import fetch_intraday_data
+from T0.utils.detact_signals import detect_trading_signals
 
 logger = setup_logger('price_volume_deviation')
 
@@ -265,15 +266,17 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         df_filtered = df_with_indicators.dropna(subset=['收盘', '均价', 'Price_MA_Ratio', 'Volume_Ratio'])
         
         # 移除非交易时间（11:30到13:00）
-        # 创建一个布尔索引，排除午间休市时间
-        # 条件1: 排除11:30及以后的数据
-        # 条件2: 排除12:00整的数据
-        # 条件3: 排除13:00前的非11点数据（即12:01-12:59）
+        # 创建一个布尔索引，完全排除午间休市时间
         morning_end = pd.Timestamp('11:30').time()
         afternoon_start = pd.Timestamp('13:00').time()
+        # 完全排除11:30到13:00之间的所有数据
         mask = ~((df_filtered.index.time >= morning_end) & 
                 (df_filtered.index.time < afternoon_start))
         df_filtered = df_filtered[mask]
+        
+        # 确保过滤彻底，打印过滤前后的数据量
+        print(f"午休时间过滤前数据行数: {len(df_with_indicators)}")
+        print(f"午休时间过滤后数据行数: {len(df_filtered)}")
         
         if df_filtered.empty:
             print("警告: 过滤后的数据为空")
@@ -282,9 +285,19 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         print(f"过滤后的数据行数: {len(df_filtered)}")
         print(f"数据列: {', '.join(df_filtered.columns.tolist())}")
         
-        # 绘制价格和均价
-        ax1.plot(df_filtered.index, df_filtered['收盘'], label='收盘价', color='black', linewidth=1)
-        ax1.plot(df_filtered.index, df_filtered['均价'], label='均价', color='blue', linewidth=1)
+        # 绘制价格和均价，在上午收盘和下午开盘之间创建断点
+        # 分离上午和下午的数据
+        morning_data = df_filtered[df_filtered.index.time < morning_end]
+        afternoon_data = df_filtered[df_filtered.index.time >= afternoon_start]
+        
+        # 分别绘制上午和下午的数据，避免在午休时间绘制连线
+        if not morning_data.empty:
+            ax1.plot(morning_data.index, morning_data['收盘'], label='收盘价' if not ax1.get_lines() else '', color='black', linewidth=1)
+            ax1.plot(morning_data.index, morning_data['均价'], label='均价' if not ax1.get_lines() else '', color='blue', linewidth=1)
+        
+        if not afternoon_data.empty:
+            ax1.plot(afternoon_data.index, afternoon_data['收盘'], color='black', linewidth=1)
+            ax1.plot(afternoon_data.index, afternoon_data['均价'], color='blue', linewidth=1)
         
         # 绘制买入信号
         buy_signals = df_filtered[df_filtered['Buy_Signal']]
@@ -308,9 +321,14 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         ax1.grid(True, linestyle='--', alpha=0.7)
         ax1.legend()
         
-        # 绘制价格与均价的比率
+        # 绘制价格与均价的比率，在上午收盘和下午开盘之间创建断点
         # 偏离度放大:偏离度*50,COLORRED,LINETHICK4;{红色粗线绘制，突出偏离趋势}
-        ax2.plot(df_filtered.index, df_filtered['Price_MA_Ratio_Amplified'], label='偏离度放大(偏离度*50)', color='red', linewidth=2)
+        if not morning_data.empty:
+            ax2.plot(morning_data.index, morning_data['Price_MA_Ratio_Amplified'], 
+                    label='偏离度放大(偏离度*50)' if not ax2.get_lines() else '', color='red', linewidth=2)
+        if not afternoon_data.empty:
+            ax2.plot(afternoon_data.index, afternoon_data['Price_MA_Ratio_Amplified'], 
+                    color='red', linewidth=2)
         ax2.axhline(y=0, color='black', linestyle='-', alpha=0.5)
         ax2.axhline(y=15, color='green', linestyle='--', alpha=0.7, label='卖出阈值')
         ax2.axhline(y=-15, color='red', linestyle='--', alpha=0.7, label='买入阈值')
@@ -318,9 +336,14 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         ax2.grid(True, linestyle='--', alpha=0.7)
         ax2.legend()
         
-        # 绘制量比
+        # 绘制量比，在上午收盘和下午开盘之间创建断点
         # 量比:量比数值,COLORGREEN,LINETHICK1;{绿色细线显示量比，格式为XX.XX（如1.85、0.42）}
-        ax3.plot(df_filtered.index, df_filtered['Volume_Ratio'], label='量比', color='green', linewidth=1)
+        if not morning_data.empty:
+            ax3.plot(morning_data.index, morning_data['Volume_Ratio'], 
+                    label='量比' if not ax3.get_lines() else '', color='green', linewidth=1)
+        if not afternoon_data.empty:
+            ax3.plot(afternoon_data.index, afternoon_data['Volume_Ratio'], 
+                    color='green', linewidth=1)
         ax3.axhline(y=1.5, color='green', linestyle='--', alpha=0.7, label='放量阈值')
         ax3.axhline(y=0.5, color='red', linestyle='--', alpha=0.7, label='缩量阈值')
         ax3.axhline(y=1.0, color='gray', linestyle='-', alpha=0.5)
@@ -331,9 +354,161 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         
         # 格式化x轴时间显示
         import matplotlib.dates as mdates
-        ax1.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-        ax2.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-        ax3.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+        
+        # 为所有子图设置相同的x轴格式和范围
+        for ax in [ax1, ax2, ax3]:
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+            # 优化x轴刻度，确保不显示午休时间段
+            ax.xaxis.set_major_locator(mdates.MinuteLocator(byminute=[0, 15, 30, 45]))
+        
+        plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45)
+        plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
+        plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
+        
+        # 为了完全消除中间空白区域，我们需要创建一个不连续的x轴
+        # 这个方法使用虚拟的时间戳，将下午的数据紧接在上午数据之后显示
+        
+        # 创建一个新的虚拟时间索引，让下午数据紧接在上午数据之后
+        # 首先，创建一个副本避免修改原始数据
+        morning_data_plot = morning_data.copy()
+        afternoon_data_plot = afternoon_data.copy()
+        
+        if not morning_data.empty and not afternoon_data.empty:
+            # 计算上午最后一个时间点和下午第一个时间点
+            last_morning_time = morning_data.index[-1]
+            first_afternoon_time = afternoon_data.index[0]
+            
+            # 计算时间差（实际是午休时间）
+            time_gap = first_afternoon_time - last_morning_time
+            
+            # 创建一个映射函数，将下午时间减去午休时间间隔
+            def adjust_afternoon_time(ts):
+                return ts - time_gap
+            
+            # 应用映射到下午数据
+            afternoon_data_plot.index = afternoon_data_plot.index.map(adjust_afternoon_time)
+        
+        # 现在分别绘制调整后的上午和下午数据
+        # 先清除之前的绘图，重新绘制
+        for ax in [ax1, ax2, ax3]:
+            ax.clear()
+        
+        # 重新设置标题和标签
+        fig.suptitle(f'{stock_code} 价均量策略图 ({formatted_date})', fontsize=16)
+        
+        # 绘制价格和均价
+        if not morning_data.empty:
+            ax1.plot(morning_data_plot.index, morning_data_plot['收盘'], label='收盘价', color='black', linewidth=1)
+            ax1.plot(morning_data_plot.index, morning_data_plot['均价'], label='均价', color='blue', linewidth=1)
+        if not afternoon_data.empty:
+            ax1.plot(afternoon_data_plot.index, afternoon_data_plot['收盘'], color='black', linewidth=1)
+            ax1.plot(afternoon_data_plot.index, afternoon_data_plot['均价'], color='blue', linewidth=1)
+        
+        # 绘制买入信号
+        if not buy_signals.empty:
+            # 为买入信号也调整下午的时间戳
+            buy_morning = buy_signals[buy_signals.index.time < morning_end]
+            buy_afternoon = buy_signals[buy_signals.index.time >= afternoon_start]
+            
+            if not buy_morning.empty:
+                ax1.scatter(buy_morning.index, buy_morning['收盘'] * 0.995, marker='^', color='red', s=100, zorder=5)
+                for idx, row in buy_morning.iterrows():
+                    ax1.text(idx, row['收盘'] * 0.99, '买',
+                             color='red', fontsize=12, ha='center', va='top', fontweight='bold')
+            
+            if not buy_afternoon.empty and not morning_data.empty and not afternoon_data.empty:
+                # 调整下午买入信号的时间戳
+                buy_afternoon_adj = buy_afternoon.copy()
+                buy_afternoon_adj.index = buy_afternoon_adj.index.map(adjust_afternoon_time)
+                
+                ax1.scatter(buy_afternoon_adj.index, buy_afternoon_adj['收盘'] * 0.995, marker='^', color='red', s=100, zorder=5)
+                for idx, row in buy_afternoon_adj.iterrows():
+                    ax1.text(idx, row['收盘'] * 0.99, '买',
+                             color='red', fontsize=12, ha='center', va='top', fontweight='bold')
+        
+        # 绘制卖出信号
+        if not sell_signals.empty:
+            # 为卖出信号也调整下午的时间戳
+            sell_morning = sell_signals[sell_signals.index.time < morning_end]
+            sell_afternoon = sell_signals[sell_signals.index.time >= afternoon_start]
+            
+            if not sell_morning.empty:
+                ax1.scatter(sell_morning.index, sell_morning['收盘'] * 1.005, marker='v', color='green', s=100, zorder=5)
+                for idx, row in sell_morning.iterrows():
+                    ax1.text(idx, row['收盘'] * 1.01, '卖',
+                             color='green', fontsize=12, ha='center', va='bottom', fontweight='bold')
+            
+            if not sell_afternoon.empty and not morning_data.empty and not afternoon_data.empty:
+                # 调整下午卖出信号的时间戳
+                sell_afternoon_adj = sell_afternoon.copy()
+                sell_afternoon_adj.index = sell_afternoon_adj.index.map(adjust_afternoon_time)
+                
+                ax1.scatter(sell_afternoon_adj.index, sell_afternoon_adj['收盘'] * 1.005, marker='v', color='green', s=100, zorder=5)
+                for idx, row in sell_afternoon_adj.iterrows():
+                    ax1.text(idx, row['收盘'] * 1.01, '卖',
+                             color='green', fontsize=12, ha='center', va='bottom', fontweight='bold')
+        
+        # 设置第一个子图的属性
+        ax1.set_ylabel('价格', fontsize=12)
+        ax1.grid(True, linestyle='--', alpha=0.7)
+        ax1.legend()
+        
+        # 绘制价格与均价的比率
+        if not morning_data.empty:
+            ax2.plot(morning_data_plot.index, morning_data_plot['Price_MA_Ratio_Amplified'], 
+                    label='偏离度放大(偏离度*50)', color='red', linewidth=2)
+        if not afternoon_data.empty:
+            ax2.plot(afternoon_data_plot.index, afternoon_data_plot['Price_MA_Ratio_Amplified'], 
+                    color='red', linewidth=2)
+        
+        ax2.axhline(y=0, color='black', linestyle='-', alpha=0.5)
+        ax2.axhline(y=15, color='green', linestyle='--', alpha=0.7, label='卖出阈值')
+        ax2.axhline(y=-15, color='red', linestyle='--', alpha=0.7, label='买入阈值')
+        ax2.set_ylabel('偏离度放大值', fontsize=12)
+        ax2.grid(True, linestyle='--', alpha=0.7)
+        ax2.legend()
+        
+        # 绘制量比
+        if not morning_data.empty:
+            ax3.plot(morning_data_plot.index, morning_data_plot['Volume_Ratio'], 
+                    label='量比', color='green', linewidth=1)
+        if not afternoon_data.empty:
+            ax3.plot(afternoon_data_plot.index, afternoon_data_plot['Volume_Ratio'], 
+                    color='green', linewidth=1)
+        
+        ax3.axhline(y=1.5, color='green', linestyle='--', alpha=0.7, label='放量阈值')
+        ax3.axhline(y=0.5, color='red', linestyle='--', alpha=0.7, label='缩量阈值')
+        ax3.axhline(y=1.0, color='gray', linestyle='-', alpha=0.5)
+        ax3.set_ylabel('量比', fontsize=12)
+        ax3.set_xlabel('时间', fontsize=12)
+        ax3.grid(True, linestyle='--', alpha=0.7)
+        ax3.legend()
+        
+        # 计算新的x轴范围
+        min_time = None
+        max_time = None
+        
+        if not morning_data.empty:
+            min_time = morning_data_plot.index.min()
+            max_time = morning_data_plot.index.max()
+        
+        if not afternoon_data.empty:
+            if min_time is None:
+                min_time = afternoon_data_plot.index.min()
+            if max_time is None or afternoon_data_plot.index.max() > max_time:
+                max_time = afternoon_data_plot.index.max()
+        
+        # 为所有子图设置相同的x轴范围
+        if min_time is not None and max_time is not None:
+            for ax in [ax1, ax2, ax3]:
+                ax.set_xlim(min_time, max_time)
+        
+        # 设置x轴时间格式
+        for ax in [ax1, ax2, ax3]:
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+            ax.xaxis.set_major_locator(mdates.MinuteLocator(byminute=[0, 15, 30, 45]))
+        
+        # 设置刻度标签旋转角度
         plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45)
         plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
         plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
@@ -347,48 +522,84 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         def on_move(event):
             if event.inaxes and event.inaxes == ax1 and len(df_filtered) > 0:
                 # 获取最近的数据点
-                x_data = df_filtered.index
                 try:
-                    # 找到最近的时间点
                     # 修复：正确处理event.xdata为浮点数的情况
                     x_pos = event.xdata
                     if isinstance(x_pos, (int, float)):
                         # 将matplotlib日期浮点数转换为datetime对象
                         x_datetime = mdates.num2date(x_pos)
                         
-                        # 找到最近的时间点
-                        time_diff = np.abs(x_data - x_datetime)
-                        nearest_index = time_diff.argmin()
-                        nearest_time = x_data[nearest_index]
-                        
-                        # 确保索引存在
-                        if nearest_time in df_filtered.index:
-                            row = df_filtered.loc[nearest_time]
+                        # 检查是上午还是下午数据，并相应地调整查询
+                        # 首先检查是否在调整后的下午时间段
+                        if not morning_data.empty and not afternoon_data.empty:
+                            last_morning_time_original = morning_data.index[-1]
+                            first_afternoon_time_original = afternoon_data.index[0]
+                            time_gap = first_afternoon_time_original - last_morning_time_original
                             
-                            # 构建显示信息
-                            time_str = nearest_time.strftime('%H:%M')
-                            price_str = f'{row["收盘"]:.2f}'
-                            avg_price_str = f'{row["均价"]:.2f}'
-                            ratio_str = f'{row["Price_MA_Ratio"]:.2f}%'
-                            volume_ratio_str = f'{row["Volume_Ratio"]:.2f}'
-                            
-                            # 添加信号信息
-                            signal_info = ''
-                            if 'Buy_Signal' in row and row['Buy_Signal']:
-                                signal_info = '买入信号'
-                            elif 'Sell_Signal' in row and row['Sell_Signal']:
-                                signal_info = '卖出信号'
-                            
-                            if signal_info:
-                                info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}\n信号: {signal_info}'
+                            # 确定鼠标位置对应的原始时间
+                            if x_datetime > last_morning_time_original:
+                                # 这是调整后的下午时间，需要转换回原始时间
+                                original_datetime = x_datetime + time_gap
+                                # 查询原始的下午数据
+                                target_data = afternoon_data
                             else:
-                                info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}'
-                            
-                            # 更新注释框位置和文本
-                            annot.xy = (mdates.date2num(nearest_time), row["收盘"])
-                            annot.set_text(info)
-                            annot.set_visible(True)
+                                # 这是上午时间，直接使用
+                                original_datetime = x_datetime
+                                target_data = morning_data
+                        elif not morning_data.empty:
+                            # 只有上午数据
+                            original_datetime = x_datetime
+                            target_data = morning_data
+                        elif not afternoon_data.empty:
+                            # 只有下午数据
+                            original_datetime = x_datetime
+                            target_data = afternoon_data
+                        else:
+                            annot.set_visible(False)
                             fig.canvas.draw_idle()
+                            return
+                        
+                        # 找到最近的时间点
+                        if not target_data.empty:
+                            time_diff = np.abs(target_data.index - original_datetime)
+                            nearest_index = time_diff.argmin()
+                            nearest_time = target_data.index[nearest_index]
+                            
+                            # 确保索引存在
+                            if nearest_time in df_filtered.index:
+                                row = df_filtered.loc[nearest_time]
+                                
+                                # 构建显示信息
+                                time_str = nearest_time.strftime('%H:%M')
+                                price_str = f'{row["收盘"]:.2f}'
+                                avg_price_str = f'{row["均价"]:.2f}'
+                                ratio_str = f'{row["Price_MA_Ratio"]:.2f}%'
+                                volume_ratio_str = f'{row["Volume_Ratio"]:.2f}'
+                                
+                                # 添加信号信息
+                                signal_info = ''
+                                if 'Buy_Signal' in row and row['Buy_Signal']:
+                                    signal_info = '买入信号'
+                                elif 'Sell_Signal' in row and row['Sell_Signal']:
+                                    signal_info = '卖出信号'
+                                
+                                if signal_info:
+                                    info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}\n信号: {signal_info}'
+                                else:
+                                    info = f'时间: {time_str}\n收盘价: {price_str}\n均价: {avg_price_str}\n偏离率: {ratio_str}\n量比: {volume_ratio_str}'
+                                
+                                # 计算显示位置的坐标
+                                # 如果是下午数据，需要使用调整后的时间坐标
+                                display_x = x_pos  # 使用鼠标事件提供的x坐标
+                                
+                                # 更新注释框位置和文本
+                                annot.xy = (display_x, row["收盘"])
+                                annot.set_text(info)
+                                annot.set_visible(True)
+                                fig.canvas.draw_idle()
+                            else:
+                                annot.set_visible(False)
+                                fig.canvas.draw_idle()
                         else:
                             annot.set_visible(False)
                             fig.canvas.draw_idle()
@@ -417,7 +628,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         
         # 显示图表窗口（阻塞模式，直到用户关闭窗口）
         plt.ioff()  # 关闭交互模式
-        plt.show()
+        # plt.show()  # 注释掉显示，改为直接保存
         
         print(f"📈 图表已保存至: {chart_path}")
         return chart_path
@@ -462,8 +673,8 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         # 计算指标
         df_with_indicators = calculate_price_volume_deviation(df)
         
-        # 检测信号
-        signals = detect_trading_signals(df_with_indicators)
+        # 检测信号，传入股票代码
+        signals = detect_trading_signals(df_with_indicators, stock_code)
         
         return df_with_indicators, signals
         
@@ -475,14 +686,20 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
 
 
 if __name__ == "__main__":
-    # 测试代码
-    stock_code = "600030"  # 中信证券
-    trade_date = '20251031'
-    
-    result = analyze_strategy(stock_code, trade_date)
-    if result:
-        df_with_indicators, signals = result
-        print(f"📊 检测到 {len(signals['buy_signals'])} 个买入信号和 {len(signals['sell_signals'])} 个卖出信号")
-
-        # 绘制图表
-        plot_strategy_chart(stock_code, trade_date)
+    # 简化的测试代码，直接调用可视化函数
+    stock_code = "600030"
+    try:
+        # 尝试从CSV文件加载数据
+        df = pd.read_csv("../../../600030分时数据.csv", index_col=0, parse_dates=True)
+        print(f"成功从CSV加载数据，共{len(df)}条记录")
+        
+        # 计算指标
+        df_with_indicators = calculate_price_volume_deviation(df)
+        
+        # 生成买卖信号
+        df_with_signals = generate_trading_signals(df_with_indicators)
+        
+        # 可视化
+        visualize_strategy(stock_code, df_with_signals)
+    except Exception as e:
+        print(f"运行失败: {e}")

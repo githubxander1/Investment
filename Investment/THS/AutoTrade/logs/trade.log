@@ -1070,3 +1070,27 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-10-31 09:57:19 - INFO - 计算股数: 20688.5283 / 20.95 = 987[0m
 [32m2025-10-31 09:57:19 - INFO - 计算买入股数: 900[0m
 [32m2025-10-31 09:57:33 - INFO - 买入 三七互娱 900股 False 最新:[0m
+[32m2025-11-03 09:32:03 - INFO - 全部卖出[0m
+[31m2025-11-03 09:33:21 - ERROR - 卖出 三七互娱 900 股失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 412, in operate_stock
+    self.trading_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 232, in search_stock
+    stock_search.click()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 148, in click
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/content_stock']", 'method': 'wait'}
+[32m2025-11-03 09:34:49 - INFO - 目标投资金额: 17686.35 * 33.0% = 5836.495499999999[0m
+[32m2025-11-03 09:34:49 - INFO - 计算股数: 5836.495499999999 / 63.89 = 91[0m
+[33m2025-11-03 09:34:49 - WARNING - 计算出的买入股数不足100股[0m
+[32m2025-11-03 13:53:32 - INFO - 目标投资金额: 64167.92 * 33.0% = 21175.4136[0m
+[32m2025-11-03 13:53:32 - INFO - 计算股数: 21175.4136 / 92.75 = 228[0m
+[32m2025-11-03 13:53:32 - INFO - 计算买入股数: 200[0m
+[32m2025-11-03 13:55:04 - INFO - 买入 恒立液压 200股 False 最新:[0m
+[32m2025-11-03 14:00:21 - INFO - 全部卖出[0m
+[32m2025-11-03 14:02:06 - INFO - 卖出 恒瑞医药 300股 False 最新:[0m

@@ -154,6 +154,25 @@ class T0Monitor:
                                 self.sell_signals.append(signal_info)
                                 self.sent_notifications.add(signal_key)
                                 logger.info(f"股票 {stock_code} 检测到卖出信号")
+                    
+                    # 保存图表截图用于核对
+                    try:
+                        from Investment.T0.indicators.price_volume_deviation import plot_strategy_chart
+                        import threading
+                        
+                        def save_chart():
+                            chart_path = plot_strategy_chart(stock_code)
+                            if chart_path:
+                                logger.info(f"图表已保存至: {chart_path}")
+                            else:
+                                logger.warning(f"图表保存失败")
+                        
+                        # 在后台线程中保存图表，避免阻塞主程序
+                        chart_thread = threading.Thread(target=save_chart)
+                        chart_thread.daemon = True
+                        chart_thread.start()
+                    except Exception as e:
+                        logger.error(f"保存图表时出错: {e}")
                 
             except Exception as e:
                 logger.error(f"处理股票 {stock_code} 信号时出错: {e}", exc_info=True)
@@ -267,8 +286,8 @@ class T0Monitor:
             # 尝试发送钉钉通知
             try:
                 from Investment.T0.utils.tools import notify_signal
-                # 发送钉钉通知
-                notify_signal(message)
+                # 发送钉钉通知，将message作为content参数传递
+                notify_signal("signal", "", 0, message)
                 logger.info("✅ 钉钉通知已发送")
             except Exception as ding_e:
                 logger.warning(f"❌ 发送钉钉通知失败: {ding_e}")

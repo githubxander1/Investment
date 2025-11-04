@@ -330,39 +330,51 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", use_proxy=False, max_retr
         try:
             import random
             import time
+            from datetime import datetime
 
-            # 反爬措施
+            # 增强反爬措施
             headers = {
-            'User-Agent': random.choice([
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            ]),
-            'Referer': 'http://quote.eastmoney.com/',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2'
-        }
+                'User-Agent': random.choice([
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0',
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                ]),
+                'Referer': f'http://quote.eastmoney.com/sh{secid.split(".")[1]}.html',
+                'Host': '16.push2.eastmoney.com',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
+                'Accept-Encoding': 'gzip, deflate',
+                'Connection': 'keep-alive',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
 
-            # 随机延迟1-3秒
-            time.sleep(random.uniform(1, 3))
+            # 更智能的请求延迟控制
+            delay = random.uniform(2, 5) * (attempt + 1)  # 随重试次数增加延迟
+            logger.info(f"等待 {delay:.1f} 秒后请求 (尝试 {attempt + 1}/{max_retries})")
+            time.sleep(delay)
 
-            req = requests.get(url, headers=headers)
-
+            # 改进的代理管理
+            proxies = None
             if use_proxy:
-                proxies = get_proxies()
-                proxy = random.choice(proxies)
-                proxy_handler = requests.ProxyHandler(proxy)
-                opener = requests.build_opener(proxy_handler)
-                response = opener.open(req, timeout=10)
-            else:
-                response = requests.urlopen(req, timeout=10)
+                proxy_list = get_proxies()
+                if proxy_list:
+                    proxies = random.choice(proxy_list)
+                    logger.info(f"使用代理: {proxies}")
 
-            with response as res:
+            # 添加请求超时和重试机制
+            try:
+                response = requests.get(url, headers=headers, proxies=proxies, timeout=15)
+            except requests.exceptions.Timeout:
+                logger.warning(f"请求超时，将在 {delay:.1f} 秒后重试")
+                time.sleep(delay)
+                response = requests.get(url, headers=headers, proxies=proxies, timeout=20)
+
+            if response.status_code == 200:
                 # 响应格式为 "data:{...}"，需去除前缀"data:"
-                data_str = response.readline().decode('utf-8').lstrip('data:')
+                data_str = response.text.lstrip('data:')
                 if not data_str:
-                    print("响应为空，未获取到数据")
-                    return pd.DataFrame()
+                    logger.error(f"响应为空，未获取到数据 (secid: {secid})")
+                    continue  # 直接重试
 
                 try:
                     import json
@@ -371,20 +383,25 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", use_proxy=False, max_retr
                         data_str = data_str[data_str.find('{'):]
 
                     data_dict = json.loads(data_str)
-                    print(f"原始数据预览: {data_str[:200]}...")  # 打印部分原始数据用于调试
+                    logger.debug(f"原始数据预览: {data_str[:200]}...")
+
+                    # 检查接口返回状态
+                    if data_dict.get('rc') != 0:
+                        logger.error(f"接口返回错误: rc={data_dict.get('rc')}, rt={data_dict.get('rt')}")
+                        continue  # 直接重试
 
                     # 获取分时数据路径
-                    if 'data' not in data_dict:
-                        print("响应中缺少data字段")
-                        return pd.DataFrame()
+                    if 'data' not in data_dict or data_dict['data'] is None:
+                        logger.error(f"响应中缺少data字段或data为null (secid: {secid})")
+                        continue  # 直接重试
 
                     data_content = data_dict['data']
-                    preprice = data_content.get('prePrice', 0)  # 注意字段名是prePrice不是preprice
+                    preprice = data_content.get('prePrice', 0)
                     details = data_content.get('details', [])
 
                     if not details:
-                        print("分时数据为空")
-                        return pd.DataFrame()
+                        logger.warning("分时数据为空")
+                        continue  # 直接重试
 
                     # 解析所有分时数据
                     data = []
@@ -392,15 +409,22 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", use_proxy=False, max_retr
                         try:
                             items = detail.split(',')
                             if len(items) >= 5:
-                                time = items[0]
+                                time_str = items[0]
                                 price = float(items[1])
                                 volume = int(items[2])
                                 operation = items[3]
                                 trade_type = items[4]
 
+                                # 转换时间格式为标准时间
+                                try:
+                                    time_obj = datetime.strptime(time_str, "%H:%M")
+                                    time_str = time_obj.strftime("%H:%M:%S")
+                                except:
+                                    pass
+
                                 data.append({
                                     "昨收价": preprice,
-                                    "时间": time,
+                                    "时间": time_str,
                                     "最新价": price,
                                     "涨跌幅(%)": (price - preprice) / preprice * 100 if preprice else 0,
                                     "成交量(手)": volume,
@@ -408,33 +432,39 @@ def get_eastmoney_fenshi_with_pandas(secid="1.688103", use_proxy=False, max_retr
                                     "交易类型": trade_type
                                 })
                         except Exception as e:
-                            print(f"解析分时数据行出错: {e}, 行内容: {detail}")
+                            logger.warning(f"解析分时数据行出错: {e}, 行内容: {detail}")
                             continue
 
-                    print(f"成功解析 {len(data)} 条分时数据")
+                    logger.info(f"成功解析 {len(data)} 条分时数据")
                     df = pd.DataFrame(data)
-                    df.to_csv(f'{secid}分时.csv', index=False)
+
+                    # 数据有效性检查
+                    if len(df) < 10:  # 如果数据量太少，可能是异常情况
+                        logger.warning(f"获取数据量不足 ({len(df)} 条)，可能存在问题")
+                        continue  # 直接重试
+
                     return df
                 except Exception as e:
-                    print(f"数据解析失败: {e}")
-                    return pd.DataFrame()
-        except HTTPError as e:
-            print(f"请求错误（状态码：{e.code}）：{e.reason}")
-            return pd.DataFrame()
-        except URLError as e:
-                error_msg = f"URL错误或网络问题：{e.reason}\n股票: {secid}\n尝试次数: {attempt + 1}/{max_retries}"
-                print(error_msg)
+                    logger.error(f"数据解析失败: {e}")
+                    continue  # 直接重试
 
-                if attempt < max_retries - 1:
-                    retry_delay = random.uniform(2, 5)
-                    print(f"将在 {retry_delay:.1f} 秒后重试 ({attempt + 1}/{max_retries})")
-                    time.sleep(retry_delay)
-                    continue
+            else:
+                logger.error(f"请求失败，状态码: {response.status_code}")
+                continue  # 直接重试
 
-                if enable_alert:
-                    send_alert(error_msg)
-                return pd.DataFrame()
+        except requests.exceptions.RequestException as e:
+            logger.error(f"请求异常: {str(e)}")
+            if attempt < max_retries - 1:
+                continue  # 直接重试
 
+        except Exception as e:
+            logger.error(f"未知异常: {str(e)}")
+            if attempt < max_retries - 1:
+                continue  # 直接重试
+
+    # 所有重试都失败后
+    if enable_alert:
+        send_alert(f"获取分时数据失败 (secid: {secid}) 已重试 {max_retries} 次")
     return pd.DataFrame()
 
 
