@@ -33,10 +33,10 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # 调整导入路径
-from T0.utils.logger import setup_logger
-from T0.utils.tools import notify_signal
-from T0.utils.get_intrade_data import fetch_intraday_data
-from T0.utils.detact_signals import detect_trading_signals
+from Investment.T0.utils.logger import setup_logger
+from Investment.T0.utils.tools import notify_signal
+from Investment.T0.utils.get_intrade_data import fetch_intraday_data
+from Investment.T0.utils.detact_signals import detect_trading_signals
 
 logger = setup_logger('price_volume_deviation')
 

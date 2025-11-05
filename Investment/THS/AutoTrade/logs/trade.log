@@ -1094,3 +1094,104 @@ uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selecto
 [32m2025-11-03 13:55:04 - INFO - 买入 恒立液压 200股 False 最新:[0m
 [32m2025-11-03 14:00:21 - INFO - 全部卖出[0m
 [32m2025-11-03 14:02:06 - INFO - 卖出 恒瑞医药 300股 False 最新:[0m
+[32m2025-11-05 09:28:56 - INFO - 目标投资金额: 27804.78 * 34.0% = 9453.6252[0m
+[32m2025-11-05 09:28:56 - INFO - 计算目标股数: 9453.6252 / 10.75 = 879[0m
+[32m2025-11-05 09:28:56 - INFO - 计算卖出时，需要持仓股数: 800[0m
+[32m2025-11-05 09:28:56 - INFO - 按比例计算卖出: 当前持有1900股, 新比例34.0%, 目标持仓800股, 卖出1100股[0m
+[31m2025-11-05 09:29:26 - ERROR - 卖出 良信股份 1100 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 423, in operate_stock
+    self.trading_page.input_volume(int(volume))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 297, in input_volume
+    volumn_input.send_keys(volume)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': 'wait'}
+[32m2025-11-05 09:32:57 - INFO - 目标投资金额: 27709.78 * 34.0% = 9421.3252[0m
+[32m2025-11-05 09:32:57 - INFO - 计算目标股数: 9421.3252 / 10.7 = 880[0m
+[32m2025-11-05 09:32:57 - INFO - 计算卖出时，需要持仓股数: 800[0m
+[32m2025-11-05 09:32:57 - INFO - 按比例计算卖出: 当前持有1900股, 新比例34.0%, 目标持仓800股, 卖出1100股[0m
+[32m2025-11-05 09:38:41 - INFO - 目标投资金额: 27880.78 * 34.0% = 9479.4652[0m
+[32m2025-11-05 09:38:41 - INFO - 计算目标股数: 9479.4652 / 10.79 = 878[0m
+[32m2025-11-05 09:38:41 - INFO - 计算卖出时，需要持仓股数: 800[0m
+[32m2025-11-05 09:38:41 - INFO - 按比例计算卖出: 当前持有1900股, 新比例34.0%, 目标持仓800股, 卖出1100股[0m
+[32m2025-11-05 09:38:54 - INFO - 卖出 良信股份 1100股 False 最新:[0m
+[32m2025-11-05 09:45:54 - INFO - 目标投资金额: 17686.35 * 34.0% = 6013.3589999999995[0m
+[32m2025-11-05 09:45:54 - INFO - 计算股数: 6013.3589999999995 / 10.73 = 560[0m
+[32m2025-11-05 09:45:54 - INFO - 计算买入股数: 500[0m
+[32m2025-11-05 09:46:45 - INFO - 目标投资金额: 27787.43 * 34.0% = 9447.7262[0m
+[32m2025-11-05 09:46:45 - INFO - 计算股数: 9447.7262 / 10.75 = 878[0m
+[32m2025-11-05 09:46:45 - INFO - 计算买入股数: 800[0m
+[32m2025-11-05 11:19:10 - INFO - 目标投资金额: 27787.43 * 32.0% = 8891.9776[0m
+[32m2025-11-05 11:19:10 - INFO - 计算股数: 8891.9776 / 17.5 = 508[0m
+[32m2025-11-05 11:19:10 - INFO - 计算买入股数: 500[0m
+[31m2025-11-05 11:19:41 - ERROR - 买入 天奇股份 500 股失败: {'code': -32002, 'data': "Selector [text='股票代码/简拼']", 'method': 'wait'}[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 412, in operate_stock
+    self.trading_page.search_stock(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\page_trading.py", line 242, in search_stock
+    auto_search.send_keys(stock_name)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 347, in send_keys
+    return self.set_text(text)
+           ~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 350, in set_text
+    self.must_wait(timeout=timeout)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
+    raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
+uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [text='股票代码/简拼']", 'method': 'wait'}
+[32m2025-11-05 14:24:00 - INFO - 目标投资金额: 27831.49 * 33.0% = 9184.3917[0m
+[32m2025-11-05 14:24:00 - INFO - 计算股数: 9184.3917 / 31.08 = 295[0m
+[32m2025-11-05 14:24:00 - INFO - 计算买入股数: 200[0m
+[32m2025-11-05 14:24:17 - INFO - 买入 百傲化学 200股 False 最新:[0m
+[32m2025-11-05 14:25:19 - INFO - 目标投资金额: 27818.76 * 33.0% = 9180.1908[0m
+[32m2025-11-05 14:25:19 - INFO - 计算股数: 9180.1908 / 31.2 = 294[0m
+[32m2025-11-05 14:25:19 - INFO - 计算买入股数: 200[0m
+[32m2025-11-05 14:25:34 - INFO - 买入 百傲化学 200股 False 最新:[0m
+[33m2025-11-05 14:26:28 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:27:30 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:28:28 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:29:19 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:30:10 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:31:09 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:31:54 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:32:57 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:33:47 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:34:40 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:35:40 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:36:40 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:37:28 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:38:19 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:39:15 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:40:05 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:41:05 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:42:05 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:43:00 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:43:47 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:44:45 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:45:34 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:46:27 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:47:23 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:48:08 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:49:02 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:49:51 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:50:44 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:51:36 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:52:39 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:53:32 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:54:33 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:55:32 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-05 14:56:27 - WARNING - 无可用数量: available_shares=0[0m
+[32m2025-11-05 14:59:15 - INFO - 目标投资金额: 17686.35 * 32.0% = 5659.632[0m
+[32m2025-11-05 14:59:15 - INFO - 计算股数: 5659.632 / 17.4 = 325[0m
+[32m2025-11-05 14:59:15 - INFO - 计算买入股数: 300[0m

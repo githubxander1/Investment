@@ -610,3 +610,27 @@
 [33m2025-11-04 09:53:47 - WARNING - 交易通知: 结束：获取账户表头信息失败: [WinError 10054] 远程主机强迫关闭了一个现有的连接。[0m
 [32m2025-11-04 09:53:47 - INFO - 检测到交易失败通知，暂停30秒...[0m
 [33m2025-11-04 09:54:32 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: '持仓占比'[0m
+[33m2025-11-05 09:29:26 - WARNING - 交易通知: 卖出 良信股份 1100 股失败: {'code': -32002, 'data': "Selector [childOrSibling=['child'], childOrSiblingSelector=[{'mask': 8388608, 'childOrSibling': [], 'childOrSiblingSelector': [], 'index': 0}], resourceId='com.hexin.plat.android:id/stockvolume']", 'method': '...[0m
+[32m2025-11-05 09:29:26 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-05 09:38:54 - WARNING - 交易通知: 卖出 良信股份 1100股 False 最新:[0m
+[33m2025-11-05 09:45:54 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097152, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/qs_name_text'},))[0m
+[33m2025-11-05 09:45:57 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: (-32001, 'androidx.test.uiautomator.UiObjectNotFoundException', ({'mask': 2097153, 'childOrSibling': [], 'childOrSiblingSelector': [], 'resourceId': 'com.hexin.plat.android:id/menu_holdings_text', 'text': '持仓'},))[0m
+[33m2025-11-05 10:36:29 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-05 10:38:04 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-05 10:39:36 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-05 11:19:41 - WARNING - 交易通知: 买入 天奇股份 500 股失败: {'code': -32002, 'data': "Selector [text='股票代码/简拼']", 'method': 'wait'}[0m
+[32m2025-11-05 11:19:41 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-05 11:21:22 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-05 14:24:17 - WARNING - 交易通知: 买入 百傲化学 200股 False 最新:[0m
+[33m2025-11-05 14:25:34 - WARNING - 交易通知: 买入 百傲化学 200股 False 最新:[0m
+[33m2025-11-05 14:56:48 - WARNING - 交易通知: 未找到 1天期，已滑动到底部[0m
+[33m2025-11-05 14:56:48 - WARNING - 交易通知: 国债逆回购任务失败: 未找到目标产品[0m
+[32m2025-11-05 14:56:48 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-05 14:57:18 - WARNING - 交易通知: 国债逆回购交易执行失败: 未找到目标产品[0m
+[32m2025-11-05 14:57:18 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-05 14:58:45 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-05 14:59:39 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-05 15:00:04 - WARNING - 交易通知: 国债逆回购任务异常终止: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[32m2025-11-05 15:00:04 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-05 15:00:35 - WARNING - 交易通知: 国债逆回购交易执行失败: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[32m2025-11-05 15:00:35 - INFO - 检测到交易失败通知，暂停30秒...[0m

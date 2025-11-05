@@ -467,6 +467,7 @@ def operate_result(max_retries=3):
                         account_updated = True
                     else:
                         logger.warning("⚠️ 账户持仓信息更新失败")
+                        time.sleep(30)  # 暂停30秒以便用户处理
 
                 # 调用交易逻辑
                 status, info = trader.operate_stock(

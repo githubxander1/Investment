@@ -1,3 +1,4 @@
+from pprint import pprint
 
 import pandas as pd
 import numpy as np
@@ -16,7 +17,7 @@ logger = setup_logger('get_intrade_data')
 
 def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFrame]:
     """
-    获取分时数据（优先从缓存读取，缓存不存在时从API获取）
+    获取分时数据
 
     Args:
         stock_code: 股票代码
@@ -35,11 +36,19 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
         logger.info(f"尝试使用akshare获取真实数据")
 
         # 使用akshare的stock_zh_a_minute接口获取分时数据
-        # df = ak.stock_zh_a_minute(symbol=market_stock_code, period="1", adjust="qfq")
+        df = ak.stock_zh_a_minute(symbol=f'sh{stock_code}', period="1", adjust="qfq")
+        if df is not None and not df.empty:
+            logger.info(f"✅ stock_zh_a_minute获取akshare数据成功，数据行数: {len(df)}")
+            logger.info(f"数据列: {', '.join(df.columns.tolist())}")
+            logger.info(f"数据前5行:\n{df.head()}")
+            logger.info(f"数据后5行:\n{df.tail()}")
+            logger.info(f"数据行数: {len(df)}")
+            logger.info()
+
         df = ak.stock_zh_a_hist_min_em(symbol=stock_code, start_date=f'{trade_date} 09:31:00',
                                        end_date=f'{trade_date} 15:00:00', period="1", adjust="qfq")
         if df is not None and not df.empty:
-            logger.info(f"✅ 成功获取akshare数据，数据行数: {len(df)}")
+            logger.info(f"✅ stock_zh_a_hist_min_em成功获取akshare数据，数据行数: {len(df)}")
             logger.info(f"原始数据列名: {df.columns.tolist()}")
             logger.info(f"原始数据前5行:\n{df.head()}")
 
@@ -118,3 +127,17 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
 
     logger.error(f"❌ 无法获取分时数据")
     return None
+
+# pprint(fetch_intraday_data('600030', '2025-11-05'))
+
+stock_code = 'sh600030'
+trade_date = '2025-11-05'
+# df = ak.stock_zh_a_hist_min_em(symbol=stock_code, start_date=f'{trade_date} 09:31:00',
+#                                        end_date=f'{trade_date} 15:00:00', period="1", adjust="qfq")
+df = ak.stock_zh_a_minute(symbol=stock_code, period="1", adjust="qfq")
+if df is not None and not df.empty:
+    logger.info(f"✅ 成功获取akshare数据，数据行数: {len(df)}")
+    logger.info(f"原始数据列名: {df.columns.tolist()}")
+    logger.info(f"原始数据前5行:\n{df.head()}")
+    df.to_csv(f'{stock_code}.csv', index=False)
+# print(df)

@@ -426,7 +426,7 @@ class CombinationHoldingProcessor:
         account_holdings = account_holdings_df.copy() if not account_holdings_df.empty else pd.DataFrame()
         
         # 需要排除的股票名称
-        excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF"]
+        excluded_holdings = ["工商银行", "中国电信", "可转债ETF", "国债政金债ETF","良信股份"]
 
         # 标准化股票名称
         # from utils.format_data import standardize_dataframe_stock_names
@@ -550,7 +550,7 @@ class CombinationHoldingProcessor:
             if '持仓占比' in merged_data.columns:
                 to_sell_candidates2 = merged_data[
                     (merged_data['新比例%'] < merged_data['持仓占比']) &
-                    ((merged_data['持仓占比'] - merged_data['新比例%']) >= 10)
+                    ((merged_data['持仓占比'] - merged_data['新比例%']) >= 20)
                     ]
                 # 确保新比例列没有NaN值
                 to_sell_candidates2 = to_sell_candidates2[to_sell_candidates2['新比例%'].notna()]
@@ -625,7 +625,7 @@ class CombinationHoldingProcessor:
                 if not merged_data_buy.empty:
                     to_buy_candidates2 = merged_data_buy[
                         (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
-                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 10)
+                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 20)
                         ]
                     # 确保新比例列没有NaN值
                     to_buy_candidates2 = to_buy_candidates2[to_buy_candidates2['新比例%'].notna()]

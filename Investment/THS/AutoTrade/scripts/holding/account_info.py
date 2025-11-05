@@ -880,6 +880,7 @@ class AccountInfo:
                 error_msg = f"❌ {account_name} 账户切换失败"
                 logger.warning(error_msg)
                 send_notification(error_msg)
+                time.sleep(30)  # 暂停30秒以便用户处理
                 return False
 
             # 提取该账户的数据
@@ -914,6 +915,7 @@ class AccountInfo:
             error_msg = f"获取 {account_name} 账户数据时出错: {e}"
             logger.error(error_msg, exc_info=True)
             send_notification(error_msg)
+            time.sleep(30)  # 暂停30秒以便用户处理
             return False
 
         logger.info(f"完成：✅ {account_name} 账户持仓信息已更新，持仓数据:\n{stocks_df}")

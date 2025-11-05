@@ -89,9 +89,13 @@ class T0Monitor:
             
             # 清空信号队列和已执行交易记录
             self.signal_queue.clear()
+            logger.info("清空信号队列")
             self.buy_signals.clear()
+            logger.info("清空买入信号队列")
             self.sell_signals.clear()
+            logger.info("清空卖出信号队列")
             self.executed_trades.clear()
+            logger.info("清空已执行交易记录")
             
             # 重置信号检测器的状态
             for stock_code, detector in self.signal_detectors.items():
@@ -103,8 +107,10 @@ class T0Monitor:
                     
             # 清空已发送通知记录
             self.sent_notifications.clear()
+            logger.info("清空已发送通知记录")
             
             self.reset_daily_flag = False
+            logger.info("完成每日重置")
     
     def process_signals(self):
         """处理检测到的信号"""
@@ -305,12 +311,16 @@ class T0Monitor:
                 self.reset_daily_state()
                 
                 # 检查是否为交易时间
-                if not self.is_trading_time():
-                    # 非交易时间，每分钟检查一次
-                    time.sleep(60)
-                    continue
+                # if not self.is_trading_time():
+                #     # 非交易时间，每分钟检查一次
+                #     time.sleep(60)
+                #     logger.info("非交易时间，等待下一次检查")
+                #     continue
+                # else:
+                #     logger.info("当前是交易时间")
                 
                 # 处理信号
+                logger.info("处理信号...")
                 self.process_signals()
                 
                 # 交易时间内，每30秒检查一次信号
