@@ -30,12 +30,13 @@ import os
 import sys
 
 # 添加项目根目录到Python路径
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, project_root)
 
-# 调整导入路径
+# 尝试导入模块，如果失败则使用本地路径
+from Investment.T0.utils.intraday_data_provider import IntradayDataProvider
 from Investment.T0.utils.logger import setup_logger
 from Investment.T0.utils.tools import notify_signal
-from Investment.T0.utils.get_intrade_data import fetch_intraday_data
 from Investment.T0.utils.detact_signals import detect_trading_signals
 
 logger = setup_logger('price_volume_deviation')
@@ -70,6 +71,10 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         - 'Buy_Signal': 买入信号（布尔值）
         - 'Sell_Signal': 卖出信号（布尔值）
     """
+    if df is None or df.empty:
+        logger.warning("输入数据为空，无法计算指标")
+        return df
+    
     df = df.copy()
     
     # 确保数据类型正确
@@ -87,9 +92,9 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     # 确保均价数据类型正确
     df['均价'] = pd.to_numeric(df['均价'], errors='coerce')
     
-    # 检查是否有有效的数据
-    if df[['收盘', '均价']].isnull().all().all():
-        logger.warning("收盘价和均价数据全部为空，无法计算指标")
+    # 检查数据是否全部为空
+    if df[['收盘', '均价', '成交量']].isnull().all().all():
+        logger.warning("关键数据列全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -106,6 +111,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     # 处理NaN值，使用前向填充 (修复pandas FutureWarning)
     df['收盘'] = df['收盘'].ffill()
     df['均价'] = df['均价'].ffill()
+    df['成交量'] = df['成交量'].ffill()
     
     # 再次检查填充后是否还有有效数据
     if df[['收盘', '均价']].isnull().all().all():
@@ -125,6 +131,31 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     
     # 检查是否有无穷大值
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
+    
+    # 处理均价为0的情况
+    df.loc[df['均价'] == 0, '均价'] = np.nan
+    
+    # 再次填充NaN值
+    df['收盘'] = df['收盘'].ffill().bfill()
+    df['均价'] = df['均价'].ffill().bfill()
+    df['成交量'] = df['成交量'].ffill().bfill()
+    
+    # 检查是否有有效的数据对
+    valid_data = df[['收盘', '均价']].dropna()
+    if valid_data.empty:
+        logger.warning("没有有效的收盘价和均价数据对，无法计算指标")
+        # 添加空的指标列
+        df['Price_MA_Diff'] = np.nan
+        df['Price_MA_Ratio'] = np.nan
+        df['Price_MA_Ratio_Amplified'] = np.nan
+        df['Volume_MA'] = np.nan
+        df['Volume_Ratio'] = np.nan
+        df['Volume_Increase'] = False
+        df['Volume_Decrease'] = False
+        df['Buy_Signal'] = False
+        df['Sell_Signal'] = False
+        df['Price_Change_Rate'] = 0.0
+        return df
     
     # 计算价格与均价的差值和比率（偏离度）{反映当前价与均价的偏离程度}
     df['Price_MA_Diff'] = df['收盘'] - df['均价']
@@ -165,7 +196,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     
     # 添加涨跌幅计算
     # 涨跌幅:(CLOSE-REF(CLOSE,1))/REF(CLOSE,1)*100,COLORRED,LINETHICK1;{红色细线显示涨跌幅（百分比）}
-    df['Price_Change_Rate'] = df['收盘'].pct_change() * 100
+    df['Price_Change_Rate'] = df['收盘'].pct_change(fill_method=None) * 100
     df['Price_Change_Rate'] = df['Price_Change_Rate'].fillna(0)
     
     # 添加详细日志，显示各列的统计信息
@@ -219,23 +250,24 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
             # trade_date = yesterday.strftime('%Y-%m-%d')
             trade_date = datetime.now().strftime('%Y-%m-%d')
         
-        # 统一日期格式，确保与其他函数保持一致
-        try:
-            trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
-            formatted_date = trade_date_obj.strftime('%Y-%m-%d')
-            date_for_data = trade_date  # 保持原始格式用于数据获取
-        except ValueError:
-            try:
-                trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
-                formatted_date = trade_date
-                date_for_data = trade_date_obj.strftime('%Y%m%d')
-            except ValueError:
-                print(f"错误: 无法解析日期格式: {trade_date}")
-                return None
+        # # 统一日期格式，确保与其他函数保持一致
+        # try:
+        #     trade_date_obj = datetime.strptime(trade_date, '%Y%m%d')
+        #     formatted_date = trade_date_obj.strftime('%Y-%m-%d')
+        #     date_for_data = trade_date  # 保持原始格式用于数据获取
+        # except ValueError:
+        #     try:
+        #         trade_date_obj = datetime.strptime(trade_date, '%Y-%m-%d')
+        #         formatted_date = trade_date
+        #         date_for_data = trade_date_obj.strftime('%Y%m%d')
+        #     except ValueError:
+        #         print(f"错误: 无法解析日期格式: {trade_date}")
+        #         return None
         
         # 获取数据
         if df is None:
-            df = fetch_intraday_data(stock_code, date_for_data)
+            provider = IntradayDataProvider()
+            df = provider.get_intraday_data(stock_code, trade_date)
         if df is None or df.empty:
             return None
         
@@ -257,7 +289,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         
         # 创建图形和子图
         fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(16, 12), gridspec_kw={'height_ratios': [3, 1, 1]})
-        fig.suptitle(f'{stock_code} 价均量策略图 ({formatted_date})', fontsize=16)
+        fig.suptitle(f'{stock_code} 价均量策略图 ({trade_date})', fontsize=16)
         
         # 启用交互模式
         plt.ion()
@@ -366,8 +398,6 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
         plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
         
-        # 为了完全消除中间空白区域，我们需要创建一个不连续的x轴
-        # 这个方法使用虚拟的时间戳，将下午的数据紧接在上午数据之后显示
         
         # 创建一个新的虚拟时间索引，让下午数据紧接在上午数据之后
         # 首先，创建一个副本避免修改原始数据
@@ -395,7 +425,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
             ax.clear()
         
         # 重新设置标题和标签
-        fig.suptitle(f'{stock_code} 价均量策略图 ({formatted_date})', fontsize=16)
+        fig.suptitle(f'{stock_code} 价均量策略图 ({trade_date})', fontsize=16)
         
         # 绘制价格和均价
         if not morning_data.empty:
@@ -624,7 +654,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         # 保存图表
         output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
         os.makedirs(output_dir, exist_ok=True)
-        chart_path = os.path.join(output_dir, f'{stock_code}_price_volume_deviation_{formatted_date.replace("-", "")}.png')
+        chart_path = os.path.join(output_dir, f'{stock_code}_price_volume_deviation_{trade_date.replace("-", "")}.png')
         plt.savefig(chart_path, dpi=300, bbox_inches='tight')
         
         # 显示图表窗口（阻塞模式，直到用户关闭窗口）
@@ -653,15 +683,18 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         (数据框, 信号字典) 或 None
     """
     try:
-        # 时间处理 - 与系统其他部分保持一致，使用'%Y%m%d'格式
+        # 时间处理 - 与系统其他部分保持一致，使用'%Y-%m-%d'格式
         if trade_date is None:
             # yesterday = datetime.now() - timedelta(days=1)
             # trade_date = yesterday.strftime('%Y%m%d')
 
-            trade_date = datetime.now().strftime('%Y%m%d')
+            trade_date = datetime.now().strftime('%Y-%m-%d')
 
         # 获取数据
-        df = fetch_intraday_data(stock_code, trade_date)
+        provider = IntradayDataProvider()
+        df = provider.get_intraday_data(stock_code, trade_date)
+        logger.info(f'分时数据前五行：\n{df.head(5)}\n后五行:\n{df.tail(5)}')
+
         if df is None or df.empty:
             return None
         
@@ -673,9 +706,11 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         
         # 计算指标
         df_with_indicators = calculate_price_volume_deviation(df)
+        # print(df_with_indicators)
         
-        # 检测信号，传入股票代码
+        # 检测收集信号，传入股票代码
         signals = detect_trading_signals(df_with_indicators, stock_code)
+        # print(signals)
         
         return df_with_indicators, signals
         
@@ -685,22 +720,18 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         traceback.print_exc()
         return None
 
+def indicator_main():
+    # 整合函数
+    stock_code = "002415"
+    # trade_date = "2025-11-06"
+    trade_date = datetime.now().strftime('%Y-%m-%d')
+    result = analyze_strategy(stock_code, trade_date)
+    if result is not None:
+        df, signals = result
+        plot_strategy_chart(stock_code, trade_date, df)
+        return df, signals
+    else:
+        print("没有数据或分析失败")
 
 if __name__ == "__main__":
-    # 简化的测试代码，直接调用可视化函数
-    stock_code = "600030"
-    try:
-        # 尝试从CSV文件加载数据
-        df = pd.read_csv("../../../600030分时数据.csv", index_col=0, parse_dates=True)
-        print(f"成功从CSV加载数据，共{len(df)}条记录")
-        
-        # 计算指标
-        df_with_indicators = calculate_price_volume_deviation(df)
-        
-        # 生成买卖信号
-        df_with_signals = generate_trading_signals(df_with_indicators)
-        
-        # 可视化
-        visualize_strategy(stock_code, df_with_signals)
-    except Exception as e:
-        print(f"运行失败: {e}")
+    indicator_main()

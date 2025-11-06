@@ -1,56 +1,56 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from datetime import datetime, timedelta
-from typing import Optional, Tuple, Dict, List
-import akshare as ak
+from datetime import datetime
 import os
 import sys
 
-from Investment.T0.utils.tools import notify_signal
-from Investment.THS.ths_trade.utils.logger import setup_logger
+# 添加项目根目录到Python路径
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
-logger = setup_logger(__name__)
+# 尝试导入模块
+try:
+    from Investment.T0.utils.tools import notify_signal
+except ImportError:
+    try:
+        # 尝试相对导入
+        sys.path.insert(0, os.path.join(project_root, "Investment", "T0"))
+        from utils.tools import notify_signal
+    except ImportError:
+        # 最后尝试使用绝对路径导入
+        sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+        from tools import notify_signal
 
-def detect_trading_signals(df: pd.DataFrame, stock_code: str = '') -> Dict[str, List[Tuple[datetime, float]]]:
+
+def detect_trading_signals(df: pd.DataFrame, stock_code: str = "") -> dict:
     """
     检测交易信号
-
+    
     Args:
-        df: 包含指标的DataFrame
+        df: 包含交易信号的数据框
         stock_code: 股票代码
-
+        
     Returns:
-        信号字典
+        信号字典，包含买入和卖出信号列表
     """
-    signals = {
-        'buy_signals': [],
-        'sell_signals': []
+    buy_signals = []
+    sell_signals = []
+    
+    if df is not None and not df.empty:
+        # 检查是否有Buy_Signal列
+        if 'Buy_Signal' in df.columns:
+            buy_signal_data = df[df['Buy_Signal']]
+            for index, row in buy_signal_data.iterrows():
+                buy_signals.append((index, row['收盘']))
+                
+        # 检查是否有Sell_Signal列
+        if 'Sell_Signal' in df.columns:
+            sell_signal_data = df[df['Sell_Signal']]
+            for index, row in sell_signal_data.iterrows():
+                sell_signals.append((index, row['收盘']))
+    
+    # 返回信号字典
+    return {
+        'buy_signals': buy_signals,
+        'sell_signals': sell_signals
     }
-
-    # 检测买入信号
-    buy_signals = df[df['Buy_Signal']]
-    for idx, row in buy_signals.iterrows():
-        if isinstance(idx, str):
-            signal_time = pd.to_datetime(idx)
-        else:
-            signal_time = idx
-        signals['buy_signals'].append((signal_time, row['收盘']))
-        # 发送买入信号通知
-        # 参数顺序: signal_type, stock_code, price, time_str
-        notify_signal('buy', stock_code, row['收盘'], signal_time.strftime('%Y-%m-%d %H:%M:%S'))
-
-    # 检测卖出信号
-    sell_signals = df[df['Sell_Signal']]
-    for idx, row in sell_signals.iterrows():
-        if isinstance(idx, str):
-            signal_time = pd.to_datetime(idx)
-        else:
-            signal_time = idx
-        signals['sell_signals'].append((signal_time, row['收盘']))
-        # 发送卖出信号通知
-        # 参数顺序: signal_type, stock_code, price, time_str
-        notify_signal('sell', stock_code, row['收盘'], signal_time.strftime('%Y-%m-%d %H:%M:%S'))
-
-    return signals

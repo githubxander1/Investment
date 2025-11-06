@@ -634,3 +634,15 @@
 [32m2025-11-05 15:00:04 - INFO - 检测到交易失败通知，暂停30秒...[0m
 [33m2025-11-05 15:00:35 - WARNING - 交易通知: 国债逆回购交易执行失败: 操作失败: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
 [32m2025-11-05 15:00:35 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-06 09:25:03 - WARNING - 交易通知: 📈【嘉实物美消费REIT】(508011) 收盘价上穿20日均线，建议关注买入机会！[0m
+[33m2025-11-06 09:58:35 - WARNING - 交易通知: 未找到确认按钮[0m
+[33m2025-11-06 09:58:35 - WARNING - 交易通知: 买入 章源钨业 600股 False 设置[0m
+[33m2025-11-06 10:00:19 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-06 10:01:13 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-06 10:02:11 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-06 10:27:38 - WARNING - 交易通知: 卖出 天奇股份 500股 False 最新:[0m
+[33m2025-11-06 10:28:35 - WARNING - 交易通知: 买入 杭氧股份 300股 False 最新:[0m
+[33m2025-11-06 13:41:25 - WARNING - 交易通知: 卖出 百傲化学 400股 False 最新:[0m
+[33m2025-11-06 13:57:43 - WARNING - 交易通知: 买入 东方钽业 300股 False 最新:[0m
+[33m2025-11-06 14:56:55 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
+[32m2025-11-06 14:56:55 - INFO - 检测到交易失败通知，暂停30秒...[0m

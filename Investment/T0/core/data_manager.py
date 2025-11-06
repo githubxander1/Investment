@@ -547,7 +547,7 @@ if __name__ == '__main__':
     dm = DataManager()
     
     # 从缓存导入数据
-    cache_dir = '../cache/fenshi_data'
+    cache_dir = '../fenshi_data'
     results = dm.batch_import_from_cache(cache_dir, stock_codes=['000333', '600030', '002415'])
     print(f"\n导入结果: {results}")
     

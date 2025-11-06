@@ -233,7 +233,7 @@ from core import DataManager
 dm = DataManager()
 
 # 批量导入CSV数据
-cache_dir = 'cache/fenshi_data'
+cache_dir = 'fenshi_data'
 stock_codes = ['000333', '600030', '002415']
 results = dm.batch_import_from_cache(cache_dir, stock_codes)
 

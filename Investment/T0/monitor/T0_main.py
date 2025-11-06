@@ -13,7 +13,7 @@ from Investment.T0.monitor.signal_detector import SignalDetector
 # from Investment.T0.monitor.trade_executor import TradeExecutor
 
 # 导入价格成交量偏离指标分析函数
-from Investment.T0.indicators.price_volume_deviation import analyze_strategy
+from Investment.T0.indicators.price_volume_deviation import analyze_strategy, indicator_main
 
 # 配置日志
 logging.basicConfig(
@@ -59,19 +59,19 @@ class T0Monitor:
         # 用于跟踪已发送的通知，避免重复发送
         self.sent_notifications = set()
         
-    def is_trading_time(self):
-        """判断是否为交易时间"""
-        now = datetime.now()
-        # 判断是否为工作日（周一到周五）
-        if now.weekday() >= 5:
-            return False
-            
-        # 判断是否在交易时间段内
-        current_time = now.time()
-        morning_trading = dt_time(9, 30) <= current_time <= dt_time(11, 30)
-        afternoon_trading = dt_time(13, 0) <= current_time <= dt_time(15, 0)
-        
-        return morning_trading or afternoon_trading
+    # def is_trading_time(self):
+    #     """判断是否为交易时间"""
+    #     now = datetime.now()
+    #     # 判断是否为工作日（周一到周五）
+    #     if now.weekday() >= 5:
+    #         return False
+    #
+    #     # 判断是否在交易时间段内
+    #     current_time = now.time()
+    #     morning_trading = dt_time(9, 30) <= current_time <= dt_time(11, 30)
+    #     afternoon_trading = dt_time(13, 0) <= current_time <= dt_time(15, 0)
+    #
+    #     return morning_trading or afternoon_trading
     
     def reset_daily_state(self):
         """重置每日状态"""
@@ -117,72 +117,11 @@ class T0Monitor:
         # 清空现有信号队列
         self.buy_signals.clear()
         self.sell_signals.clear()
-        
-        # 检测所有股票的信号（使用价格成交量偏离指标）
-        for stock_code in self.stock_codes:
-            try:
-                # 使用价格成交量偏离指标分析
-                result = analyze_strategy(stock_code)
-                
-                if result is not None:
-                    df_with_indicators, signals = result
-                    
-                    # 检查最新信号
-                    if not df_with_indicators.empty:
-                        latest_row = df_with_indicators.iloc[-1]
-                        
-                        # 检查买入信号
-                        if latest_row['Buy_Signal']:
-                            signal_key = f"{stock_code}_buy_{latest_row.name}"
-                            if signal_key not in self.sent_notifications:
-                                signal_info = {
-                                    'stock_code': stock_code,
-                                    'indicator': '价格成交量偏离指标',
-                                    'type': '买入',
-                                    'details': f"价格偏离度: {latest_row['Price_MA_Ratio']:.2f}%, 量比: {latest_row['Volume_Ratio']:.2f}",
-                                    'timestamp': datetime.now()
-                                }
-                                self.buy_signals.append(signal_info)
-                                self.sent_notifications.add(signal_key)
-                                logger.info(f"股票 {stock_code} 检测到买入信号")
-                        
-                        # 检查卖出信号
-                        if latest_row['Sell_Signal']:
-                            signal_key = f"{stock_code}_sell_{latest_row.name}"
-                            if signal_key not in self.sent_notifications:
-                                signal_info = {
-                                    'stock_code': stock_code,
-                                    'indicator': '价格成交量偏离指标',
-                                    'type': '卖出',
-                                    'details': f"价格偏离度: {latest_row['Price_MA_Ratio']:.2f}%, 量比: {latest_row['Volume_Ratio']:.2f}",
-                                    'timestamp': datetime.now()
-                                }
-                                self.sell_signals.append(signal_info)
-                                self.sent_notifications.add(signal_key)
-                                logger.info(f"股票 {stock_code} 检测到卖出信号")
-                    
-                    # 保存图表截图用于核对
-                    try:
-                        from Investment.T0.indicators.price_volume_deviation import plot_strategy_chart
-                        import threading
-                        
-                        def save_chart():
-                            chart_path = plot_strategy_chart(stock_code)
-                            if chart_path:
-                                logger.info(f"图表已保存至: {chart_path}")
-                            else:
-                                logger.warning(f"图表保存失败")
-                        
-                        # 在后台线程中保存图表，避免阻塞主程序
-                        chart_thread = threading.Thread(target=save_chart)
-                        chart_thread.daemon = True
-                        chart_thread.start()
-                    except Exception as e:
-                        logger.error(f"保存图表时出错: {e}")
-                
-            except Exception as e:
-                logger.error(f"处理股票 {stock_code} 信号时出错: {e}", exc_info=True)
-        
+
+        trade_date = datetime.now().strftime('%Y-%m-%d')
+
+        indicator_main()
+
         # 按时间戳排序
         self.buy_signals.sort(key=lambda x: x['timestamp'])
         self.sell_signals.sort(key=lambda x: x['timestamp'])

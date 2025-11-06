@@ -151,9 +151,9 @@ class StockDailyCrawler:
 if __name__ == "__main__":
     # 爬取美的集团（000333，深市）2024-01-01至2025-10-10的日线数据
     crawler = StockDailyCrawler(
-        stock_code="000333",  # 股票代码（无需加sz/sh，爬虫自动识别）
-        start_date="2025-10-09",  # 起始日期（可选，默认爬全部历史）
-        end_date="2025-10-10",  # 结束日期（可选，默认当前日期）
-        save_path="美的集团日线数据_2024-2025.csv"  # 保存路径
+        stock_code="600030",  # 股票代码（无需加sz/sh，爬虫自动识别）
+        start_date="2025-11-05",  # 起始日期（可选，默认爬全部历史）
+        end_date="2025-11-06",  # 结束日期（可选，默认当前日期）
+        save_path="中信证券日线数据_110506.csv"  # 保存路径
     )
     crawler.run()

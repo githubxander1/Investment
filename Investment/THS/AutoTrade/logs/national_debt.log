@@ -310,3 +310,5 @@ Traceback (most recent call last):
   File "C:\Users\HQ\AppData\Local\Programs\Python\Python313\Lib\site-packages\uiautomator2\_selector.py", line 343, in must_wait
     raise UiObjectNotFoundError({'code': -32002, 'data': str(self.selector), 'method': 'wait'})
 uiautomator2.exceptions.UiObjectNotFoundError: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}
+[32m2025-11-06 14:56:53 - INFO - ---------------------国债逆回购任务开始执行---------------------[0m
+[31m2025-11-06 14:56:55 - ERROR - 进入国债逆回购入口失败[0m
