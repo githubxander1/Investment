@@ -72,7 +72,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         - 'Sell_Signal': 卖出信号（布尔值）
     """
     if df is None or df.empty:
-        logger.warning("输入数据为空，无法计算指标")
+        logger.warning("[重复日志修复] 输入数据为空，无法计算指标")
         return df
     
     df = df.copy()
@@ -87,14 +87,14 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     if '均价' not in df.columns:
         # 如果没有均价列，使用成交额/成交量计算（考虑到VOL单位为手，乘以100转换为股）
         df['均价'] = df['成交额'] / (df['成交量'] * 100)
-        logger.info("使用成交额/成交量计算均价")
+        logger.info("[重复日志修复] 使用成交额/成交量计算均价")
     
     # 确保均价数据类型正确
     df['均价'] = pd.to_numeric(df['均价'], errors='coerce')
     
     # 检查数据是否全部为空
     if df[['收盘', '均价', '成交量']].isnull().all().all():
-        logger.warning("关键数据列全部为空，无法计算指标")
+        logger.warning("[重复日志修复] 关键数据列全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -115,7 +115,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     
     # 再次检查填充后是否还有有效数据
     if df[['收盘', '均价']].isnull().all().all():
-        logger.warning("填充后收盘价和均价数据仍然全部为空，无法计算指标")
+        logger.warning("[重复日志修复] 填充后收盘价和均价数据仍然全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -143,7 +143,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     # 检查是否有有效的数据对
     valid_data = df[['收盘', '均价']].dropna()
     if valid_data.empty:
-        logger.warning("没有有效的收盘价和均价数据对，无法计算指标")
+        logger.warning("[重复日志修复] 没有有效的收盘价和均价数据对，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -203,30 +203,31 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     valid_price_ma_ratio = df['Price_MA_Ratio'].dropna()
     valid_volume_ratio = df['Volume_Ratio'].dropna()
     
-    logger.info(f"价格成交量偏离策略：共检测到 {len(df[df['Buy_Signal']])} 个买入信号和 {len(df[df['Sell_Signal']])} 个卖出信号")
-    logger.info(f"Price_MA_Ratio统计信息：")
+    logger.info("[重复日志修复] 价格成交量偏离策略：共检测到 {} 个买入信号和 {} 个卖出信号".format(
+        len(df[df['Buy_Signal']]), len(df[df['Sell_Signal']])))
+    logger.info("[重复日志修复] Price_MA_Ratio统计信息：")
     if len(valid_price_ma_ratio) > 0:
-        logger.info(f"- 最大值: {valid_price_ma_ratio.max():.4f}%")
-        logger.info(f"- 最小值: {valid_price_ma_ratio.min():.4f}%")
-        logger.info(f"- 平均值: {valid_price_ma_ratio.mean():.4f}%")
+        logger.info("[重复日志修复] - 最大值: {:.4f}%".format(valid_price_ma_ratio.max()))
+        logger.info("[重复日志修复] - 最小值: {:.4f}%".format(valid_price_ma_ratio.min()))
+        logger.info("[重复日志修复] - 平均值: {:.4f}%".format(valid_price_ma_ratio.mean()))
     else:
-        logger.info("- 无有效数据")
+        logger.info("[重复日志修复] - 无有效数据")
         
-    logger.info(f"Volume_Ratio统计信息：")
+    logger.info("[重复日志修复] Volume_Ratio统计信息：")
     if len(valid_volume_ratio) > 0:
-        logger.info(f"- 最大值: {valid_volume_ratio.max():.4f}")
-        logger.info(f"- 最小值: {valid_volume_ratio.min():.4f}")
-        logger.info(f"- 平均值: {valid_volume_ratio.mean():.4f}")
+        logger.info("[重复日志修复] - 最大值: {:.4f}".format(valid_volume_ratio.max()))
+        logger.info("[重复日志修复] - 最小值: {:.4f}".format(valid_volume_ratio.min()))
+        logger.info("[重复日志修复] - 平均值: {:.4f}".format(valid_volume_ratio.mean()))
     else:
-        logger.info("- 无有效数据")
+        logger.info("[重复日志修复] - 无有效数据")
     
     # 显示前几行的详细数据用于调试
-    logger.info("\n前5行数据示例：")
+    logger.info("[重复日志修复] 前5行数据示例：")
     if not df.empty:
         # 选择关键列显示
         key_columns = ['收盘', '均价', 'Price_MA_Diff', 'Price_MA_Ratio', '成交量', 'Volume_MA', 'Volume_Ratio', 'Buy_Signal', 'Sell_Signal']
         display_columns = [col for col in key_columns if col in df.columns]
-        logger.info(f"\n{df[display_columns].head()}")
+        logger.info("\n{}".format(df[display_columns].head()))
     
     return df
 
@@ -693,7 +694,7 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         # 获取数据
         provider = IntradayDataProvider()
         df = provider.get_intraday_data(stock_code, trade_date)
-        logger.info(f'分时数据前五行：\n{df.head(5)}\n后五行:\n{df.tail(5)}')
+        logger.info('[重复日志修复] 分时数据前五行：\n{}\n后五行:\n{}'.format(df.head(5), df.tail(5)))
 
         if df is None or df.empty:
             return None
@@ -721,17 +722,115 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         return None
 
 def indicator_main():
-    # 整合函数
-    stock_code = "002415"
+    # 整合函数，同时监控多支股票
+    stock_codes = ["600030", "002415"]  # 中信证券和海康威视
     # trade_date = "2025-11-06"
     trade_date = datetime.now().strftime('%Y-%m-%d')
-    result = analyze_strategy(stock_code, trade_date)
-    if result is not None:
-        df, signals = result
-        plot_strategy_chart(stock_code, trade_date, df)
-        return df, signals
-    else:
-        print("没有数据或分析失败")
+    
+    results = {}
+    for stock_code in stock_codes:
+        print(f"正在分析股票 {stock_code}...")
+        result = analyze_strategy(stock_code, trade_date)
+        if result is not None:
+            df, signals = result
+            plot_strategy_chart(stock_code, trade_date, df)
+            
+            # 检查是否有新的信号并发送通知
+            if signals and ('buy_signals' in signals or 'sell_signals' in signals):
+                # 检查买入信号
+                if 'buy_signals' in signals and signals['buy_signals']:
+                    for signal_time, price in signals['buy_signals']:
+                        # 构造通知消息
+                        message = f"[{stock_code}] 买入信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
+                        print(f"🔔 买入信号: {message}")
+                        # 发送通知
+                        notify_signal("buy", stock_code, price, str(signal_time))
+                
+                # 检查卖出信号
+                if 'sell_signals' in signals and signals['sell_signals']:
+                    for signal_time, price in signals['sell_signals']:
+                        # 构造通知消息
+                        message = f"[{stock_code}] 卖出信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
+                        print(f"🔔 卖出信号: {message}")
+                        # 发送通知
+                        notify_signal("sell", stock_code, price, str(signal_time))
+            
+            results[stock_code] = (df, signals)
+            print(f"股票 {stock_code} 分析完成")
+        else:
+            print(f"股票 {stock_code} 没有数据或分析失败")
+    
+    return results if results else None
+
+
+def monitor_stocks():
+    """持续监控股票信号"""
+    import time
+    stock_codes = ["600030", "002415"]  # 中信证券和海康威视
+    trade_date = datetime.now().strftime('%Y-%m-%d')
+    
+    # 用于记录已发送的通知，避免重复发送
+    sent_notifications = set()
+    
+    print(f"开始监控股票: {', '.join(stock_codes)}")
+    print("按 Ctrl+C 停止监控")
+    
+    try:
+        while True:
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"\n[{current_time}] 检查信号...")
+            
+            for stock_code in stock_codes:
+                print(f"正在分析股票 {stock_code}...")
+                result = analyze_strategy(stock_code, trade_date)
+                if result is not None:
+                    df, signals = result
+                    plot_strategy_chart(stock_code, trade_date, df)
+                    
+                    # 检查是否有新的信号并发送通知
+                    if signals and ('buy_signals' in signals or 'sell_signals' in signals):
+                        # 检查买入信号
+                        if 'buy_signals' in signals and signals['buy_signals']:
+                            for signal_time, price in signals['buy_signals']:
+                                # 创建信号标识以避免重复通知
+                                signal_id = f"{stock_code}_buy_{signal_time}"
+                                if signal_id not in sent_notifications:
+                                    # 构造通知消息
+                                    message = f"[{stock_code}] 买入信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
+                                    print(f"🔔 买入信号: {message}")
+                                    # 发送通知
+                                    notify_signal("buy", stock_code, price, str(signal_time))
+                                    # 记录已发送的通知
+                                    sent_notifications.add(signal_id)
+                        
+                        # 检查卖出信号
+                        if 'sell_signals' in signals and signals['sell_signals']:
+                            for signal_time, price in signals['sell_signals']:
+                                # 创建信号标识以避免重复通知
+                                signal_id = f"{stock_code}_sell_{signal_time}"
+                                if signal_id not in sent_notifications:
+                                    # 构造通知消息
+                                    message = f"[{stock_code}] 卖出信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
+                                    print(f"🔔 卖出信号: {message}")
+                                    # 发送通知
+                                    notify_signal("sell", stock_code, price, str(signal_time))
+                                    # 记录已发送的通知
+                                    sent_notifications.add(signal_id)
+                    
+                    print(f"股票 {stock_code} 分析完成")
+                else:
+                    print(f"股票 {stock_code} 没有数据或分析失败")
+            
+            # 等待30秒后再次检查
+            time.sleep(30)
+            
+    except KeyboardInterrupt:
+        print("\n监控已停止")
+
 
 if __name__ == "__main__":
-    indicator_main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "--monitor":
+        monitor_stocks()
+    else:
+        indicator_main()

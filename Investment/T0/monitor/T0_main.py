@@ -118,7 +118,7 @@ class T0Monitor:
         self.buy_signals.clear()
         self.sell_signals.clear()
 
-        trade_date = datetime.now().strftime('%Y-%m-%d')
+        # trade_date = datetime.now().strftime('%Y-%m-%d')
 
         indicator_main()
 
