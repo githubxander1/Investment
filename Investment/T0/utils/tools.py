@@ -12,17 +12,45 @@ STOCK_NAME_MAPPING = {
     '000333': '美的集团',
     '600036': '招商银行',
     '600900': '长江电力',
-    '601088': '中国神华'
+    '601088': '中国神华',
+    '600030': '中信证券',
+    '002415': '海康威视'
 }
 
-# 假设notification模块存在于项目中
+# 尝试导入win10toast用于Windows系统通知
 try:
-    from notification import send_notification
+    import winsound
+    HAS_WIN10TOAST = True
 except ImportError:
-    # 如果没有notification模块，定义一个占位函数
-    def send_notification(title, content):
-        """发送通知的占位函数"""
-        print(f"通知: {title}\n{content}")
+    HAS_WIN10TOAST = False
+    print("将使用控制台输出代替系统通知")
+
+# 占位的钉钉通知函数
+def send_dingtalk_notification(title, content):
+    """发送钉钉通知的占位函数"""
+    print(f"🔔[钉钉通知占位] {title}\n{content}")
+    # 在实际使用中，这里应该实现真实的钉钉通知发送逻辑
+    # 例如通过钉钉机器人Webhook发送消息
+
+# 原始的通知函数
+def send_notification(title, content):
+    """发送系统通知"""
+    try:
+        # 尝试发送Windows系统通知
+        if HAS_WIN10TOAST:
+            # 播放系统提示音
+            try:
+                winsound.MessageBeep(winsound.MB_ICONASTERISK)
+            except:
+                pass
+            print(f"✅ 系统通知: {title}")
+        else:
+            # 如果没有win10toast，使用控制台输出
+            print(f"🔔 系统通知: {title}\n{content}")
+    except Exception as e:
+        print(f"❌ 发送系统通知失败: {e}")
+        # 失败时仍然输出到控制台
+        print(f"🔔 系统通知: {title}\n{content}")
 
 
 def get_stock_name(stock_code):
@@ -61,7 +89,7 @@ def is_trading_time():
     morning_start = datetime.strptime('09:30:00', '%H:%M:%S').time()
     morning_end = datetime.strptime('11:30:00', '%H:%M:%S').time()
     afternoon_start = datetime.strptime('13:00:00', '%H:%M:%S').time()
-    afternoon_end = datetime.strptime('19:00:00', '%H:%M:%S').time()
+    afternoon_end = datetime.strptime('15:00:00', '%H:%M:%S').time()
     
     # 检查是否在交易时间内
     is_morning_trading = morning_start <= current_time <= morning_end
@@ -167,8 +195,11 @@ def notify_signal(signal_type, stock_code, price, time_str):
                 title = f"信号通知 - {stock_name}({stock_code})"
                 content = f"股票 {stock_name}({stock_code}) 在 {time_str} 发出 {signal_type} 信号，价格: {price:.2f}"
         
-        # 发送通知
+        # 发送系统通知
         send_notification(title, content)
+        
+        # 发送钉钉通知
+        send_dingtalk_notification(title, content)
         
         # 同时打印到控制台
         print(f"{title}: {content}")
