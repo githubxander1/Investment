@@ -1,8 +1,10 @@
+import logging
 import os
 import sys
 import time
 from datetime import datetime, timedelta
 import pytz
+import requests
 
 # 添加项目根目录到路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -23,14 +25,28 @@ try:
     HAS_WIN10TOAST = True
 except ImportError:
     HAS_WIN10TOAST = False
-    print("将使用控制台输出代替系统通知")
+    logging.info("将使用控制台输出代替系统通知")
 
 # 占位的钉钉通知函数
-def send_dingtalk_notification(title, content):
+def send_dingtalk_notification(title, message):
     """发送钉钉通知的占位函数"""
-    print(f"🔔[钉钉通知占位] {title}\n{content}")
-    # 在实际使用中，这里应该实现真实的钉钉通知发送逻辑
-    # 例如通过钉钉机器人Webhook发送消息
+    DINGTALK_WEBHOOK = 'https://oapi.dingtalk.com/robot/send?access_token=ad751f38f241c5088b291765818cfe294c2887198b93655e0e20b1605a8cd6a2'
+    KEYWORD = '通知'
+
+    data = {
+        "msgtype": "markdown",
+        "markdown": {
+            "title": f'通知{title}',
+            "text": f"{KEYWORD}：\n {message}"
+            # "text": f"**{KEYWORD}**\n {message}\n 时间：{datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        }
+    }
+    try:
+        response = requests.post(DINGTALK_WEBHOOK, json=data)  # ,verify='D:/Xander/Pycharm_gitee/reqable-ca.crt'
+        response.raise_for_status()
+        # logger.info('钉钉通知发送成功')
+    except Exception as e:
+        logging.error(f'钉钉通知发送失败: {str(e)}')
 
 # 原始的通知函数
 def send_notification(title, content):
@@ -43,14 +59,14 @@ def send_notification(title, content):
                 winsound.MessageBeep(winsound.MB_ICONASTERISK)
             except:
                 pass
-            print(f"✅ 系统通知: {title}")
+            logging.info(f"✅ 系统通知: {title}")
         else:
             # 如果没有win10toast，使用控制台输出
-            print(f"🔔 系统通知: {title}\n{content}")
+            logging.info(f"🔔 系统通知: {title}\n{content}")
     except Exception as e:
-        print(f"❌ 发送系统通知失败: {e}")
+        logging.info(f"❌ 发送系统通知失败: {e}")
         # 失败时仍然输出到控制台
-        print(f"🔔 系统通知: {title}\n{content}")
+        logging.info(f"🔔 系统通知: {title}\n{content}")
 
 
 def get_stock_name(stock_code):
@@ -147,7 +163,7 @@ def wait_until_trading_time():
         wait_seconds = (next_trading_time - now).total_seconds()
         
         # 显示等待信息
-        print(f"当前非交易时间，将在 {next_trading_time.strftime('%Y-%m-%d %H:%M:%S')} 开始交易，等待 {wait_seconds:.0f} 秒...")
+        logging.info(f"当前非交易时间，将在 {next_trading_time.strftime('%Y-%m-%d %H:%M:%S')} 开始交易，等待 {wait_seconds:.0f} 秒...")
         
         # 等待，但每60秒检查一次是否需要提前结束等待（例如手动中断）
         wait_interval = 60  # 秒
@@ -202,10 +218,10 @@ def notify_signal(signal_type, stock_code, price, time_str):
         send_dingtalk_notification(title, content)
         
         # 同时打印到控制台
-        print(f"{title}: {content}")
+        logging.info(f"{title}: {content}")
         
     except Exception as e:
-        print(f"发送通知失败: {e}")
+        logging.info(f"发送通知失败: {e}")
 
 
 def create_directory(path):
@@ -222,7 +238,7 @@ def create_directory(path):
         os.makedirs(path, exist_ok=True)
         return True
     except Exception as e:
-        print(f"创建目录失败: {e}")
+        logging.info(f"创建目录失败: {e}")
         return False
 
 
