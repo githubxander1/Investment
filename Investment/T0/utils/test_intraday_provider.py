@@ -10,7 +10,9 @@ import os
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from intraday_data_provider import IntradayDataProvider
+# 修复导入路径问题 - 使用相对导入
+from .intraday_data_provider import IntradayDataProvider
+
 import pandas as pd
 
 
@@ -25,7 +27,7 @@ def test_all_data_sources():
     
     # 测试股票代码和日期
     stock_code = "600030"
-    trade_date = "2025-11-06"
+    trade_date = "2025-11-07"
     
     print(f"测试股票: {stock_code}")
     print(f"交易日期: {trade_date}")

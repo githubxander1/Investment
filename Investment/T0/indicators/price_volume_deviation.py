@@ -22,10 +22,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional, Tuple, Dict, List
-import akshare as ak
 import os
 import sys
 
@@ -36,7 +34,7 @@ sys.path.insert(0, project_root)
 # 尝试导入模块，如果失败则使用本地路径
 from Investment.T0.utils.intraday_data_provider import IntradayDataProvider
 from Investment.T0.utils.logger import setup_logger
-from Investment.T0.utils.tools import notify_signal
+from Investment.T0.utils.notification import send_notification
 from Investment.T0.utils.detact_signals import detect_trading_signals
 
 logger = setup_logger('price_volume_deviation')
@@ -653,7 +651,7 @@ def plot_strategy_chart(stock_code: str, trade_date: Optional[str] = None, df: O
         plt.tight_layout()
         
         # 保存图表
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'output', 'charts')
+        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'charts')
         os.makedirs(output_dir, exist_ok=True)
         chart_path = os.path.join(output_dir, f'{stock_code}_price_volume_deviation_{trade_date.replace("-", "")}.png')
         plt.savefig(chart_path, dpi=300, bbox_inches='tight')
@@ -744,7 +742,7 @@ def indicator_main():
                         message = f"[{stock_code}] 买入信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
                         print(f"🔔 买入信号: {message}")
                         # 发送通知
-                        notify_signal("buy", stock_code, price, str(signal_time))
+                        send_notification(message)
                 
                 # 检查卖出信号
                 if 'sell_signals' in signals and signals['sell_signals']:
@@ -753,7 +751,7 @@ def indicator_main():
                         message = f"[{stock_code}] 卖出信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
                         print(f"🔔 卖出信号: {message}")
                         # 发送通知
-                        notify_signal("sell", stock_code, price, str(signal_time))
+                        send_notification(message)
             
             results[stock_code] = (df, signals)
             print(f"股票 {stock_code} 分析完成")
@@ -799,7 +797,7 @@ def monitor_stocks():
                                     message = f"[{stock_code}] 买入信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
                                     print(f"🔔 买入信号: {message}")
                                     # 发送通知
-                                    notify_signal("buy", stock_code, price, str(signal_time))
+                                    send_notification(message)
                                     # 记录已发送的通知
                                     sent_notifications.add(signal_id)
                         
@@ -813,7 +811,7 @@ def monitor_stocks():
                                     message = f"[{stock_code}] 卖出信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
                                     print(f"🔔 卖出信号: {message}")
                                     # 发送通知
-                                    notify_signal("sell", stock_code, price, str(signal_time))
+                                    send_notification(message)
                                     # 记录已发送的通知
                                     sent_notifications.add(signal_id)
                     
