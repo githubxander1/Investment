@@ -17,13 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Investment\T0\600030.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Investment\T0\backtest\results\backtest_results_20251005_110440.csv">
           <value>
             <Attribute>
@@ -39,48 +32,6 @@
           </value>
         </entry>
         <entry key="\Investment\T0\backtest\results\simple_backtest_000333_20250901_20250930.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\cache\fenshi_data\000333_20251024_fenshi.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\cache\fenshi_data\002415_20251024_fenshi.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\cache\fenshi_data\600030_20251024_fenshi.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\cache\fenshi_data\600030_20251030_分时.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\cache\fenshi_data\600030_20251031_分时.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Investment\T0\utils\sh600030.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
