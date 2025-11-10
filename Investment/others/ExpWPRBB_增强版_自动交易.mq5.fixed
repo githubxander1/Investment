@@ -1,0 +1,10 @@
+//--- 检查交易是否成功，如果失败且是因为自动交易被禁用，提供明确提示
+   if(!result)
+     {
+      int error_code = GetLastError();
+      string error_desc = ErrorDescription(error_code);
+      if(StringFind(error_desc, "auto trading disabled by client") >= 0)
+        {
+         LogError("【重要提示】交易失败：自动交易功能被禁用！请在MT5平台顶部菜单栏启用'自动交易'按钮，并确保EA有交易权限。");
+        }
+     }

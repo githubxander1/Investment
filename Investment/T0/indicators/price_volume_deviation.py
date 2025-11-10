@@ -70,7 +70,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
         - 'Sell_Signal': 卖出信号（布尔值）
     """
     if df is None or df.empty:
-        logger.warning("[重复日志修复] 输入数据为空，无法计算指标")
+        logger.warning("输入数据为空，无法计算指标")
         return df
     
     df = df.copy()
@@ -85,14 +85,14 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     if '均价' not in df.columns:
         # 如果没有均价列，使用成交额/成交量计算（考虑到VOL单位为手，乘以100转换为股）
         df['均价'] = df['成交额'] / (df['成交量'] * 100)
-        logger.info("[重复日志修复] 使用成交额/成交量计算均价")
+        logger.info("使用成交额/成交量计算均价")
     
     # 确保均价数据类型正确
     df['均价'] = pd.to_numeric(df['均价'], errors='coerce')
     
     # 检查数据是否全部为空
     if df[['收盘', '均价', '成交量']].isnull().all().all():
-        logger.warning("[重复日志修复] 关键数据列全部为空，无法计算指标")
+        logger.warning("关键数据列全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -113,7 +113,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     
     # 再次检查填充后是否还有有效数据
     if df[['收盘', '均价']].isnull().all().all():
-        logger.warning("[重复日志修复] 填充后收盘价和均价数据仍然全部为空，无法计算指标")
+        logger.warning("填充后收盘价和均价数据仍然全部为空，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -141,7 +141,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     # 检查是否有有效的数据对
     valid_data = df[['收盘', '均价']].dropna()
     if valid_data.empty:
-        logger.warning("[重复日志修复] 没有有效的收盘价和均价数据对，无法计算指标")
+        logger.warning("没有有效的收盘价和均价数据对，无法计算指标")
         # 添加空的指标列
         df['Price_MA_Diff'] = np.nan
         df['Price_MA_Ratio'] = np.nan
@@ -183,7 +183,7 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     buy_threshold = -0.3  # 低于均价0.3%时买入
     sell_threshold = 0.3  # 高于均价0.3%时卖出
     
-    # 生成买卖信号
+    # 生成买卖信号 - 严格按照通达信公式实现
     # 买入信号 := 偏离度 < -0.3 AND 成交量放大;{当前价低于均价0.3%+放量，触发买入信号}
     df['Buy_Signal'] = (df['Price_MA_Ratio'] < buy_threshold) & (df['Volume_Increase'])
     
@@ -201,26 +201,26 @@ def calculate_price_volume_deviation(df: pd.DataFrame, ma_period: int = 5) -> pd
     valid_price_ma_ratio = df['Price_MA_Ratio'].dropna()
     valid_volume_ratio = df['Volume_Ratio'].dropna()
     
-    logger.info("[重复日志修复] 价格成交量偏离策略：共检测到 {} 个买入信号和 {} 个卖出信号".format(
+    logger.info("价格成交量偏离策略：共检测到 {} 个买入信号和 {} 个卖出信号".format(
         len(df[df['Buy_Signal']]), len(df[df['Sell_Signal']])))
-    logger.info("[重复日志修复] Price_MA_Ratio统计信息：")
+    logger.info("Price_MA_Ratio统计信息：")
     if len(valid_price_ma_ratio) > 0:
-        logger.info("[重复日志修复] - 最大值: {:.4f}%".format(valid_price_ma_ratio.max()))
-        logger.info("[重复日志修复] - 最小值: {:.4f}%".format(valid_price_ma_ratio.min()))
-        logger.info("[重复日志修复] - 平均值: {:.4f}%".format(valid_price_ma_ratio.mean()))
+        logger.info("- 最大值: {:.4f}%".format(valid_price_ma_ratio.max()))
+        logger.info("- 最小值: {:.4f}%".format(valid_price_ma_ratio.min()))
+        logger.info("- 平均值: {:.4f}%".format(valid_price_ma_ratio.mean()))
     else:
-        logger.info("[重复日志修复] - 无有效数据")
+        logger.info("- 无有效数据")
         
-    logger.info("[重复日志修复] Volume_Ratio统计信息：")
+    logger.info("Volume_Ratio统计信息：")
     if len(valid_volume_ratio) > 0:
-        logger.info("[重复日志修复] - 最大值: {:.4f}".format(valid_volume_ratio.max()))
-        logger.info("[重复日志修复] - 最小值: {:.4f}".format(valid_volume_ratio.min()))
-        logger.info("[重复日志修复] - 平均值: {:.4f}".format(valid_volume_ratio.mean()))
+        logger.info("- 最大值: {:.4f}".format(valid_volume_ratio.max()))
+        logger.info("- 最小值: {:.4f}".format(valid_volume_ratio.min()))
+        logger.info("- 平均值: {:.4f}".format(valid_volume_ratio.mean()))
     else:
-        logger.info("[重复日志修复] - 无有效数据")
+        logger.info("- 无有效数据")
     
     # 显示前几行的详细数据用于调试
-    logger.info("[重复日志修复] 前5行数据示例：")
+    logger.info("前5行数据示例：")
     if not df.empty:
         # 选择关键列显示
         key_columns = ['收盘', '均价', 'Price_MA_Diff', 'Price_MA_Ratio', '成交量', 'Volume_MA', 'Volume_Ratio', 'Buy_Signal', 'Sell_Signal']
@@ -684,15 +684,12 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
     try:
         # 时间处理 - 与系统其他部分保持一致，使用'%Y-%m-%d'格式
         if trade_date is None:
-            # yesterday = datetime.now() - timedelta(days=1)
-            # trade_date = yesterday.strftime('%Y%m%d')
-
             trade_date = datetime.now().strftime('%Y-%m-%d')
 
         # 获取数据
         provider = IntradayDataProvider()
         df = provider.get_intraday_data(stock_code, trade_date)
-        logger.info('[重复日志修复] 分时数据前五行：\n{}\n后五行:\n{}'.format(df.head(5), df.tail(5)))
+        logger.info('分时数据前五行：\n{}\n后五行:\n{}'.format(df.head(5), df.tail(5)))
 
         if df is None or df.empty:
             return None
@@ -705,11 +702,9 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         
         # 计算指标
         df_with_indicators = calculate_price_volume_deviation(df)
-        # print(df_with_indicators)
         
         # 检测收集信号，传入股票代码
         signals = detect_trading_signals(df_with_indicators, stock_code)
-        # print(signals)
         
         return df_with_indicators, signals
         
@@ -719,10 +714,12 @@ def analyze_strategy(stock_code: str, trade_date: Optional[str] = None) -> Optio
         traceback.print_exc()
         return None
 
+# 全局变量用于跟踪已发送的通知，避免重复发送
+sent_notifications = set()
+
 def indicator_main():
-    # 整合函数，同时监控多支股票
+    # 整合函数，同时监控多支股票，定时更新数据
     stock_codes = ["600030", "002415"]  # 中信证券和海康威视
-    # trade_date = "2025-11-06"
     trade_date = datetime.now().strftime('%Y-%m-%d')
     
     results = {}
@@ -738,20 +735,30 @@ def indicator_main():
                 # 检查买入信号
                 if 'buy_signals' in signals and signals['buy_signals']:
                     for signal_time, price in signals['buy_signals']:
-                        # 构造通知消息
-                        message = f"[{stock_code}] 买入信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
-                        print(f"🔔 买入信号: {message}")
-                        # 发送通知
-                        send_notification(message)
+                        # 创建信号标识以避免重复通知
+                        signal_id = f"{stock_code}_buy_{signal_time}"
+                        if signal_id not in sent_notifications:
+                            # 构造通知消息
+                            message = f"[{stock_code}] 买入信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
+                            print(f"🔔 买入信号: {message}")
+                            # 发送通知
+                            send_notification(message)
+                            # 记录已发送的通知
+                            sent_notifications.add(signal_id)
                 
                 # 检查卖出信号
                 if 'sell_signals' in signals and signals['sell_signals']:
                     for signal_time, price in signals['sell_signals']:
-                        # 构造通知消息
-                        message = f"[{stock_code}] 卖出信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
-                        print(f"🔔 卖出信号: {message}")
-                        # 发送通知
-                        send_notification(message)
+                        # 创建信号标识以避免重复通知
+                        signal_id = f"{stock_code}_sell_{signal_time}"
+                        if signal_id not in sent_notifications:
+                            # 构造通知消息
+                            message = f"[{stock_code}] 卖出信号\n时间: {signal_time}\n价格: {price}\n指标: 价格成交量偏离策略"
+                            print(f"🔔 卖出信号: {message}")
+                            # 发送通知
+                            send_notification(message)
+                            # 记录已发送的通知
+                            sent_notifications.add(signal_id)
             
             results[stock_code] = (df, signals)
             print(f"股票 {stock_code} 分析完成")
@@ -762,7 +769,7 @@ def indicator_main():
 
 
 def monitor_stocks():
-    """持续监控股票信号"""
+    """持续监控股票信号，每30秒更新一次数据"""
     import time
     stock_codes = ["600030", "002415"]  # 中信证券和海康威视
     trade_date = datetime.now().strftime('%Y-%m-%d')

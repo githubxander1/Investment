@@ -234,3 +234,9 @@ uiautomator2.exceptions.ConnectError: device emulator-5554 not online
 [32m2025-11-07 09:24:49 - INFO - 启动App成功: com.hexin.plat.android[0m
 [32m2025-11-07 14:48:42 - INFO - 连接设备: emulator-5554[0m
 [32m2025-11-07 14:48:43 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-11-10 09:26:39 - INFO - 连接设备: emulator-5554[0m
+[32m2025-11-10 09:26:42 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-11-10 10:07:04 - INFO - 连接设备: emulator-5554[0m
+[32m2025-11-10 10:07:05 - INFO - 启动App成功: com.hexin.plat.android[0m
+[32m2025-11-10 11:17:42 - INFO - 连接设备: emulator-5554[0m
+[32m2025-11-10 11:17:43 - INFO - 启动App成功: com.hexin.plat.android[0m

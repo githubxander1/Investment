@@ -8,23 +8,10 @@ import sys
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-# 尝试导入模块
-try:
-    from Investment.T0.utils.tools import notify_signal
-except ImportError:
-    try:
-        # 尝试相对导入
-        sys.path.insert(0, os.path.join(project_root, "Investment", "T0"))
-        from utils.tools import notify_signal
-    except ImportError:
-        # 最后尝试使用绝对路径导入
-        sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-        from tools import notify_signal
-
 
 def detect_trading_signals(df: pd.DataFrame, stock_code: str = "") -> dict:
     """
-    检测交易信号
+    检测交易信号，严格按照通达信公式实现
     
     Args:
         df: 包含交易信号的数据框

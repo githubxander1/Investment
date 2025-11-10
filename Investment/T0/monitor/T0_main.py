@@ -119,8 +119,7 @@ class T0Monitor:
         self.buy_signals.clear()
         self.sell_signals.clear()
 
-        # trade_date = datetime.now().strftime('%Y-%m-%d')
-
+        # 每30秒重新获取数据并检测信号
         indicator_main()
 
         # 按时间戳排序
@@ -183,21 +182,11 @@ class T0Monitor:
                 # 重置每日状态
                 self.reset_daily_state()
                 
-                # 检查是否为交易时间
-                # if not self.is_trading_time():
-                #     # 非交易时间，每分钟检查一次
-                #     time.sleep(60)
-                #     logger.info("非交易时间，等待下一次检查")
-                #     continue
-                # else:
-                #     logger.info("当前是交易时间")
-                
-                # 处理信号
+                # 处理信号（每30秒执行一次）
                 logger.info("处理信号...")
                 self.process_signals()
                 
                 # 交易时间内，每30秒检查一次信号
-                # 注意：这里可以根据实际需要调整检查频率
                 time.sleep(30)
                 
         except KeyboardInterrupt:
