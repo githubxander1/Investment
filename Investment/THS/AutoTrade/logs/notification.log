@@ -1505,3 +1505,21 @@
 [33m2025-11-10 14:23:58 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
 [33m2025-11-10 14:25:16 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
 [33m2025-11-10 14:26:12 - WARNING - 交易通知: 处理证券与策略 逻辑为王 持仓差异并执行交易时发生错误: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[33m2025-11-11 09:25:13 - WARNING - 交易通知: 📉【海康威视】(002415) 收盘价下穿20日均线，建议关注卖出机会！[0m
+[33m2025-11-11 09:36:48 - WARNING - 交易通知: 买入 应流股份 300股 False 最新:[0m
+[33m2025-11-11 09:41:02 - WARNING - 交易通知: 多次尝试后仍无法进入交易页[0m
+[33m2025-11-11 10:10:56 - WARNING - 交易通知: 卖出 中国巨石 500股 False 最新:[0m
+[33m2025-11-11 11:04:37 - WARNING - 交易通知: 处理弹窗时发生异常: cannot access local variable 'new_prompt_text' where it is not associated with a value[0m
+[32m2025-11-11 11:04:37 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-11 11:05:07 - WARNING - 交易通知: 买入 西子洁能 700股 False 处理弹窗时发生异常: cannot access local variable 'new_prompt_text' where it is not associated with a value[0m
+[32m2025-11-11 11:05:07 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-11 11:06:46 - WARNING - 交易通知: 获取 川财证券 账户数据时出错: {'code': -32002, 'data': "Selector [resourceId='com.hexin.plat.android:id/title_bar_img']", 'method': 'wait'}[0m
+[32m2025-11-11 11:06:46 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-11 11:07:58 - WARNING - 交易通知: 处理弹窗时发生异常: cannot access local variable 'new_prompt_text' where it is not associated with a value[0m
+[32m2025-11-11 11:07:58 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-11 11:08:28 - WARNING - 交易通知: 买入 西子洁能 300股 False 处理弹窗时发生异常: cannot access local variable 'new_prompt_text' where it is not associated with a value[0m
+[32m2025-11-11 11:08:28 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-11 14:56:52 - WARNING - 交易通知: 国债逆回购任务失败: 进入国债逆回购入口失败[0m
+[32m2025-11-11 14:56:52 - INFO - 检测到交易失败通知，暂停30秒...[0m
+[33m2025-11-11 14:57:22 - WARNING - 交易通知: 国债逆回购交易执行失败: 进入国债逆回购入口失败[0m
+[32m2025-11-11 14:57:22 - INFO - 检测到交易失败通知，暂停30秒...[0m

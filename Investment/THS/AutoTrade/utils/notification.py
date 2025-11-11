@@ -36,7 +36,7 @@ def send_notification(message):
     logger.warning(f'交易通知: {message}')
     
     # 如果通知中包含"失败"关键字，则暂停30秒
-    if "失败" in message:
+    if "失败" or '未' or '不足' in message:
         logger.info("检测到交易失败通知，暂停30秒...")
         time.sleep(30)
 

@@ -15,7 +15,7 @@ class TradingPage(BasePage):
     def __init__(self, d=None):
         super().__init__(d)
         self.common_page = CommonPage(d)
-        
+
         # 交易相关元素
         self.trade_button_entry = self.d(resourceId="com.hexin.plat.android:id/menu_holdings_image")
         self.back_button = self.d(resourceId='com.hexin.plat.android:id/title_bar_left_container')
@@ -34,7 +34,7 @@ class TradingPage(BasePage):
     def click_back(self):
         """
         点击返回按钮
-        
+
         Returns:
             bool: 点击是否成功
         """
@@ -52,7 +52,7 @@ class TradingPage(BasePage):
     def click_trade_entry(self):
         """
         点击交易入口按钮
-        
+
         Returns:
             bool: 点击是否成功
         """
@@ -73,7 +73,7 @@ class TradingPage(BasePage):
     def click_holding_stock_entry(self):
         """
         点击持仓入口按钮
-        
+
         Returns:
             bool: 点击是否成功
         """
@@ -94,10 +94,10 @@ class TradingPage(BasePage):
     def click_operate_entry(self, operation):
         """
         点击外面入口处的操作按钮
-        
+
         Args:
             operation: 操作类型("买入"或"卖出")
-            
+
         Returns:
             bool: 点击是否成功
         """
@@ -158,10 +158,10 @@ class TradingPage(BasePage):
     def click_operate_button(self, operation):
         """
         点击里面的tab栏操作按钮
-        
+
         Args:
             operation: 操作类型("买入"或"卖出")
-            
+
         Returns:
             bool: 点击是否成功
         """
@@ -206,7 +206,7 @@ class TradingPage(BasePage):
     def click_refresh_button(self):
         """
         点击刷新按钮
-        
+
         Returns:
             bool: 点击是否成功
         """
@@ -224,7 +224,7 @@ class TradingPage(BasePage):
     def search_stock(self, stock_name):
         """
         搜索股票
-        
+
         Args:
             stock_name: 股票名称
         """
@@ -286,10 +286,10 @@ class TradingPage(BasePage):
     def input_volume(self, volume):
         """
         输入交易数量
-        
+
         Args:
             volume: 交易数量
-            
+
         Returns:
             tuple: (是否成功, 实际输入的数量)
         """
@@ -330,7 +330,7 @@ class TradingPage(BasePage):
     def get_price_by_volume(self):
         """
         获取根据输入数量自动计算的金额
-        
+
         Returns:
             str: 金额
         """
@@ -341,10 +341,10 @@ class TradingPage(BasePage):
     def click_submit_button(self, operation):
         """
         点击提交按钮
-        
+
         Args:
             operation: 操作类型("买入"或"卖出")
-            
+
         Returns:
             bool: 点击是否成功
         """
@@ -372,7 +372,7 @@ class TradingPage(BasePage):
     def _get_real_price(self):
         """
         获取当前股票实时价格
-        
+
         Returns:
             float: 实时价格
         """
@@ -401,7 +401,7 @@ class TradingPage(BasePage):
     def dialog_handle(self):
         """
         处理交易后的各种弹窗情况
-        
+
         Returns:
             tuple: (是否成功, 弹窗信息)
         """
@@ -411,13 +411,17 @@ class TradingPage(BasePage):
         dialog_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
         dialog_title_text = dialog_title.get_text() if dialog_title.exists else "未获取到弹窗标题"
 
-        prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
-        prompt_content_second = self.d(className='android.widget.TextView')[2] if len(
-            self.d(className='android.widget.TextView')) > 2 else None
-        prompt_content_third = self.d(className='android.widget.TextView')[3] if len(
-            self.d(className='android.widget.TextView')) > 3 else None
+        # 尝试通过content_layout获取弹窗内容
+        prompt_text = self.get_dialog_content_by_layout()
+        if not prompt_text:
+            # 如果通过content_layout获取失败，使用原有方式获取
+            prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+            prompt_content_second = self.d(className='android.widget.TextView')[2] if len(
+                self.d(className='android.widget.TextView')) > 2 else None
+            prompt_content_third = self.d(className='android.widget.TextView')[3] if len(
+                self.d(className='android.widget.TextView')) > 3 else None
 
-        prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+            prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
 
         confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
         confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn") #资金不足时的确定按钮
@@ -426,45 +430,50 @@ class TradingPage(BasePage):
         try:
             # 获取弹窗标题和内容
             title_text = dialog_title.get_text() if dialog_title.exists else ""
-            
+
             # 处理成功提交的情况
             if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
                 logger.info("检测到'委托确认'提示")
                 time.sleep(1)
 
                 # 尝试多种方式定位弹窗元素
-                # 方式1: 标准ID定位
-                dialog_title_new = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
-                prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
-                prompt_content_second = self.d(className='android.widget.TextView', index=2)
-                prompt_content_third = self.d(className='android.widget.TextView', index=3)
+                prompt_text = self.get_dialog_content_by_layout()
+                if not prompt_text:
+                    # 方式1: 标准ID定位
+                    dialog_title_new = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+                    prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+                    prompt_content_second = self.d(className='android.widget.TextView', index=1)
+                    prompt_content_second = self.d(className='android.widget.TextView', index=2)
+                    prompt_content_third = self.d(className='android.widget.TextView', index=3)
 
-                # 方式2: 通过文本特征定位
-                fund_error_elements = self.d(textContains='可用资金不足')
-                lack_error_elements = self.d(textContains='不足')
+                    # 方式2: 通过文本特征定位
+                    fund_error_elements = self.d(textContains='可用资金不足')
+                    lack_error_elements = self.d(textContains='不足')
 
-                # 获取新弹窗的标题和内容
-                new_title_text = ""
-                new_prompt_text = ""
+                    # 获取新弹窗的标题和内容
+                    new_title_text = ""
+                    new_prompt_text = ""
 
-                # 尝试获取内容
-                if prompt_content.exists:
-                    new_prompt_text = prompt_content.get_text()
-                    logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
-                elif prompt_content_second.exists:
-                    new_prompt_text = prompt_content_second.get_text()
-                    logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
-                elif prompt_content_third.exists:
-                    new_prompt_text = prompt_content_third.get_text()
-                    logger.debug(f"新弹窗内容(ID方式): {new_prompt_text}")
-                elif fund_error_elements.exists or lack_error_elements.exists:
-                    # 如果通过ID找不到，尝试通过文本特征
-                    if fund_error_elements.exists:
-                        new_prompt_text = fund_error_elements.get_text()
-                        logger.debug(f"新弹窗内容(文本特征'资金'): {new_prompt_text}")
-                    elif lack_error_elements.exists:
-                        new_prompt_text = lack_error_elements.get_text()
-                        logger.debug(f"新弹窗内容(文本特征'不足'): {new_prompt_text}")
+                    if dialog_title_new.exists:
+                        new_title_text = dialog_title_new.get_text()
+                        logger.debug(f"新弹窗标题: {new_title_text}")
+                    if prompt_content.exists:
+                        new_prompt_text = prompt_content.get_text()
+                        logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+                    elif prompt_content_second.exists:
+                        new_prompt_text = prompt_content_second.get_text()
+                        logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+                    elif prompt_content_third.exists:
+                        new_prompt_text = prompt_content_third.get_text()
+                        logger.debug(f"新弹窗内容(ID方式): {new_prompt_text}")
+                    elif fund_error_elements.exists or lack_error_elements.exists:
+                        # 如果通过ID找不到，尝试通过文本特征
+                        if fund_error_elements.exists:
+                            new_prompt_text = fund_error_elements.get_text()
+                            logger.debug(f"新弹窗内容(文本特征'资金'): {new_prompt_text}")
+                        elif lack_error_elements.exists:
+                            new_prompt_text = lack_error_elements.get_text()
+                            logger.debug(f"新弹窗内容(文本特征'不足'): {new_prompt_text}")
 
                 # 尝试多种方式定位确认按钮
                 ok_btn = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
@@ -555,7 +564,7 @@ class TradingPage(BasePage):
                     # 方式2: 通过文本特征定位
                     fund_error_elements = self.d(textContains='可用资金不足')
                     lack_error_elements = self.d(textContains='不足')
-                    
+
                     new_title_text = ""
                     new_prompt_text = ""
 
@@ -577,6 +586,10 @@ class TradingPage(BasePage):
                         elif lack_error_elements.exists:
                             new_prompt_text = lack_error_elements.get_text()
                             logger.debug(f"新弹窗内容(文本特征'不足'): {new_prompt_text}")
+                    else:
+                        # 如果所有方式都获取不到内容，使用默认提示
+                        new_prompt_text = "无法获取弹窗具体内容"
+
                     logger.warning(f"委托失败，{new_prompt_text}")
                     return False, new_prompt_text
             else:
@@ -597,13 +610,33 @@ class TradingPage(BasePage):
             send_notification(error_msg)
             return False, error_msg
 
+    def get_dialog_content_by_layout(self):
+        """
+        通过定位content_layout获取弹窗内容
+
+        Returns:
+            str: 弹窗文本内容
+        """
+        try:
+            content_layout = self.d(resourceId="com.hexin.plat.android:id/content_layout")
+            if content_layout.exists:
+                # 查找content_layout下的TextView
+                text_view = content_layout.child(className="android.widget.TextView")
+                if text_view.exists:
+                    view_text = text_view.get_text()
+                    logger.info(f"通过content_layout获取到弹窗文本：{view_text}")
+                    return view_text
+        except Exception as e:
+            logger.error(f"获取弹窗内容失败: {e}")
+        return None
+
     def _extract_trade_info(self, prompt_text):
         """
         从提示文本中提取股票名称、代码和数量
-        
+
         Args:
             prompt_text: 提示文本
-            
+
         Returns:
             tuple: (股票名称, 股票代码, 数量)
         """
@@ -633,7 +666,7 @@ class TradingPage(BasePage):
     def update_holding_info_all(self, account_info):
         """
         更新所有账户持仓信息
-        
+
         Args:
             account_info: AccountInfo实例
         """

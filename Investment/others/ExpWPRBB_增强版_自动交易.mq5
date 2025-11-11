@@ -997,15 +997,10 @@ bool OpenPosition(const string symbol_name,const ENUM_POSITION_TYPE type,const d
    //--- 执行交易并返回结果
    bool result = (type==POSITION_TYPE_BUY ? trade.Buy(ll,symbol_name,tick.ask,sl,tp,comment) : trade.Sell(ll,symbol_name,tick.bid,sl,tp,comment));
    
-   //--- 检查交易是否成功，如果失败且是因为自动交易被禁用，提供明确提示
+   //--- 检查交易是否成功，如果失败提供错误提示
    if(!result)
      {
-      int error_code = GetLastError();
-      string error_desc = ErrorDescription(error_code);
-      if(StringFind(error_desc, "auto trading disabled by client") >= 0)
-        {
-         LogError("【重要提示】交易失败：自动交易功能被禁用！请在MT5平台顶部菜单栏启用'自动交易'按钮，并确保EA有交易权限。");
-        }
+      LogError("【重要提示】交易失败，请检查自动交易功能是否已启用！错误代码: ", GetLastError());
      }
 
    //--- 更新风险管理变量
