@@ -1273,3 +1273,23 @@ AttributeError: 'TradingPage' object has no attribute '_get_stock_code'
 [32m2025-11-11 11:08:58 - INFO - 目标投资金额: 17686.35 * 33.0% = 5836.495499999999[0m
 [32m2025-11-11 11:08:58 - INFO - 计算股数: 5836.495499999999 / 40.91 = 142[0m
 [32m2025-11-11 11:08:58 - INFO - 计算买入股数: 100[0m
+[32m2025-11-12 09:48:19 - INFO - 全部卖出[0m
+[32m2025-11-12 09:49:31 - INFO - 卖出 应流股份 300股 False 处理弹窗时发生异常: cannot access local variable 'new_prompt_text' where it is not associated with a value[0m
+[32m2025-11-12 11:17:01 - INFO - 全部卖出[0m
+[32m2025-11-12 11:18:16 - INFO - 卖出 赣锋锂业 100股 False 处理弹窗时发生异常: cannot access local variable 'new_prompt_text' where it is not associated with a value[0m
+[31m2025-11-12 17:33:15 - ERROR - 卖出 中国电信 10000 股失败: cannot unpack non-iterable NoneType object[0m
+Traceback (most recent call last):
+  File "D:\Xander\git_projects\Investment\Investment\THS\AutoTrade\pages\trading\trade_logic.py", line 427, in operate_stock
+    success, info = self.trading_page.dialog_handle()
+    ^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+[32m2025-11-13 10:39:01 - INFO - 全部卖出[0m
+[32m2025-11-13 10:39:44 - INFO - 卖出 西子洁能 1000股 True 委托已提交，合同号为：42256[0m
+[32m2025-11-13 10:59:48 - INFO - 目标投资金额: 37327.13 * 33.0% = 12317.952899999998[0m
+[32m2025-11-13 10:59:48 - INFO - 计算股数: 12317.952899999998 / 15.39 = 800[0m
+[32m2025-11-13 10:59:48 - INFO - 计算买入股数: 800[0m
+[32m2025-11-13 11:00:33 - INFO - 买入 金风科技 800股 True 委托已提交，合同号为：47513[0m
+[32m2025-11-13 11:27:33 - INFO - 目标投资金额: 37365.88 * 33.0% = 12330.740399999999[0m
+[32m2025-11-13 11:27:33 - INFO - 计算股数: 12330.740399999999 / 51.2 = 240[0m
+[32m2025-11-13 11:27:33 - INFO - 计算买入股数: 200[0m
+[32m2025-11-13 11:28:15 - INFO - 买入 赛腾股份 200股 True 委托已提交，合同号为：53768[0m

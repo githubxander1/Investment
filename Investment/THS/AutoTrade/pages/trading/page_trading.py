@@ -400,6 +400,288 @@ class TradingPage(BasePage):
 
     def dialog_handle(self):
         """
+        点击 提交 后
+        处理交易后的各种弹窗情况
+        1. 委托确认弹窗
+        2. 资金不足弹窗
+        3. 其他异常弹窗
+
+        Returns:
+            tuple: (是否成功, 弹窗信息)
+        """
+        logger.info('-'*50)
+        logger.info("开始处理弹窗")
+
+        try:
+            # 定位弹窗相关控件
+
+            # dialog_title = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+
+            # 尝试通过content_layout获取弹窗内容
+            # prompt_text = self.get_dialog_content_by_layout()
+            # if not prompt_text:
+                # 如果通过content_layout获取失败，使用原有方式获取
+            time.sleep(1)
+            prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+            prompt_text = prompt_content.get_text() if prompt_content.exists else "未找到弹窗内容"
+            if prompt_content.exists:
+                print("弹窗内容: " + prompt_text)
+            else:
+                print("prompt_content定位失败，未找到弹窗内容")
+            # prompt_content_second = self.d(className='android.widget.TextView')[2] if len(
+            #     self.d(className='android.widget.TextView')) > 2 else None
+            # if prompt_content_second.exists:
+            #     print("弹窗内容: " + prompt_content_second.get_text())
+            # else:
+            #     print("prompt_content_second定位失败，未找到弹窗内容")
+            # prompt_content_third = self.d(className='android.widget.TextView')[3] if len(
+            #     self.d(className='android.widget.TextView')) > 3 else None
+            # if prompt_content_third.exists:
+            #     print("弹窗内容: " + prompt_content_third.get_text())
+            # else:
+            #     print("prompt_content_third定位失败，未找到弹窗内容")
+
+            # prompt_text = prompt_content.get_text() if prompt_content.exists else prompt_content_second.get_text() if prompt_content_second.exists else prompt_content_third.get_text() if prompt_content_third.exists else "未找到弹窗内容"
+            #
+            confirm_button = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+            confirm_button_second = self.d(resourceId="com.hexin.plat.android:id/left_btn") #资金不足时的确定按钮
+            confirm_buttons = confirm_button if confirm_button.exists else confirm_button_second if confirm_button_second.exists else "未找到确定按钮"
+            # 获取弹窗标题和内容
+            # title_text = dialog_title.get_text() if dialog_title.exists else "未获取到弹窗标题内容"
+
+            time.sleep(1)
+            # 检查是否委托已提交
+            if '委托已提交' in prompt_text:
+                confirm_buttons.click()
+                logger.info("委托已提交,点击确定按钮")
+                # 处理st股的确认弹窗
+                if confirm_buttons.exists:
+                    confirm_buttons.click()
+                    logger.info("处理st股的确认弹窗，再次点击确认按钮")
+                return True, prompt_text
+            else:
+                # 处理委托失败的情况
+                # time.sleep(1)
+                # logger.info("尝试查找报错弹窗...")
+
+                # 尝试多种方式定位确认按钮
+                ok_btn = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+                left_btn = self.d(resourceId="com.hexin.plat.android:id/left_btn")
+                positive_btn = self.d(resourceId="com.hexin.plat.android:id/positiveButton")
+                button_ok = self.d(text="确定")
+
+                # 按优先级点击按钮
+                confirm_btn = None
+                if ok_btn.exists:
+                    confirm_btn = ok_btn
+                    logger.debug("找到ok_btn")
+                elif left_btn.exists:
+                    confirm_btn = left_btn
+                    logger.debug("找到left_btn")
+                elif positive_btn.exists:
+                    confirm_btn = positive_btn
+                    logger.debug("找到positiveButton")
+                elif button_ok.exists:
+                    confirm_btn = button_ok
+                    logger.debug("找到文本为'确定'的按钮")
+
+                if confirm_btn:
+                    confirm_btn.click()
+                    logger.info("点击确认按钮")
+                else:
+                    # error_msg = prompt_text
+                    logger.warning(prompt_text)
+                    send_notification(prompt_text)
+                    # 尝试点击屏幕中央位置
+                    self.d.click(0.5, 0.5)
+                    logger.info("尝试点击屏幕中央位置")
+                return False, prompt_text
+
+            # # 处理成功提交的情况
+            # if any(keyword in title_text for keyword in ['委托买入确认', '委托卖出确认']):
+            #     logger.info("检测到'委托确认'提示")
+            #     confirm_buttons.click()
+            #     logger.info("点击确定按钮(委托确认)")
+            #     time.sleep(1)
+            #
+            #     # 尝试多种方式定位弹窗元素
+            #     # prompt_text = self.get_dialog_content_by_layout()
+            #     # if not prompt_text:
+            #     #     # 方式1: 标准ID定位
+            #     dialog_title_new = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+            #     prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+            #     prompt_content_second = self.d(className='android.widget.TextView', index=1)
+            #     prompt_content_second = self.d(className='android.widget.TextView', index=2)
+            #     prompt_content_third = self.d(className='android.widget.TextView', index=3)
+            #
+            #     # 方式2: 通过文本特征定位
+            #     fund_error_elements = self.d(textContains='可用资金不足')
+            #     lack_error_elements = self.d(textContains='不足')
+            #
+            #     # 获取新弹窗的标题和内容
+            #     new_title_text = ""
+            #     new_prompt_text = ""
+            #
+            #     if dialog_title_new.exists:
+            #         new_title_text = dialog_title_new.get_text()
+            #         logger.debug(f"新弹窗标题: {new_title_text}")
+            #     if prompt_content.exists:
+            #         new_prompt_text = prompt_content.get_text()
+            #         logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+            #     elif prompt_content_second.exists:
+            #         new_prompt_text = prompt_content_second.get_text()
+            #         logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+            #     elif prompt_content_third.exists:
+            #         new_prompt_text = prompt_content_third.get_text()
+            #         logger.debug(f"新弹窗内容(ID方式): {new_prompt_text}")
+            #     elif fund_error_elements.exists or lack_error_elements.exists:
+            #         # 如果通过ID找不到，尝试通过文本特征
+            #         if fund_error_elements.exists:
+            #             new_prompt_text = fund_error_elements.get_text()
+            #             logger.debug(f"新弹窗内容(文本特征'资金'): {new_prompt_text}")
+            #         elif lack_error_elements.exists:
+            #             new_prompt_text = lack_error_elements.get_text()
+            #             logger.debug(f"新弹窗内容(文本特征'不足'): {new_prompt_text}")
+            #     #
+            #     # # 尝试多种方式定位确认按钮
+            #     # ok_btn = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+            #     # left_btn = self.d(resourceId="com.hexin.plat.android:id/left_btn")
+            #     # positive_btn = self.d(resourceId="com.hexin.plat.android:id/positiveButton")
+            #     # button_ok = self.d(text="确定")
+            #     #
+            #     # # 按优先级点击按钮
+            #     # confirm_btn = None
+            #     # if ok_btn.exists:
+            #     #     confirm_btn = ok_btn
+            #     #     logger.debug("找到ok_btn")
+            #     # elif left_btn.exists:
+            #     #     confirm_btn = left_btn
+            #     #     logger.debug("找到left_btn")
+            #     # elif positive_btn.exists:
+            #     #     confirm_btn = positive_btn
+            #     #     logger.debug("找到positiveButton")
+            #     # elif button_ok.exists:
+            #     #     confirm_btn = button_ok
+            #     #     logger.debug("找到文本为'确定'的按钮")
+            #     #
+            #     # if confirm_btn:
+            #     #     confirm_btn.click()
+            #     #     logger.info("点击确认按钮")
+            #     # else:
+            #     #     error_msg = "未找到确认按钮"
+            #     #     logger.warning(error_msg)
+            #     #     send_notification(error_msg)
+            #     #     # 尝试点击屏幕中央位置
+            #     #     self.d.click(0.5, 0.5)
+            #     #     logger.info("尝试点击屏幕中央位置")
+            #
+            #     time.sleep(1)
+            #     # 检查是否委托已提交
+            #     if '委托已提交' in new_prompt_text:
+            #         confirm_buttons.click()
+            #         logger.info("委托已提交")
+            #         # 处理st股的确认弹窗
+            #         if confirm_buttons.exists:
+            #             confirm_buttons.click()
+            #             logger.info("再次点击确认按钮")
+            #         return True, new_prompt_text
+            #     else:
+            #         # 处理委托失败的情况
+            #         time.sleep(1)
+            #         logger.info("尝试查找报错弹窗...")
+            #
+            #         # 尝试多种方式定位确认按钮
+            #         ok_btn = self.d(resourceId="com.hexin.plat.android:id/ok_btn")
+            #         left_btn = self.d(resourceId="com.hexin.plat.android:id/left_btn")
+            #         positive_btn = self.d(resourceId="com.hexin.plat.android:id/positiveButton")
+            #         button_ok = self.d(text="确定")
+            #
+            #         # 按优先级点击按钮
+            #         confirm_btn = None
+            #         if ok_btn.exists:
+            #             confirm_btn = ok_btn
+            #             logger.debug("找到ok_btn")
+            #         elif left_btn.exists:
+            #             confirm_btn = left_btn
+            #             logger.debug("找到left_btn")
+            #         elif positive_btn.exists:
+            #             confirm_btn = positive_btn
+            #             logger.debug("找到positiveButton")
+            #         elif button_ok.exists:
+            #             confirm_btn = button_ok
+            #             logger.debug("找到文本为'确定'的按钮")
+            #
+            #         if confirm_btn:
+            #             confirm_btn.click()
+            #             logger.info("点击确认按钮")
+            #         else:
+            #             error_msg = "未找到确认按钮"
+            #             logger.warning(error_msg)
+            #             send_notification(error_msg)
+            #             # 尝试点击屏幕中央位置
+            #             self.d.click(0.5, 0.5)
+            #             logger.info("尝试点击屏幕中央位置")
+            #
+            #         # 尝试多种方式定位弹窗元素
+            #         # 方式1: 标准ID定位
+            #         dialog_title_new = self.d(resourceId='com.hexin.plat.android:id/dialog_title')
+            #         prompt_content = self.d(resourceId='com.hexin.plat.android:id/prompt_content')
+            #         prompt_content_second = self.d(className='android.widget.TextView', index=2)
+            #         prompt_content_third = self.d(className='android.widget.TextView', index=3)
+            #
+            #         # 方式2: 通过文本特征定位
+            #         fund_error_elements = self.d(textContains='可用资金不足')
+            #         lack_error_elements = self.d(textContains='不足')
+            #
+            #         new_title_text = ""
+            #         new_prompt_text = ""
+            #
+            #         # 尝试获取内容
+            #         if prompt_content.exists:
+            #             new_prompt_text = prompt_content.get_text()
+            #             logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+            #         elif prompt_content_second.exists:
+            #             new_prompt_text = prompt_content_second.get_text()
+            #             logger.debug(f"弹窗内容(ID方式): {new_prompt_text}")
+            #         elif prompt_content_third.exists:
+            #             new_prompt_text = prompt_content_third.get_text()
+            #             logger.debug(f"新弹窗内容(ID方式): {new_prompt_text}")
+            #         elif fund_error_elements.exists or lack_error_elements.exists:
+            #             # 如果通过ID找不到，尝试通过文本特征
+            #             if fund_error_elements.exists:
+            #                 new_prompt_text = fund_error_elements.get_text()
+            #                 logger.debug(f"新弹窗内容(文本特征'资金'): {new_prompt_text}")
+            #             elif lack_error_elements.exists:
+            #                 new_prompt_text = lack_error_elements.get_text()
+            #                 logger.debug(f"新弹窗内容(文本特征'不足'): {new_prompt_text}")
+            #         else:
+            #             # 如果所有方式都获取不到内容，使用默认提示
+            #             new_prompt_text = "无法获取弹窗具体内容"
+            #
+            #         logger.warning(f"委托失败，{new_prompt_text}")
+            #         return False, new_prompt_text
+            # else:
+            #     # 处理其他情况
+            #     confirm_button_to_click = confirm_button if confirm_button.exists else confirm_button_second if confirm_button_second.exists else None
+            #     if confirm_button_to_click:
+            #         time.sleep(1)
+            #         confirm_button_to_click.click()
+            #         logger.info("点击确定按钮")#资金不足
+            #         time.sleep(1)
+            #
+            #
+            #     error_msg = f"未检测到'委托确认'提示，弹窗内容: {prompt_text}"
+            #     logger.warning(error_msg)
+            #     send_notification(error_msg)
+            #     return False, prompt_text
+
+        except Exception as e:
+            error_msg = f"处理弹窗时发生异常: {e}"
+            logger.error(error_msg)
+            send_notification(error_msg)
+            return False, error_msg
+    def dialog_handle1(self):
+        """
         处理交易后的各种弹窗情况
 
         Returns:
@@ -618,7 +900,8 @@ class TradingPage(BasePage):
             str: 弹窗文本内容
         """
         try:
-            content_layout = self.d(resourceId="com.hexin.plat.android:id/content_layout")
+            # content_layout = self.d(resourceId="com.hexin.plat.android:id/content_layout")
+            content_layout = self.d(resourceId="com.hexin.plat.android:id/ll_adjust_align_tv")
             if content_layout.exists:
                 # 查找content_layout下的TextView
                 text_view = content_layout.child(className="android.widget.TextView")

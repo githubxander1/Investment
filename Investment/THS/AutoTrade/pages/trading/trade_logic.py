@@ -435,3 +435,7 @@ class TradeLogic:
             logger.error(error_msg, exc_info=True)
             send_notification(error_msg)
             return False, error_msg
+
+if __name__ == '__main__':
+    trade = TradeLogic()
+    trade.operate_stock("卖出", "中国电信", 10000)
