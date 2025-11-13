@@ -1,0 +1,13 @@
+{优化CCI卖出选股公式}
+{专注于顶部卖出信号监控}
+
+VAR1:=(2*CLOSE+HIGH+LOW)/4;
+VAR2:=LLV(LOW,34);
+VAR3:=HHV(HIGH,34);
+AA:=EMA((VAR1-VAR2)/(VAR3-VAR2)*100,13);
+BB:=EMA(0.667*REF(AA,1)+0.333*AA,2);
+
+{顶部卖出信号：BB上穿AA且AA>80.3，使用FILTER过滤重复信号}
+卖出信号:=FILTER(CROSS(BB,AA) AND AA>80.3,3);
+
+卖出信号;

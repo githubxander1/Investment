@@ -1,0 +1,22 @@
+{优化CCI选股公式}
+{基于用户提供的优化后CCI指标转换}
+
+VAR1:=(2*CLOSE+HIGH+LOW)/4;
+VAR2:=LLV(LOW,34);
+VAR3:=HHV(HIGH,34);
+AA:=EMA((VAR1-VAR2)/(VAR3-VAR2)*100,13);
+BB:=EMA(0.667*REF(AA,1)+0.333*AA,2);
+
+{底部买入信号：AA上穿BB且AA<20}
+买入信号1:=CROSS(AA,BB) AND AA<20;
+
+{底部参与信号：AA上穿22且BB<AA}
+买入信号2:=CROSS(AA,22) AND BB<AA;
+
+{顶部卖出信号：BB上穿AA且AA>80.3，使用FILTER过滤重复信号}
+卖出信号:=FILTER(CROSS(BB,AA) AND AA>80.3,3);
+
+{选股条件：满足任一买入信号}
+选股信号:=买入信号1 OR 买入信号2;
+
+选股信号;
