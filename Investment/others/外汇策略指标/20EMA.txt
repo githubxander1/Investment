@@ -1,0 +1,189 @@
+//+------------------------------------------------------------------+
+//|                                                  Pinbar_MACD.mq5 |
+//|                        Copyright 2025, MetaQuotes Software Corp. |
+//|                                             https://www.mql5.com |
+//+------------------------------------------------------------------+
+#property copyright "Copyright 2025, MetaQuotes Software Corp."
+#property link      "https://www.mql5.com"
+#property version   "1.00"
+#property strict
+
+// 定义绘图属性
+#property indicator_chart_window
+#property indicator_buffers 1
+#property indicator_plots 1
+#property indicator_type1 DRAW_ARROW
+#property indicator_color1 clrGreen
+#property indicator_width1 1
+#property indicator_label1 "看涨信号"
+
+// 输入参数
+input int          EMA_H4_Period = 20;        // 4小时EMA周期（核心过滤条件）
+input double       Pinbar_ShadowRatio = 2.0;  // Pinbar影线/实体比例（≥2）
+input int          MACD_Fast = 12;            // MACD快线周期
+input int          MACD_Slow = 26;            // MACD慢线周期
+input int          MACD_Signal = 9;           // MACD信号线周期
+input double       Arrow_Offset = 0.0010;     // 箭头与K线的偏移量（适配不同品种点差）
+
+// 全局变量
+int                h_ema_h4;                  // 4小时EMA句柄
+int                h_macd;                    // MACD句柄
+double             signal_arrow[];            // 信号箭头缓冲区（必须声明为数组）
+
+//+------------------------------------------------------------------+
+//| 指标初始化函数                                                  |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // 1. 注册信号箭头缓冲区（绘图核心：必须先注册缓冲区才能绘图）
+    SetIndexBuffer(0, signal_arrow, INDICATOR_DATA);
+    // 设置箭头绘图属性
+    PlotIndexSetString(0, PLOT_LABEL, "看涨信号");
+    PlotIndexSetInteger(0, PLOT_DRAW_TYPE, DRAW_ARROW);
+    PlotIndexSetInteger(0, PLOT_ARROW, 233);
+    PlotIndexSetDouble(0, PLOT_EMPTY_VALUE, EMPTY_VALUE);
+    PlotIndexSetColor(0, clrGreen);
+    PlotIndexSetInteger(0, PLOT_ARROW_SIZE, 15);
+
+    // 2. 创建4小时EMA句柄（引用H4周期数据，支持任意当前周期使用）
+    h_ema_h4 = iMA(_Symbol, PERIOD_H4, EMA_H4_Period, 0, MODE_EMA, PRICE_CLOSE);
+    if(h_ema_h4 == INVALID_HANDLE) 
+    {
+        Alert("创建H4 EMA句柄失败！错误码：", GetLastError());
+        return(INIT_FAILED);
+    }
+    
+    // 3. 创建MACD句柄（当前周期数据）
+    h_macd = iMACD(_Symbol, _Period, MACD_Fast, MACD_Slow, MACD_Signal, PRICE_CLOSE);
+    if(h_macd == INVALID_HANDLE) 
+    {
+        Alert("创建MACD句柄失败！错误码：", GetLastError());
+        return(INIT_FAILED);
+    }
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| 指标销毁函数（释放资源）                                          |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // 释放EMA和MACD句柄，避免内存泄漏
+    if(h_ema_h4 != INVALID_HANDLE) IndicatorRelease(h_ema_h4);
+    if(h_macd != INVALID_HANDLE) IndicatorRelease(h_macd);
+    
+    h_ema_h4 = INVALID_HANDLE;
+    h_macd = INVALID_HANDLE;
+}
+
+//+------------------------------------------------------------------+
+//| 识别看涨Pinbar（优化边界条件，避免除零错误）                      |
+//+------------------------------------------------------------------+
+bool IsBullishPinbar(int bar, const int rates_total, const double &open[], const double &close[], const double &high[], const double &low[])
+{
+    // 检查bar索引有效性（避免访问无效K线）
+    if(bar < 0 || bar >= rates_total) return(false);
+    
+    double open_val = open[bar];
+    double close_val = close[bar];
+    double high_val = high[bar];
+    double low_val = low[bar];
+    
+    // 总波动范围（避免除零错误）
+    double range = high_val - low_val;
+    if(range < _Point * 2) return(false); // 波动过小，视为无效K线
+    
+    // 实体大小（≤总波动的10%）
+    double body = MathAbs(open_val - close_val);
+    if(body / range > 0.1) return(false);
+    
+    // 下影线≥实体的N倍（Pinbar核心条件）
+    double lower_shadow = (close_val > open_val) ? (close_val - low_val) : (open_val - low_val);
+    // 实体为0时（十字星），直接判断下影线占比≥80%
+    if(body < _Point) 
+    {
+        return(lower_shadow / range >= 0.8);
+    }
+    else
+    {
+        return(lower_shadow / body >= Pinbar_ShadowRatio);
+    }
+}
+
+//+------------------------------------------------------------------+
+//| 检测MACD底背离（修正CopyBuffer参数，添加数组接收数据）            |
+//+------------------------------------------------------------------+
+bool IsMACD_Divergence(int bar, const int rates_total, const double &low[])
+{
+    // 至少需要bar+2根K线数据（避免索引越界）
+    if(bar + 2 >= rates_total) return(false);
+    
+    // 声明数组接收MACD数据
+    double macd_vals[3];
+    
+    // 复制MACD主线（索引0）数据
+    int copy_macd = CopyBuffer(h_macd, 0, bar, 3, macd_vals);
+    
+    // 检查数据复制是否成功
+    if(copy_macd <= 0) 
+    {
+        Print("复制MACD数据失败！错误码：", GetLastError());
+        return(false);
+    }
+    
+    // MACD底背离核心条件：价格创新低，MACD主线未创新低
+    bool price_lower = (low[bar] < low[bar + 2]); // 当前K线低点 < 前2根K线低点
+    bool macd_higher = (macd_vals[0] > macd_vals[2]); // 当前MACD > 前2根MACD
+    
+    return(price_lower && macd_higher);
+}
+
+//+------------------------------------------------------------------+
+//| 指标主函数（优化信号绘制逻辑，避免重复绘图）                      |
+//+------------------------------------------------------------------+
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+{
+    // 数据不足时跳过（至少需要10根K线+MACD背离所需的3根，共13根）
+    if(rates_total < 13) return(0);
+    
+    // 声明数组接收H4 EMA数据（当前最新1根）
+    double ema_h4[1];
+    
+    // 复制H4 EMA数据（起始位置0=最新K线，数量1）
+    if(CopyBuffer(h_ema_h4, 0, 0, 1, ema_h4) != 1) 
+    {
+        Print("复制H4 EMA数据失败！错误码：", GetLastError());
+        return(prev_calculated);
+    }
+    
+    // 遍历K线检测信号（从prev_calculated开始，避免重复计算；最小从3开始，满足bar+2索引）
+    int start_bar = MathMax(prev_calculated, 3);
+    for(int i = start_bar; i < rates_total; i++)
+    {
+        // 初始化当前K线的信号值为“空”（不显示箭头）
+        signal_arrow[i] = EMPTY_VALUE;
+        
+        // 多头过滤：当前K线收盘价在H4 20EMA上方
+        if(close[i] < ema_h4[0]) continue;
+        
+        // 同时满足：看涨Pinbar + MACD底背离 → 显示向上箭头
+        if(IsBullishPinbar(i, rates_total, open, close, high, low) && IsMACD_Divergence(i, rates_total, low))
+        {
+            // 箭头位置：当前K线低点下方，偏移量可通过输入参数调整
+            signal_arrow[i] = low[i] - Arrow_Offset;
+        }
+    }
+
+    return(rates_total);
+}
+//+------------------------------------------------------------------+

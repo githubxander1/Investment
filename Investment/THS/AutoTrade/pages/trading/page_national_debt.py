@@ -100,34 +100,47 @@ class NationalDebtPage(BasePage):
         # 获取 content_layout 里的所有 TextView 内容
         if self.diolog_title.exists():
             dialog_title_text = self.diolog_title.get_text()
+            logger.info(f"弹出交易确认框标题: {dialog_title_text}")
             if '借出资金确认' in dialog_title_text:
+                logger.info("进入借出资金确认弹窗")
                 text_views = self.content_layout.child(className="android.widget.TextView")
                 content_texts = []
                 for tv in text_views:
                     content_texts.append(tv.get_text())
+                time.sleep(1)
                 # 检查确认按钮是否可见和可点击
-                if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                # if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                if self.confirm_button.info.get('clickable', False):
                     self.confirm_button.click()
+                    logger.info("借出资金确认弹窗，点击确认按钮")
                     prompt_text = self.prompt_content.get_text()
                     if '委托已提交' in prompt_text:
                         # 检查确认按钮是否可见和可点击
-                        if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                        if self.confirm_button.info.get('clickable', False):
                             self.confirm_button.click()
-                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            logger.info('委托已提交弹窗，点击确认按钮')
+                        if self.back_button.info.get('clickable', False):
                             self.back_button.click()
-                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            logger.info('委托已提交弹窗，点击确认按钮')
+                        if self.back_button.info.get('clickable', False):
                             self.back_button.click()
-                        logger.info(f"委托成功: {prompt_text}, 内容:{content_texts}")
-                        return True, '委托成功'
+                            logger.info('委托已提交弹窗，点击确认按钮')
+                        # logger.info(f"委托成功: {prompt_text}, 内容:{content_texts}")
+                        message = f"委托成功: {prompt_text}, 内容:{content_texts}"
+                        send_notification(message)
+                        return True, message
                     else:
                         time.sleep(1)
                         # 检查确认按钮是否可见和可点击
-                        if self.confirm_button.info.get('visible', False) and self.confirm_button.info.get('clickable', False):
+                        if self.confirm_button.info.get('clickable', False):
                             self.confirm_button.click()
-                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            logger.info('点击确认按钮')
+                        if self.back_button.info.get('clickable', False):
                             self.back_button.click()
-                        if self.back_button.info.get('visible', False) and self.back_button.info.get('clickable', False):
+                            logger.info('点击返回按钮')
+                        if self.back_button.info.get('clickable', False):
                             self.back_button.click()
+                            logger.info('点击返回按钮')
                         error_msg = f"委托失败: {prompt_text}, 返回账户页"
                         logger.warning(error_msg)
                         send_notification(error_msg)
@@ -142,10 +155,13 @@ class NationalDebtPage(BasePage):
                 # 检查确认按钮是否可见和可点击
                 if self.confirm_button.info.get('clickable', False):
                     self.confirm_button.click()
+                    logger.info('点击确认按钮')
                 if self.back_button.info.get('clickable', False):
                     self.back_button.click()
+                    logger.info('点击返回按钮')
                 if self.back_button.info.get('clickable', False):
                     self.back_button.click()
+                    logger.info('点击返回按钮')
                 error_msg = f"委托失败: {prompt_text}"
                 logger.error(error_msg)
                 send_notification(error_msg)
@@ -237,13 +253,13 @@ class NationalDebtPage(BasePage):
                     return False, error_msg
 
             # 6. 处理交易确认
-            result = self._handle_transaction_confirm()
-            success, message = result
+            time.sleep(1)
+            success, message = self._handle_transaction_confirm()
 
             # 发送通知
-            send_notification(f"国债逆回购任务完成: {success} {message}")
+            # send_notification(f"国债逆回购任务完成: {success} {message}")
             logger.info(f"---------------------国债逆回购任务执行完毕---------------------")
-            return result
+            return success, message
 
         except Exception as e:
             error_msg = f"操作失败: {str(e)}"

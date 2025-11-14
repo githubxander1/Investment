@@ -204,7 +204,7 @@ async def main():
                 #     logger.debug("离开组合和策略更新时间窗口，重置执行标志")
 
                 # 3. 国债逆回购操作（14:56-15:10）
-                if dt_time(14, 56) <= now <= dt_time(15, 10):
+                if dt_time(14, 56) <= now <= dt_time(15, 30):
                     if not guozhai_executed:
                         current_account = ACCOUNTS[current_account_index]
                         logger.info(f"---------------------国债逆回购任务开始执行 (当前账户: {current_account})---------------------")

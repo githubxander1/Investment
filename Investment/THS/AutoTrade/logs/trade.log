@@ -1293,3 +1293,59 @@ TypeError: cannot unpack non-iterable NoneType object
 [32m2025-11-13 11:27:33 - INFO - 计算股数: 12330.740399999999 / 51.2 = 240[0m
 [32m2025-11-13 11:27:33 - INFO - 计算买入股数: 200[0m
 [32m2025-11-13 11:28:15 - INFO - 买入 赛腾股份 200股 True 委托已提交，合同号为：53768[0m
+[32m2025-11-14 10:42:19 - INFO - 目标投资金额: 46229.41 * 33.0% = 15255.7053[0m
+[32m2025-11-14 10:42:19 - INFO - 计算股数: 15255.7053 / 39.53 = 385[0m
+[32m2025-11-14 10:42:19 - INFO - 计算买入股数: 300[0m
+[32m2025-11-14 10:43:02 - INFO - 买入 张江高科 300股 True 委托已提交，合同号为：50890[0m
+[32m2025-11-14 10:43:57 - INFO - 全部卖出[0m
+[32m2025-11-14 10:44:41 - INFO - 卖出 金风科技 800股 True 委托已提交，合同号为：51344[0m
+[33m2025-11-14 10:45:32 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:46:31 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:47:31 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:48:30 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:49:24 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:50:15 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:51:14 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:52:05 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:52:50 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:53:49 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:54:47 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:55:44 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:56:45 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:57:44 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:58:41 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 10:59:38 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:00:27 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:01:28 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:02:31 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:03:15 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:03:59 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:04:52 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:05:44 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:06:40 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:07:36 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:08:33 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:09:36 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:10:30 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:11:33 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:12:29 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:13:29 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:14:13 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:15:08 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:15:53 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:16:43 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:17:39 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:18:27 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:19:26 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:20:16 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:21:03 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:22:00 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:23:01 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:23:52 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:24:55 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:25:48 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:26:38 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:27:30 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:28:18 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 11:29:20 - WARNING - 无可用数量: available_shares=0[0m
+[33m2025-11-14 13:00:25 - WARNING - 无可用数量: available_shares=0[0m
