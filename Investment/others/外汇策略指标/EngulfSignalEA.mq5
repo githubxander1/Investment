@@ -1,5 +1,22 @@
 //+------------------------------------------------------------------+
 //|                     EngulfSignalEA.mq5                           |
+//|                     吞噬形态信号EA                                 |
+//+------------------------------------------------------------------+
+//| 功能说明：
+//| 本EA基于K线形态（阳线买入，阴线卖出）进行交易，具有完整的交易统计和报告功能。
+//| 最新版本新增了基于账户价值的动态手数管理功能，可以根据账户余额自动调整交易手数。
+//|
+//| 资金管理功能说明：
+//| 1. 动态手数计算：根据账户净值和设定的风险参数自动计算最优交易手数
+//| 2. 风险控制：通过设置每笔交易的风险百分比或固定风险金额来控制亏损
+//| 3. 手数限制：可以设定最小和最大交易手数，避免过大或过小的交易量
+//| 4. 多种风险计算模式：支持基于止损点数和固定风险金额两种计算方式
+//|
+//| 使用方法：
+//| 1. 在EA参数中开启"UseDynamicLotSize"选项启用动态手数
+//| 2. 设置"RiskPerTrade"参数（每笔交易的风险百分比）或"FixedRiskAmount"（固定风险金额）
+//| 3. 选择合适的"RiskCalculationType"计算方式（0-基于止损点数，1-基于固定风险）
+//| 4. 根据需要调整"MinLotSize"和"MaxLotSize"限制手数范围
 //+------------------------------------------------------------------+
 #property copyright ""
 #property link      ""
@@ -46,6 +63,36 @@ input double MaxLotSize = 5.0;           // 最大交易手数
 input int RiskCalculationType = 0;       // 风险计算类型 (0=基于止损点数, 1=固定金额)
 input double FixedRiskAmount = 50.0;     // 固定风险金额(当RiskCalculationType=1时使用)
 
+// 交易量过滤参数
+input bool UseVolumeFilter = true;       // 启用交易量过滤
+input double VolumeMultiplier = 1.5;     // 交易量倍数阈值
+input int VolumePeriod = 20;             // 计算平均交易量的周期
+
+// 趋势过滤参数
+input bool UseTrendFilter = true;        // 启用趋势过滤
+input int TrendPeriod = 50;              // 趋势检测周期(移动平均线周期)
+input int TrendConfirmationPeriod = 20;  // 趋势确认周期(较短移动平均线)
+
+// 吞没形态参数
+input double MinEngulfRatio = 0.8;       // 最小吞没比例 (前一根K线的百分比)
+input bool AllowPartialEngulf = false;   // 允许部分吞没 (不完全覆盖前一根K线)
+input int MinBodySize = 1;               // 最小K线实体大小 (点数)
+
+// 交易时间参数
+input bool UseTimeFilter = false;        // 使用交易时间过滤器
+input int TradingStartHour = 0;          // 开始交易时间（小时）
+input int TradingEndHour = 24;           // 结束交易时间（小时）
+
+// 市场自适应参数
+input bool UseAdaptiveParameters = false; // 使用自适应参数
+input int VolatilityPeriod = 20;         // 波动率计算周期
+input double VolatilityFactor = 1.5;     // 波动率因子
+
+// 信号控制参数
+input bool UseSignalFrequencyControl = true; // 使用信号频率控制
+input int MinSignalInterval = 30;         // 最小信号间隔 (分钟)
+input double MinSignalQualityScore = 0.6; // 最小信号质量评分 (0-1)
+
 // 交易统计结构体
 typedef struct
 {
@@ -76,6 +123,81 @@ TradingStatistics stats;
 // 资金管理相关变量
 double accountValue = 0.0;              // 账户价值(用于资金管理)
 
+// 信号控制变量
+datetime g_lastBuySignalTime = 0;       // 上次买入信号时间
+datetime g_lastSellSignalTime = 0;      // 上次卖出信号时间
+
+//+------------------------------------------------------------------+
+//| 计算信号质量评分                                                 |
+//| 参数说明:                                                        |
+//|   isBullish    - 是否为看涨信号                                  |
+//|   prevVolume   - 前一根K线的交易量                              |
+//|   avgVolume    - 平均交易量                                      |
+//|   trendDirection - 趋势方向 (1:上涨, -1:下跌, 0:横盘)            |
+//|   volatility   - 当前市场波动率                                  |
+//|   engulfRatio  - 吞没形态的相对大小比例                          |
+//| 返回值:                                                          |
+//|   信号质量评分 (0.0-1.0)，分数越高信号质量越好                    |
+//+------------------------------------------------------------------+
+double CalculateSignalQuality(bool isBullish, double prevVolume, double avgVolume, int trendDirection, double volatility, double engulfRatio)
+{
+    double score = 0.5; // 基础分数，所有信号起始评分
+    
+    // 交易量评分 (0-0.2) - 交易量高于平均水平的信号更可靠
+    double volumeScore = MathMin(0.2, (prevVolume/avgVolume) * 0.1);
+    score += volumeScore;
+    
+    // 趋势方向评分 (0-0.3) - 与趋势同向的信号更可靠
+    if(isBullish && trendDirection == 1) score += 0.3; // 看涨信号且上涨趋势
+    else if(!isBullish && trendDirection == -1) score += 0.3; // 看跌信号且下跌趋势
+    else if(trendDirection == 0) score += 0.1; // 横盘趋势中信号强度中等
+    
+    // 吞没比例评分 (0-0.2) - 吞没比例越大，信号强度越高
+    double engulfScore = MathMin(0.2, (engulfRatio-1.0) * 0.1);
+    score += engulfScore;
+    
+    // 波动率评分 (0-0.1) - 市场波动率接近设定阈值时，信号更可靠
+    double volatilityFactor = 0.1 - MathAbs(volatility - VolatilityFactor) * 0.05;
+    score += MathMax(0.0, volatilityFactor);
+    
+    // 确保评分在合理范围内 (0.0-1.0)
+    return MathMin(1.0, MathMax(0.0, score));
+}
+
+//+------------------------------------------------------------------+
+//| 检查信号频率控制                                                 |
+//| 功能: 防止在短时间内产生过多交易信号，减少噪音交易                 |
+//| 参数说明:                                                        |
+//|   isBuySignal - 是否为买入信号                                    |
+//| 返回值:                                                          |
+//|   true  - 通过频率检查，可以执行交易                              |
+//|   false - 未通过频率检查，跳过此次交易                            |
+//+------------------------------------------------------------------+
+bool CheckSignalFrequency(bool isBuySignal)
+{
+    // 如果未启用信号频率控制，直接返回通过
+    if(!UseSignalFrequencyControl) return true;
+    
+    // 根据信号类型获取上次信号时间
+    datetime lastSignalTime = (isBuySignal ? g_lastBuySignalTime : g_lastSellSignalTime);
+    int minutesSinceLastSignal = (TimeCurrent() - lastSignalTime) / 60;
+    
+    // 检查距离上次信号的时间是否满足最小间隔要求
+    if(minutesSinceLastSignal < MinSignalInterval)
+    {
+        LogMessage("信号频率控制：上次信号后仅" + (string)minutesSinceLastSignal + "分钟，需等待至少" + (string)MinSignalInterval + "分钟", 2);
+        return false;
+    }
+    
+    // 更新最后信号时间，记录此次信号
+    if(isBuySignal)
+        g_lastBuySignalTime = TimeCurrent();
+    else
+        g_lastSellSignalTime = TimeCurrent();
+    
+    return true;
+}
+
 //+------------------------------------------------------------------+
 //| EA初始化函数                                                     |
 //+------------------------------------------------------------------+
@@ -88,8 +210,8 @@ int OnInit()
     LogMessage("EngulfSignalEA初始化开始", 3);
     
     // 记录EA参数设置
-    LogMessage("EA参数设置 - 止损: " + (string)StopLoss + ", 止盈: " + (string)TakeProfit + ", 手数: " + DoubleToString(Lots, 2), 3);
-    LogMessage("追踪止损设置 - 启用: " + (string)UseTrailingStop + ", 点数: " + (string)TrailingStop, 3);
+    LogMessage("EA参数设置 - 止损: ", (string)StopLoss, ", 止盈: ", (string)TakeProfit, ", 手数: ", DoubleToString(Lots, 2), 3);
+    LogMessage("追踪止损设置 - 启用: ", (string)UseTrailingStop, ", 点数: ", (string)TrailingStop, 3);
     
     // 获取当前K线索引
     LastBarIndex = Bars - 1;
@@ -121,17 +243,17 @@ int OnInit()
         stats.lastReportTime = TimeCurrent();
         
         LogMessage("交易统计系统已初始化", 3);
-    }
+     }
     
     // 初始化账户价值（用于资金管理）
     accountValue = AccountInfoDouble(ACCOUNT_EQUITY);
-    LogMessage("账户价值初始化: " + DoubleToString(accountValue, 2), 3);
+    LogMessage("账户价值初始化: ", DoubleToString(accountValue, 2), 3);
     
     // 如果启用动态手数，计算初始手数
     if(UseDynamicLotSize)
     {
         double calculatedLot = CalculateLotSize();
-        LogMessage("动态手数计算: " + DoubleToString(calculatedLot, 2), 3);
+        LogMessage("动态手数计算: ", DoubleToString(calculatedLot, 2), 3);
     }
     
     // 初始化完成日志
@@ -145,7 +267,7 @@ int OnInit()
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
 {
-    LogMessage("EngulfSignalEA去初始化，原因: " + (string)reason);
+    LogMessage("EngulfSignalEA去初始化，原因: ", (string)reason);
 }
 
 //+------------------------------------------------------------------+
@@ -153,6 +275,9 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 void OnTick()
 {
+    // 更新账户价值（用于动态手数计算）
+    UpdateAccountValue();
+    
     // 检查是否有新K线形成
     CheckNewBar();
     
@@ -194,57 +319,406 @@ void CheckNewBar()
 }
 
 //+------------------------------------------------------------------+
-//| 分析K线信号                                                      |
+//| 计算平均交易量                                                    |
 //+------------------------------------------------------------------+
-void AnalyzeSignal()
+double CalculateAverageVolume(int period)
 {
-    // 获取当前K线数据
-    double open = Open[1];   // 使用[1]获取已完成的K线
-    double close = Close[1];
-    double high = High[1];
-    double low = Low[1];
-    datetime time = Time[1];
+    double sumVolume = 0.0;
+    int availableBars = MathMin(Bars, period);
     
-    LogMessage("分析K线信号 (" + TimeToString(time, TIME_DATE|TIME_MINUTES) + ") - 开盘: " + DoubleToString(open, Digits) + 
-               ", 最高: " + DoubleToString(high, Digits) + ", 最低: " + DoubleToString(low, Digits) + 
-               ", 收盘: " + DoubleToString(close, Digits), 3);
-    
-    // 计算K线变化百分比
-    double changePercent = ((close - open) / open) * 100.0;
-    LogMessage("K线变化: " + DoubleToString(changePercent, 4) + "%", 4);
-    
-    // 检查买入信号：收盘价高于开盘价（阳线）
-    if(close > open)
+    // 计算指定周期内的平均交易量
+    for(int i = 1; i <= availableBars; i++)
     {
-        LogMessage("检测到买入信号: 阳线K线", 3);
-        // 检查是否已有多头持仓
-        if(PositionSelect(Symbol()) && PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-        {
-            LogMessage("已有多头持仓，不执行新的买入操作", 3);
-            return;
-        }
-        
-        // 执行买入操作
-        ExecuteBuyOrder();
+        sumVolume += Volume[i];
     }
-    // 检查卖出信号：收盘价低于开盘价（阴线）
-    else if(close < open)
+    
+    return sumVolume / availableBars;
+}
+
+//+------------------------------------------------------------------+
+//| 计算简单移动平均线                                                |
+//+------------------------------------------------------------------+
+double CalculateSMA(int period)
+{
+    double sumClose = 0.0;
+    int availableBars = MathMin(Bars, period);
+    
+    // 计算指定周期内的简单移动平均线
+    for(int i = 1; i <= availableBars; i++)
     {
-        LogMessage("检测到卖出信号: 阴线K线", 3);
-        // 检查是否已有空头持仓
-        if(PositionSelect(Symbol()) && PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-        {
-            LogMessage("已有空头持仓，不执行新的卖出操作", 3);
-            return;
-        }
-        
-        // 执行卖出操作
-        ExecuteSellOrder();
+        sumClose += Close[i];
+    }
+    
+    return sumClose / availableBars;
+}
+
+//+------------------------------------------------------------------+
+//| 检测趋势方向                                                    |
+//+------------------------------------------------------------------+
+int DetectTrend()
+{
+    // 计算两条不同周期的移动平均线
+    double longSMA = CalculateSMA(TrendPeriod);
+    double shortSMA = CalculateSMA(TrendConfirmationPeriod);
+    
+    // 计算移动平均线的方向变化
+    double longSMAPrev = CalculateSMA(TrendPeriod + 1);
+    double shortSMAPrev = CalculateSMA(TrendConfirmationPeriod + 1);
+    
+    LogMessage("趋势分析: 长期SMA=" + DoubleToString(longSMA, Digits) + ", 短期SMA=" + DoubleToString(shortSMA, Digits), 3);
+    
+    // 确定趋势方向
+    // 1 = 上涨趋势, -1 = 下跌趋势, 0 = 横盘
+    if(shortSMA > longSMA && shortSMAPrev > longSMAPrev)
+    {
+        return 1; // 上涨趋势
+    }
+    else if(shortSMA < longSMA && shortSMAPrev < longSMAPrev)
+    {
+        return -1; // 下跌趋势
     }
     else
     {
-        LogMessage("无信号: 平盘K线", 3);
+        return 0; // 横盘
     }
+}
+
+//+------------------------------------------------------------------+
+//| 分析K线信号 - 实现吞没形态识别与多维度过滤机制                  |
+//| 功能: 检测吞没形态交易信号，应用多种过滤机制，并执行相应的交易操作   |
+//| 核心流程:                                                        |
+//|   1. 数据量检查 - 确保有足够K线数据进行分析                       |
+//|   2. 时间过滤 - 检查是否在设定的交易时间范围内                    |
+//|   3. 获取K线数据 - 收集前前K线和前K线的OHLCV数据                  |
+//|   4. 交易量过滤 - 确保信号有足够的交易量支持                      |
+//|   5. 趋势过滤 - 确定当前市场趋势方向                              |
+//|   6. 吞没形态识别 - 检测看涨或看跌吞没形态，并考虑实体大小和比例    |
+//|   7. 波动率计算 - 根据市场波动率调整信号敏感度                      |
+//|   8. 信号质量评分 - 综合评估信号质量                              |
+//|   9. 信号频率控制 - 防止在短时间内产生过多交易                      |
+//| 10. 执行交易操作 - 买入或卖出操作                                |
+//+------------------------------------------------------------------+
+void AnalyzeSignal()
+{
+    // 确保有足够的K线数据进行吞没形态分析和趋势检测
+    int requiredBars = MathMax(3, MathMax(MathMax(VolumePeriod + 1, TrendPeriod + 1), VolatilityPeriod + 1));
+    if(Bars < requiredBars)
+    {
+        LogMessage("K线数据不足，需要至少" + (string)requiredBars + "根K线，当前仅有" + (string)Bars + "根", 2);
+        return;
+    }
+    
+    // 交易时间过滤检查
+    if(UseTimeFilter)
+    {
+        datetime now = TimeLocal();
+        int currentHour = TimeHour(now);
+        if(currentHour < TradingStartHour || currentHour >= TradingEndHour)
+        {
+            LogMessage("当前时间不在交易时间范围内，跳过信号分析", 3);
+            return;
+        }
+    }
+    
+    // 获取当前K线和前一根K线的数据
+    // 使用[2]表示前前一根K线(已完成)，[1]表示前一根K线(已完成)，[0]表示当前K线(可能未完成)
+    double prevPrevOpen = Open[2];
+    double prevPrevClose = Close[2];
+    double prevPrevHigh = High[2];
+    double prevPrevLow = Low[2];
+    
+    double prevOpen = Open[1];
+    double prevClose = Close[1];
+    double prevHigh = High[1];
+    double prevLow = Low[1];
+    long prevVolume = Volume[1]; // 获取前一根K线的交易量
+    
+    datetime prevTime = Time[1];
+    
+    LogMessage("分析K线信号 (吞没形态识别) - 时间: " + TimeToString(prevTime, TIME_DATE|TIME_MINUTES), 3);
+    
+    // 交易量过滤检查
+    bool volumeCondition = true;
+    if(UseVolumeFilter)
+    {
+        double avgVolume = CalculateAverageVolume(VolumePeriod);
+        volumeCondition = (prevVolume >= avgVolume * VolumeMultiplier);
+        
+        LogMessage("交易量检查: 当前=" + IntegerToString(prevVolume) + ", 平均=" + DoubleToString(avgVolume, 2) + ", 阈值倍数=" + DoubleToString(VolumeMultiplier, 2) + ", 条件=" + (volumeCondition ? "满足" : "不满足"), 3);
+        
+        // 如果不满足交易量条件，直接返回
+        if(!volumeCondition)
+        {
+            LogMessage("交易量不足，忽略信号", 3);
+            return;
+        }
+    }
+    
+    // 趋势过滤检查
+    int trendDirection = 0;
+    if(UseTrendFilter)
+    {
+        trendDirection = DetectTrend();
+        string trendText = (trendDirection == 1 ? "上涨" : (trendDirection == -1 ? "下跌" : "横盘"));
+        LogMessage("趋势方向: " + trendText, 3);
+    }
+    
+    // 计算K线幅度和实体大小
+    double prevPrevRange = prevPrevHigh - prevPrevLow;
+    double prevRange = prevHigh - prevLow;
+    double prevPrevBody = MathAbs(prevPrevClose - prevPrevOpen);
+    double prevBody = MathAbs(prevClose - prevOpen);
+    
+    // 计算点值大小
+    double pointSize = SymbolInfoDouble(Symbol(), SYMBOL_POINT);
+    
+    // 检查最小K线实体大小
+    bool minBodySizeCondition = (prevBody >= MinBodySize * pointSize) && (prevPrevBody >= MinBodySize * pointSize);
+    if(!minBodySizeCondition)
+    {
+        LogMessage("K线实体大小不符合要求，当前实体: " + DoubleToString(prevBody/pointSize, 2) + "点, 前一根实体: " + DoubleToString(prevPrevBody/pointSize, 2) + "点", 3);
+    }
+    
+    // 检查看涨吞没形态
+    bool isBullishEngulfing = false;
+    if(minBodySizeCondition && volumeCondition && prevPrevClose < prevPrevOpen && prevClose > prevOpen)
+    {
+        if(AllowPartialEngulf)
+        {
+            // 部分吞没：前一根K线收盘价高于前前一根K线开盘价，且前一根K线开盘价低于前前一根K线收盘价
+            isBullishEngulfing = (prevClose > prevPrevOpen && prevOpen < prevPrevClose);
+        }
+        else
+        {
+            // 完全吞没：前一根K线最高价高于前前一根K线最高价，且前一根K线最低价低于前前一根K线最低价
+            isBullishEngulfing = (prevHigh >= prevPrevHigh && prevLow <= prevPrevLow);
+        }
+        
+        // 检查吞没比例
+        if(isBullishEngulfing && MinEngulfRatio > 0)
+        {
+            double engulfRatio = prevRange / prevPrevRange;
+            isBullishEngulfing = (engulfRatio >= MinEngulfRatio);
+            LogMessage("看涨吞没比例: " + DoubleToString(engulfRatio, 2) + " (要求: " + DoubleToString(MinEngulfRatio, 2) + ")", 3);
+        }
+    }
+    
+    // 检查看跌吞没形态
+    bool isBearishEngulfing = false;
+    if(minBodySizeCondition && volumeCondition && prevPrevClose > prevPrevOpen && prevClose < prevOpen)
+    {
+        if(AllowPartialEngulf)
+        {
+            // 部分吞没：前一根K线收盘价低于前前一根K线开盘价，且前一根K线开盘价高于前前一根K线收盘价
+            isBearishEngulfing = (prevClose < prevPrevOpen && prevOpen > prevPrevClose);
+        }
+        else
+        {
+            // 完全吞没：前一根K线最高价高于前前一根K线最高价，且前一根K线最低价低于前前一根K线最低价
+            isBearishEngulfing = (prevHigh >= prevPrevHigh && prevLow <= prevPrevLow);
+        }
+        
+        // 检查吞没比例
+        if(isBearishEngulfing && MinEngulfRatio > 0)
+        {
+            double engulfRatio = prevRange / prevPrevRange;
+            isBearishEngulfing = (engulfRatio >= MinEngulfRatio);
+            LogMessage("看跌吞没比例: " + DoubleToString(engulfRatio, 2) + " (要求: " + DoubleToString(MinEngulfRatio, 2) + ")", 3);
+        }
+    }
+    
+    // 计算市场波动率（用于自适应参数）
+    double volatility = 0;
+    if(UseAdaptiveParameters)
+    {
+        volatility = CalculateVolatility(VolatilityPeriod);
+        LogMessage("市场波动率: " + DoubleToString(volatility, 5), 3);
+    }
+    
+    // 处理看涨吞没信号
+    if(isBullishEngulfing)
+    {
+        // 趋势过滤：买入信号只在上涨趋势或横盘时执行
+        bool trendFilterForBuy = (!UseTrendFilter || trendDirection == 1 || trendDirection == 0);
+        
+        // 自适应过滤：根据市场波动率调整信号敏感度
+        bool volatilityFilterForBuy = true;
+        if(UseAdaptiveParameters && volatility > 0)
+        {
+            double effectiveVolatilityFactor = VolatilityFactor * 2;
+            if(volatility > effectiveVolatilityFactor)
+            {
+                // 高波动市场需要更强的确认条件：成交量必须明显增加
+                double avgVolume = CalculateAverageVolume(VolumePeriod);
+                volatilityFilterForBuy = (prevVolume >= avgVolume * 1.5);
+                if(!volatilityFilterForBuy)
+                {
+                    LogMessage("高波动市场中，成交量不足（当前: " + IntegerToString(prevVolume) + ", 平均: " + DoubleToString(avgVolume, 2) + ")", 2);
+                }
+            }
+        }
+        
+        if(trendFilterForBuy && volatilityFilterForBuy)
+        {
+            // 记录信号详情
+            string signalDetails = "看涨吞没信号 - 前前K线: " + 
+                                  DoubleToString(prevPrevOpen, Digits) + "/" + 
+                                  DoubleToString(prevPrevClose, Digits) + ", 前K线: " + 
+                                  DoubleToString(prevOpen, Digits) + "/" + 
+                                  DoubleToString(prevClose, Digits) + ", 交易量: " + 
+                                  IntegerToString(prevVolume);
+            LogMessage(signalDetails, 2);
+            
+            LogMessage("检测到看涨吞没形态且符合趋势方向 - 执行买入操作", 2);
+            
+            // 检查是否已有多头持仓
+            if(PositionSelect(Symbol()) && PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+            {
+                LogMessage("已有多头持仓，不执行新的买入操作", 3);
+                return;
+            }
+            
+            // 计算信号质量评分
+            double avgVolume = CalculateAverageVolume(VolumePeriod);
+            double prevPrevRange = prevPrevHigh - prevPrevLow;
+            double prevRange = prevHigh - prevLow;
+            double engulfRatio = (prevPrevRange > 0) ? (prevRange / prevPrevRange) : 1.0;
+            double signalQuality = CalculateSignalQuality(true, prevVolume, avgVolume, trendDirection, volatility, engulfRatio);
+            
+            LogMessage("买入信号质量评分: " + DoubleToString(signalQuality, 2) + " (最小要求: " + DoubleToString(MinSignalQualityScore, 2) + ")", 2);
+            
+            // 信号质量过滤
+            if(signalQuality >= MinSignalQualityScore)
+            {
+                // 信号频率控制
+                if(CheckSignalFrequency(true))
+                {
+                    LogMessage("信号质量和频率验证通过，执行买入操作", 2);
+                    // 执行买入操作
+                    ExecuteBuyOrder();
+                }
+                else
+                {
+                    LogMessage("信号频率控制未通过，跳过买入操作", 2);
+                }
+            }
+            else
+            {
+                LogMessage("信号质量评分低于阈值，跳过买入操作", 2);
+            }
+        }
+        else if(!trendFilterForBuy)
+        {
+            LogMessage("检测到看涨吞没形态但不符合趋势方向（当前为下跌趋势），忽略买入信号", 2);
+        }
+    }
+    // 处理看跌吞没信号
+    else if(isBearishEngulfing)
+    {
+        // 趋势过滤：卖出信号只在下跌趋势或横盘时执行
+        bool trendFilterForSell = (!UseTrendFilter || trendDirection == -1 || trendDirection == 0);
+        
+        // 自适应过滤：根据市场波动率调整信号敏感度
+        bool volatilityFilterForSell = true;
+        if(UseAdaptiveParameters && volatility > 0)
+        {
+            double effectiveVolatilityFactor = VolatilityFactor * 2;
+            if(volatility > effectiveVolatilityFactor)
+            {
+                // 高波动市场需要更强的确认条件：成交量必须明显增加
+                double avgVolume = CalculateAverageVolume(VolumePeriod);
+                volatilityFilterForSell = (prevVolume >= avgVolume * 1.5);
+                if(!volatilityFilterForSell)
+                {
+                    LogMessage("高波动市场中，成交量不足（当前: " + IntegerToString(prevVolume) + ", 平均: " + DoubleToString(avgVolume, 2) + ")", 2);
+                }
+            }
+        }
+        
+        if(trendFilterForSell && volatilityFilterForSell)
+        {
+            // 记录信号详情
+            string signalDetails = "看跌吞没信号 - 前前K线: " + 
+                                  DoubleToString(prevPrevOpen, Digits) + "/" + 
+                                  DoubleToString(prevPrevClose, Digits) + ", 前K线: " + 
+                                  DoubleToString(prevOpen, Digits) + "/" + 
+                                  DoubleToString(prevClose, Digits) + ", 交易量: " + 
+                                  IntegerToString(prevVolume);
+            LogMessage(signalDetails, 2);
+            
+            LogMessage("检测到看跌吞没形态且符合趋势方向 - 执行卖出操作", 2);
+            
+            // 检查是否已有空头持仓
+            if(PositionSelect(Symbol()) && PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+            {
+                LogMessage("已有空头持仓，不执行新的卖出操作", 3);
+                return;
+            }
+            
+            // 计算信号质量评分
+            double avgVolume = CalculateAverageVolume(VolumePeriod);
+            double prevPrevRange = prevPrevHigh - prevPrevLow;
+            double prevRange = prevHigh - prevLow;
+            double engulfRatio = (prevPrevRange > 0) ? (prevRange / prevPrevRange) : 1.0;
+            double signalQuality = CalculateSignalQuality(false, prevVolume, avgVolume, trendDirection, volatility, engulfRatio);
+            
+            LogMessage("卖出信号质量评分: " + DoubleToString(signalQuality, 2) + " (最小要求: " + DoubleToString(MinSignalQualityScore, 2) + ")", 2);
+            
+            // 信号质量过滤
+            if(signalQuality >= MinSignalQualityScore)
+            {
+                // 信号频率控制
+                if(CheckSignalFrequency(false))
+                {
+                    LogMessage("信号质量和频率验证通过，执行卖出操作", 2);
+                    // 执行卖出操作
+                    ExecuteSellOrder();
+                }
+                else
+                {
+                    LogMessage("信号频率控制未通过，跳过卖出操作", 2);
+                }
+            }
+            else
+            {
+                LogMessage("信号质量评分低于阈值，跳过卖出操作", 2);
+            }
+        }
+        else if(!trendFilterForSell)
+        {
+            LogMessage("检测到看跌吞没形态但不符合趋势方向（当前为上涨趋势），忽略卖出信号", 2);
+        }
+    }
+    else
+    {
+        LogMessage("未检测到有效吞没形态", 3);
+    }
+}
+
+//+------------------------------------------------------------------+
+//| 计算市场波动率                                                   |
+//+------------------------------------------------------------------+
+//| 功能: 计算指定周期内的平均价格波幅，作为市场波动率的衡量指标        |
+//| 参数说明:                                                        |
+//|   period - 计算周期长度，即要分析的K线数量                         |
+//| 返回值:                                                          |
+//|   平均波动率值，表示该周期内的平均价格波动幅度                      |
+//| 计算原理:                                                        |
+//|   使用简化版的ATR (平均真实波幅) 计算方法，取每个K线的最高价减最低价  |
+//|   然后计算平均值作为市场波动率指标                                |
+double CalculateVolatility(int period)
+{
+    double sumRange = 0;
+    
+    // 计算平均真实波幅 (ATR的简化版)
+    for(int i = 1; i <= period; i++)
+    {
+        double range = High[i] - Low[i];
+        sumRange += range;
+    }
+    
+    // 返回平均波动率值
+    return sumRange / period;
 }
 
 //+------------------------------------------------------------------+
@@ -267,16 +741,20 @@ void ExecuteBuyOrder()
     }
     
     // 获取当前市场数据
-    double currentAsk = Ask;
-    double currentBid = Bid;
-    double spread = (Ask - Bid) / Point;
+    double currentAsk = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
+    double currentBid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
+    double point = SymbolInfoDouble(Symbol(), SYMBOL_POINT);
+    double spread = (currentAsk - currentBid) / point;
+    
+    // 计算动态手数
+    double lotSize = CalculateLotSize();
     
     // 计算止损和止盈价格
-    double stopLossPrice = currentAsk - StopLoss * Point;
-    double takeProfitPrice = currentAsk + TakeProfit * Point;
+    double stopLossPrice = currentAsk - StopLoss * point;
+    double takeProfitPrice = currentAsk + TakeProfit * point;
     
     LogMessage("准备执行买入订单 - 货币对: " + Symbol() + ", 周期: " + EnumToString(Period()) + 
-               ", 手数: " + DoubleToString(Lots, 2) + ", 当前价格: " + DoubleToString(currentAsk, Digits) + 
+               ", 手数: " + DoubleToString(lotSize, 2) + ", 当前价格: " + DoubleToString(currentAsk, Digits) + 
                ", 点差: " + DoubleToString(spread, 0) + "点", 2);
     LogMessage("止损价格: " + DoubleToString(stopLossPrice, Digits) + 
                " (" + (string)StopLoss + "点), 止盈价格: " + DoubleToString(takeProfitPrice, Digits) + 
@@ -304,7 +782,7 @@ void ExecuteBuyOrder()
         
         request.action = TRADE_ACTION_DEAL;
         request.symbol = Symbol();
-        request.volume = Lots;
+        request.volume = lotSize;
         request.type = ORDER_TYPE_BUY;
         request.price = currentAsk;
         request.sl = stopLossPrice;
@@ -314,7 +792,7 @@ void ExecuteBuyOrder()
         request.comment = "EngulfSignalEA买入";
         
         // 记录详细日志
-        LogMessage("尝试发送买入订单: 品种=" + Symbol() + ", 手数=" + DoubleToString(Lots, 2) + ", 价格=" + DoubleToString(request.price, Digits), 4);
+        LogMessage("尝试发送买入订单: 品种=" + Symbol() + ", 手数=" + DoubleToString(lotSize, 2) + ", 价格=" + DoubleToString(request.price, Digits), 4);
         
         if(OrderSend(request, result))
         {
@@ -326,7 +804,7 @@ void ExecuteBuyOrder()
                 // 记录下单后账户状态
                 LogAccountInfo(3);
                 // 记录交易历史
-                RecordTradeHistory(result.order, POSITION_TYPE_BUY, result.price, Lots);
+                RecordTradeHistory(result.order, POSITION_TYPE_BUY, result.price, lotSize);
                 HandleError(ERR_SUCCESS, "ExecuteBuyOrder", false); // 重置错误计数
                 success = true;
             }
@@ -343,8 +821,8 @@ void ExecuteBuyOrder()
                     LogMessage("将在 " + (string)RetryDelayMs + "ms 后重试买入订单 (第" + (string)retryCount + "次)", 2);
                     Sleep(RetryDelayMs);
                     // 刷新价格
-                    currentAsk = Ask;
-                    currentBid = Bid;
+                    currentAsk = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
+                    currentBid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
                 }
                 else
                 {
@@ -366,8 +844,8 @@ void ExecuteBuyOrder()
                 LogMessage("将在 " + (string)RetryDelayMs + "ms 后重试买入订单 (第" + (string)retryCount + "次)", 2);
                 Sleep(RetryDelayMs);
                 // 刷新价格
-                currentAsk = Ask;
-                currentBid = Bid;
+                currentAsk = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
+                currentBid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
             }
             else
             {
@@ -397,16 +875,20 @@ void ExecuteSellOrder()
     }
     
     // 获取当前市场数据
-    double currentAsk = Ask;
-    double currentBid = Bid;
-    double spread = (Ask - Bid) / Point;
+    double currentAsk = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
+    double currentBid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
+    double point = SymbolInfoDouble(Symbol(), SYMBOL_POINT);
+    double spread = (currentAsk - currentBid) / point;
+    
+    // 计算动态手数
+    double lotSize = CalculateLotSize();
     
     // 计算止损和止盈价格
-    double stopLossPrice = currentBid + StopLoss * Point;
-    double takeProfitPrice = currentBid - TakeProfit * Point;
+    double stopLossPrice = currentBid + StopLoss * point;
+    double takeProfitPrice = currentBid - TakeProfit * point;
     
     LogMessage("准备执行卖出订单 - 货币对: " + Symbol() + ", 周期: " + EnumToString(Period()) + 
-               ", 手数: " + DoubleToString(Lots, 2) + ", 当前价格: " + DoubleToString(currentBid, Digits) + 
+               ", 手数: " + DoubleToString(lotSize, 2) + ", 当前价格: " + DoubleToString(currentBid, Digits) + 
                ", 点差: " + DoubleToString(spread, 0) + "点", 2);
     LogMessage("止损价格: " + DoubleToString(stopLossPrice, Digits) + 
                " (" + (string)StopLoss + "点), 止盈价格: " + DoubleToString(takeProfitPrice, Digits) + 
@@ -434,7 +916,7 @@ void ExecuteSellOrder()
         
         request.action = TRADE_ACTION_DEAL;
         request.symbol = Symbol();
-        request.volume = Lots;
+        request.volume = lotSize;
         request.type = ORDER_TYPE_SELL;
         request.price = currentBid;
         request.sl = stopLossPrice;
@@ -444,7 +926,7 @@ void ExecuteSellOrder()
         request.comment = "EngulfSignalEA卖出";
         
         // 记录详细日志
-        LogMessage("尝试发送卖出订单: 品种=" + Symbol() + ", 手数=" + DoubleToString(Lots, 2) + ", 价格=" + DoubleToString(request.price, Digits), 4);
+        LogMessage("尝试发送卖出订单: 品种=" + Symbol() + ", 手数=" + DoubleToString(lotSize, 2) + ", 价格=" + DoubleToString(request.price, Digits), 4);
         
         if(OrderSend(request, result))
         {
@@ -456,7 +938,7 @@ void ExecuteSellOrder()
                 // 记录下单后账户状态
                 LogAccountInfo(3);
                 // 记录交易历史
-                RecordTradeHistory(result.order, POSITION_TYPE_SELL, result.price, Lots);
+                RecordTradeHistory(result.order, POSITION_TYPE_SELL, result.price, lotSize);
                 HandleError(ERR_SUCCESS, "ExecuteSellOrder", false); // 重置错误计数
                 success = true;
             }
@@ -473,9 +955,9 @@ void ExecuteSellOrder()
                     LogMessage("将在 " + (string)RetryDelayMs + "ms 后重试卖出订单 (第" + (string)retryCount + "次)", 2);
                     Sleep(RetryDelayMs);
                     // 刷新价格
-                    currentBid = Bid;
-                    stopLossPrice = currentBid + StopLoss * Point;
-                    takeProfitPrice = currentBid - TakeProfit * Point;
+                    currentBid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
+                    stopLossPrice = currentBid + StopLoss * point;
+                    takeProfitPrice = currentBid - TakeProfit * point;
                 }
                 else
                 {
@@ -497,9 +979,9 @@ void ExecuteSellOrder()
                 LogMessage("将在 " + (string)RetryDelayMs + "ms 后重试卖出订单 (第" + (string)retryCount + "次)", 2);
                 Sleep(RetryDelayMs);
                 // 刷新价格
-                currentBid = Bid;
-                stopLossPrice = currentBid + StopLoss * Point;
-                takeProfitPrice = currentBid - TakeProfit * Point;
+                currentBid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
+                stopLossPrice = currentBid + StopLoss * point;
+                takeProfitPrice = currentBid - TakeProfit * point;
             }
             else
             {
@@ -550,7 +1032,7 @@ void CloseBuyPositions()
             request.symbol = Symbol();
             request.volume = volume;
             request.type = ORDER_TYPE_SELL;
-            request.price = Bid;
+            request.price = SymbolInfoDouble(Symbol(), SYMBOL_BID);
             request.deviation = 3;
             request.magic = 12345;
             request.comment = "EngulfSignalEA平仓多头";
@@ -652,7 +1134,7 @@ void CloseSellPositions()
             request.symbol = Symbol();
             request.volume = volume;
             request.type = ORDER_TYPE_BUY;
-            request.price = Ask;
+            request.price = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
             request.deviation = 3;
             request.magic = 12345;
             request.comment = "EngulfSignalEA平仓空头";
@@ -728,8 +1210,10 @@ void ApplyTrailingStop()
     // 检查是否有持仓
     if(PositionSelect(Symbol()))
     {
+        // 获取当前市场数据
+        double point = SymbolInfoDouble(Symbol(), SYMBOL_POINT);
         int positionType = (int)PositionGetInteger(POSITION_TYPE);
-        double currentPrice = (positionType == POSITION_TYPE_BUY) ? Bid : Ask;
+        double currentPrice = (positionType == POSITION_TYPE_BUY) ? SymbolInfoDouble(Symbol(), SYMBOL_BID) : SymbolInfoDouble(Symbol(), SYMBOL_ASK);
         double openPrice = PositionGetDouble(POSITION_PRICE_OPEN);
         double stopLoss = PositionGetDouble(POSITION_SL);
         long ticket = PositionGetInteger(POSITION_TICKET);
@@ -741,8 +1225,8 @@ void ApplyTrailingStop()
         // 多头持仓追踪止损
         if(positionType == POSITION_TYPE_BUY)
         {
-            double newStopLoss = currentPrice - TrailingStop * Point;
-            double distanceFromOpen = (currentPrice - openPrice) / Point;
+            double newStopLoss = currentPrice - TrailingStop * point;
+            double distanceFromOpen = (currentPrice - openPrice) / point;
             
             LogMessage("多头持仓 - 当前价格: " + DoubleToString(currentPrice, Digits) + 
                        ", 当前止损: " + DoubleToString(stopLoss, Digits) + 
@@ -758,8 +1242,8 @@ void ApplyTrailingStop()
         // 空头持仓追踪止损
         else if(positionType == POSITION_TYPE_SELL)
         {
-            double newStopLoss = currentPrice + TrailingStop * Point;
-            double distanceFromOpen = (openPrice - currentPrice) / Point;
+            double newStopLoss = currentPrice + TrailingStop * point;
+            double distanceFromOpen = (openPrice - currentPrice) / point;
             
             LogMessage("空头持仓 - 当前价格: " + DoubleToString(currentPrice, Digits) + 
                        ", 当前止损: " + DoubleToString(stopLoss, Digits) + 
@@ -858,7 +1342,7 @@ bool UpdateStopLoss(long ticket, double newStopLoss, int positionType)
 //+------------------------------------------------------------------+
 //| 设置止损止盈                                                     |
 //+------------------------------------------------------------------+
-bool SetStopLossAndTakeProfit(long ticket, int orderType, double stopLossPoints, double takeProfitPoints)
+bool SetStopLossAndTakeProfit(ulong ticket, int orderType, double stopLossPoints, double takeProfitPoints)
 {
     // 检查是否可以交易
     if(!CanTrade())
@@ -867,19 +1351,22 @@ bool SetStopLossAndTakeProfit(long ticket, int orderType, double stopLossPoints,
         return false;
     }
     
+    // 获取当前市场数据
+    double point = SymbolInfoDouble(Symbol(), SYMBOL_POINT);
+    
     // 计算新的止损止盈价格
     double sl = 0.0, tp = 0.0;
     double openPrice = PositionGetDouble(POSITION_PRICE_OPEN);
     
     if(orderType == ORDER_TYPE_BUY)
     {
-        sl = openPrice - stopLossPoints * Point;
-        tp = openPrice + takeProfitPoints * Point;
+        sl = openPrice - stopLossPoints * point;
+        tp = openPrice + takeProfitPoints * point;
     }
     else if(orderType == ORDER_TYPE_SELL)
     {
-        sl = openPrice + stopLossPoints * Point;
-        tp = openPrice - takeProfitPoints * Point;
+        sl = openPrice + stopLossPoints * point;
+        tp = openPrice - takeProfitPoints * point;
     }
     
     // 更新止损止盈，支持重试
@@ -1180,17 +1667,25 @@ bool HasExistingPosition(int positionType)
         }
     }
     
-    // 检查是否有未成交的相同方向订单
+    // 检查是否有未成交的相同方向订单（MQL5风格）
     for(int i = 0; i < OrdersTotal(); i++)
     {
+        // 选择订单
         if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-            int orderType = OrderType();
-            // 将订单类型转换为对应的持仓类型进行比较
-            int mappedOrderType = (orderType == OP_BUY) ? POSITION_TYPE_BUY : 
-                                  (orderType == OP_SELL) ? POSITION_TYPE_SELL : -1;
+            // 获取订单类型
+            int orderType = (int)OrderGetInteger(ORDER_TYPE);
             
-            if(mappedOrderType == positionType && OrderSymbol() == Symbol())
+            // 将订单类型转换为对应的持仓类型进行比较
+            int mappedOrderType = -1;
+            if(orderType == ORDER_TYPE_BUY || orderType == ORDER_TYPE_BUY_LIMIT || orderType == ORDER_TYPE_BUY_STOP)
+                mappedOrderType = POSITION_TYPE_BUY;
+            else if(orderType == ORDER_TYPE_SELL || orderType == ORDER_TYPE_SELL_LIMIT || orderType == ORDER_TYPE_SELL_STOP)
+                mappedOrderType = POSITION_TYPE_SELL;
+            
+            // 检查订单品种和类型是否匹配
+            string orderSymbol = OrderGetString(ORDER_SYMBOL);
+            if(mappedOrderType == positionType && orderSymbol == Symbol())
             {
                 return true;
             }
@@ -1203,7 +1698,7 @@ bool HasExistingPosition(int positionType)
 //+------------------------------------------------------------------+
 //| 记录交易历史                                                     |
 //+------------------------------------------------------------------+
-void RecordTradeHistory(long orderTicket, int positionType, double price, double volume)
+void RecordTradeHistory(ulong orderTicket, int positionType, double price, double volume)
 {
     // 记录交易历史信息，用于后续的交易统计和分析
     string tradeType = (positionType == POSITION_TYPE_BUY) ? "多头" : "空头";
@@ -1216,21 +1711,21 @@ void RecordTradeHistory(long orderTicket, int positionType, double price, double
 //+------------------------------------------------------------------+
 //| 记录订单详情                                                     |
 //+------------------------------------------------------------------+
-void LogOrderDetails(long orderTicket, int level=2)
+void LogOrderDetails(ulong orderTicket, int level=2)
 {
     // 检查日志级别
     if(level > LogLevel) return;
     
-    // 尝试获取订单详情
-    if(OrderSelect(orderTicket, SELECT_BY_TICKET))
+    // 尝试获取订单详情（MQL5风格）
+    if(PositionSelectByTicket(orderTicket))
     {
-        string orderType = (OrderType() == OP_BUY) ? "买入" : "卖出";
-        double volume = OrderLots();
-        double price = OrderOpenPrice();
-        double sl = OrderStopLoss();
-        double tp = OrderTakeProfit();
-        datetime openTime = OrderOpenTime();
-        string comment = OrderComment();
+        string orderType = (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY) ? "买入" : "卖出";
+        double volume = PositionGetDouble(POSITION_VOLUME);
+        double price = PositionGetDouble(POSITION_PRICE_OPEN);
+        double sl = PositionGetDouble(POSITION_SL);
+        double tp = PositionGetDouble(POSITION_TP);
+        datetime openTime = PositionGetInteger(POSITION_TIME);
+        string comment = PositionGetString(POSITION_COMMENT);
         
         LogMessage("订单详情 - 订单号: " + (string)orderTicket + ", 类型: " + orderType + ", 手数: " + DoubleToString(volume, 2), level);
         LogMessage("开仓价格: " + DoubleToString(price, Digits) + ", 止损: " + ((sl == 0) ? "未设置" : DoubleToString(sl, Digits)) + ", 止盈: " + ((tp == 0) ? "未设置" : DoubleToString(tp, Digits)), level);
@@ -1478,7 +1973,7 @@ void GenerateHTMLReport()
         FileWriteString(fileHandle, "<tr><th>项目</th><th>数值</th></tr>\n");
         FileWriteString(fileHandle, "<tr><td>总盈利</td><td class='positive'>" + DoubleToString(stats.grossProfit, 2) + "</td></tr>\n");
         FileWriteString(fileHandle, "<tr><td>总亏损</td><td class='negative'>" + DoubleToString(stats.grossLoss, 2) + "</td></tr>\n");
-        FileWriteString(fileHandle, "<tr><td>净利润</td><td class='" + ((stats.grossProfit - stats.grossLoss) >= 0 ? "positive">" : "negative">") + DoubleToString(stats.grossProfit - stats.grossLoss, 2) + "</td></tr>\n");
+        FileWriteString(fileHandle, "<tr><td>净利润</td><td class='" + ((stats.grossProfit - stats.grossLoss) >= 0 ? "positive" : "negative") + "'>" + DoubleToString(stats.grossProfit - stats.grossLoss, 2) + "</td></tr>\n");
         FileWriteString(fileHandle, "<tr><td>盈利因子</td><td>" + DoubleToString(stats.profitFactor, 2) + "</td></tr>\n");
         FileWriteString(fileHandle, "<tr><td>平均盈利</td><td class='positive'>" + DoubleToString(stats.averageProfit, 2) + "</td></tr>\n");
         FileWriteString(fileHandle, "<tr><td>平均亏损</td><td class='negative'>" + DoubleToString(stats.averageLoss, 2) + "</td></tr>\n");

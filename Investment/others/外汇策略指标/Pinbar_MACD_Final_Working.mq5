@@ -36,10 +36,10 @@ int OnInit()
 {
     SetIndexBuffer(0, UpBuffer, INDICATOR_DATA);
     SetIndexBuffer(1, DownBuffer, INDICATOR_DATA);
-    
+
     PlotIndexSetInteger(0, PLOT_ARROW, 233);
     PlotIndexSetInteger(1, PLOT_ARROW, 234);
-    
+
     return(INIT_SUCCEEDED);
 }
 
@@ -52,18 +52,27 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 bool IsPinbar(const int index, const double &high[], const double &low[], const double &open[], const double &close[])
 {
+    // 确保索引有效
+    if(index < 0 || index >= ArraySize(close))
+        return(false);
+
     // 计算蜡烛图各部分大小
     double body = MathAbs(close[index] - open[index]);
     double upper_wick = high[index] - MathMax(open[index], close[index]);
     double lower_wick = MathMin(open[index], close[index]) - low[index];
-    
-    // 判断是否为Pinbar
+
+    // 避免除零错误
     if(body == 0)
         return(false);
-    
+
+    // 判断是否为Pinbar：影线长度至少是实体的指定倍数
     if(upper_wick >= PinbarSize * body || lower_wick >= PinbarSize * body)
-        return(true);
-    
+    {
+        // 额外条件：影线至少是实体的2倍，实体不能太小
+        if((upper_wick >= 2 * body || lower_wick >= 2 * body) && body > 0.0001)
+            return(true);
+    }
+
     return(false);
 }
 
@@ -72,14 +81,14 @@ bool IsPinbar(const int index, const double &high[], const double &low[], const 
 bool IsBullishDivergence(const int current, const int lookback, const double &low[], const double &macd_values[])
 {
     // 确保索引有效
-    if(current <= lookback || lookback < 10)
+    if(current <= lookback || lookback < 5 || current >= ArraySize(low) || current >= ArraySize(macd_values))
         return(false);
-    
-    // 找到最近的低点
+
+    // 找到价格的最低点
     int lowest_idx = current;
     double lowest_price = low[current];
-    
-    for(int i = current-1; i >= current-lookback; i--)
+
+    for(int i = current-1; i >= current-lookback && i >= 0; i--)
     {
         if(low[i] < lowest_price)
         {
@@ -87,31 +96,30 @@ bool IsBullishDivergence(const int current, const int lookback, const double &lo
             lowest_idx = i;
         }
     }
-    
-    // 如果当前就是最低点，检查MACD是否背离
-    if(lowest_idx == current)
+
+    // 找到MACD的最低点
+    int macd_lowest_idx = current;
+    double macd_lowest_value = macd_values[current];
+
+    for(int i = current-1; i >= current-lookback && i >= 0; i--)
     {
-        // 找到MACD的最低点 - 初始化变量
-        int macd_lowest_idx = current;
-        double macd_lowest_value = macd_values[current];
-        
-        for(int i = current-1; i >= current-lookback; i--)
+        if(macd_values[i] < macd_lowest_value)
         {
-            if(macd_values[i] < macd_lowest_value)
-            {
-                macd_lowest_value = macd_values[i];
-                macd_lowest_idx = i;
-            }
+            macd_lowest_value = macd_values[i];
+            macd_lowest_idx = i;
         }
-        
-        // 底背离：价格创新低，但MACD的最低点出现在之前
-        // 更明确的条件：MACD当前值大于前一个低点的MACD值
-        if(macd_lowest_idx < current && macd_values[current] > macd_values[macd_lowest_idx])
+    }
+
+    // 底背离条件：价格创新低但MACD未创新低
+    if(lowest_idx == current && macd_lowest_idx < current)
+    {
+        // MACD当前值高于之前的最低点，表明动量背离
+        if(macd_values[current] > macd_values[macd_lowest_idx] + 0.0001)
         {
             return(true);
         }
     }
-    
+
     return(false);
 }
 
@@ -119,14 +127,14 @@ bool IsBullishDivergence(const int current, const int lookback, const double &lo
 bool IsBearishDivergence(const int current, const int lookback, const double &high[], const double &macd_values[])
 {
     // 确保索引有效
-    if(current <= lookback || lookback < 10)
+    if(current <= lookback || lookback < 5 || current >= ArraySize(high) || current >= ArraySize(macd_values))
         return(false);
-    
-    // 找到最近的高点
+
+    // 找到价格的最高点
     int highest_idx = current;
     double highest_price = high[current];
-    
-    for(int i = current-1; i >= current-lookback; i--)
+
+    for(int i = current-1; i >= current-lookback && i >= 0; i--)
     {
         if(high[i] > highest_price)
         {
@@ -134,31 +142,30 @@ bool IsBearishDivergence(const int current, const int lookback, const double &hi
             highest_idx = i;
         }
     }
-    
-    // 如果当前就是最高点，检查MACD是否背离
-    if(highest_idx == current)
+
+    // 找到MACD的最高点
+    int macd_highest_idx = current;
+    double macd_highest_value = macd_values[current];
+
+    for(int i = current-1; i >= current-lookback && i >= 0; i--)
     {
-        // 找到MACD的最高点 - 初始化变量
-        int macd_highest_idx = current;
-        double macd_highest_value = macd_values[current];
-        
-        for(int i = current-1; i >= current-lookback; i--)
+        if(macd_values[i] > macd_highest_value)
         {
-            if(macd_values[i] > macd_highest_value)
-            {
-                macd_highest_value = macd_values[i];
-                macd_highest_idx = i;
-            }
+            macd_highest_value = macd_values[i];
+            macd_highest_idx = i;
         }
-        
-        // 顶背离：价格创新高，但MACD的最高点出现在之前
-        // 更明确的条件：MACD当前值小于前一个高点的MACD值
-        if(macd_highest_idx < current && macd_values[current] < macd_values[macd_highest_idx])
+    }
+
+    // 顶背离条件：价格创新高但MACD未创新高
+    if(highest_idx == current && macd_highest_idx < current)
+    {
+        // MACD当前值低于之前的最高点，表明动量背离
+        if(macd_values[current] < macd_values[macd_highest_idx] - 0.0001)
         {
             return(true);
         }
     }
-    
+
     return(false);
 }
 
@@ -172,63 +179,68 @@ int OnCalculate(const int rates_total, const int prev_calculated,
     // 初始化缓冲区
     ArrayInitialize(UpBuffer, EMPTY_VALUE);
     ArrayInitialize(DownBuffer, EMPTY_VALUE);
-    
+
     // 计算起始位置
     int start = prev_calculated - 1;
     if(start < 0)
         start = 0;
-    
+
     // 获取MACD数据
     int macd_handle = iMACD(Symbol(), Period(), FastEMA, SlowEMA, SignalSMA, PRICE_CLOSE);
-    
+
     if(macd_handle != INVALID_HANDLE)
     {
         // 计算需要的数据量
         int bars_needed = rates_total;
         if(bars_needed > BARS_MAX)
             bars_needed = BARS_MAX;
-        
+
         // 创建MACD值数组
         double macd_main[];
         ArrayResize(macd_main, bars_needed);
-        
+
         // 复制MACD数据
         CopyBuffer(macd_handle, 0, 0, bars_needed, macd_main);
-        
+
         // 分析每根K线
         for(int i = start; i < rates_total && i < ArraySize(macd_main); i++)
         {
+            // 确保索引有效
+            if(i < 0 || i >= rates_total || i >= ArraySize(macd_main))
+                continue;
+
             // 检测Pinbar
             if(IsPinbar(i, high, low, open, close))
             {
                 // 如果不使用MACD背离，直接显示信号
                 if(!UseMacdDivergence)
                 {
+                    // 阳线Pinbar显示多头信号，阴线Pinbar显示空头信号
                     if(close[i] > open[i])
-                        UpBuffer[i] = low[i];
+                        UpBuffer[i] = low[i] - 10 * _Point; // 在低点下方显示
                     else
-                        DownBuffer[i] = high[i];
+                        DownBuffer[i] = high[i] + 10 * _Point; // 在高点上方显示
                 }
                 else
                 {
                     // 检测MACD底背离（多头信号）
                     if(i >= DivergenceLookback && IsBullishDivergence(i, DivergenceLookback, low, macd_main))
                     {
-                        UpBuffer[i] = low[i];
+                        UpBuffer[i] = low[i] - 10 * _Point;
                     }
                     // 检测MACD顶背离（空头信号）
                     if(i >= DivergenceLookback && IsBearishDivergence(i, DivergenceLookback, high, macd_main))
                     {
-                        DownBuffer[i] = high[i];
+                        DownBuffer[i] = high[i] + 10 * _Point;
                     }
                 }
             }
         }
-        
+
         // 释放MACD句柄
         IndicatorRelease(macd_handle);
     }
-    
+
     return(rates_total);
 }
 //+------------------------------------------------------------------+
