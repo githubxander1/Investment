@@ -111,6 +111,8 @@ class IntradayDataProvider:
                 
         except Exception as e:
             logger.error(f"使用 stock_zh_a_hist_min_em 接口获取数据失败: {e}")
+            import traceback
+            logger.error(f"详细错误信息: {traceback.format_exc()}")
             return None
 
     def get_a_minute_data(self, stock_code: str) -> Optional[pd.DataFrame]:
@@ -136,11 +138,15 @@ class IntradayDataProvider:
             # 根据股票代码前缀判断市场
             if stock_code.startswith('6'):
                 market_stock_code = f'sh{stock_code}'
-            else:
+            elif stock_code.startswith(('0', '3')):
                 market_stock_code = f'sz{stock_code}'
+            elif stock_code.startswith('4') or stock_code.startswith('8'):
+                market_stock_code = f'bj{stock_code}'
+            else:
+                market_stock_code = stock_code
             
             # 获取数据
-            df = ak.stock_zh_a_minute(symbol=market_stock_code, period="1", adjust="qfq")
+            df = ak.stock_zh_a_minute(symbol=market_stock_code, period='1', adjust='')
             
             if df is not None and not df.empty:
                 logger.info(f"✅ stock_zh_a_minute 成功获取数据，数据行数: {len(df)}")
@@ -183,6 +189,8 @@ class IntradayDataProvider:
                 
         except Exception as e:
             logger.error(f"使用 stock_zh_a_minute 接口获取数据失败: {e}")
+            import traceback
+            logger.error(f"详细错误信息: {traceback.format_exc()}")
             return None
 
     def get_eastmoney_data(self, stock_code: str) -> Optional[pd.DataFrame]:
@@ -206,9 +214,17 @@ class IntradayDataProvider:
         try:
             logger.info(f"使用东方财富接口获取 {stock_code} 的分时数据")
             
-            # 导入东方财富数据获取函数
-            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            from data_source.data2dfcf import get_eastmoney_fenshi_with_pandas
+            # 尝试从正确的路径导入东方财富数据获取函数
+            try:
+                from Investment.数据源.dfcf import StockDailyCrawler
+            except ImportError:
+                try:
+                    # 备选路径
+                    sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '..'))
+                    from 数据源.dfcf import StockDailyCrawler
+                except ImportError:
+                    logger.error("无法导入东方财富数据源模块")
+                    return None
             
             # 根据股票代码前缀判断市场
             if stock_code.startswith('6'):
@@ -216,16 +232,9 @@ class IntradayDataProvider:
             else:
                 secid = f"0.{stock_code}"  # 深市
             
-            # 获取数据
-            df = get_eastmoney_fenshi_with_pandas(secid=secid)
-            
-            if df is not None and not df.empty:
-                logger.info(f"✅ 东方财富接口成功获取数据，数据行数: {len(df)}")
-                logger.debug(f"数据列名: {df.columns.tolist()}")
-                return df
-            else:
-                logger.warning(f"东方财富接口未返回 {stock_code} 的数据")
-                return None
+            # 东方财富分时数据接口可能需要单独实现
+            logger.warning("东方财富分时数据接口需要单独实现")
+            return None
                 
         except Exception as e:
             logger.error(f"使用东方财富接口获取数据失败: {e}")
@@ -308,3 +317,27 @@ def fetch_intraday_data(stock_code: str, trade_date: str) -> Optional[pd.DataFra
     """
     provider = IntradayDataProvider()
     return provider.get_intraday_data(stock_code, trade_date)
+
+
+if __name__ == "__main__":
+    # 测试股票代码和日期
+    test_stock = '513050'  # 中概互联网ETF
+    test_date = '20251114'  # 2025年11月14日
+    
+    # 获取分时数据
+    df = fetch_intraday_data(test_stock, test_date)
+    
+    if df is not None and not df.empty:
+        print("\n成功获取分时数据:")
+        print(df.head())
+    else:
+        print("\n获取分时数据失败")
+        
+        # 尝试查找该ETF的信息
+        try:
+            import akshare as ak
+            print("\n尝试获取ETF基本信息:")
+            etf_info = ak.fund_etf_fund_info_em(symbol=test_stock)
+            print(etf_info)
+        except Exception as e:
+            print(f"获取ETF信息失败: {e}")

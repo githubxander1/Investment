@@ -540,7 +540,7 @@ class MainForceAccumulationBacktester:
         if self.backtest_log:
             log_df = pd.DataFrame(self.backtest_log)
             filename = f"主力建仓回测记录_{self.stock_code}_{timestamp}.csv"
-            filepath = "e:/git_documents/Investment/回测/" + filename
+            filepath = "e:/git_documents/Investment/Investment/Indicators/回测记录/" + filename
             
             # 保存到CSV文件
             log_df.to_csv(filepath, index=False, encoding='utf-8-sig')
@@ -550,7 +550,7 @@ class MainForceAccumulationBacktester:
         if self.daily_log:
             daily_df = pd.DataFrame(self.daily_log)
             filename = f"主力建仓每日记录_{self.stock_code}_{timestamp}.csv"
-            filepath = "e:/git_documents/Investment/回测/" + filename
+            filepath = "e:/git_documents/Investment/Investment/Indicators/回测记录/" + filename
             
             # 保存到CSV文件
             daily_df.to_csv(filepath, index=False, encoding='utf-8-sig')

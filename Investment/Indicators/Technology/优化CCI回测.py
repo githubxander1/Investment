@@ -410,7 +410,7 @@ class CCI_Backtester:
         # 生成文件名
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"优化CCI回测记录_{self.stock_code}_{timestamp}.csv"
-        filepath = f"e:\git_documents\Investment\回测\{filename}"
+        filepath = f"e:\git_documents\Investment\Investment\Indicators\回测记录\{filename}"
         
         # 保存到CSV文件
         log_df.to_csv(filepath, index=False, encoding='utf-8-sig')

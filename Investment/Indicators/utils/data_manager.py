@@ -199,20 +199,28 @@ class DataManager:
         
         return df
 
-# 全局数据管理器实例
-data_manager = DataManager()
 
-def get_stock_data(stock_code, start_date, end_date, force_update=False):
-    """
-    获取股票数据的便捷函数
+if __name__ == "__main__":
+    # 测试数据管理器
+    test_code = "000001.SZ"
+    test_start = "20230101"
+    test_end = "20251114"
     
-    Parameters:
-    stock_code (str): 股票代码
-    start_date (str): 开始日期，格式'YYYYMMDD'
-    end_date (str): 结束日期，格式'YYYYMMDD'
-    force_update (bool): 是否强制从网络更新数据
     
-    Returns:
-    pd.DataFrame: 股票数据
-    """
-    return data_manager.fetch_stock_data(stock_code, start_date, end_date, force_update)
+    # 全局数据管理器实例
+    data_manager = DataManager()
+
+    def get_stock_data(stock_code, start_date, end_date, force_update=False):
+        """
+        获取股票数据的便捷函数
+        
+        Parameters:
+        stock_code (str): 股票代码
+        start_date (str): 开始日期，格式'YYYYMMDD'
+        end_date (str): 结束日期，格式'YYYYMMDD'
+        force_update (bool): 是否强制从网络更新数据
+        
+        Returns:
+        pd.DataFrame: 股票数据
+        """
+        return data_manager.fetch_stock_data(stock_code, start_date, end_date, force_update)

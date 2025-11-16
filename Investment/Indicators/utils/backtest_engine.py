@@ -238,7 +238,7 @@ class BacktestEngine:
         
         return True
     
-    def plot_results(self, title_suffix=""):
+    def plot_results(self, title_suffix="", save_dir=None):
         """绘制回测结果图表"""
         if self.data is None or len(self.trades) == 0:
             print("没有足够的数据来绘制图表")
@@ -328,20 +328,24 @@ class BacktestEngine:
             plt.tight_layout()
             
             # 确保保存目录存在
-            save_dir = "e:/git_documents/Investment/回测"
+            if save_dir is None:
+                # 使用默认路径，但也考虑Indicators目录
+                save_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '回测')
             os.makedirs(save_dir, exist_ok=True)
             
             # 保存图表
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f'回测结果_{self.stock_code}_{timestamp}.png'
-            filepath = f"{save_dir}/{filename}"
+            filepath = os.path.join(save_dir, filename)
             plt.savefig(filepath, dpi=300)
-            print(f"图表已生成并保存为'{filename}'")
+            print(f"图表已生成并保存为'{filename}'到'{save_dir}'")
             
             plt.close(fig)  # 关闭图表以释放内存
             return True
         except Exception as e:
             print(f"绘制图表时出错: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def save_backtest_log(self, prefix="回测记录"):
@@ -352,7 +356,7 @@ class BacktestEngine:
         
         try:
             # 确保保存目录存在
-            save_dir = "e:/git_documents/Investment/回测"
+            save_dir = "e:/git_documents/Investment/Investment/Indicators/回测记录"
             os.makedirs(save_dir, exist_ok=True)
             
             # 生成时间戳

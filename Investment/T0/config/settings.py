@@ -25,17 +25,26 @@ for dir_path in [DATA_DIR, LOGS_DIR, PLOTS_DIR, CHARTS_DIR, CACHE_DIR]:
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
-# 默认股票池
-DEFAULT_STOCK_POOL = ['000333', '600030']  # 000333美的集团，600030中信证券等
 
+stocks = {
+    '000333': '美的集团',
+    '600030': '中信证券',
+    '000001': '上证指数',
+    '000002': '深圳成指',
+    '399001': '深证成指',
+    '513330': '恒生互联网ETF',
+    '513050': '中概互联ETF',
+}
+# 默认股票池
+DEFAULT_STOCK_POOL = ['510050', '510330']  
 # 交易配置
 TRADE_QUANTITY = 100  # 每次交易数量
 MINIMUM_HOLDING = 100  # 最低持仓数量（股）
 MAX_POSITION_PERCENT = 0.2  # 单个股票最大仓位比例
-TOTAL_CAPITAL = 1000000  # 总资金
+TOTAL_CAPITAL = 100000  # 总资金
 MAX_DAILY_LOSS = 0.02  # 每日最大亏损比例
-STOP_LOSS_RATIO = 0.01  # 止损比例
-TAKE_PROFIT_RATIO = 0.02  # 止盈比例
+STOP_LOSS_RATIO = 0.1  # 止损比例
+TAKE_PROFIT_RATIO = 0.2  # 止盈比例
 
 # 监控配置
 MONITOR_INTERVAL = 60  # 监控间隔（秒）
