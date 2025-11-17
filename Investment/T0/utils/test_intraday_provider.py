@@ -26,8 +26,9 @@ def test_all_data_sources():
     provider = IntradayDataProvider()
     
     # 测试股票代码和日期
+    # stock_code = "513050"  # 中概互联网ETF
     stock_code = "600030"
-    trade_date = "2025-11-07"
+    trade_date = "2025-11-17"
     
     print(f"测试股票: {stock_code}")
     print(f"交易日期: {trade_date}")

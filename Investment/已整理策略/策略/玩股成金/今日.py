@@ -81,7 +81,8 @@ for sheet_name, params in requests_params.items():
         print(f"请求 {sheet_name} 失败: {result.get('message')}")
 
 # 保存到 Excel 文件的不同 sheet
-output_path = r"D:\1document\Investment\Investment\THS\大决策app\玩股成金\AI神经元信号数据.xlsx"
+# output_path = r"D:\1document\Investment\Investment\已整理策略\玩股成金\AI神经元信号数据.xlsx"
+output_path = "今日AI神经元信号数据.xlsx"
 with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
     for sheet_name, df in data_frames.items():
         df.to_excel(writer, sheet_name=sheet_name, index=False)

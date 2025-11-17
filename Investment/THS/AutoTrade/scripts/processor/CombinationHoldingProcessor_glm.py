@@ -550,7 +550,7 @@ class CombinationHoldingProcessor:
             if '持仓占比' in merged_data.columns:
                 to_sell_candidates2 = merged_data[
                     (merged_data['新比例%'] < merged_data['持仓占比']) &
-                    ((merged_data['持仓占比'] - merged_data['新比例%']) >= 20)
+                    ((merged_data['持仓占比'] - merged_data['新比例%']) >= 60)
                     ]
                 # 确保新比例列没有NaN值
                 to_sell_candidates2 = to_sell_candidates2[to_sell_candidates2['新比例%'].notna()]
@@ -625,7 +625,7 @@ class CombinationHoldingProcessor:
                 if not merged_data_buy.empty:
                     to_buy_candidates2 = merged_data_buy[
                         (merged_data_buy['新比例%'] > merged_data_buy['持仓占比']) &
-                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 20)
+                        ((merged_data_buy['新比例%'] - merged_data_buy['持仓占比']) >= 60)
                         ]
                     # 确保新比例列没有NaN值
                     to_buy_candidates2 = to_buy_candidates2[to_buy_candidates2['新比例%'].notna()]
@@ -636,10 +636,14 @@ class CombinationHoldingProcessor:
                 to_buy = pd.concat([to_buy_candidates, to_buy_candidates2]).drop_duplicates(subset=['股票名称'])
                 to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
             else:
-                # 如果账户持仓为空，则策略中的所有股票都需要买入
-                logger.info("账户持仓为空，策略中的所有股票都需要买入")
-                to_buy = strategy_holding.copy()
-                to_buy = to_buy[~to_buy['股票名称'].isin(excluded_holdings)]
+                # 优化：账户持仓为空时的处理
+                # 当账户数据获取失败时，不应将所有策略股票都标记为需要买入
+                logger.warning("⚠️ 账户持仓数据为空或获取失败，不执行买入操作，以避免错误买入已持仓的股票")
+                # 使用空的DataFrame，不执行任何买入操作
+                to_buy = pd.DataFrame(columns=strategy_holding.columns)
+                # 如果策略持仓不为空，可以记录策略股票列表以供后续参考
+                if not strategy_holding.empty:
+                    logger.info(f"ℹ️ 策略当前持仓股票列表: {', '.join(strategy_holding['股票名称'].tolist())}")
 
             # 只保留市场为沪深A股的
             if '市场' in to_buy.columns:

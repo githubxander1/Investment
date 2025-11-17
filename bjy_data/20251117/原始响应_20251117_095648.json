@@ -1,0 +1,130 @@
+{
+  "data1": [
+    {
+      "data_time": "20251114",
+      "show_ymd": "11月14日"
+    },
+    {
+      "data_time": "20251113",
+      "show_ymd": "11月13日"
+    },
+    {
+      "data_time": "20251112",
+      "show_ymd": "11月12日"
+    },
+    {
+      "data_time": "20251111",
+      "show_ymd": "11月11日"
+    },
+    {
+      "data_time": "20251110",
+      "show_ymd": "11月10日"
+    },
+    {
+      "data_time": "20251107",
+      "show_ymd": "11月7日"
+    },
+    {
+      "data_time": "20251106",
+      "show_ymd": "11月6日"
+    },
+    {
+      "data_time": "20251105",
+      "show_ymd": "11月5日"
+    },
+    {
+      "data_time": "20251104",
+      "show_ymd": "11月4日"
+    },
+    {
+      "data_time": "20251103",
+      "show_ymd": "11月3日"
+    },
+    {
+      "data_time": "20251031",
+      "show_ymd": "10月31日"
+    },
+    {
+      "data_time": "20251030",
+      "show_ymd": "10月30日"
+    },
+    {
+      "data_time": "20251029",
+      "show_ymd": "10月29日"
+    },
+    {
+      "data_time": "20251028",
+      "show_ymd": "10月28日"
+    },
+    {
+      "data_time": "20251027",
+      "show_ymd": "10月27日"
+    }
+  ],
+  "data": [
+    {
+      "SecurityID": "600495",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "晋西车轴"
+    },
+    {
+      "SecurityID": "600157",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "永泰能源"
+    },
+    {
+      "SecurityID": "300931",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "通用电梯"
+    },
+    {
+      "SecurityID": "002887",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "绿茵生态"
+    },
+    {
+      "SecurityID": "002717",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "ST岭南"
+    },
+    {
+      "SecurityID": "000955",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "欣龙控股"
+    },
+    {
+      "SecurityID": "000566",
+      "data_type": [
+        "1日"
+      ],
+      "addtimes": "1763109002",
+      "addtime": "11-14",
+      "Symbol": "海南海药"
+    }
+  ],
+  "result": "0"
+}
